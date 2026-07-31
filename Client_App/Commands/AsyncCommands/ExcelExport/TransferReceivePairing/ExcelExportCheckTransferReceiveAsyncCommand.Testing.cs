@@ -15,7 +15,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     /// </summary>
     public static class TransferReceiveTestAccess
     {
-        public static TransferReceive11Params DefaultForm13ParamsForTests() => DefaultForm13Params();
+        public static TransferReceiveFormParams DefaultForm13ParamsForTests() => DefaultForm13Params();
 
         public static string NormalizeNumberForTests(string? value) => NormalizeNumber(value);
 
@@ -49,6 +49,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         public static int SourceColCountForTests => SourceColCount;
 
         public static int SeparatorColForTests => SeparatorCol;
+
+        public static int ConfidenceColForTests => ConfidenceCol;
 
         public static int ClosestStartColForTests => ClosestStartCol;
 
@@ -122,12 +124,66 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var (unpaired, opsByOrgOkpo) = AnalyzeForm11ForOrganization(
                 ourOps, counterpartOps, ourOkpoNorm, testCase.Params, aliases);
 
-            var closest = BuildClosestMatchResults(unpaired, opsByOrgOkpo, testCase.Params)
-                .ToDictionary(
-                    kv => kv.Key,
-                    kv => (IReadOnlyDictionary<TransferReceiveField, bool>)kv.Value.FieldMatches);
+            var built = BuildClosestMatchResults(unpaired, opsByOrgOkpo, testCase.Params);
+            var exact = built.ToDictionary(
+                kv => kv.Key,
+                kv => (IReadOnlyDictionary<TransferReceiveField, bool>)kv.Value.FieldMatches);
+            var levels = built.ToDictionary(
+                kv => kv.Key,
+                kv => (IReadOnlyDictionary<TransferReceiveField, FieldMatchLevel>)kv.Value.FieldLevels);
+            var confidence = built.ToDictionary(kv => kv.Key, kv => kv.Value.ConfidencePercent);
+            var candidateIds = built.ToDictionary(kv => kv.Key, kv => kv.Value.Candidate.Id);
 
-            return new TransferReceiveClosestMatchResult(closest);
+            return new TransferReceiveClosestMatchResult(exact, levels, confidence, candidateIds);
+        }
+
+        public static FieldMatchLevel SimilarityLevelForTests(
+            TransferReceiveField field,
+            TransferReceiveRow left,
+            TransferReceiveRow right,
+            string ourOkpo = "10000001")
+        {
+            var leftDto = ToDto(left, ourOkpo, "1.1");
+            var rightDto = ToDto(right, null, "1.1");
+            var leftNorm = CreateNorm(leftDto);
+            var rightNorm = CreateNorm(rightDto);
+            return FieldSimilarityOf(leftDto, rightDto, leftNorm, rightNorm, field, ourOkpo).Level;
+        }
+
+        /// <summary>
+        /// Двойная форма с учётом <see cref="IsFormCheckEnabled"/> (как BuildOrganizationExportFromLoaded / SharedPools).
+        /// </summary>
+        public static (IReadOnlyList<int> Unpaired11, IReadOnlyList<int> Unpaired13) AnalyzeEnabledFormsUnpairedForTests(
+            string ourOkpo,
+            IReadOnlyList<TransferReceiveRow> ourOps11,
+            IReadOnlyList<TransferReceiveRow> ourOps13,
+            IReadOnlyList<TransferReceiveRow> counterpartOps11,
+            IReadOnlyList<TransferReceiveRow> counterpartOps13,
+            TransferReceiveParamsSet pairingParams)
+        {
+            var ourOkpoNorm = NormalizeNumber(ourOkpo);
+            var unpaired11 = new List<int>();
+            var unpaired13 = new List<int>();
+
+            if (pairingParams.IsEnabled(TransferReceiveFormId.Form11) && ourOps11.Count > 0)
+            {
+                var our = ToDtoList(ourOps11, ourOkpo, "1.1");
+                var counterpart = ToDtoList(counterpartOps11, null, "1.1");
+                var (unpaired, _) = AnalyzeFormForOrganization(
+                    our, counterpart, ourOkpoNorm, pairingParams.Form11, null);
+                unpaired11 = unpaired.Select(op => op.Id).OrderBy(id => id).ToList();
+            }
+
+            if (pairingParams.IsEnabled(TransferReceiveFormId.Form13) && ourOps13.Count > 0)
+            {
+                var our = ToDtoList(ourOps13, ourOkpo, "1.3");
+                var counterpart = ToDtoList(counterpartOps13, null, "1.3");
+                var (unpaired, _) = AnalyzeFormForOrganization(
+                    our, counterpart, ourOkpoNorm, pairingParams.Form13, null);
+                unpaired13 = unpaired.Select(op => op.Id).OrderBy(id => id).ToList();
+            }
+
+            return (unpaired11, unpaired13);
         }
 
         private static Dictionary<string, List<int>>? ToAliasMap(

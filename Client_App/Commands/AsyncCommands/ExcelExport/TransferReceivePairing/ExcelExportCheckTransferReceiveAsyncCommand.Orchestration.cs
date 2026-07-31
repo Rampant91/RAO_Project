@@ -25,17 +25,25 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
     private sealed class OrganizationTransferReceiveExport
     {
-        public List<TransferReceiveDto> UnpairedForm11 { get; init; } = [];
-        public List<TransferReceiveDto> UnpairedForm13 { get; init; } = [];
+        public Dictionary<TransferReceiveFormId, List<TransferReceiveDto>> UnpairedByForm { get; init; } = new();
+
+        public List<TransferReceiveDto> GetUnpaired(TransferReceiveFormId id) =>
+            UnpairedByForm.TryGetValue(id, out var list) ? list : [];
+
+        public bool HasAnyUnpaired => UnpairedByForm.Values.Any(list => list.Count > 0);
     }
 
     private sealed class TransferReceiveBulkLoad
     {
-        public List<TransferReceiveDto> AllOps11 { get; init; } = [];
-        public List<TransferReceiveDto> AllOps13 { get; init; } = [];
-        public Dictionary<int, List<TransferReceiveDto>> Ops11ByRepsId { get; init; } = new();
-        public Dictionary<int, List<TransferReceiveDto>> Ops13ByRepsId { get; init; } = new();
+        public Dictionary<TransferReceiveFormId, List<TransferReceiveDto>> AllOpsByForm { get; init; } = new();
+        public Dictionary<TransferReceiveFormId, Dictionary<int, List<TransferReceiveDto>>> OpsByRepsIdByForm { get; init; } = new();
         public Dictionary<string, List<int>> RepsIdsByNormOkpo { get; init; } = new(StringComparer.Ordinal);
+
+        public List<TransferReceiveDto> GetAllOps(TransferReceiveFormId id) =>
+            AllOpsByForm.TryGetValue(id, out var list) ? list : [];
+
+        public Dictionary<int, List<TransferReceiveDto>> GetOpsByRepsId(TransferReceiveFormId id) =>
+            OpsByRepsIdByForm.TryGetValue(id, out var map) ? map : new Dictionary<int, List<TransferReceiveDto>>();
     }
 
     /// <summary>Кандидат whole-DB: Id + титул без тяжёлого Include(Master→Rows10).</summary>
@@ -122,7 +130,9 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             (percent, text) => progressBarVM.SetProgressBar(percent, text, "Вся БД"),
             percentMin: 12,
             percentMax: 28);
-        var candidates = await LoadOrganizationsWithTransferReceiveAsync(db, cts.Token, discoverProgress);
+        var enabledIds = pairingParams.EnabledFormIds;
+        var candidates = await LoadOrganizationsWithTransferReceiveAsync(
+            db, cts.Token, discoverProgress, enabledIds);
         if (candidates.Count == 0)
         {
             await ShowNoUnpairedOperationsMessage(progressBar, wholeDatabase: true);
@@ -135,11 +145,15 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             percentMin: 28,
             percentMax: 52);
         var orgTitles = candidates.ToDictionary(c => c.Id, c => c.Title);
-        var bulk = await LoadAllTransferReceiveBulkAsync(db, orgTitles, cts.Token, bulkProgress);
+        var bulk = await LoadAllTransferReceiveBulkAsync(
+            db, orgTitles, cts.Token, bulkProgress, enabledIds);
 
         progressBarVM.SetProgressBar(52, "Построение общих пулов сопоставления", "Вся БД", "Выгрузка в .xlsx");
-        var sharedPool11 = BuildOpsPoolByOrgOkpo([], bulk.AllOps11, bulk.RepsIdsByNormOkpo);
-        var sharedPool13 = BuildOpsPoolByOrgOkpo([], bulk.AllOps13, bulk.RepsIdsByNormOkpo);
+        var sharedPools = new Dictionary<TransferReceiveFormId, Dictionary<string, List<TransferReceiveDto>>>();
+        foreach (var formId in enabledIds)
+        {
+            sharedPools[formId] = BuildOpsPoolByOrgOkpo([], bulk.GetAllOps(formId), bulk.RepsIdsByNormOkpo);
+        }
 
         progressBarVM.SetProgressBar(55, "Инициализация Excel пакета", "Вся БД", "Выгрузка в .xlsx");
         using var excelPackage = await InitializeExcelPackage(fullPath);
@@ -165,17 +179,17 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                     exportName);
 
             Status(0, "сопоставление");
-            bulk.Ops11ByRepsId.TryGetValue(org.Id, out var our11);
-            bulk.Ops13ByRepsId.TryGetValue(org.Id, out var our13);
-            our11 ??= [];
-            our13 ??= [];
+            var ourOpsByForm = new Dictionary<TransferReceiveFormId, List<TransferReceiveDto>>();
+            foreach (var formId in enabledIds)
+            {
+                bulk.GetOpsByRepsId(formId).TryGetValue(org.Id, out var ourOps);
+                ourOpsByForm[formId] = ourOps ?? [];
+            }
 
             var export = BuildOrganizationExportFromSharedPools(
                 org.Title.Okpo,
-                our11,
-                our13,
-                sharedPool11,
-                sharedPool13,
+                ourOpsByForm,
+                sharedPools,
                 pairingParams,
                 (p, text) => Status(Math.Min(percentSpan - 1, Math.Max(0, p / 5)), text));
 
@@ -221,14 +235,22 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     private static async Task<List<TransferReceiveOrgCandidate>> LoadOrganizationsWithTransferReceiveAsync(
         DBModel db,
         CancellationToken cancellationToken,
-        ProgressReporter? progress = null)
+        ProgressReporter? progress = null,
+        IReadOnlySet<TransferReceiveFormId>? enabledFormIds = null)
     {
+        enabledFormIds ??= ImplementedFormDescriptors.Select(d => d.Id).ToHashSet();
         var repsIds = new HashSet<int>();
-        progress?.ReportNow(0, 2, "поиск организаций: сканирование формы 1.1 (1 из 2)");
-        await AddRepsIdsWithTransferReceiveCodesAsync(db.form_11, repsIds, cancellationToken);
-        progress?.ReportNow(1, 2, $"поиск организаций: форма 1.1 — найдено организаций: {repsIds.Count}");
-        await AddRepsIdsWithTransferReceiveCodesAsync(db.form_13, repsIds, cancellationToken);
-        progress?.ReportNow(2, 2, $"поиск организаций: форма 1.3 — найдено организаций: {repsIds.Count}");
+        var stages = Math.Max(1, enabledFormIds.Count);
+        var stage = 0;
+        foreach (var descriptor in ImplementedFormDescriptors.Where(d => enabledFormIds.Contains(d.Id)))
+        {
+            progress?.ReportNow(stage, stages,
+                $"поиск организаций: сканирование формы {descriptor.FormNum} ({stage + 1} из {stages})");
+            await AddRepsIdsForFormAsync(db, descriptor.Id, repsIds, cancellationToken);
+            stage++;
+            progress?.ReportNow(stage, stages,
+                $"поиск организаций: форма {descriptor.FormNum} — найдено организаций: {repsIds.Count}");
+        }
 
         if (repsIds.Count == 0)
         {
@@ -267,6 +289,25 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             .OrderBy(c => c.Title.RegNo, regNoComparer)
             .ThenBy(c => c.Title.Okpo, regNoComparer)
             .ToList();
+    }
+
+    private static async Task AddRepsIdsForFormAsync(
+        DBModel db,
+        TransferReceiveFormId formId,
+        HashSet<int> repsIds,
+        CancellationToken cancellationToken)
+    {
+        switch (formId)
+        {
+            case TransferReceiveFormId.Form11:
+                await AddRepsIdsWithTransferReceiveCodesAsync(db.form_11, repsIds, cancellationToken);
+                break;
+            case TransferReceiveFormId.Form13:
+                await AddRepsIdsWithTransferReceiveCodesAsync(db.form_13, repsIds, cancellationToken);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет discover-загрузчика для формы.");
+        }
     }
 
     private static async Task AddRepsIdsWithTransferReceiveCodesAsync<TForm>(
@@ -312,22 +353,31 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var ourRegNo = selectedReports.Master_DB.RegNoRep.Value?.Trim() ?? string.Empty;
         var ourShortName = selectedReports.Master_DB.ShortJurLicoRep.Value?.Trim() ?? string.Empty;
 
-        reportProgress?.Invoke(15, "загрузка операций 1.1 выбранной организации…");
-        var ourOps11 = await LoadForm11TransferReceiveForRepsAsync(
-            db, selectedReports.Id, ourOkpo, cancellationToken);
-        reportProgress?.Invoke(16, $"загружено операций 1.1: {ourOps11.Count}");
-
-        reportProgress?.Invoke(17, "загрузка операций 1.3 выбранной организации…");
-        var ourOps13 = await LoadForm13TransferReceiveForRepsAsync(
-            db, selectedReports.Id, ourOkpo, cancellationToken);
-        reportProgress?.Invoke(18, $"загружено операций 1.3: {ourOps13.Count}");
-
-        if (ourOps11.Count == 0 && ourOps13.Count == 0)
+        var enabledForms = pairingParams.EnabledForms;
+        if (enabledForms.Count == 0)
         {
             return null;
         }
 
-        void StampOurOrg(List<TransferReceiveDto> ops)
+        var ourOpsByForm = new Dictionary<TransferReceiveFormId, List<TransferReceiveDto>>();
+        var formIndex = 0;
+        foreach (var descriptor in enabledForms)
+        {
+            var pct = 15 + formIndex * 2;
+            reportProgress?.Invoke(pct, $"загрузка операций {descriptor.FormNum} выбранной организации…");
+            var ops = await LoadFormOpsForRepsAsync(
+                descriptor.Id, db, selectedReports.Id, ourOkpo, cancellationToken);
+            ourOpsByForm[descriptor.Id] = ops;
+            reportProgress?.Invoke(pct + 1, $"загружено операций {descriptor.FormNum}: {ops.Count}");
+            formIndex++;
+        }
+
+        if (ourOpsByForm.Values.All(ops => ops.Count == 0))
+        {
+            return null;
+        }
+
+        foreach (var ops in ourOpsByForm.Values)
         {
             foreach (var op in ops)
             {
@@ -337,11 +387,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             }
         }
 
-        StampOurOrg(ourOps11);
-        StampOurOrg(ourOps13);
-
-        var counterpartRawOkpos = ourOps11
-            .Concat(ourOps13)
+        var counterpartRawOkpos = ourOpsByForm.Values
+            .SelectMany(ops => ops)
             .Select(op => op.ProviderOrRecieverOkpo?.Trim() ?? string.Empty)
             .Where(okpo => okpo.Length > 0 && okpo != "-")
             .Distinct(StringComparer.Ordinal)
@@ -362,24 +409,29 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             33,
             $"найдено контрагентов: {counterpartRepsIds.Count} орг. (уникальных ОКПО: {counterpartRawOkpos.Count})");
 
-        var load11Progress = new ProgressReporter(reportProgress, percentMin: 34, percentMax: 39);
-        var counterpartOps11 = await LoadForm11TransferReceiveForRepsIdsAsync(
-            db, counterpartRepsIds, orgTitles, cancellationToken, load11Progress);
+        var counterpartOpsByForm = new Dictionary<TransferReceiveFormId, List<TransferReceiveDto>>();
+        var loadSpan = Math.Max(1, 10 / Math.Max(1, enabledForms.Count));
+        for (var i = 0; i < enabledForms.Count; i++)
+        {
+            var descriptor = enabledForms[i];
+            var percentMin = 34 + i * loadSpan;
+            var percentMax = Math.Min(44, percentMin + loadSpan);
+            var loadProgress = new ProgressReporter(reportProgress, percentMin, percentMax);
+            counterpartOpsByForm[descriptor.Id] = await LoadFormOpsForRepsIdsAsync(
+                descriptor.Id, db, counterpartRepsIds, orgTitles, cancellationToken, loadProgress);
+        }
 
-        var load13Progress = new ProgressReporter(reportProgress, percentMin: 39, percentMax: 44);
-        var counterpartOps13 = await LoadForm13TransferReceiveForRepsIdsAsync(
-            db, counterpartRepsIds, orgTitles, cancellationToken, load13Progress);
-
+        var counterpartSummary = string.Join(", ",
+            enabledForms.Select(d =>
+                $"{d.FormNum}={counterpartOpsByForm.GetValueOrDefault(d.Id)?.Count ?? 0}"));
         reportProgress?.Invoke(
             44,
-            $"загружено операций контрагентов: 1.1={counterpartOps11.Count}, 1.3={counterpartOps13.Count}, {counterpartRepsIds.Count} орг.");
+            $"загружено операций контрагентов: {counterpartSummary}, {counterpartRepsIds.Count} орг.");
 
         return BuildOrganizationExportFromLoaded(
             ourOkpo,
-            ourOps11,
-            ourOps13,
-            counterpartOps11,
-            counterpartOps13,
+            ourOpsByForm,
+            counterpartOpsByForm,
             repsIdsByOkpo,
             pairingParams,
             reportProgress);
@@ -387,75 +439,66 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
     /// <summary>
     /// Сопоставление + closest из уже загруженных DTO (org после точечной загрузки).
-    /// <paramref name="counterpartOrAllOps11"/> — операции контрагентов либо полный пул 1.1
+    /// <paramref name="counterpartOrAllOpsByForm"/> — операции контрагентов либо полный пул
     /// (включая «свои»; дубли по Id отфильтрует ядро).
     /// </summary>
     private OrganizationTransferReceiveExport? BuildOrganizationExportFromLoaded(
         string ourOkpo,
-        List<TransferReceiveDto> ourOps11,
-        List<TransferReceiveDto> ourOps13,
-        List<TransferReceiveDto> counterpartOrAllOps11,
-        List<TransferReceiveDto> counterpartOrAllOps13,
+        IReadOnlyDictionary<TransferReceiveFormId, List<TransferReceiveDto>> ourOpsByForm,
+        IReadOnlyDictionary<TransferReceiveFormId, List<TransferReceiveDto>> counterpartOrAllOpsByForm,
         IReadOnlyDictionary<string, List<int>> repsIdsByOkpo,
         TransferReceiveParamsSet pairingParams,
         Action<int, string>? reportProgress = null)
     {
         _currentParams = pairingParams;
         var ourOkpoNorm = NormalizeNumber(ourOkpo);
+        var enabledForms = pairingParams.EnabledForms;
+        var unpairedByForm = new Dictionary<TransferReceiveFormId, List<TransferReceiveDto>>();
+        _closestByForm = new Dictionary<TransferReceiveFormId, Dictionary<int, ClosestMatchResult>>();
 
-        var unpaired11 = new List<TransferReceiveDto>();
-        var unpaired13 = new List<TransferReceiveDto>();
-
-        if (ourOps11.Count > 0)
+        var formCount = Math.Max(1, enabledForms.Count);
+        for (var i = 0; i < enabledForms.Count; i++)
         {
-            var matchProgress = new ProgressReporter(reportProgress, percentMin: 45, percentMax: 50);
-            matchProgress.Status($"сопоставление формы 1.1: 0 из {ourOps11.Count} операций");
-            var (unpaired, opsByOrgOkpo) = AnalyzeForm11ForOrganization(
-                ourOps11, counterpartOrAllOps11, ourOkpoNorm, pairingParams.Form11, repsIdsByOkpo, matchProgress);
-            unpaired11 = unpaired;
+            var descriptor = enabledForms[i];
+            var formOptions = pairingParams.GetParams(descriptor.Id);
+            ourOpsByForm.TryGetValue(descriptor.Id, out var ourOps);
+            ourOps ??= [];
+            counterpartOrAllOpsByForm.TryGetValue(descriptor.Id, out var counterpartOps);
+            counterpartOps ??= [];
 
-            reportProgress?.Invoke(50, $"непарных операций 1.1: {unpaired11.Count} из {ourOps11.Count}");
+            var matchMin = 45 + (int)(20.0 * i / formCount);
+            var matchMax = 45 + (int)(20.0 * (i + 0.5) / formCount);
+            var closestMax = 45 + (int)(20.0 * (i + 1) / formCount);
 
-            var closestProgress = new ProgressReporter(reportProgress, percentMin: 50, percentMax: 55);
-            closestProgress.Status($"поиск ближайших совпадений 1.1: 0 из {unpaired11.Count}");
-            _form11ClosestMatches = BuildClosestMatchResults(
-                unpaired11, opsByOrgOkpo, pairingParams.Form11, closestProgress);
-        }
-        else
-        {
-            _form11ClosestMatches = new Dictionary<int, ClosestMatchResult>();
-        }
+            if (ourOps.Count == 0)
+            {
+                unpairedByForm[descriptor.Id] = [];
+                _closestByForm[descriptor.Id] = new Dictionary<int, ClosestMatchResult>();
+                continue;
+            }
 
-        if (ourOps13.Count > 0)
-        {
-            var matchProgress = new ProgressReporter(reportProgress, percentMin: 55, percentMax: 62);
-            matchProgress.Status($"сопоставление формы 1.3: 0 из {ourOps13.Count} операций");
-            var (unpaired, opsByOrgOkpo) = AnalyzeForm11ForOrganization(
-                ourOps13, counterpartOrAllOps13, ourOkpoNorm, pairingParams.Form13, repsIdsByOkpo, matchProgress);
-            unpaired13 = unpaired;
+            var matchProgress = new ProgressReporter(reportProgress, matchMin, matchMax);
+            matchProgress.Status($"сопоставление формы {descriptor.FormNum}: 0 из {ourOps.Count} операций");
+            var (unpaired, opsByOrgOkpo) = AnalyzeFormForOrganization(
+                ourOps, counterpartOps, ourOkpoNorm, formOptions, repsIdsByOkpo, matchProgress);
+            unpairedByForm[descriptor.Id] = unpaired;
 
-            reportProgress?.Invoke(62, $"непарных операций 1.3: {unpaired13.Count} из {ourOps13.Count}");
+            reportProgress?.Invoke(matchMax,
+                $"непарных операций {descriptor.FormNum}: {unpaired.Count} из {ourOps.Count}");
 
-            var closestProgress = new ProgressReporter(reportProgress, percentMin: 62, percentMax: 68);
-            closestProgress.Status($"поиск ближайших совпадений 1.3: 0 из {unpaired13.Count}");
-            _form13ClosestMatches = BuildClosestMatchResults(
-                unpaired13, opsByOrgOkpo, pairingParams.Form13, closestProgress);
-        }
-        else
-        {
-            _form13ClosestMatches = new Dictionary<int, ClosestMatchResult>();
+            var closestProgress = new ProgressReporter(reportProgress, matchMax, closestMax);
+            closestProgress.Status(
+                $"поиск ближайших совпадений {descriptor.FormNum}: 0 из {unpaired.Count}");
+            _closestByForm[descriptor.Id] = BuildClosestMatchResults(
+                unpaired, opsByOrgOkpo, formOptions, closestProgress);
         }
 
-        if (unpaired11.Count == 0 && unpaired13.Count == 0)
+        if (unpairedByForm.Values.All(list => list.Count == 0))
         {
             return null;
         }
 
-        return new OrganizationTransferReceiveExport
-        {
-            UnpairedForm11 = unpaired11,
-            UnpairedForm13 = unpaired13
-        };
+        return new OrganizationTransferReceiveExport { UnpairedByForm = unpairedByForm };
     }
 
     /// <summary>
@@ -463,67 +506,60 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     /// </summary>
     private OrganizationTransferReceiveExport? BuildOrganizationExportFromSharedPools(
         string ourOkpo,
-        List<TransferReceiveDto> ourOps11,
-        List<TransferReceiveDto> ourOps13,
-        IReadOnlyDictionary<string, List<TransferReceiveDto>> sharedPool11,
-        IReadOnlyDictionary<string, List<TransferReceiveDto>> sharedPool13,
+        IReadOnlyDictionary<TransferReceiveFormId, List<TransferReceiveDto>> ourOpsByForm,
+        IReadOnlyDictionary<TransferReceiveFormId, Dictionary<string, List<TransferReceiveDto>>> sharedPools,
         TransferReceiveParamsSet pairingParams,
         Action<int, string>? reportProgress = null)
     {
         _currentParams = pairingParams;
         var ourOkpoNorm = NormalizeNumber(ourOkpo);
+        var enabledForms = pairingParams.EnabledForms;
+        var unpairedByForm = new Dictionary<TransferReceiveFormId, List<TransferReceiveDto>>();
+        _closestByForm = new Dictionary<TransferReceiveFormId, Dictionary<int, ClosestMatchResult>>();
 
-        var unpaired11 = new List<TransferReceiveDto>();
-        var unpaired13 = new List<TransferReceiveDto>();
-
-        if (ourOps11.Count > 0)
+        var formCount = Math.Max(1, enabledForms.Count);
+        for (var i = 0; i < enabledForms.Count; i++)
         {
-            var matchProgress = new ProgressReporter(reportProgress, percentMin: 45, percentMax: 50);
-            matchProgress.Status($"сопоставление формы 1.1: 0 из {ourOps11.Count} операций");
-            unpaired11 = ComputeUnpairedForm11(
-                ourOps11, sharedPool11, ourOkpoNorm, pairingParams.Form11, matchProgress);
+            var descriptor = enabledForms[i];
+            var formOptions = pairingParams.GetParams(descriptor.Id);
+            ourOpsByForm.TryGetValue(descriptor.Id, out var ourOps);
+            ourOps ??= [];
+            sharedPools.TryGetValue(descriptor.Id, out var sharedPool);
+            sharedPool ??= new Dictionary<string, List<TransferReceiveDto>>(StringComparer.Ordinal);
 
-            reportProgress?.Invoke(50, $"непарных операций 1.1: {unpaired11.Count} из {ourOps11.Count}");
+            var matchMin = 45 + (int)(20.0 * i / formCount);
+            var matchMax = 45 + (int)(20.0 * (i + 0.5) / formCount);
+            var closestMax = 45 + (int)(20.0 * (i + 1) / formCount);
 
-            var closestProgress = new ProgressReporter(reportProgress, percentMin: 50, percentMax: 55);
-            closestProgress.Status($"поиск ближайших совпадений 1.1: 0 из {unpaired11.Count}");
-            _form11ClosestMatches = BuildClosestMatchResults(
-                unpaired11, sharedPool11, pairingParams.Form11, closestProgress);
-        }
-        else
-        {
-            _form11ClosestMatches = new Dictionary<int, ClosestMatchResult>();
-        }
+            if (ourOps.Count == 0)
+            {
+                unpairedByForm[descriptor.Id] = [];
+                _closestByForm[descriptor.Id] = new Dictionary<int, ClosestMatchResult>();
+                continue;
+            }
 
-        if (ourOps13.Count > 0)
-        {
-            var matchProgress = new ProgressReporter(reportProgress, percentMin: 55, percentMax: 62);
-            matchProgress.Status($"сопоставление формы 1.3: 0 из {ourOps13.Count} операций");
-            unpaired13 = ComputeUnpairedForm11(
-                ourOps13, sharedPool13, ourOkpoNorm, pairingParams.Form13, matchProgress);
+            var matchProgress = new ProgressReporter(reportProgress, matchMin, matchMax);
+            matchProgress.Status($"сопоставление формы {descriptor.FormNum}: 0 из {ourOps.Count} операций");
+            var unpaired = ComputeUnpairedOperations(
+                ourOps, sharedPool, ourOkpoNorm, formOptions, matchProgress);
+            unpairedByForm[descriptor.Id] = unpaired;
 
-            reportProgress?.Invoke(62, $"непарных операций 1.3: {unpaired13.Count} из {ourOps13.Count}");
+            reportProgress?.Invoke(matchMax,
+                $"непарных операций {descriptor.FormNum}: {unpaired.Count} из {ourOps.Count}");
 
-            var closestProgress = new ProgressReporter(reportProgress, percentMin: 62, percentMax: 68);
-            closestProgress.Status($"поиск ближайших совпадений 1.3: 0 из {unpaired13.Count}");
-            _form13ClosestMatches = BuildClosestMatchResults(
-                unpaired13, sharedPool13, pairingParams.Form13, closestProgress);
-        }
-        else
-        {
-            _form13ClosestMatches = new Dictionary<int, ClosestMatchResult>();
+            var closestProgress = new ProgressReporter(reportProgress, matchMax, closestMax);
+            closestProgress.Status(
+                $"поиск ближайших совпадений {descriptor.FormNum}: 0 из {unpaired.Count}");
+            _closestByForm[descriptor.Id] = BuildClosestMatchResults(
+                unpaired, sharedPool, formOptions, closestProgress);
         }
 
-        if (unpaired11.Count == 0 && unpaired13.Count == 0)
+        if (unpairedByForm.Values.All(list => list.Count == 0))
         {
             return null;
         }
 
-        return new OrganizationTransferReceiveExport
-        {
-            UnpairedForm11 = unpaired11,
-            UnpairedForm13 = unpaired13
-        };
+        return new OrganizationTransferReceiveExport { UnpairedByForm = unpairedByForm };
     }
 
     #endregion
@@ -536,18 +572,29 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     /// <paramref name="counterpartOps"/> (точечная загрузка vs bulk).
     /// </summary>
     private static (List<TransferReceiveDto> Unpaired, Dictionary<string, List<TransferReceiveDto>> OpsByOrgOkpo)
-        AnalyzeForm11ForOrganization(
+        AnalyzeFormForOrganization(
             List<TransferReceiveDto> ourOps,
             List<TransferReceiveDto> counterpartOps,
             string ourOkpoNorm,
-            TransferReceive11Params options,
+            TransferReceiveFormParams options,
             IReadOnlyDictionary<string, List<int>>? repsIdsByNormOkpo = null,
             ProgressReporter? progress = null)
     {
         var opsByOrgOkpo = BuildOpsPoolByOrgOkpo(ourOps, counterpartOps, repsIdsByNormOkpo);
-        var unpaired = ComputeUnpairedForm11(ourOps, opsByOrgOkpo, ourOkpoNorm, options, progress);
+        var unpaired = ComputeUnpairedOperations(ourOps, opsByOrgOkpo, ourOkpoNorm, options, progress);
         return (unpaired, opsByOrgOkpo);
     }
+
+    /// <summary>Алиас для тестов / старых вызовов.</summary>
+    private static (List<TransferReceiveDto> Unpaired, Dictionary<string, List<TransferReceiveDto>> OpsByOrgOkpo)
+        AnalyzeForm11ForOrganization(
+            List<TransferReceiveDto> ourOps,
+            List<TransferReceiveDto> counterpartOps,
+            string ourOkpoNorm,
+            TransferReceiveFormParams options,
+            IReadOnlyDictionary<string, List<int>>? repsIdsByNormOkpo = null,
+            ProgressReporter? progress = null) =>
+        AnalyzeFormForOrganization(ourOps, counterpartOps, ourOkpoNorm, options, repsIdsByNormOkpo, progress);
 
     /// <summary>
     /// Пул операций по нормализованному ОКПО.
@@ -621,11 +668,11 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         return result;
     }
 
-    private static List<TransferReceiveDto> ComputeUnpairedForm11(
+    private static List<TransferReceiveDto> ComputeUnpairedOperations(
         List<TransferReceiveDto> ourOps,
         IReadOnlyDictionary<string, List<TransferReceiveDto>> opsByOrgOkpo,
         string ourOkpoNorm,
-        TransferReceive11Params options,
+        TransferReceiveFormParams options,
         ProgressReporter? progress = null)
     {
         var usedCandidateIds = new HashSet<int>();
@@ -663,6 +710,15 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             .ToList();
     }
 
+    /// <summary>Алиас для тестов / старых вызовов.</summary>
+    private static List<TransferReceiveDto> ComputeUnpairedForm11(
+        List<TransferReceiveDto> ourOps,
+        IReadOnlyDictionary<string, List<TransferReceiveDto>> opsByOrgOkpo,
+        string ourOkpoNorm,
+        TransferReceiveFormParams options,
+        ProgressReporter? progress = null) =>
+        ComputeUnpairedOperations(ourOps, opsByOrgOkpo, ourOkpoNorm, options, progress);
+
     private static void MatchSide(
         List<TransferReceiveDto> sources,
         bool isSourceTransfer,
@@ -670,7 +726,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         HashSet<int> usedCandidateIds,
         HashSet<int> pairedOurIds,
         string ourOkpoNorm,
-        TransferReceive11Params options,
+        TransferReceiveFormParams options,
         Action? onSourceDone = null)
     {
         var withSerial = sources.Where(op => !SerialNumbersAreEmpty(op)).ToList();
@@ -687,7 +743,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         HashSet<int> usedCandidateIds,
         HashSet<int> pairedOurIds,
         string ourOkpoNorm,
-        TransferReceive11Params options,
+        TransferReceiveFormParams options,
         Action? onSourceDone = null)
     {
         foreach (var source in sources)
@@ -744,7 +800,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         HashSet<int> usedCandidateIds,
         HashSet<int> pairedOurIds,
         string ourOkpoNorm,
-        TransferReceive11Params options,
+        TransferReceiveFormParams options,
         Action? onSourceDone = null)
     {
         var remainingByCandidateId = new Dictionary<int, RemainingRowState>();

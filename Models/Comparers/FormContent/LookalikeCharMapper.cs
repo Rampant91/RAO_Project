@@ -4,7 +4,10 @@ namespace Models.Comparers.FormContent;
 
 public static class LookalikeCharMapper
 {
-    public static string ReplaceRuEnLookalikes(string? value, bool includeExtendedSnkSet = false)
+    public static string ReplaceRuEnLookalikes(
+        string? value,
+        bool includeExtendedSnkSet = false,
+        bool mapDigitZeroToO = true)
     {
         if (string.IsNullOrEmpty(value))
         {
@@ -28,7 +31,7 @@ public static class LookalikeCharMapper
                 'м' => 'm',
                 'н' => 'h',
                 'о' => 'o',
-                '0' => 'o',
+                '0' when mapDigitZeroToO => 'o',
                 'р' => 'p',
                 'с' => 'c',
                 'т' => 't',

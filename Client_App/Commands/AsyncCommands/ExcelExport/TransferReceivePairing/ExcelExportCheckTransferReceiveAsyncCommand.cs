@@ -36,7 +36,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
     /// Меньше лимита Firebird IN — чтобы прогрессбар двигался; 50 — компромисс скорость/плавность.
     /// Whole-DB bulk грузит формы целиком (один scan), без этого чанка.
     /// </summary>
-    private const int CounterpartOpsLoadChunkSize = 50;
+    private const int CounterpartOpsLoadChunkSize = 20;
 
     private static readonly HashSet<string> TransferCodesForm11To14 = new(StringComparer.Ordinal)
     {
@@ -88,6 +88,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
         var pairingParams = await AskTransferReceiveParamsAsync();
         if (pairingParams is null)
         {
+            return;
+        }
+
+        if (!pairingParams.AnyFormEnabled)
+        {
+            await ShowNoFormsSelectedMessage();
             return;
         }
 
@@ -151,7 +157,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
             return null;
         }
 
-        var form11 = new TransferReceive11Params(
+        var form11 = new TransferReceiveFormParams(
             dialog.Vm.CheckOperationCode,
             dialog.Vm.CheckOperationDate,
             dialog.Vm.CheckPassportNumber,
@@ -165,7 +171,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
             dialog.Vm.CheckProviderOrRecieverOkpo,
             dialog.Vm.CheckPackNumber);
 
-        var form13 = new TransferReceive11Params(
+        var form13 = new TransferReceiveFormParams(
             CheckOperationCode: dialog.Vm.CheckOperationCode13,
             CheckOperationDate: dialog.Vm.CheckOperationDate13,
             CheckPassportNumber: dialog.Vm.CheckPassportNumber13,
@@ -182,34 +188,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
 
         return new TransferReceiveParamsSet(form11, form13);
     }
-
-    /// <summary>Параметры сверки одной формы (1.1 или 1.3).</summary>
-    public sealed record TransferReceive11Params(
-        bool CheckOperationCode = true,
-        bool CheckOperationDate = true,
-        bool CheckPassportNumber = true,
-        bool CheckType = true,
-        bool CheckRadionuclids = true,
-        bool CheckFactoryNumber = true,
-        bool CheckQuantity = true,
-        bool CheckActivity = true,
-        bool CheckCreatorOkpo = true,
-        bool CheckCreationDate = true,
-        bool CheckProviderOrRecieverOkpo = true,
-        bool CheckPackNumber = true,
-        bool CheckAggregateState = false);
-
-    /// <summary>Набор параметров диалога: отдельно для форм 1.1 и 1.3.</summary>
-    public sealed record TransferReceiveParamsSet(
-        TransferReceive11Params Form11,
-        TransferReceive11Params Form13);
-
-    /// <summary>
-    /// Параметры формы 1.3 по умолчанию: количество не сравнивается (всегда 1),
-    /// агрегатное состояние включено.
-    /// </summary>
-    public static TransferReceive11Params DefaultForm13Params() =>
-        new(CheckQuantity: false, CheckAggregateState: true);
 
     #endregion
 
@@ -361,6 +339,23 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
             .Show(progressBar ?? Desktop.MainWindow));
+    }
+
+    private static async Task ShowNoFormsSelectedMessage()
+    {
+        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            {
+                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ContentTitle = "Проверка приёма-передачи",
+                ContentHeader = "Уведомление",
+                ContentMessage =
+                    "Не выбрано ни одного поля для форм 1.1 и 1.3. Отметьте параметры хотя бы для одной формы — иначе проверку выполнять нечего.",
+                MinWidth = 420,
+                MinHeight = 160,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            })
+            .Show(Desktop.MainWindow));
     }
 
     private static async Task CleanupAndClose(AnyTaskProgressBar progressBar, string tmpDbPath)

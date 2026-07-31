@@ -45,13 +45,18 @@ internal static partial class TransferReceiveTestCases
             .Concat(ParamsCases())
             .Concat(OkpoCases())
             .Concat(ClosestMatchCases())
+            .Concat(SoftClosestCases())
             .Concat(Form13Cases())
             .Select(testCase => new object[] { testCase.Name, testCase });
 
     public static IEnumerable<object[]> ClosestMatchOnly() =>
         ClosestMatchCases()
+            .Concat(SoftClosestCases())
             .Concat(Form13ClosestMatchCases())
-            .Where(testCase => testCase.ExpectedClosest is not null)
+            .Where(testCase => testCase.ExpectedClosest is not null
+                               || testCase.ExpectedClosestLevels is not null
+                               || testCase.ExpectedClosestCandidateIds is not null
+                               || testCase.ExpectedConfidenceMinPercent is not null)
             .Select(testCase => new object[] { testCase.Name, testCase });
 
     /// <summary>Передача 1.1 (код 21 по умолчанию) от нашей org к контрагенту.</summary>

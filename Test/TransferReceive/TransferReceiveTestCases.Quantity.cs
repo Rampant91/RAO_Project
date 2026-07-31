@@ -63,7 +63,7 @@ internal static partial class TransferReceiveTestCases
     {
         Name = "Q04. CheckQuantity=false при qty 8↔5 — пара.",
         OurOkpo = DefaultOurOkpo,
-        Params = new TransferReceive11Params(CheckQuantity: false),
+        Params = new TransferReceiveFormParams(CheckQuantity: false),
         OurOps = [EmptySerialTransfer(1, 8)],
         CounterpartOps = [EmptySerialReceive(101, 5)],
         ExpectedUnpairedIds = []

@@ -15,6 +15,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     #region Workbook structure
 
     private static readonly Color PairingFieldMatchFill = Color.FromArgb(198, 239, 206);
+    private static readonly Color PairingFieldNearFill = Color.FromArgb(255, 243, 160);
     private static readonly Color PairingFieldMismatchFill = Color.FromArgb(255, 205, 210);
     private static readonly Color PairingLegendTitleFill = Color.FromArgb(33, 78, 128);
     private static readonly Color PairingLegendSectionFill = Color.FromArgb(217, 226, 243);
@@ -25,8 +26,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
     private const int SourceColCount = 18;
     private const int SeparatorCol = 19;
-    private const int ClosestStartCol = 20;
-    private const int TotalColCount = 37;
+    /// <summary>Индекс схожести closest (0–100%), между разделителем и блоком полей.</summary>
+    private const int ConfidenceCol = 20;
+    private const int ClosestStartCol = 21;
+    private const int TotalColCount = 38;
     private const int HeaderRows = 2;
     private const int DataStartRow = 3;
 
@@ -131,44 +134,55 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Blank();
 
         Section("Структура листов «Форма 1.1» и «Форма 1.3»");
-        Body("Слева — непарная операция выбранной организации. Справа после тёмной разделительной колонки (жёлтый заголовок «Ближайшее совпадение у контрагента») — наиболее похожая операция у контрагента. Формы сверяются только сами с собой (1.1↔1.1, 1.3↔1.3).");
+        Body("Слева — непарная операция выбранной организации. Справа после тёмной разделительной колонки — наиболее похожая операция у контрагента (жёлтый заголовок «Ближайшее совпадение у контрагента»). Формы сверяются только сами с собой (1.1 с 1.1, 1.3 с 1.3).");
         Bullet("Голубой заголовок слева — исходная (непарная) операция.");
-        Bullet("Жёлтый заголовок справа — ближайшее совпадение.");
+        Bullet("Жёлтый заголовок справа — наиболее похожая операция у контрагента.");
+        Bullet("Если в параметрах у формы сняты все поля («Выбрать все» = выкл.) — форма не загружается, не сопоставляется и не заполняется в Excel.");
         Bullet("Форма 1.3: вместо количества — агрегатное состояние (1/2/3); количество всегда считается равным 1.");
         Blank();
 
         Section("Что такое «ближайшее совпадение»");
         Body("«Ближайшее совпадение» — это не найденная пара (иначе строка не попала бы в отчёт), а подсказка: какая операция у контрагента больше всего похожа на непарную строку.");
-        Bullet("Программа сравнивает непарную строку с операциями контрагента противоположной стороны (передача↔приём) в окне ±15 дней по дате операции.");
-        Bullet("Для каждого кандидата считается, сколько включённых полей совпало (галочки в окне параметров перед выгрузкой).");
-        Bullet("В правый блок попадает кандидат с наибольшим числом совпавших полей. Зелёные и красные ячейки показывают, что совпало, а что нет (одинаковая подсветка слева и справа).");
-        Body("Частый случай — у контрагента нет парной операции: справа окажется наиболее похожая из имеющихся («чужая» строка). Красные ячейки тогда могут указывать на ложные расхождения: проблема в отсутствии пары, а не в опечатках.");
-        Body("Другой случай — настоящая парная строка есть, но в ней много ошибок, а рядом лежит почти идентичная «похожая чужая» (например, отличается один символ в заводском номере). Программа выберет её, потому что совпавших полей больше; подсветка снова может вводить в заблуждение.");
-        BoldBody("Важно: зелёная и красная подсветка — это предположение программы о возможных расхождениях с наиболее похожей строкой, а не точный диагноз с гарантией 100%. Сначала убедитесь, что справа ожидаемая парная операция контрагента (а не пропуск ввода и не «похожая чужая» строка); только после этого ориентируйтесь на красные ячейки.");
+        Bullet("Программа ищет среди операций контрагента противоположной стороны (передача и приём) с датой операции в пределах ±15 дней.");
+        Bullet("Насколько строки похожи, оценивается по выбранным в параметрах полям. Важнее всего паспорт и заводской номер; код операции влияет слабее.");
+        Bullet("Учитываются обычные различия в записи: опечатка в одном знаке, похожие на вид символы (например, 0 и буква О, цифра 3 и буква З), разные написания одного и того же номера или типа, варианты УКТ и т.п.");
+        Bullet("Справа показывается самая похожая строка. Цвета ячеек: зелёный — совпало, жёлтый — небольшое отличие, красный — сильное отличие.");
+        Bullet("Колонка «Схожесть, %» показывает, насколько правая строка близка к левой (от 0 до 100). Это ориентир для чтения отчёта, а не точная вероятность.");
+        Body("Частый случай — у контрагента нет парной операции: справа окажется просто наиболее похожая из имеющихся («чужая» строка). Цвета тогда могут вводить в заблуждение: дело в отсутствии пары, а не в опечатках.");
+        BoldBody("Важно: цвета и % — предположение программы о возможных расхождениях с наиболее похожей строкой, а не окончательный вывод. Сначала убедитесь, что справа ожидаемая парная операция контрагента; только после этого ориентируйтесь на цвета и %.");
         Blank();
 
-        Section("Цвета ячеек");
-        ColorRow(PairingFieldMatchFill, "Зелёный", "Поле совпало с ближайшим совпадением (если справа действительно ожидаемая пара). Код — по таблице парности; дата — только точное совпадение; активность — ±10%; агрегатное состояние — точное совпадение.");
-        ColorRow(PairingFieldMismatchFill, "Красный", "Поле не совпало с ближайшим совпадением. Подсказка, где смотреть — но только если справа подходящая строка, а не случайный похожий кандидат.");
-        Body("Без заливки — сравнение по полю не выполнялось. Так бывает, если ближайшего совпадения нет (пустой ОКПО, нет контрагента, нет операций противоположной стороны, нет кандидатов в окне ±15 дней) либо галочка поля снята в параметрах.");
+        Section("Цвета ячеек полей");
+        ColorRow(PairingFieldMatchFill, "Зелёный", "Поле совпало (с учётом обычной нормализации записи). Для кода операции — парные коды приёма и передачи; для активности — в допуске ±10%.");
+        ColorRow(PairingFieldNearFill, "Жёлтый", "Небольшое отличие: опечатка в одном знаке, дата в пределах ±15 дней, непарный код приёма/передачи, похожие на вид символы, разные написания одного номера или типа, оба пустых паспорта/заводского номера и т.п.");
+        ColorRow(PairingFieldMismatchFill, "Красный", "Сильное отличие: разные основные части номера, нет общего радионуклида в списке, несколько опечаток подряд, сильно разные ОКПО и т.п. (если справа подходящая строка, а не случайная похожая).");
+        Body("Без заливки — по этому полю сравнение не делалось (нет правой строки, поле снято в параметрах или нечего сравнивать).");
+        Blank();
+
+        Section("Схожесть, %");
+        ColorRow(PairingFieldMatchFill, "≥ 80%", "Строки очень похожи.");
+        ColorRow(PairingFieldNearFill, "50–79%", "Средняя похожесть — смотрите жёлтые и красные поля.");
+        ColorRow(PairingFieldMismatchFill, "< 50%", "Слабая похожесть — справа может быть «чужая» строка или данные сильно различаются.");
+        Body("Чем важнее поле и чем оно ближе, тем выше %. Если паспорт и заводской номер совпали полностью (и не пустые), схожесть дополнительно повышается.");
         Blank();
 
         Section("Пустые паспорт и заводской номер");
-        Body("Если паспорт и заводской номер пустые (или заглушки вроде «-», «б.н.»), несколько строк могут описывать одну партию: сравнивается суммарное количество при совпадении остальных ключевых полей, включая номер упаковки.");
-        Bullet("В подсветке «ближайшего совпадения» количество сравнивается построчно (одинаковые числа — зелёные). Красное количество значит, что у этой пары строк числа разные (например 8 и 5), а не «всегда ошибка» для безсерийных.");
+        Body("Если паспорт и заводской номер пустые (или вместо них стоят «-», «б.н.» и т.п.), несколько строк могут относиться к одной партии: при поиске пары сравнивается суммарное количество. В правой части отчёта оба пустых номера дают жёлтый цвет, а «пусто напротив заполненного» — красный.");
+        Bullet("Количество в правой части сравнивается по каждой строке отдельно (одинаковые числа — зелёные).");
         Blank();
 
         Section("Параметры сравнения");
         Body("Перед выгрузкой выбираются поля сопоставления отдельно для форм 1.1 и 1.3. Рег.№, ОКПО организации, наименование, период и № п/п всегда только для наглядности и в сравнении не участвуют.");
-        Bullet("Активность: допуск ±10%.");
-        Bullet("Дата операции: для признания пары и зелёной подсветки нужно точное совпадение. Окно ±15 дней только сужает поиск кандидатов (ускорение), кандидаты вне окна не рассматриваются.");
-        Bullet("Код операции: для пары нужны коды из таблицы 21↔31, 22↔32 и т.д. (на формах 1.1/1.3; пара 26↔36 относится к формам 1.5–1.8).");
-        Bullet("Агрегатное состояние (форма 1.3): точное совпадение значений 1/2/3.");
+        Bullet("Активность: допуск ±10% для пары и зелёной подсветки; отличие примерно на порядок обычно жёлтое.");
+        Bullet("Дата операции: для пары нужна одна и та же дата. Окно ±15 дней только ограничивает поиск похожих строк; отличие в несколько дней справа — жёлтый.");
+        Bullet("Код операции: для пары нужны соответствующие коды приёма и передачи (например, 21 и 31). Непарный код из того же набора справа — жёлтый.");
+        Bullet("Радионуклиды: порядок в списке не важен; если нуклида нет у одной из сторон — красный.");
+        Bullet("Агрегатное состояние (форма 1.3): значения 1, 2 или 3 должны совпасть.");
         Blank();
 
         Section("Краткий порядок работы");
-        Bullet("Сначала проверьте, что справа — ожидаемая парная операция контрагента, а не просто похожая чужая строка.");
-        Bullet("Если справа подходящий кандидат — смотрите красные ячейки как подсказку по расхождениям.");
+        Bullet("Сначала проверьте, что справа — ожидаемая парная операция контрагента, а не просто похожая чужая строка (смотрите % и ключевые поля).");
+        Bullet("Если справа подходящая строка — смотрите жёлтые и красные ячейки как подсказку, чем записи отличаются.");
         Bullet("Если парной операции нет — ищите пропущенный ввод у контрагента, а не правьте данные только по цветам.");
         Bullet("Проверьте ОКПО контрагента (кол. 19) и код операции.");
 
@@ -223,27 +237,39 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         string? orgLabel = null)
     {
         var halfSpan = Math.Max(0, percentSpan / 2);
+        var enabledForms = _currentParams?.EnabledForms ?? ImplementedFormDescriptors;
+        var sheetSpan = enabledForms.Count == 0
+            ? percentSpan
+            : Math.Max(1, percentSpan / enabledForms.Count);
 
         string Stage(string sheetStage) =>
             FormatOrgExcelStage(orgIndex, orgCount, sheetStage, orgLabel);
 
-        if (progressBarVM is not null && percentSpan > 0)
+        for (var i = 0; i < enabledForms.Count; i++)
         {
-            progressBarVM.SetProgressBar(percentBase, Stage("заполнение листа «Форма 1.1»"));
+            var descriptor = enabledForms[i];
+            var unpaired = export.GetUnpaired(descriptor.Id);
+            if (unpaired.Count == 0)
+            {
+                continue;
+            }
+
+            var sheetBase = percentBase + i * sheetSpan;
+            if (progressBarVM is not null && percentSpan > 0)
+            {
+                progressBarVM.SetProgressBar(sheetBase, Stage($"заполнение листа «{descriptor.SheetName}»"));
+            }
+
+            Worksheet = excelPackage.Workbook.Worksheets[descriptor.SheetName];
+            CurrentRow = GetNextDataRow(Worksheet);
+            WriteFormRowsFromDto(
+                descriptor,
+                unpaired,
+                progressBarVM,
+                sheetBase,
+                sheetSpan,
+                Stage);
         }
-
-        Worksheet = excelPackage.Workbook.Worksheets["Форма 1.1"];
-        CurrentRow = GetNextDataRow(Worksheet);
-        WriteForm11RowsFromDto(export.UnpairedForm11, progressBarVM, percentBase, halfSpan, Stage);
-
-        if (progressBarVM is not null && percentSpan > 0)
-        {
-            progressBarVM.SetProgressBar(percentBase + halfSpan, Stage("заполнение листа «Форма 1.3»"));
-        }
-
-        Worksheet = excelPackage.Workbook.Worksheets["Форма 1.3"];
-        CurrentRow = GetNextDataRow(Worksheet);
-        WriteForm13RowsFromDto(export.UnpairedForm13, progressBarVM, percentBase + halfSpan, percentSpan - halfSpan, Stage);
     }
 
     /// <summary>Следующая свободная строка данных на листе (после заголовков / уже записанных org).</summary>
@@ -253,8 +279,9 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         return lastRow < DataStartRow ? DataStartRow : lastRow + 1;
     }
 
-    private void WriteForm11RowsFromDto(
-        System.Collections.Generic.List<TransferReceiveDto> unpaired,
+    private void WriteFormRowsFromDto(
+        TransferReceiveFormDescriptor descriptor,
+        List<TransferReceiveDto> unpaired,
         AnyTaskProgressBarVM? progressBarVM,
         int percentBase,
         int percentSpan,
@@ -267,64 +294,40 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var progress = new ProgressReporter(report, percentBase, percentBase + Math.Max(0, percentSpan));
         var total = unpaired.Count;
         var done = 0;
-        progress.Report(0, total, formatStage($"заполнение листа «Форма 1.1»: 0 из {total}"));
+        progress.Report(0, total, formatStage($"заполнение листа «{descriptor.SheetName}»: 0 из {total}"));
 
-        foreach (var row in OrderForExport(unpaired))
+        if (!_closestByForm.TryGetValue(descriptor.Id, out var closestMatches))
         {
-            WriteOperationBlock(row, startCol: 1, applyHighlight: true, isSource: true,
-                closestMatches: _form11ClosestMatches, writeAggregateState: false);
-            Worksheet.Cells[CurrentRow, SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
-
-            if (_form11ClosestMatches.TryGetValue(row.Id, out var closest))
-            {
-                WriteOperationBlock(closest.Candidate, startCol: ClosestStartCol, applyHighlight: true, isSource: false,
-                    closestMatches: _form11ClosestMatches, writeAggregateState: false, closest: closest);
-            }
-
-            CurrentRow++;
-            done++;
-            progress.Report(done, total, formatStage($"заполнение листа «Форма 1.1»: {done} из {total}"));
+            closestMatches = new Dictionary<int, ClosestMatchResult>();
         }
-    }
-
-    private void WriteForm13RowsFromDto(
-        System.Collections.Generic.List<TransferReceiveDto> unpaired,
-        AnyTaskProgressBarVM? progressBarVM,
-        int percentBase,
-        int percentSpan,
-        Func<string, string>? formatStage = null)
-    {
-        formatStage ??= static s => s;
-        Action<int, string>? report = progressBarVM is null
-            ? null
-            : (percent, text) => progressBarVM.SetProgressBar(percent, text);
-        var progress = new ProgressReporter(report, percentBase, percentBase + Math.Max(0, percentSpan));
-        var total = unpaired.Count;
-        var done = 0;
-        progress.Report(0, total, formatStage($"заполнение листа «Форма 1.3»: 0 из {total}"));
 
         foreach (var row in OrderForExport(unpaired))
         {
             WriteOperationBlock(row, startCol: 1, applyHighlight: true, isSource: true,
-                closestMatches: _form13ClosestMatches, writeAggregateState: true);
+                closestMatches: closestMatches, writeAggregateState: descriptor.UsesAggregateStateColumn);
             Worksheet.Cells[CurrentRow, SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
 
-            if (_form13ClosestMatches.TryGetValue(row.Id, out var closest))
+            if (closestMatches.TryGetValue(row.Id, out var closest))
             {
+                WriteConfidenceCell(closest.ConfidencePercent);
                 WriteOperationBlock(closest.Candidate, startCol: ClosestStartCol, applyHighlight: true, isSource: false,
-                    closestMatches: _form13ClosestMatches, writeAggregateState: true, closest: closest);
+                    closestMatches: closestMatches,
+                    writeAggregateState: descriptor.UsesAggregateStateColumn,
+                    closest: closest);
             }
 
             CurrentRow++;
             done++;
-            progress.Report(done, total, formatStage($"заполнение листа «Форма 1.3»: {done} из {total}"));
+            progress.Report(done, total, formatStage($"заполнение листа «{descriptor.SheetName}»: {done} из {total}"));
         }
     }
 
     private static void FinalizeWorkbookTables(ExcelPackage excelPackage)
     {
-        FinalizeFormSheetTable(excelPackage.Workbook.Worksheets["Форма 1.1"]);
-        FinalizeFormSheetTable(excelPackage.Workbook.Worksheets["Форма 1.3"]);
+        foreach (var descriptor in ImplementedFormDescriptors)
+        {
+            FinalizeFormSheetTable(excelPackage.Workbook.Worksheets[descriptor.SheetName]);
+        }
     }
 
     private static void FinalizeFormSheetTable(ExcelWorksheet sheet)
@@ -392,6 +395,9 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         sheet.Column(SeparatorCol).Width = 2.5;
         sheet.Cells[1, SeparatorCol, 2, SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
 
+        sheet.Cells[1, ConfidenceCol].Value = string.Empty;
+        sheet.Cells[1, ConfidenceCol].Style.Fill.SetBackground(ClosestSectionFill, ExcelFillStyle.Solid);
+
         sheet.Cells[1, ClosestStartCol, 1, TotalColCount].Merge = true;
         sheet.Cells[1, ClosestStartCol].Value = "Ближайшее совпадение у контрагента";
         sheet.Cells[1, ClosestStartCol].Style.Font.Bold = true;
@@ -402,8 +408,13 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         WriteFieldHeaders(2, startCol: ClosestStartCol, quantityOrAggregateHeader);
 
         sheet.Cells[2, SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
+        sheet.Cells[2, ConfidenceCol].Value = "Схожесть, %";
+        sheet.Cells[2, ConfidenceCol].Style.Font.Bold = true;
+        sheet.Cells[2, ConfidenceCol].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        sheet.Cells[2, ConfidenceCol].Style.WrapText = true;
 
         ApplyForm11FieldHeaderStyle(sheet, 1, SourceColCount);
+        ApplyForm11FieldHeaderStyle(sheet, ConfidenceCol, ConfidenceCol);
         ApplyForm11FieldHeaderStyle(sheet, ClosestStartCol, TotalColCount);
 
         sheet.Columns[SeparatorCol].Style.Border.Left.Style = ExcelBorderStyle.Medium;
@@ -481,6 +492,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         }
 
         sheet.Column(SeparatorCol).Width = 2.5;
+        sheet.Column(ConfidenceCol).Width = ExcelWidthFromPixels(70);
     }
 
     private static double ExcelWidthFromPixels(int pixels) =>
@@ -519,6 +531,22 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     #endregion
 
     #region Write form rows
+
+    private void WriteConfidenceCell(int confidencePercent)
+    {
+        var cell = Worksheet.Cells[CurrentRow, ConfidenceCol];
+        cell.Value = confidencePercent;
+        cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        cell.Style.Font.Bold = true;
+        cell.Style.Fill.SetBackground(ConfidenceFill(confidencePercent), ExcelFillStyle.Solid);
+    }
+
+    private static Color ConfidenceFill(int percent) =>
+        percent >= 80
+            ? PairingFieldMatchFill
+            : percent >= 50
+                ? PairingFieldNearFill
+                : PairingFieldMismatchFill;
 
     private void WriteOperationBlock(
         TransferReceiveDto op,
@@ -576,16 +604,24 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             return;
         }
 
-        foreach (var (field, matches) in highlightSource.FieldMatches)
+        foreach (var (field, level) in highlightSource.FieldLevels)
         {
             if (GetComparableColumnOffset(field) is int offset)
             {
                 Worksheet.Cells[CurrentRow, startCol + offset].Style.Fill.SetBackground(
-                    matches ? PairingFieldMatchFill : PairingFieldMismatchFill,
+                    FillForMatchLevel(level),
                     ExcelFillStyle.Solid);
             }
         }
     }
+
+    private static Color FillForMatchLevel(FieldMatchLevel level) =>
+        level switch
+        {
+            FieldMatchLevel.Exact => PairingFieldMatchFill,
+            FieldMatchLevel.Near => PairingFieldNearFill,
+            _ => PairingFieldMismatchFill
+        };
 
     /// <summary>Смещение колонки сравниваемого поля внутри блока из 18 колонок (0-based index from start of block).</summary>
     private static int? GetComparableColumnOffset(TransferReceiveField field) =>

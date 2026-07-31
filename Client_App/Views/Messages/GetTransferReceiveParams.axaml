@@ -34,7 +34,7 @@
         <TextBlock Grid.Row="0"
                    Margin="0,0,0,10"
                    TextWrapping="Wrap"
-                   Text="Выберите поля для сопоставления операций приёма/передачи по формам 1.1 и 1.3. По умолчанию все включены. Формы сверяются только сами с собой. Для суммарной активности — допуск ±10%. Дата операции должна совпадать точно (отличие на 1 день — уже ошибка); окно ±15 дней только сужает поиск кандидатов. На форме 1.3 вместо количества сравнивается агрегатное состояние; количество всегда считается равным 1. Рег.№, ОКПО организации, наименование, период и № п/п в сравнении не участвуют."/>
+                   Text="Выберите поля для сопоставления операций приёма/передачи по формам 1.1 и 1.3. По умолчанию все включены. Формы сверяются только сами с собой. Если снять «Выбрать все параметры» у формы (или все её поля) — эта форма не загружается и не попадает в отчёт. Для суммарной активности — допуск ±10%. Дата операции должна совпадать точно (отличие на 1 день — уже ошибка); окно ±15 дней только сужает поиск кандидатов. На форме 1.3 вместо количества сравнивается агрегатное состояние; количество всегда считается равным 1. Рег.№, ОКПО организации, наименование, период и № п/п в сравнении не участвуют."/>
 
         <Border Grid.Row="1"
                 BorderBrush="Black"
@@ -48,7 +48,7 @@
                             <TextBlock Classes="sectionHeader" Text="Форма 1.1"/>
                             <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                                 <CheckBox Grid.Row="0" Grid.Column="0" IsThreeState="True" IsChecked="{Binding CheckAll, Mode=TwoWay}" Margin="0,0,8,0"/>
-                                <TextBlock Classes="selectAllCaption" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Text="Выбрать все параметры"/>
+                                <TextBlock Classes="selectAllCaption" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Text="Выбрать все параметры (выкл. = не проверять форму 1.1)"/>
                                 <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding CheckOperationCode, Mode=TwoWay}" Margin="0,2,8,2"/>
                                 <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Text="Код операции (парность 21↔31 и т.д.)"/>
                                 <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding CheckOperationDate, Mode=TwoWay}" Margin="0,2,8,2"/>
@@ -82,7 +82,7 @@
                             <TextBlock Classes="sectionHeader" Text="Форма 1.3"/>
                             <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                                 <CheckBox Grid.Row="0" Grid.Column="0" IsThreeState="True" IsChecked="{Binding CheckAll13, Mode=TwoWay}" Margin="0,0,8,0"/>
-                                <TextBlock Classes="selectAllCaption" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Text="Выбрать все параметры"/>
+                                <TextBlock Classes="selectAllCaption" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Text="Выбрать все параметры (выкл. = не проверять форму 1.3)"/>
                                 <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding CheckOperationCode13, Mode=TwoWay}" Margin="0,2,8,2"/>
                                 <TextBlock Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Text="Код операции (парность 21↔31 и т.д.)"/>
                                 <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding CheckOperationDate13, Mode=TwoWay}" Margin="0,2,8,2"/>

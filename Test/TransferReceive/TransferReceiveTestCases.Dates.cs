@@ -30,7 +30,7 @@ internal static partial class TransferReceiveTestCases
     /// </summary>
     private static TransferReceiveTestCase D02_OneDayDiff_InReport_ClosestRedDate() => new()
     {
-        Name = "D02. Дата +1 день — в отчёте; closest с красной датой.",
+        Name = "D02. Дата +1 день — в отчёте; closest с жёлтой датой (Near, не Exact).",
         OurOkpo = DefaultOurOkpo,
         OurOps = [RowTransfer(1, opDate: "2024-06-15")],
         CounterpartOps = [RowReceive(101, opDate: "2024-06-16")],
@@ -51,6 +51,13 @@ internal static partial class TransferReceiveTestCases
                 [TransferReceiveField.CreationDate] = true,
                 [TransferReceiveField.ProviderOrRecieverOkpo] = true,
                 [TransferReceiveField.PackNumber] = true
+            }
+        },
+        ExpectedClosestLevels = new Dictionary<int, IReadOnlyDictionary<TransferReceiveField, FieldMatchLevel>>
+        {
+            [1] = new Dictionary<TransferReceiveField, FieldMatchLevel>
+            {
+                [TransferReceiveField.OperationDate] = FieldMatchLevel.Near
             }
         }
     };

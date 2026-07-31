@@ -1,3 +1,4 @@
+using Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
 using Client_App.ViewModels.Messages;
 using Xunit;
 
@@ -57,5 +58,28 @@ public class TransferReceiveParamsVmTests
         Assert.True(vm.CheckOperationCode13);
         Assert.True(vm.CheckAggregateState13);
         Assert.True(vm.CheckAll13);
+    }
+
+    [Fact]
+    public void CheckAll_False_MeansFormDisabled()
+    {
+        var vm = new GetTransferReceiveParamsVM();
+        vm.CheckAll = false;
+        var form11 = new ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveFormParams(
+            vm.CheckOperationCode,
+            vm.CheckOperationDate,
+            vm.CheckPassportNumber,
+            vm.CheckType,
+            vm.CheckRadionuclids,
+            vm.CheckFactoryNumber,
+            vm.CheckQuantity,
+            vm.CheckActivity,
+            vm.CheckCreatorOkpo,
+            vm.CheckCreationDate,
+            vm.CheckProviderOrRecieverOkpo,
+            vm.CheckPackNumber);
+        Assert.False(ExcelExportCheckTransferReceiveAsyncCommand.IsFormCheckEnabled(form11));
+        Assert.True(ExcelExportCheckTransferReceiveAsyncCommand.IsFormCheckEnabled(
+            ExcelExportCheckTransferReceiveAsyncCommand.DefaultForm13Params()));
     }
 }

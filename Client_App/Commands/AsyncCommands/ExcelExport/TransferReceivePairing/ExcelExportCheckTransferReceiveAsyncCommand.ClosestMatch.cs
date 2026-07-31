@@ -8,21 +8,21 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 {
     #region Closest-match state
 
-    private Dictionary<int, ClosestMatchResult> _form11ClosestMatches = new();
-    private Dictionary<int, ClosestMatchResult> _form13ClosestMatches = new();
-    private TransferReceiveParamsSet _currentParams = new(new(), DefaultForm13Params());
+    private Dictionary<TransferReceiveFormId, Dictionary<int, ClosestMatchResult>> _closestByForm = new();
+    private TransferReceiveParamsSet _currentParams = new(new TransferReceiveFormParams(), DefaultForm13Params());
 
     #endregion
 
-    #region Closest form 1.1 / 1.3
+    #region Closest match
 
     /// <summary>
-    /// Для каждой непарной строки — ближайший кандидат у контрагента и карта совпадений полей.
+    /// Для каждой непарной строки — ближайший кандидат у контрагента:
+    /// взвешенный soft-score по полям (не число точных совпадений).
     /// </summary>
     private static Dictionary<int, ClosestMatchResult> BuildClosestMatchResults(
         List<TransferReceiveDto> unpaired,
         IReadOnlyDictionary<string, List<TransferReceiveDto>> opsByOrgOkpo,
-        TransferReceive11Params options,
+        TransferReceiveFormParams options,
         ProgressReporter? progress = null)
     {
         var fields = GetEnabledFields(options);
@@ -33,8 +33,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
         var result = new Dictionary<int, ClosestMatchResult>(unpaired.Count);
         var fieldCount = fields.Count;
-        var bestFlags = new bool[fieldCount];
-        var scratchFlags = new bool[fieldCount];
+        var bestLevels = new FieldMatchLevel[fieldCount];
+        var scratchLevels = new FieldMatchLevel[fieldCount];
         var total = unpaired.Count;
         var done = 0;
 
@@ -49,8 +49,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             }
 
             var sourceNorm = CreateNorm(source);
-            var bestScore = -1;
+            var bestScore = double.NegativeInfinity;
+            var bestMaxWeight = 0.0;
             TransferReceiveDto? bestCandidate = null;
+            var bestDateDelta = int.MaxValue;
 
             foreach (var candidate in candidates)
             {
@@ -59,7 +61,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                     continue;
                 }
 
-                // Дата операции — фильтр поиска (±N дней). Подсветка даты — только точное совпадение.
                 if (options.CheckOperationDate
                     && !DateWithinTolerance(source.OpDate, candidate.OpDate))
                 {
@@ -67,38 +68,64 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 }
 
                 var candidateNorm = CreateNorm(candidate);
-                var score = 0;
+                var weighted = 0.0;
+                var maxWeight = 0.0;
                 for (var i = 0; i < fieldCount; i++)
                 {
-                    var matched = FieldMatches(sourceNorm, candidateNorm, fields[i], source.OrgOkpo);
-                    scratchFlags[i] = matched;
-                    if (matched)
+                    var field = fields[i];
+                    var weight = GetFieldWeight(field, source);
+                    maxWeight += weight;
+                    var sim = FieldSimilarityOf(
+                        source, candidate, sourceNorm, candidateNorm, field, source.OrgOkpo);
+                    scratchLevels[i] = sim.Level;
+                    weighted += weight * sim.Score;
+                }
+
+                if (!SerialNumbersAreEmpty(source))
+                {
+                    var pasIdx = IndexOfField(fields, TransferReceiveField.PassportNumber);
+                    var facIdx = IndexOfField(fields, TransferReceiveField.FactoryNumber);
+                    if (pasIdx >= 0
+                        && facIdx >= 0
+                        && scratchLevels[pasIdx] == FieldMatchLevel.Exact
+                        && scratchLevels[facIdx] == FieldMatchLevel.Exact)
                     {
-                        score++;
+                        weighted += BothIdentifiersExactBonus;
+                        maxWeight += BothIdentifiersExactBonus;
                     }
                 }
 
-                if (score > bestScore)
+                var dateDelta = OperationDateDayDelta(source.OpDate, candidate.OpDate);
+                var better = weighted > bestScore + 1e-9
+                             || (Math.Abs(weighted - bestScore) <= 1e-9
+                                 && (dateDelta < bestDateDelta
+                                     || (dateDelta == bestDateDelta
+                                         && bestCandidate is not null
+                                         && candidate.Id < bestCandidate.Id)));
+
+                if (better)
                 {
-                    bestScore = score;
+                    bestScore = weighted;
+                    bestMaxWeight = maxWeight;
                     bestCandidate = candidate;
-                    Array.Copy(scratchFlags, bestFlags, fieldCount);
-                    if (bestScore == fieldCount)
-                    {
-                        break;
-                    }
+                    bestDateDelta = dateDelta;
+                    Array.Copy(scratchLevels, bestLevels, fieldCount);
                 }
             }
 
-            if (bestScore >= 0 && bestCandidate is not null)
+            if (bestCandidate is not null && bestMaxWeight > 0)
             {
-                var map = new Dictionary<TransferReceiveField, bool>(fieldCount);
+                var map = new Dictionary<TransferReceiveField, FieldMatchLevel>(fieldCount);
+                var exactMap = new Dictionary<TransferReceiveField, bool>(fieldCount);
                 for (var i = 0; i < fieldCount; i++)
                 {
-                    map[fields[i]] = bestFlags[i];
+                    map[fields[i]] = bestLevels[i];
+                    exactMap[fields[i]] = bestLevels[i] == FieldMatchLevel.Exact;
                 }
 
-                result[source.Id] = new ClosestMatchResult(bestCandidate, map);
+                var confidence = (int)Math.Round(100.0 * bestScore / bestMaxWeight);
+                confidence = Math.Clamp(confidence, 0, 100);
+                result[source.Id] = new ClosestMatchResult(bestCandidate, map, exactMap, confidence, bestScore);
             }
 
             done++;
@@ -108,56 +135,37 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         return result;
     }
 
-    private static bool FieldMatches(
-        TransferReceiveNorm left,
-        TransferReceiveNorm right,
-        TransferReceiveField field,
-        string sourceOrgOkpo) =>
-        field switch
+    private static int IndexOfField(List<TransferReceiveField> fields, TransferReceiveField field)
+    {
+        for (var i = 0; i < fields.Count; i++)
         {
-            TransferReceiveField.OperationCode => OpCodesArePaired(left.OpCode, right.OpCode),
-            TransferReceiveField.OperationDate => DatesEqualExact(left.OpDateRaw, right.OpDateRaw),
-            TransferReceiveField.PassportNumber => left.PasNum == right.PasNum,
-            TransferReceiveField.Type => left.Type == right.Type,
-            TransferReceiveField.Radionuclids => left.Radionuclids == right.Radionuclids,
-            TransferReceiveField.FactoryNumber => left.FacNum == right.FacNum,
-            TransferReceiveField.Quantity => QuantityMatchesForClosest(left, right),
-            TransferReceiveField.AggregateState => left.AggregateState == right.AggregateState,
-            TransferReceiveField.Activity => ActivityMatchesNorm(left.Activity, right.Activity),
-            TransferReceiveField.CreatorOkpo => left.CreatorOkpo == right.CreatorOkpo,
-            TransferReceiveField.CreationDate => left.CreationDate == right.CreationDate,
-            TransferReceiveField.PackNumber => left.PackNumber == right.PackNumber,
-            TransferReceiveField.ProviderOrRecieverOkpo =>
-                right.ProviderOrRecieverOkpo == NormalizeNumber(sourceOrgOkpo)
-                || right.ProviderOrRecieverOkpo == left.OrgOkpo,
-            _ => false
-        };
+            if (fields[i] == field)
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private static int OperationDateDayDelta(string? left, string? right)
+    {
+        if (DateOnly.TryParse(left, out var leftDate) && DateOnly.TryParse(right, out var rightDate))
+        {
+            return Math.Abs(leftDate.DayNumber - rightDate.DayNumber);
+        }
+
+        return int.MaxValue / 4;
+    }
 
     /// <summary>
     /// Closest: количество сравнивается построчно (как в Pairing41).
-    /// Для пустых серий парность считается по сумме qty, а подсветка — по числам в самой строке
-    /// (1↔1 зелёный, 8↔5 красный), иначе qty всегда казалось бы «несовпавшим».
+    /// Для пустых серий парность считается по сумме qty, а подсветка — по числам в самой строке.
     /// </summary>
     private static bool QuantityMatchesForClosest(TransferReceiveNorm left, TransferReceiveNorm right) =>
         left.Quantity == right.Quantity;
 
-    private static bool ActivityMatchesNorm(string left, string right)
-    {
-        if (!TryParseActivity(left, out var leftActivity) || !TryParseActivity(right, out var rightActivity))
-        {
-            return string.Equals(left, right, StringComparison.Ordinal);
-        }
-
-        var scale = Math.Max(Math.Abs(leftActivity), Math.Abs(rightActivity));
-        if (scale <= double.Epsilon)
-        {
-            return true;
-        }
-
-        return Math.Abs(leftActivity - rightActivity) <= scale * 0.10;
-    }
-
-    private static List<TransferReceiveField> GetEnabledFields(TransferReceive11Params options)
+    private static List<TransferReceiveField> GetEnabledFields(TransferReceiveFormParams options)
     {
         var fields = new List<TransferReceiveField>(13);
         if (options.CheckOperationCode) fields.Add(TransferReceiveField.OperationCode);
@@ -196,10 +204,21 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
     private sealed class ClosestMatchResult(
         TransferReceiveDto candidate,
-        IReadOnlyDictionary<TransferReceiveField, bool> fieldMatches)
+        IReadOnlyDictionary<TransferReceiveField, FieldMatchLevel> fieldLevels,
+        IReadOnlyDictionary<TransferReceiveField, bool> fieldMatches,
+        int confidencePercent,
+        double rawScore)
     {
         public TransferReceiveDto Candidate { get; } = candidate;
+        public IReadOnlyDictionary<TransferReceiveField, FieldMatchLevel> FieldLevels { get; } = fieldLevels;
+
+        /// <summary>Exact-only карта (зелёный) — для обратной совместимости тестов.</summary>
         public IReadOnlyDictionary<TransferReceiveField, bool> FieldMatches { get; } = fieldMatches;
+
+        /// <summary>Индекс схожести 0–100 (нормированный взвешенный soft-score).</summary>
+        public int ConfidencePercent { get; } = confidencePercent;
+
+        public double RawScore { get; } = rawScore;
     }
 
     public enum TransferReceiveField

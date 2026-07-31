@@ -16,13 +16,17 @@ public sealed class TransferReceiveExcelLayoutTests
     {
         Assert.Equal(18, TransferReceiveTestAccess.SourceColCountForTests);
         Assert.Equal(19, TransferReceiveTestAccess.SeparatorColForTests);
-        Assert.Equal(20, TransferReceiveTestAccess.ClosestStartColForTests);
-        Assert.Equal(37, TransferReceiveTestAccess.TotalColCountForTests);
+        Assert.Equal(20, TransferReceiveTestAccess.ConfidenceColForTests);
+        Assert.Equal(21, TransferReceiveTestAccess.ClosestStartColForTests);
+        Assert.Equal(38, TransferReceiveTestAccess.TotalColCountForTests);
         Assert.Equal(
             TransferReceiveTestAccess.SourceColCountForTests + 1,
             TransferReceiveTestAccess.SeparatorColForTests);
         Assert.Equal(
             TransferReceiveTestAccess.SeparatorColForTests + 1,
+            TransferReceiveTestAccess.ConfidenceColForTests);
+        Assert.Equal(
+            TransferReceiveTestAccess.ConfidenceColForTests + 1,
             TransferReceiveTestAccess.ClosestStartColForTests);
         Assert.Equal(
             TransferReceiveTestAccess.ClosestStartColForTests + TransferReceiveTestAccess.SourceColCountForTests - 1,
@@ -68,7 +72,13 @@ public sealed class TransferReceiveExcelLayoutTests
         Assert.Contains("ближайшее совпадение", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("предположение", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("похожая", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("построчно", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("1.5", text, StringComparison.Ordinal);
+        Assert.Contains("Схожесть", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("жёлт", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("зелён", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("важн", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("±15", text, StringComparison.Ordinal);
+        Assert.Contains("±10%", text, StringComparison.Ordinal);
+        Assert.DoesNotContain("closest", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("lookalike", text, StringComparison.OrdinalIgnoreCase);
     }
 }

@@ -79,7 +79,7 @@ internal static partial class TransferReceiveTestCases
     {
         Name = "F13_Agg02. CheckAggregateState=false при разном состоянии — пара.",
         FormNum = "1.3",
-        Params = new TransferReceive11Params(CheckQuantity: false, CheckAggregateState: false),
+        Params = new TransferReceiveFormParams(CheckQuantity: false, CheckAggregateState: false),
         OurOkpo = DefaultOurOkpo,
         OurOps = [Form13Transfer(1, aggregateState: 1)],
         CounterpartOps = [Form13Receive(101, aggregateState: 2)],

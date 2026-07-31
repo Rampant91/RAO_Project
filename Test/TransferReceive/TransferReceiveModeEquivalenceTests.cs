@@ -289,6 +289,9 @@ public class TransferReceiveModeEquivalenceTests
             CounterpartOps = counterpartOps,
             OkpoAliases = source.OkpoAliases,
             ExpectedUnpairedIds = source.ExpectedUnpairedIds,
-            ExpectedClosest = source.ExpectedClosest
+            ExpectedClosest = source.ExpectedClosest,
+            ExpectedClosestLevels = source.ExpectedClosestLevels,
+            ExpectedClosestCandidateIds = source.ExpectedClosestCandidateIds,
+            ExpectedConfidenceMinPercent = source.ExpectedConfidenceMinPercent
         };
 }

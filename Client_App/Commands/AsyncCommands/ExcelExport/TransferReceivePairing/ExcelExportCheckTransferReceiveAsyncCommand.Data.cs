@@ -124,7 +124,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     /// </summary>
     private static string BuildPairingKey(
         TransferReceiveDto row,
-        TransferReceive11Params options,
+        TransferReceiveFormParams options,
         bool includeSerial,
         bool includeQuantity)
     {
@@ -152,7 +152,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     private static bool IsPairMatch(
         TransferReceiveDto source,
         TransferReceiveDto candidate,
-        TransferReceive11Params options,
+        TransferReceiveFormParams options,
         string ourOkpoNorm,
         bool includeSerial)
     {
@@ -211,54 +211,104 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     private static readonly string[] Form11TransferReceiveCodes = TransferReceiveCodesForm11And13;
 
     /// <summary>
-    /// Bulk для режима «вся БД»: один scan form_11 + один form_13 (как Pairing41),
+    /// Bulk для режима «вся БД»: один scan на каждую включённую форму,
     /// титулы из discover, карта ОКПО→RepsId с догрузкой только «хвоста».
     /// </summary>
     private static async Task<TransferReceiveBulkLoad> LoadAllTransferReceiveBulkAsync(
         DBModel db,
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
         CancellationToken cancellationToken,
-        ProgressReporter? progress = null)
+        ProgressReporter? progress = null,
+        IReadOnlySet<TransferReceiveFormId>? enabledFormIds = null)
     {
-        const int stages = 5;
+        enabledFormIds ??= ImplementedFormDescriptors.Select(d => d.Id).ToHashSet();
+        var enabledDescriptors = ImplementedFormDescriptors
+            .Where(d => enabledFormIds.Contains(d.Id))
+            .ToList();
+        var stages = 2 + enabledDescriptors.Count;
         var stage = 0;
 
-        progress?.ReportNow(stage, stages, "bulk: загрузка формы 1.1…");
-        var allOps11 = await LoadAllForm11TransferReceiveAsync(db, orgTitles, cancellationToken);
-        stage++;
-        progress?.ReportNow(stage, stages, $"bulk: форма 1.1 — {allOps11.Count} строк ({stage} из {stages})");
+        var allOpsByForm = new Dictionary<TransferReceiveFormId, List<TransferReceiveDto>>();
+        var opsByRepsIdByForm = new Dictionary<TransferReceiveFormId, Dictionary<int, List<TransferReceiveDto>>>();
 
-        progress?.Status("bulk: загрузка формы 1.3…");
-        var allOps13 = await LoadAllForm13TransferReceiveAsync(db, orgTitles, cancellationToken);
-        stage++;
-        progress?.ReportNow(stage, stages, $"bulk: форма 1.3 — {allOps13.Count} строк ({stage} из {stages})");
+        foreach (var descriptor in enabledDescriptors)
+        {
+            progress?.ReportNow(stage, stages, $"bulk: загрузка формы {descriptor.FormNum}…");
+            var allOps = await LoadAllFormOpsAsync(descriptor.Id, db, orgTitles, cancellationToken);
+            allOpsByForm[descriptor.Id] = allOps;
+            opsByRepsIdByForm[descriptor.Id] = allOps
+                .GroupBy(op => op.RepsId)
+                .ToDictionary(g => g.Key, g => g.OrderBy(op => op.Id).ToList());
+            stage++;
+            progress?.ReportNow(stage, stages,
+                $"bulk: форма {descriptor.FormNum} — {allOps.Count} строк ({stage} из {stages})");
+        }
 
         progress?.Status("bulk: карта ОКПО→орг.…");
+        var allOpsConcat = allOpsByForm.Values.SelectMany(ops => ops).ToList();
         var repsIdsByNormOkpo = await BuildOkpoAliasMapForWholeDbAsync(
-            db, orgTitles, allOps11, allOps13, cancellationToken, progress);
+            db, orgTitles, allOpsConcat, cancellationToken, progress);
         stage++;
         progress?.ReportNow(stage, stages, $"bulk: ОКПО-алиасы — {repsIdsByNormOkpo.Count} ключей ({stage} из {stages})");
 
         progress?.Status("bulk: группировка по организациям…");
-        var ops11ByRepsId = allOps11
-            .GroupBy(op => op.RepsId)
-            .ToDictionary(g => g.Key, g => g.OrderBy(op => op.Id).ToList());
-        var ops13ByRepsId = allOps13
-            .GroupBy(op => op.RepsId)
-            .ToDictionary(g => g.Key, g => g.OrderBy(op => op.Id).ToList());
         stage++;
+        var counts = string.Join(", ",
+            enabledDescriptors.Select(d => $"{d.FormNum}={allOpsByForm[d.Id].Count}"));
         progress?.ReportNow(stage, stages,
-            $"bulk: готово — 1.1={allOps11.Count}, 1.3={allOps13.Count}, орг.={orgTitles.Count} ({stage} из {stages})");
+            $"bulk: готово — {counts}, орг.={orgTitles.Count} ({stage} из {stages})");
 
         return new TransferReceiveBulkLoad
         {
-            AllOps11 = allOps11,
-            AllOps13 = allOps13,
-            Ops11ByRepsId = ops11ByRepsId,
-            Ops13ByRepsId = ops13ByRepsId,
+            AllOpsByForm = allOpsByForm,
+            OpsByRepsIdByForm = opsByRepsIdByForm,
             RepsIdsByNormOkpo = repsIdsByNormOkpo
         };
     }
+
+    /// <summary>Диспетчер bulk-загрузки по форме (точка расширения для 1.2+).</summary>
+    private static Task<List<TransferReceiveDto>> LoadAllFormOpsAsync(
+        TransferReceiveFormId formId,
+        DBModel db,
+        IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
+        CancellationToken cancellationToken) =>
+        formId switch
+        {
+            TransferReceiveFormId.Form11 => LoadAllForm11TransferReceiveAsync(db, orgTitles, cancellationToken),
+            TransferReceiveFormId.Form13 => LoadAllForm13TransferReceiveAsync(db, orgTitles, cancellationToken),
+            _ => throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет bulk-загрузчика для формы.")
+        };
+
+    /// <summary>Диспетчер точечной загрузки своих ops (точка расширения для 1.2+).</summary>
+    private static Task<List<TransferReceiveDto>> LoadFormOpsForRepsAsync(
+        TransferReceiveFormId formId,
+        DBModel db,
+        int repsId,
+        string orgOkpo,
+        CancellationToken cancellationToken) =>
+        formId switch
+        {
+            TransferReceiveFormId.Form11 => LoadForm11TransferReceiveForRepsAsync(db, repsId, orgOkpo, cancellationToken),
+            TransferReceiveFormId.Form13 => LoadForm13TransferReceiveForRepsAsync(db, repsId, orgOkpo, cancellationToken),
+            _ => throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет загрузчика для формы.")
+        };
+
+    /// <summary>Диспетчер загрузки ops контрагентов (точка расширения для 1.2+).</summary>
+    private static Task<List<TransferReceiveDto>> LoadFormOpsForRepsIdsAsync(
+        TransferReceiveFormId formId,
+        DBModel db,
+        IReadOnlyList<int> repsIds,
+        IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
+        CancellationToken cancellationToken,
+        ProgressReporter? progress = null) =>
+        formId switch
+        {
+            TransferReceiveFormId.Form11 => LoadForm11TransferReceiveForRepsIdsAsync(
+                db, repsIds, orgTitles, cancellationToken, progress),
+            TransferReceiveFormId.Form13 => LoadForm13TransferReceiveForRepsIdsAsync(
+                db, repsIds, orgTitles, cancellationToken, progress),
+            _ => throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет загрузчика для формы.")
+        };
 
     /// <summary>
     /// Один запрос: все операции приёма/передачи формы 1.1 по БД (RepsId из навигации).
@@ -422,8 +472,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     private static async Task<Dictionary<string, List<int>>> BuildOkpoAliasMapForWholeDbAsync(
         DBModel db,
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
-        IReadOnlyList<TransferReceiveDto> allOps11,
-        IReadOnlyList<TransferReceiveDto> allOps13,
+        IReadOnlyList<TransferReceiveDto> allOps,
         CancellationToken cancellationToken,
         ProgressReporter? progress = null)
     {
@@ -448,8 +497,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             }
         }
 
-        var counterpartRawOkpos = allOps11
-            .Concat(allOps13)
+        var counterpartRawOkpos = allOps
             .Select(op => op.ProviderOrRecieverOkpo?.Trim() ?? string.Empty)
             .Where(okpo => okpo.Length > 0 && okpo != "-")
             .Distinct(StringComparer.Ordinal)

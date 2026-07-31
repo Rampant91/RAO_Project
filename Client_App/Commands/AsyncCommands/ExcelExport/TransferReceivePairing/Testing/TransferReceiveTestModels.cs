@@ -44,7 +44,7 @@ public sealed class TransferReceiveTestCase
     /// <summary>Номер формы сценария («1.1» или «1.3»).</summary>
     public string FormNum { get; init; } = "1.1";
 
-    public TransferReceive11Params Params { get; init; } = new();
+    public TransferReceiveFormParams Params { get; init; } = new();
 
     /// <summary>ОКПО выбранной организации (нормализуется в runner).</summary>
     public string OurOkpo { get; init; } = "10000001";
@@ -61,9 +61,21 @@ public sealed class TransferReceiveTestCase
     public IReadOnlyList<int> ExpectedUnpairedIds { get; init; } = [];
 
     public IReadOnlyDictionary<int, IReadOnlyDictionary<TransferReceiveField, bool>>? ExpectedClosest { get; init; }
+
+    /// <summary>Ожидаемый уровень полей (Exact/Near/Mismatch); частичное сравнение.</summary>
+    public IReadOnlyDictionary<int, IReadOnlyDictionary<TransferReceiveField, FieldMatchLevel>>? ExpectedClosestLevels { get; init; }
+
+    /// <summary>Ожидаемый Id кандидата closest для unpaired Id.</summary>
+    public IReadOnlyDictionary<int, int>? ExpectedClosestCandidateIds { get; init; }
+
+    /// <summary>Минимальная «Схожесть, %» для unpaired Id (частично).</summary>
+    public IReadOnlyDictionary<int, int>? ExpectedConfidenceMinPercent { get; init; }
 }
 
 public sealed record TransferReceiveScenarioResult(IReadOnlyList<int> UnpairedIds);
 
 public sealed record TransferReceiveClosestMatchResult(
-    IReadOnlyDictionary<int, IReadOnlyDictionary<TransferReceiveField, bool>> Closest);
+    IReadOnlyDictionary<int, IReadOnlyDictionary<TransferReceiveField, bool>> Closest,
+    IReadOnlyDictionary<int, IReadOnlyDictionary<TransferReceiveField, FieldMatchLevel>> Levels,
+    IReadOnlyDictionary<int, int> ConfidencePercent,
+    IReadOnlyDictionary<int, int> CandidateIds);
