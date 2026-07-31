@@ -14,6 +14,7 @@ internal static partial class Pairing41TestCases
         yield return C04_MainRadionuclidsOrderAndLookalike_Paired();
         yield return C05_TypeIgnored_StillPaired();
         yield return C06_ActivityMeasurementDateFromCreation_Paired();
+        yield return C07_CodeRaoMismatch_BothSidesUnpaired();
     }
 
     /// <summary>C01. Бета-нуклид, одинаковые активности → пара.</summary>
@@ -90,5 +91,15 @@ internal static partial class Pairing41TestCases
         Form16 = [Row16From13(303, activityMeasurementDate: "2022-11-20")],
         ExpectedUnpaired13 = [],
         ExpectedUnpaired16 = []
+    };
+
+    /// <summary>C07. Остальные поля совпадают, но код РАО разный — непарные с обеих сторон (1.3↔1.6).</summary>
+    private static Pairing41TestCase C07_CodeRaoMismatch_BothSidesUnpaired() => new()
+    {
+        Name = "C07. Расхождение кода РАО — непарные с обеих сторон (1.3↔1.6).",
+        Form13 = [Row13(3, codeRao: "184100084_")],
+        Form16 = [Row16From13(303, codeRao: "284100084_")],
+        ExpectedUnpaired13 = [3],
+        ExpectedUnpaired16 = [303]
     };
 }

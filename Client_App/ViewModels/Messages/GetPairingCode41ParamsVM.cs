@@ -94,6 +94,8 @@ public class GetPairingCode41ParamsVM : INotifyPropertyChanged
     public bool CheckPackType12To16 { get => _checkPackType12To16; set => SetField(ref _checkPackType12To16, value, ref _syncingAll12, UpdateCheckAll12To16); }
     private bool _checkPackNumber12To16 = true;
     public bool CheckPackNumber12To16 { get => _checkPackNumber12To16; set => SetField(ref _checkPackNumber12To16, value, ref _syncingAll12, UpdateCheckAll12To16); }
+    private bool _checkCodeRao12To16 = true;
+    public bool CheckCodeRao12To16 { get => _checkCodeRao12To16; set => SetField(ref _checkCodeRao12To16, value, ref _syncingAll12, UpdateCheckAll12To16); }
 
     private bool _checkOperationDate13To16 = true;
     public bool CheckOperationDate13To16 { get => _checkOperationDate13To16; set => SetField(ref _checkOperationDate13To16, value, ref _syncingAll13, UpdateCheckAll13To16); }
@@ -121,6 +123,8 @@ public class GetPairingCode41ParamsVM : INotifyPropertyChanged
     public bool CheckPackType13To16 { get => _checkPackType13To16; set => SetField(ref _checkPackType13To16, value, ref _syncingAll13, UpdateCheckAll13To16); }
     private bool _checkPackNumber13To16 = true;
     public bool CheckPackNumber13To16 { get => _checkPackNumber13To16; set => SetField(ref _checkPackNumber13To16, value, ref _syncingAll13, UpdateCheckAll13To16); }
+    private bool _checkCodeRao13To16 = true;
+    public bool CheckCodeRao13To16 { get => _checkCodeRao13To16; set => SetField(ref _checkCodeRao13To16, value, ref _syncingAll13, UpdateCheckAll13To16); }
 
     private bool _checkOperationDate14To16 = true;
     public bool CheckOperationDate14To16 { get => _checkOperationDate14To16; set => SetField(ref _checkOperationDate14To16, value, ref _syncingAll14, UpdateCheckAll14To16); }
@@ -152,6 +156,8 @@ public class GetPairingCode41ParamsVM : INotifyPropertyChanged
     public bool CheckPackType14To16 { get => _checkPackType14To16; set => SetField(ref _checkPackType14To16, value, ref _syncingAll14, UpdateCheckAll14To16); }
     private bool _checkPackNumber14To16 = true;
     public bool CheckPackNumber14To16 { get => _checkPackNumber14To16; set => SetField(ref _checkPackNumber14To16, value, ref _syncingAll14, UpdateCheckAll14To16); }
+    private bool _checkCodeRao14To16 = true;
+    public bool CheckCodeRao14To16 { get => _checkCodeRao14To16; set => SetField(ref _checkCodeRao14To16, value, ref _syncingAll14, UpdateCheckAll14To16); }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -255,6 +261,7 @@ public class GetPairingCode41ParamsVM : INotifyPropertyChanged
         CheckPackName12To16 = value;
         CheckPackType12To16 = value;
         CheckPackNumber12To16 = value;
+        CheckCodeRao12To16 = value;
         _syncingAll12 = false;
         UpdateCheckAll12To16();
     }
@@ -271,7 +278,8 @@ public class GetPairingCode41ParamsVM : INotifyPropertyChanged
                   && CheckDocumentDate12To16
                   && CheckPackName12To16
                   && CheckPackType12To16
-                  && CheckPackNumber12To16;
+                  && CheckPackNumber12To16
+                  && CheckCodeRao12To16;
 
         var none = !CheckOperationDate12To16
                    && !CheckMass12To16
@@ -283,7 +291,8 @@ public class GetPairingCode41ParamsVM : INotifyPropertyChanged
                    && !CheckDocumentDate12To16
                    && !CheckPackName12To16
                    && !CheckPackType12To16
-                   && !CheckPackNumber12To16;
+                   && !CheckPackNumber12To16
+                   && !CheckCodeRao12To16;
 
         _syncingAll12 = true;
         CheckAll12To16 = all ? true : none ? false : null;
@@ -306,6 +315,7 @@ public class GetPairingCode41ParamsVM : INotifyPropertyChanged
         CheckPackName13To16 = value;
         CheckPackType13To16 = value;
         CheckPackNumber13To16 = value;
+        CheckCodeRao13To16 = value;
         _syncingAll13 = false;
         UpdateCheckAll13To16();
     }
@@ -324,7 +334,8 @@ public class GetPairingCode41ParamsVM : INotifyPropertyChanged
                   && CheckDocumentDate13To16
                   && CheckPackName13To16
                   && CheckPackType13To16
-                  && CheckPackNumber13To16;
+                  && CheckPackNumber13To16
+                  && CheckCodeRao13To16;
 
         var none = !CheckOperationDate13To16
                    && !CheckMainRadionuclids13To16
@@ -338,7 +349,8 @@ public class GetPairingCode41ParamsVM : INotifyPropertyChanged
                    && !CheckDocumentDate13To16
                    && !CheckPackName13To16
                    && !CheckPackType13To16
-                   && !CheckPackNumber13To16;
+                   && !CheckPackNumber13To16
+                   && !CheckCodeRao13To16;
 
         _syncingAll13 = true;
         CheckAll13To16 = all ? true : none ? false : null;
@@ -363,6 +375,7 @@ public class GetPairingCode41ParamsVM : INotifyPropertyChanged
         CheckPackName14To16 = value;
         CheckPackType14To16 = value;
         CheckPackNumber14To16 = value;
+        CheckCodeRao14To16 = value;
         _syncingAll14 = false;
         UpdateCheckAll14To16();
     }
@@ -383,7 +396,8 @@ public class GetPairingCode41ParamsVM : INotifyPropertyChanged
                   && CheckDocumentDate14To16
                   && CheckPackName14To16
                   && CheckPackType14To16
-                  && CheckPackNumber14To16;
+                  && CheckPackNumber14To16
+                  && CheckCodeRao14To16;
 
         var none = !CheckOperationDate14To16
                    && !CheckVolume14To16
@@ -399,7 +413,8 @@ public class GetPairingCode41ParamsVM : INotifyPropertyChanged
                    && !CheckDocumentDate14To16
                    && !CheckPackName14To16
                    && !CheckPackType14To16
-                   && !CheckPackNumber14To16;
+                   && !CheckPackNumber14To16
+                   && !CheckCodeRao14To16;
 
         _syncingAll14 = true;
         CheckAll14To16 = all ? true : none ? false : null;

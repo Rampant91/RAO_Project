@@ -15,10 +15,15 @@ internal static partial class Pairing41TestCases
         yield return H04_Form16_Chooses13_WhenBetterScore();
         yield return H05_NoReference_NoClosestMap();
         yield return A10_Form15Code14_UnpairedOn11_NotOn15();
-        yield return H06_EmptySerial_ExtraRowOn15_QuantityHighlightedFalse();
-        yield return H07_EmptySerial_PartialQtyRemainder_BothUnpairedQtyFalse();
+        yield return H06_EmptySerial_ExtraRowOn15_QuantityEqualTrue();
+        yield return H07_EmptySerial_PartialQtyRemainder_QuantityByValue();
         yield return H08_EmptySerial_SourceQtyRemainder_QuantityHighlightedFalse();
         yield return H09_WithSerial_QuantityEqual_StillGreenOnOtherMismatch();
+        yield return H10_Form13_AggregateStateMatchesCodeRaoDigit_True();
+        yield return H11_EmptySerial_PackMismatch_QuantityTrue_PackFalse();
+        yield return H12_Form13_AggregateStateMismatchCodeRaoDigit_False();
+        yield return H13_PicksBestScoreCandidate_NotWeakerOne();
+        yield return H14_SymmetricFieldMap_LeftAndRightShareSameMismatches();
     }
 
     /// <summary>H01. Единственное расхождение — номер документа; closest отмечает его false.</summary>
@@ -46,7 +51,9 @@ internal static partial class Pairing41TestCases
                 [Pairing11To15Field.DocumentNumber] = false,
                 [Pairing11To15Field.Type] = true
             }
-        }
+        },
+        ExpectedClosestCandidate11 = new Dictionary<int, int> { [1] = 101 },
+        ExpectedClosestCandidate15 = new Dictionary<int, int> { [101] = 1 }
     };
 
     /// <summary>H02. Масса вне допуска; closest на 1.2 и профиль Form12 на 1.6.</summary>
@@ -66,6 +73,8 @@ internal static partial class Pairing41TestCases
                 [Pairing12To16Field.PackNumber] = true
             }
         },
+        ExpectedClosestCandidate12 = new Dictionary<int, int> { [2] = 202 },
+        ExpectedClosestCandidate16 = new Dictionary<int, int> { [202] = 2 },
         ExpectedClosest16 = new Dictionary<int, Pairing41Form16ClosestExpectation>
         {
             [202] = new()
@@ -200,11 +209,11 @@ internal static partial class Pairing41TestCases
 
     /// <summary>
     /// H06. Пустые серийные: 1×qty=1 на 1.1 и 2×qty=1 на 1.5 → одна непарная на 1.5.
-    /// Qty в closest красный (не зелёный из‑за построчного 1==1).
+    /// У ближайшего кандидата qty тоже 1 → Quantity в closest true (построчно).
     /// </summary>
-    private static Pairing41TestCase H06_EmptySerial_ExtraRowOn15_QuantityHighlightedFalse() => new()
+    private static Pairing41TestCase H06_EmptySerial_ExtraRowOn15_QuantityEqualTrue() => new()
     {
-        Name = "H06. Пустые серийные: лишняя qty=1 на 1.5 — Quantity в closest false.",
+        Name = "H06. Пустые серийные: лишняя qty=1 на 1.5 — Quantity в closest true (1==1).",
         Form11 = [Row11(1, pasNum: "", facNum: "", quantity: 1)],
         Form15 =
         [
@@ -217,7 +226,7 @@ internal static partial class Pairing41TestCases
         {
             [102] = new Dictionary<Pairing11To15Field, bool>
             {
-                [Pairing11To15Field.Quantity] = false,
+                [Pairing11To15Field.Quantity] = true,
                 [Pairing11To15Field.PassportNumber] = true,
                 [Pairing11To15Field.FactoryNumber] = true,
                 [Pairing11To15Field.DocumentNumber] = true,
@@ -228,11 +237,11 @@ internal static partial class Pairing41TestCases
 
     /// <summary>
     /// H07. Пустые серийные: 1.1 qty=3; 1.5 qty=3,3,2 → непарные 3 и 2 на 1.5.
-    /// У обеих Quantity в closest false (раньше у qty=3 было зелёным).
+    /// Closest к 102 (qty=3) даёт Quantity true; к 103 (qty=2) — false vs 3.
     /// </summary>
-    private static Pairing41TestCase H07_EmptySerial_PartialQtyRemainder_BothUnpairedQtyFalse() => new()
+    private static Pairing41TestCase H07_EmptySerial_PartialQtyRemainder_QuantityByValue() => new()
     {
-        Name = "H07. Пустые серийные: остаток 3 и 2 на 1.5 — Quantity false у обеих.",
+        Name = "H07. Пустые серийные: остаток 3 и 2 на 1.5 — Quantity true/false по числам.",
         Form11 = [Row11(1, pasNum: "", facNum: "", quantity: 3)],
         Form15 =
         [
@@ -246,7 +255,7 @@ internal static partial class Pairing41TestCases
         {
             [102] = new Dictionary<Pairing11To15Field, bool>
             {
-                [Pairing11To15Field.Quantity] = false,
+                [Pairing11To15Field.Quantity] = true,
                 [Pairing11To15Field.DocumentNumber] = true,
                 [Pairing11To15Field.Type] = true
             },
@@ -260,11 +269,11 @@ internal static partial class Pairing41TestCases
     };
 
     /// <summary>
-    /// H08. Пустые серийные: 1.1 qty=8 vs 1.5 qty=5 → остаток на 1.1, Quantity false.
+    /// H08. Пустые серийные: 1.1 qty=8 vs 1.5 qty=5 → остаток на 1.1, Quantity false (8≠5).
     /// </summary>
     private static Pairing41TestCase H08_EmptySerial_SourceQtyRemainder_QuantityHighlightedFalse() => new()
     {
-        Name = "H08. Пустые серийные: остаток qty на 1.1 — Quantity в closest false.",
+        Name = "H08. Пустые серийные: остаток qty на 1.1 — Quantity false (8≠5).",
         Form11 = [Row11(1, pasNum: "", facNum: "", quantity: 8)],
         Form15 = [Row11(101, pasNum: "", facNum: "", quantity: 5)],
         ExpectedUnpaired11 = [1],
@@ -298,6 +307,119 @@ internal static partial class Pairing41TestCases
             {
                 [Pairing11To15Field.Quantity] = true,
                 [Pairing11To15Field.DocumentNumber] = false,
+                [Pairing11To15Field.PassportNumber] = true
+            }
+        }
+    };
+
+    /// <summary>
+    /// H10. Непарная 1.3 с AggregateState=1; ближайшая 1.6 с кодом РАО, начинающимся на «1»
+    /// (единственный кандидат, номер документа не совпал) → AggregateStateMatchesCodeRao = true.
+    /// </summary>
+    private static Pairing41TestCase H10_Form13_AggregateStateMatchesCodeRaoDigit_True() => new()
+    {
+        Name = "H10. Closest 1.3↔1.6: AggregateState=1 совпадает с первой цифрой кода РАО — true.",
+        Form13 = [Row13(3, aggregateState: 1, documentNumber: "DOC-H10")],
+        Form16 = [Row16From13(303, codeRao: "184100084_", documentNumber: "DOC-H10-DIFF")],
+        ExpectedUnpaired13 = [3],
+        ExpectedUnpaired16 = [303],
+        ExpectedAggregateStateMatch13 = new Dictionary<int, bool> { [3] = true }
+    };
+
+    /// <summary>
+    /// H11. Как у пользователя: пустые серийные, qty=1 с обеих сторон, разные УКТ.
+    /// Непарность из‑за упаковки; Quantity в closest true, PackNumber false.
+    /// </summary>
+    private static Pairing41TestCase H11_EmptySerial_PackMismatch_QuantityTrue_PackFalse() => new()
+    {
+        Name = "H11. Пустые серийные: разный УКТ — PackNumber false, Quantity true.",
+        Form11 = [Row11(1, pasNum: "", facNum: "", quantity: 1, packNumber: "1604022")],
+        Form15 = [Row11(101, pasNum: "", facNum: "", quantity: 1, packNumber: "16041148")],
+        ExpectedUnpaired11 = [1],
+        ExpectedUnpaired15 = [101],
+        ExpectedClosest11 = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, bool>>
+        {
+            [1] = new Dictionary<Pairing11To15Field, bool>
+            {
+                [Pairing11To15Field.PackNumber] = false,
+                [Pairing11To15Field.Quantity] = true,
+                [Pairing11To15Field.Type] = true,
+                [Pairing11To15Field.DocumentNumber] = true
+            }
+        },
+        ExpectedClosestCandidate11 = new Dictionary<int, int> { [1] = 101 },
+        ExpectedClosestCandidate15 = new Dictionary<int, int> { [101] = 1 }
+    };
+
+    /// <summary>
+    /// H12. AggregateState=2, код РАО ближайшей 1.6 начинается на «1» → AggregateStateMatchesCodeRao = false.
+    /// </summary>
+    private static Pairing41TestCase H12_Form13_AggregateStateMismatchCodeRaoDigit_False() => new()
+    {
+        Name = "H12. Closest 1.3↔1.6: AggregateState=2 не бьётся с первой цифрой «1» кода РАО.",
+        Form13 = [Row13(3, aggregateState: 2, documentNumber: "DOC-H12")],
+        Form16 = [Row16From13(303, codeRao: "184100084_", documentNumber: "DOC-H12-DIFF")],
+        ExpectedUnpaired13 = [3],
+        ExpectedUnpaired16 = [303],
+        ExpectedAggregateStateMatch13 = new Dictionary<int, bool> { [3] = false },
+        ExpectedClosestCandidate13 = new Dictionary<int, int> { [3] = 303 }
+    };
+
+    /// <summary>
+    /// H13. Два кандидата на 1.5: слабый (другой тип+документ) и сильный (только документ).
+    /// Closest должен выбрать сильного (Id=102), а не слабого (Id=101).
+    /// </summary>
+    private static Pairing41TestCase H13_PicksBestScoreCandidate_NotWeakerOne() => new()
+    {
+        Name = "H13. Closest выбирает кандидата с лучшим score, не первого попавшегося.",
+        Form11 = [Row11(1, documentNumber: "DOC-SRC", type: "Тип-А")],
+        Form15 =
+        [
+            Row11(101, documentNumber: "DOC-WEAK", type: "Тип-Б"),
+            Row11(102, documentNumber: "DOC-BEST", type: "Тип-А")
+        ],
+        ExpectedUnpaired11 = [1],
+        ExpectedUnpaired15 = [101, 102],
+        ExpectedClosestCandidate11 = new Dictionary<int, int> { [1] = 102 },
+        ExpectedClosest11 = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, bool>>
+        {
+            [1] = new Dictionary<Pairing11To15Field, bool>
+            {
+                [Pairing11To15Field.Type] = true,
+                [Pairing11To15Field.DocumentNumber] = false,
+                [Pairing11To15Field.PassportNumber] = true
+            }
+        }
+    };
+
+    /// <summary>
+    /// H14. Одна карта FieldMatches для пары: у непарной 1.1 и у её кандидата 1.5
+    /// одинаковые true/false по полям (как в Excel слева и справа одной строкой).
+    /// </summary>
+    private static Pairing41TestCase H14_SymmetricFieldMap_LeftAndRightShareSameMismatches() => new()
+    {
+        Name = "H14. Одна карта FieldMatches: слева и справа одни и те же совпадения/расхождения.",
+        Form11 = [Row11(1, documentNumber: "DOC-A", type: "Тип-А")],
+        Form15 = [Row11(101, documentNumber: "DOC-B", type: "Тип-А")],
+        ExpectedUnpaired11 = [1],
+        ExpectedUnpaired15 = [101],
+        ExpectedClosestCandidate11 = new Dictionary<int, int> { [1] = 101 },
+        ExpectedClosestCandidate15 = new Dictionary<int, int> { [101] = 1 },
+        ExpectedClosest11 = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, bool>>
+        {
+            [1] = new Dictionary<Pairing11To15Field, bool>
+            {
+                [Pairing11To15Field.DocumentNumber] = false,
+                [Pairing11To15Field.Type] = true,
+                [Pairing11To15Field.PassportNumber] = true
+            }
+        },
+        ExpectedClosest15 = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, bool>>
+        {
+            [101] = new Dictionary<Pairing11To15Field, bool>
+            {
+                [Pairing11To15Field.DocumentNumber] = false,
+                [Pairing11To15Field.Type] = true,
                 [Pairing11To15Field.PassportNumber] = true
             }
         }

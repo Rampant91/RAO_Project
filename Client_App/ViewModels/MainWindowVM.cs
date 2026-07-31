@@ -353,7 +353,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ConvertExcelToRaodb { get; set; }               //  Дополнительно -> Конвертер из Excel в .RAODB
     public ICommand ExcelExportCheckAllForms { get; set; }          //  Проверить все формы у организации
     public ICommand ExcelExportCheckPairingOfCode41 { get; set; }   //  Непарные операции 41 (org / вся БД, формы 1.1–1.6)
-    public ICommand ExcelExportCheckTransferReceive { get; set; }   //  Проверка операций приёма-передачи (выбранная org)
+    public ICommand ExcelExportCheckTransferReceive { get; set; }   //  Проверка операций приёма-передачи (org / вся БД, формы 1.1 и 1.3)
     public ICommand DeleteReports { get; set; }                     //  Удалить выбранную организацию (1.0, 2.0, 4.0)
 
     /// <summary>

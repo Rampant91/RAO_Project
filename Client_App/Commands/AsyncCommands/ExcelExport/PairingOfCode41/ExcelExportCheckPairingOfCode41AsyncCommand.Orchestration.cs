@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
 using Microsoft.EntityFrameworkCore;
@@ -23,18 +24,16 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         parameter is string s && string.Equals(s, WholeDbParameter, StringComparison.OrdinalIgnoreCase);
 
     /// <summary>
-    /// Результат проверки одной организации: данные для дописывания в Excel (null = непарных нет).
+    /// Результат проверки одной организации: непарные строки для дописывания в Excel (null = непарных нет).
     /// </summary>
     private sealed class OrganizationPairingExport
     {
-        public required Reports Form11 { get; init; }
-        public required Reports Form12 { get; init; }
-        public required Reports Form13 { get; init; }
-        public required Reports Form14 { get; init; }
-        public required Reports Form15 { get; init; }
-        public required Reports Form16 { get; init; }
+        public required List<Operation41PairingDto> UnpairedForm11 { get; init; }
+        public required List<Operation41PairingDto> UnpairedForm12 { get; init; }
         public required List<Operation41PairingDto> UnpairedForm13 { get; init; }
         public required List<Operation41PairingDto> UnpairedForm14 { get; init; }
+        public required List<Operation41PairingDto> UnpairedForm15 { get; init; }
+        public required List<Operation41PairingDto> UnpairedForm16 { get; init; }
     }
 
     #endregion
@@ -76,7 +75,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             progressBarVM.SetProgressBar(percent, text, exportName);
 
         var export = await BuildOrganizationPairingExportAsync(
-            db, selectedReports.Id, pairingParams, cts.Token, Status);
+            db, selectedReports, pairingParams, cts.Token, Status);
 
         if (export is null)
         {
@@ -124,7 +123,11 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         await using var db = new DBModel(tmpDbPath);
 
         progressBarVM.SetProgressBar(12, "Поиск организаций с операциями 41", "Вся БД", "Выгрузка в .xlsx");
-        var candidates = await LoadOrganizationsWithOperation41Async(db, cts.Token);
+        var discoverProgress = new ProgressReporter(
+            (percent, text) => progressBarVM.SetProgressBar(percent, text, "Вся БД"),
+            percentMin: 12,
+            percentMax: 28);
+        var candidates = await LoadOrganizationsWithOperation41Async(db, cts.Token, discoverProgress);
         if (candidates.Count == 0)
         {
             await ShowNoUnpairedOperationsMessage(progressBar);
@@ -132,14 +135,14 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             return;
         }
 
-        progressBarVM.SetProgressBar(13, "Загрузка операций 41…", "Вся БД", "Выгрузка в .xlsx");
+        var bulkProgress = new ProgressReporter(
+            (percent, text) => progressBarVM.SetProgressBar(percent, text, "Вся БД"),
+            percentMin: 28,
+            percentMax: 55);
         var bulkByOrg = await LoadAllOperation41GroupedByRepsIdAsync(
-            db,
-            pairingParams,
-            cts.Token,
-            text => progressBarVM.SetProgressBar(13, text, "Вся БД"));
+            db, pairingParams, cts.Token, bulkProgress);
 
-        progressBarVM.SetProgressBar(15, "Инициализация Excel пакета", "Вся БД", "Выгрузка в .xlsx");
+        progressBarVM.SetProgressBar(55, "Инициализация Excel пакета", "Вся БД", "Выгрузка в .xlsx");
         using var excelPackage = await InitializeExcelPackage(fullPath);
         InitializePairingWorkbook(excelPackage);
 
@@ -153,8 +156,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             var regNum = RemoveForbiddenChars(org.Master_DB.RegNoRep.Value);
             var okpo = RemoveForbiddenChars(org.Master_DB.OkpoRep.Value);
             var exportName = $"{regNum}_{okpo}";
-            var percentBase = 15 + (int)(75.0 * i / total);
-            var percentSpan = Math.Max(1, (int)(75.0 / total));
+            var percentBase = 55 + (int)(38.0 * i / total);
+            var percentSpan = Math.Max(1, (int)(38.0 / total));
 
             void Status(int offsetWithinOrg, string stage) =>
                 progressBarVM.SetProgressBar(
@@ -167,12 +170,11 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             loaded ??= new OrgOperation41Lists();
             var export = await BuildOrganizationPairingExportFromLoadedAsync(
                 db,
-                org.Id,
+                org,
                 loaded,
                 pairingParams,
                 cts.Token,
-                (p, text) => Status(Math.Min(percentSpan - 1, p / 5), text),
-                masterReportsHint: org);
+                (p, text) => Status(Math.Min(percentSpan - 1, p / 5), text));
 
             if (export is null)
             {
@@ -206,15 +208,30 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     /// Id собираются отдельными Distinct по таблицам форм (без тяжёлого OR Any), затем Reports грузятся пакетами по 1000 (лимит Firebird IN).
     /// </summary>
     private static async Task<List<Reports>> LoadOrganizationsWithOperation41Async(
-        DBModel db, CancellationToken cancellationToken)
+        DBModel db,
+        CancellationToken cancellationToken,
+        ProgressReporter? progress = null)
     {
         var repsIds = new HashSet<int>();
-        await AddRepsIdsWithCode41Async(db.form_11, repsIds, cancellationToken);
-        await AddRepsIdsWithCode41Async(db.form_12, repsIds, cancellationToken);
-        await AddRepsIdsWithCode41Async(db.form_13, repsIds, cancellationToken);
-        await AddRepsIdsWithCode41Async(db.form_14, repsIds, cancellationToken);
-        await AddRepsIdsWithCode41Async(db.form_15, repsIds, cancellationToken);
-        await AddRepsIdsWithCode41Async(db.form_16, repsIds, cancellationToken);
+        const int formCount = 6;
+        var done = 0;
+
+        async Task ScanFormAsync<TForm>(DbSet<TForm> forms, string formLabel)
+            where TForm : Models.Forms.Form1.Form1
+        {
+            progress?.ReportNow(done, formCount, $"поиск организаций: сканирование формы {formLabel} ({done + 1} из {formCount})");
+            await AddRepsIdsWithCode41Async(forms, repsIds, cancellationToken);
+            done++;
+            progress?.ReportNow(done, formCount,
+                $"поиск организаций: форма {formLabel} — найдено организаций: {repsIds.Count}");
+        }
+
+        await ScanFormAsync(db.form_11, "1.1");
+        await ScanFormAsync(db.form_12, "1.2");
+        await ScanFormAsync(db.form_13, "1.3");
+        await ScanFormAsync(db.form_14, "1.4");
+        await ScanFormAsync(db.form_15, "1.5");
+        await ScanFormAsync(db.form_16, "1.6");
 
         if (repsIds.Count == 0)
         {
@@ -223,21 +240,27 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
         var orderedIds = repsIds.OrderBy(id => id).ToList();
         var list = new List<Reports>(orderedIds.Count);
-        foreach (var idChunk in ChunkIds(orderedIds))
+        var chunks = ChunkIds(orderedIds).ToList();
+        for (var i = 0; i < chunks.Count; i++)
         {
+            progress?.ReportNow(i, chunks.Count,
+                $"поиск организаций: загрузка карточек {i + 1} из {chunks.Count} (всего {orderedIds.Count})");
             var batch = await db.ReportsCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .Include(reps => reps.Master_DB)
                 .ThenInclude(master => master.Rows10)
-                .Where(reps => reps.DBObservable != null && idChunk.Contains(reps.Id))
+                .Where(reps => reps.DBObservable != null && chunks[i].Contains(reps.Id))
                 .ToListAsync(cancellationToken);
             list.AddRange(batch);
         }
 
+        progress?.ReportNow(1, 1, $"поиск организаций: готово — {list.Count}");
+
+        var regNoComparer = new CustomReportsComparer();
         return list
-            .OrderBy(reps => reps.Master_DB.RegNoRep.Value)
-            .ThenBy(reps => reps.Master_DB.OkpoRep.Value)
+            .OrderBy(reps => reps.Master_DB.RegNoRep.Value, regNoComparer)
+            .ThenBy(reps => reps.Master_DB.OkpoRep.Value, regNoComparer)
             .ToList();
     }
 
@@ -267,34 +290,35 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     #region Build organization export
 
     /// <summary>
-    /// Пайплайн одной org: загрузка DTO → сопоставление → closest → строки Excel.
+    /// Пайплайн одной org: загрузка DTO → реквизиты org → сопоставление → closest → строки Excel.
     /// </summary>
     private async Task<OrganizationPairingExport?> BuildOrganizationPairingExportAsync(
         DBModel db,
-        int repsId,
+        Reports selectedReports,
         PairingParamsSet pairingParams,
         CancellationToken cancellationToken,
-        Action<int, string>? reportProgress = null,
-        Reports? masterReportsHint = null)
+        Action<int, string>? reportProgress = null)
     {
+        var repsId = selectedReports.Id;
         var p11 = pairingParams.Pairing11To15;
 
-        reportProgress?.Invoke(18, "загрузка 1.1");
+        var loadProgress = new ProgressReporter(reportProgress, percentMin: 15, percentMax: 38);
+        loadProgress.Status("загрузка операций 1.1");
         var form11 = await LoadOperation41ListAsync(db, repsId, "1.1", cancellationToken, p11);
-        reportProgress?.Invoke(22, "загрузка 1.2");
+        loadProgress.Status("загрузка операций 1.2");
         var form12 = await LoadOperation41ListAsync(db, repsId, "1.2", cancellationToken);
-        reportProgress?.Invoke(26, "загрузка 1.3");
+        loadProgress.Status("загрузка операций 1.3");
         var form13 = await LoadOperation41ListAsync(db, repsId, "1.3", cancellationToken);
-        reportProgress?.Invoke(30, "загрузка 1.4");
+        loadProgress.Status("загрузка операций 1.4");
         var form14 = await LoadOperation41ListAsync(db, repsId, "1.4", cancellationToken);
-        reportProgress?.Invoke(34, "загрузка 1.5");
+        loadProgress.Status("загрузка операций 1.5");
         var form15 = await LoadOperation41ListAsync(db, repsId, "1.5", cancellationToken, p11);
-        reportProgress?.Invoke(38, "загрузка 1.6");
+        loadProgress.Status("загрузка операций 1.6");
         var form16 = await LoadOperation41ListAsync(db, repsId, "1.6", cancellationToken);
 
         return await BuildOrganizationPairingExportFromLoadedAsync(
             db,
-            repsId,
+            selectedReports,
             new OrgOperation41Lists
             {
                 Form11 = form11,
@@ -306,28 +330,34 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             },
             pairingParams,
             cancellationToken,
-            reportProgress,
-            masterReportsHint);
+            reportProgress);
     }
 
     /// <summary>
-    /// Сопоставление + Excel-данные из уже загруженных DTO (org-режим и whole-DB после bulk).
+    /// Реквизиты org + сопоставление + closest-match из уже загруженных DTO (org-режим и whole-DB после bulk).
     /// </summary>
     private async Task<OrganizationPairingExport?> BuildOrganizationPairingExportFromLoadedAsync(
         DBModel db,
-        int repsId,
+        Reports org,
         OrgOperation41Lists loaded,
         PairingParamsSet pairingParams,
         CancellationToken cancellationToken,
-        Action<int, string>? reportProgress = null,
-        Reports? masterReportsHint = null)
+        Action<int, string>? reportProgress = null)
     {
         var p11 = pairingParams.Pairing11To15;
         var p12 = pairingParams.Pairing12To16;
         var p13 = pairingParams.Pairing13To16;
         var p14 = pairingParams.Pairing14To16;
 
-        reportProgress?.Invoke(42, "сопоставление");
+        StampOrganizationInfo(loaded.Form11, org);
+        StampOrganizationInfo(loaded.Form12, org);
+        StampOrganizationInfo(loaded.Form13, org);
+        StampOrganizationInfo(loaded.Form14, org);
+        StampOrganizationInfo(loaded.Form15, org);
+        StampOrganizationInfo(loaded.Form16, org);
+
+        var matchProgress = new ProgressReporter(reportProgress, percentMin: 40, percentMax: 55);
+        matchProgress.Status("сопоставление");
         var unpaired = ComputeOrganizationUnpaired(
             loaded.Form11, loaded.Form12, loaded.Form13, loaded.Form14, loaded.Form15, loaded.Form16,
             pairingParams);
@@ -339,7 +369,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             return null;
         }
 
-        reportProgress?.Invoke(55, "closest-match");
+        var closestProgress = new ProgressReporter(reportProgress, percentMin: 55, percentMax: 70);
+        closestProgress.Status("поиск ближайших совпадений");
         _form11ClosestMatchHighlights = BuildClosestMatchHighlights(unpaired.Form11, loaded.Form15, p11);
         _form15ClosestMatchHighlights = BuildClosestMatchHighlights(unpaired.Form15, loaded.Form11, p11);
         _form12ClosestMatchHighlights = BuildClosestMatchHighlights12To16(unpaired.Form12, loaded.Form16, p12);
@@ -348,34 +379,14 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         _form16ClosestMatchHighlights = BuildClosestMatchHighlights16(
             unpaired.Form16, loaded.Form12, loaded.Form13, loaded.Form14, p12, p13, p14);
 
-        reportProgress?.Invoke(65, "загрузка организации");
-        var masterReports = masterReportsHint is { Id: var hintId } && hintId == repsId
-            ? masterReportsHint
-            : await db.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .Include(reps => reps.Master_DB)
-                .ThenInclude(master => master.Rows10)
-                .FirstAsync(reps => reps.Id == repsId, cancellationToken);
-
-        reportProgress?.Invoke(70, "загрузка непарных строк");
-        var reports11 = await BuildReportsForExportAsync(db, masterReports, unpaired.Form11, "1.1", cancellationToken);
-        var reports12 = await BuildReportsForExportAsync(db, masterReports, unpaired.Form12, "1.2", cancellationToken);
-        var reports13 = await BuildReportsForExportAsync(db, masterReports, unpaired.Form13, "1.3", cancellationToken);
-        var reports14 = await BuildReportsForExportAsync(db, masterReports, unpaired.Form14, "1.4", cancellationToken);
-        var reports15 = await BuildReportsForExportAsync(db, masterReports, unpaired.Form15, "1.5", cancellationToken);
-        var reports16 = await BuildReportsForExportAsync(db, masterReports, unpaired.Form16, "1.6", cancellationToken);
-
         return new OrganizationPairingExport
         {
-            Form11 = reports11,
-            Form12 = reports12,
-            Form13 = reports13,
-            Form14 = reports14,
-            Form15 = reports15,
-            Form16 = reports16,
+            UnpairedForm11 = unpaired.Form11,
+            UnpairedForm12 = unpaired.Form12,
             UnpairedForm13 = unpaired.Form13,
-            UnpairedForm14 = unpaired.Form14
+            UnpairedForm14 = unpaired.Form14,
+            UnpairedForm15 = unpaired.Form15,
+            UnpairedForm16 = unpaired.Form16
         };
     }
 
@@ -405,13 +416,17 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         // Код 14 на 1.5 — только кандидат для 1.1, не источник обратной сверки.
         var form15Code41Only = form15.Where(IsForm15Code41).ToList();
 
+        // 1.2 / 1.3 / 1.4 / 1.6 — один пул 1.6: строка 1.6 закрывает не больше одной строки РВ (12→13→14).
+        var (unpaired12, unpaired13, unpaired14, unpaired16) =
+            GetUnpairedForms12To16Shared(form12, form13, form14, form16, p12, p13, p14);
+
         return new OrganizationUnpairedSets(
             GetUnpairedOperations11To15(form11, form15, p11),
-            GetUnpairedOperations12To16(form12, form16, p12),
-            GetUnpairedOperations13To16(form13, form16, p13),
-            GetUnpairedOperations14To16(form14, form16, p14),
+            unpaired12,
+            unpaired13,
+            unpaired14,
             GetUnpairedOperations11To15(form15Code41Only, form11, p11),
-            GetUnpairedForm16(form16, form12, form13, form14, p12, p13, p14));
+            unpaired16);
     }
 
     private static bool IsForm15Code41(Operation41PairingDto row) =>
@@ -430,6 +445,55 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         List<Operation41PairingDto> Form14,
         List<Operation41PairingDto> Form15,
         List<Operation41PairingDto> Form16);
+
+    #endregion
+
+    #region Progress
+
+    /// <summary>
+    /// Редкие обновления прогрессбара (не чаще чем раз в <see cref="MinIntervalMs"/> мс),
+    /// плюс всегда границы этапа — без заметной потери производительности.
+    /// </summary>
+    private sealed class ProgressReporter(Action<int, string>? report, int percentMin, int percentMax)
+    {
+        private const int MinIntervalMs = 300;
+        private long _lastReportTicks = long.MinValue / 2;
+
+        public void Status(string text) =>
+            report?.Invoke(percentMin, text);
+
+        public void Report(int done, int total, string text) =>
+            ReportCore(done, total, text, force: false);
+
+        /// <summary>Обновить сразу (перед/после SQL-пакета), без троттлинга.</summary>
+        public void ReportNow(int done, int total, string text) =>
+            ReportCore(done, total, text, force: true);
+
+        private void ReportCore(int done, int total, string text, bool force)
+        {
+            if (report is null)
+            {
+                return;
+            }
+
+            var now = Environment.TickCount64;
+            var isBoundary = done <= 0 || total <= 0 || done >= total;
+            if (!force && !isBoundary && now - _lastReportTicks < MinIntervalMs)
+            {
+                return;
+            }
+
+            _lastReportTicks = now;
+            var percent = percentMin;
+            if (total > 0)
+            {
+                var t = Math.Clamp(done / (double)total, 0, 1);
+                percent = percentMin + (int)((percentMax - percentMin) * t);
+            }
+
+            report(percent, text);
+        }
+    }
 
     #endregion
 }

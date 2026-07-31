@@ -153,7 +153,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
                 dialog.Vm.CheckDocumentDate12To16,
                 dialog.Vm.CheckPackName12To16,
                 dialog.Vm.CheckPackType12To16,
-                dialog.Vm.CheckPackNumber12To16),
+                dialog.Vm.CheckPackNumber12To16,
+                dialog.Vm.CheckCodeRao12To16),
             new Pairing13To16Params(
                 dialog.Vm.CheckOperationDate13To16,
                 dialog.Vm.CheckMainRadionuclids13To16,
@@ -167,7 +168,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
                 dialog.Vm.CheckDocumentDate13To16,
                 dialog.Vm.CheckPackName13To16,
                 dialog.Vm.CheckPackType13To16,
-                dialog.Vm.CheckPackNumber13To16),
+                dialog.Vm.CheckPackNumber13To16,
+                dialog.Vm.CheckCodeRao13To16),
             new Pairing14To16Params(
                 dialog.Vm.CheckOperationDate14To16,
                 dialog.Vm.CheckVolume14To16,
@@ -183,7 +185,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
                 dialog.Vm.CheckDocumentDate14To16,
                 dialog.Vm.CheckPackName14To16,
                 dialog.Vm.CheckPackType14To16,
-                dialog.Vm.CheckPackNumber14To16));
+                dialog.Vm.CheckPackNumber14To16,
+                dialog.Vm.CheckCodeRao14To16));
     }
 
     public sealed record PairingParamsSet(
@@ -223,7 +226,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         bool CheckDocumentDate = true,
         bool CheckPackName = true,
         bool CheckPackType = true,
-        bool CheckPackNumber = true);
+        bool CheckPackNumber = true,
+        bool CheckCodeRao = true);
 
     public sealed record Pairing13To16Params(
         bool CheckOperationDate = true,
@@ -238,7 +242,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         bool CheckDocumentDate = true,
         bool CheckPackName = true,
         bool CheckPackType = true,
-        bool CheckPackNumber = true);
+        bool CheckPackNumber = true,
+        bool CheckCodeRao = true);
 
     public sealed record Pairing14To16Params(
         bool CheckOperationDate = true,
@@ -255,7 +260,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         bool CheckDocumentDate = true,
         bool CheckPackName = true,
         bool CheckPackType = true,
-        bool CheckPackNumber = true);
+        bool CheckPackNumber = true,
+        bool CheckCodeRao = true);
 
     #endregion
 

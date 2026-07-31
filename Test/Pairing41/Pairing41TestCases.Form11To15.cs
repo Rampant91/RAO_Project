@@ -21,6 +21,8 @@ internal static partial class Pairing41TestCases
         yield return A10_Form15Code14_UnpairedOn11_NotOn15();
         yield return A11_Form15Code14_OpCodeCheckOff_Paired();
         yield return A12_Form15Code14_Alone_NotExportedAsUnpaired15();
+        yield return A13_EmptySerial_DifferentPackNumber_Unpaired();
+        yield return A14_EmptySerial_EightOnesVsFourPlusFour_Paired();
     }
 
     /// <summary>A01. Две пары с заполненными паспорт/зав.№ → непарных нет.</summary>
@@ -175,6 +177,44 @@ internal static partial class Pairing41TestCases
     {
         Name = "A12. Одиночная 1.5 с кодом 14 — не в непарных 1.5.",
         Form15 = [Row11(101, opCode: "14")],
+        ExpectedUnpaired11 = [],
+        ExpectedUnpaired15 = []
+    };
+
+    /// <summary>
+    /// A13. Пустые серийные, одинаковый qty, разные номера УКТ — разные партии, не суммируются.
+    /// </summary>
+    private static Pairing41TestCase A13_EmptySerial_DifferentPackNumber_Unpaired() => new()
+    {
+        Name = "A13. Пустые серийные: разный номер УКТ — не суммируются, оба непарные.",
+        Form11 = [Row11(1, pasNum: "", facNum: "", quantity: 1, packNumber: "УКТ-A")],
+        Form15 = [Row11(101, pasNum: "", facNum: "", quantity: 1, packNumber: "УКТ-B")],
+        ExpectedUnpaired11 = [1],
+        ExpectedUnpaired15 = [101]
+    };
+
+    /// <summary>
+    /// A14. Пустые серийные: 8×qty=1 ↔ qty=4 + qty=4 — разная нарезка одной партии, парные.
+    /// </summary>
+    private static Pairing41TestCase A14_EmptySerial_EightOnesVsFourPlusFour_Paired() => new()
+    {
+        Name = "A14. Пустые серийные: 8×1 ↔ 4+4 — парные.",
+        Form11 =
+        [
+            Row11(1, pasNum: "", facNum: "", quantity: 1),
+            Row11(2, pasNum: "", facNum: "", quantity: 1),
+            Row11(3, pasNum: "", facNum: "", quantity: 1),
+            Row11(4, pasNum: "", facNum: "", quantity: 1),
+            Row11(5, pasNum: "", facNum: "", quantity: 1),
+            Row11(6, pasNum: "", facNum: "", quantity: 1),
+            Row11(7, pasNum: "", facNum: "", quantity: 1),
+            Row11(8, pasNum: "", facNum: "", quantity: 1)
+        ],
+        Form15 =
+        [
+            Row11(101, pasNum: "", facNum: "", quantity: 4),
+            Row11(102, pasNum: "", facNum: "", quantity: 4)
+        ],
         ExpectedUnpaired11 = [],
         ExpectedUnpaired15 = []
     };

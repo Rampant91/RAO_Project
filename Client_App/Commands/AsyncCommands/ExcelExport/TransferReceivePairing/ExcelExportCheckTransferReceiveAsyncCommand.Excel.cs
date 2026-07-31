@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels.ProgressBar;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -92,6 +94,19 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var cell = sheet.Cells[row, 1];
             cell.Value = text;
             cell.Style.WrapText = true;
+            cell.Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+            sheet.Row(row).Height = EstimateWrappedRowHeight(text, 100);
+            row++;
+        }
+
+        void BoldBody(string text)
+        {
+            sheet.Cells[row, 1, row, 2].Merge = true;
+            var cell = sheet.Cells[row, 1];
+            cell.Value = text;
+            cell.Style.WrapText = true;
+            cell.Style.Font.Bold = true;
+            cell.Style.VerticalAlignment = ExcelVerticalAlignment.Top;
             sheet.Row(row).Height = EstimateWrappedRowHeight(text, 100);
             row++;
         }
@@ -116,30 +131,46 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Blank();
 
         Section("Структура листов «Форма 1.1» и «Форма 1.3»");
-        Body("Слева — непарная операция выбранной организации. Справа (после тёмной разделительной колонки) — те же поля ближайшего совпадения у контрагента. Формы сверяются только сами с собой (1.1↔1.1, 1.3↔1.3).");
+        Body("Слева — непарная операция выбранной организации. Справа после тёмной разделительной колонки (жёлтый заголовок «Ближайшее совпадение у контрагента») — наиболее похожая операция у контрагента. Формы сверяются только сами с собой (1.1↔1.1, 1.3↔1.3).");
         Bullet("Голубой заголовок слева — исходная (непарная) операция.");
         Bullet("Жёлтый заголовок справа — ближайшее совпадение.");
         Bullet("Форма 1.3: вместо количества — агрегатное состояние (1/2/3); количество всегда считается равным 1.");
         Blank();
 
+        Section("Что такое «ближайшее совпадение»");
+        Body("«Ближайшее совпадение» — это не найденная пара (иначе строка не попала бы в отчёт), а подсказка: какая операция у контрагента больше всего похожа на непарную строку.");
+        Bullet("Программа сравнивает непарную строку с операциями контрагента противоположной стороны (передача↔приём) в окне ±15 дней по дате операции.");
+        Bullet("Для каждого кандидата считается, сколько включённых полей совпало (галочки в окне параметров перед выгрузкой).");
+        Bullet("В правый блок попадает кандидат с наибольшим числом совпавших полей. Зелёные и красные ячейки показывают, что совпало, а что нет (одинаковая подсветка слева и справа).");
+        Body("Частый случай — у контрагента нет парной операции: справа окажется наиболее похожая из имеющихся («чужая» строка). Красные ячейки тогда могут указывать на ложные расхождения: проблема в отсутствии пары, а не в опечатках.");
+        Body("Другой случай — настоящая парная строка есть, но в ней много ошибок, а рядом лежит почти идентичная «похожая чужая» (например, отличается один символ в заводском номере). Программа выберет её, потому что совпавших полей больше; подсветка снова может вводить в заблуждение.");
+        BoldBody("Важно: зелёная и красная подсветка — это предположение программы о возможных расхождениях с наиболее похожей строкой, а не точный диагноз с гарантией 100%. Сначала убедитесь, что справа ожидаемая парная операция контрагента (а не пропуск ввода и не «похожая чужая» строка); только после этого ориентируйтесь на красные ячейки.");
+        Blank();
+
         Section("Цвета ячеек");
-        ColorRow(PairingFieldMatchFill, "Зелёный", "Поле совпало с ближайшим совпадением (код — по таблице парности; дата — только точное совпадение; активность — ±10%; агрегатное состояние — точное совпадение).");
-        ColorRow(PairingFieldMismatchFill, "Красный", "Поле не совпало с ближайшим совпадением (для даты уже отличие на 1 день — ошибка).");
-        Body("Без заливки справа — ближайшего совпадения нет: пустой ОКПО, нет контрагента, нет операций противоположной стороны, либо нет кандидатов в окне поиска ±15 дней по дате операции.");
+        ColorRow(PairingFieldMatchFill, "Зелёный", "Поле совпало с ближайшим совпадением (если справа действительно ожидаемая пара). Код — по таблице парности; дата — только точное совпадение; активность — ±10%; агрегатное состояние — точное совпадение.");
+        ColorRow(PairingFieldMismatchFill, "Красный", "Поле не совпало с ближайшим совпадением. Подсказка, где смотреть — но только если справа подходящая строка, а не случайный похожий кандидат.");
+        Body("Без заливки — сравнение по полю не выполнялось. Так бывает, если ближайшего совпадения нет (пустой ОКПО, нет контрагента, нет операций противоположной стороны, нет кандидатов в окне ±15 дней) либо галочка поля снята в параметрах.");
+        Blank();
+
+        Section("Пустые паспорт и заводской номер");
+        Body("Если паспорт и заводской номер пустые (или заглушки вроде «-», «б.н.»), несколько строк могут описывать одну партию: сравнивается суммарное количество при совпадении остальных ключевых полей, включая номер упаковки.");
+        Bullet("В подсветке «ближайшего совпадения» количество сравнивается построчно (одинаковые числа — зелёные). Красное количество значит, что у этой пары строк числа разные (например 8 и 5), а не «всегда ошибка» для безсерийных.");
         Blank();
 
         Section("Параметры сравнения");
         Body("Перед выгрузкой выбираются поля сопоставления отдельно для форм 1.1 и 1.3. Рег.№, ОКПО организации, наименование, период и № п/п всегда только для наглядности и в сравнении не участвуют.");
         Bullet("Активность: допуск ±10%.");
         Bullet("Дата операции: для признания пары и зелёной подсветки нужно точное совпадение. Окно ±15 дней только сужает поиск кандидатов (ускорение), кандидаты вне окна не рассматриваются.");
-        Bullet("Код операции: для пары нужны коды из таблицы 21↔31, 22↔32 и т.д.");
+        Bullet("Код операции: для пары нужны коды из таблицы 21↔31, 22↔32 и т.д. (на формах 1.1/1.3; пара 26↔36 относится к формам 1.5–1.8).");
         Bullet("Агрегатное состояние (форма 1.3): точное совпадение значений 1/2/3.");
         Blank();
 
         Section("Краткий порядок работы");
-        Bullet("Сравните левый и правый блоки одной строки.");
-        Bullet("Красные ячейки показывают, где расхождение с ближайшим кандидатом.");
-        Bullet("Проверьте ОКПО контрагента и код операции.");
+        Bullet("Сначала проверьте, что справа — ожидаемая парная операция контрагента, а не просто похожая чужая строка.");
+        Bullet("Если справа подходящий кандидат — смотрите красные ячейки как подсказку по расхождениям.");
+        Bullet("Если парной операции нет — ищите пропущенный ввод у контрагента, а не правьте данные только по цветам.");
+        Bullet("Проверьте ОКПО контрагента (кол. 19) и код операции.");
 
         sheet.View.FreezePanes(3, 1);
     }
@@ -174,52 +205,71 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         }
     }
 
+    /// <summary>
+    /// Дописывает непарные строки одной организации на листы 1.1 и 1.3.
+    /// CurrentRow берётся через <see cref="GetNextDataRow"/> — в режиме «вся БД»
+    /// организации не перезаписывают друг друга.
+    /// <paramref name="orgIndex"/>/<paramref name="orgCount"/> &gt; 0 — префикс «Организация i из N» в прогрессе
+    /// (для multi-org всегда передавайте <paramref name="progressBarVM"/>, не null).
+    /// </summary>
     private void AppendOrganizationToWorkbook(
         ExcelPackage excelPackage,
         OrganizationTransferReceiveExport export,
         AnyTaskProgressBarVM? progressBarVM,
         int percentBase = 0,
-        int percentSpan = 0)
+        int percentSpan = 0,
+        int orgIndex = 0,
+        int orgCount = 0,
+        string? orgLabel = null)
     {
         var halfSpan = Math.Max(0, percentSpan / 2);
 
+        string Stage(string sheetStage) =>
+            FormatOrgExcelStage(orgIndex, orgCount, sheetStage, orgLabel);
+
         if (progressBarVM is not null && percentSpan > 0)
         {
-            progressBarVM.SetProgressBar(percentBase, "Заполнение листа «Форма 1.1»");
+            progressBarVM.SetProgressBar(percentBase, Stage("заполнение листа «Форма 1.1»"));
         }
 
         Worksheet = excelPackage.Workbook.Worksheets["Форма 1.1"];
-        CurrentRow = DataStartRow;
-        WriteForm11RowsFromDto(export.UnpairedForm11, progressBarVM, percentBase, halfSpan);
+        CurrentRow = GetNextDataRow(Worksheet);
+        WriteForm11RowsFromDto(export.UnpairedForm11, progressBarVM, percentBase, halfSpan, Stage);
 
         if (progressBarVM is not null && percentSpan > 0)
         {
-            progressBarVM.SetProgressBar(percentBase + halfSpan, "Заполнение листа «Форма 1.3»");
+            progressBarVM.SetProgressBar(percentBase + halfSpan, Stage("заполнение листа «Форма 1.3»"));
         }
 
         Worksheet = excelPackage.Workbook.Worksheets["Форма 1.3"];
-        CurrentRow = DataStartRow;
-        WriteForm13RowsFromDto(export.UnpairedForm13, progressBarVM, percentBase + halfSpan, percentSpan - halfSpan);
+        CurrentRow = GetNextDataRow(Worksheet);
+        WriteForm13RowsFromDto(export.UnpairedForm13, progressBarVM, percentBase + halfSpan, percentSpan - halfSpan, Stage);
+    }
+
+    /// <summary>Следующая свободная строка данных на листе (после заголовков / уже записанных org).</summary>
+    private static int GetNextDataRow(ExcelWorksheet sheet)
+    {
+        var lastRow = sheet.Dimension?.End.Row ?? HeaderRows;
+        return lastRow < DataStartRow ? DataStartRow : lastRow + 1;
     }
 
     private void WriteForm11RowsFromDto(
         System.Collections.Generic.List<TransferReceiveDto> unpaired,
         AnyTaskProgressBarVM? progressBarVM,
         int percentBase,
-        int percentSpan)
+        int percentSpan,
+        Func<string, string>? formatStage = null)
     {
+        formatStage ??= static s => s;
         Action<int, string>? report = progressBarVM is null
             ? null
             : (percent, text) => progressBarVM.SetProgressBar(percent, text);
         var progress = new ProgressReporter(report, percentBase, percentBase + Math.Max(0, percentSpan));
         var total = unpaired.Count;
         var done = 0;
-        progress.Report(0, total, $"заполнение листа «Форма 1.1»: 0 из {total}");
+        progress.Report(0, total, formatStage($"заполнение листа «Форма 1.1»: 0 из {total}"));
 
-        foreach (var row in unpaired
-                     .OrderBy(op => DateOnly.TryParse(op.StartPeriod, out var d) ? d : DateOnly.MaxValue)
-                     .ThenBy(op => op.NumberInOrder)
-                     .ThenBy(op => op.Id))
+        foreach (var row in OrderForExport(unpaired))
         {
             WriteOperationBlock(row, startCol: 1, applyHighlight: true, isSource: true,
                 closestMatches: _form11ClosestMatches, writeAggregateState: false);
@@ -233,7 +283,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
             CurrentRow++;
             done++;
-            progress.Report(done, total, $"заполнение листа «Форма 1.1»: {done} из {total}");
+            progress.Report(done, total, formatStage($"заполнение листа «Форма 1.1»: {done} из {total}"));
         }
     }
 
@@ -241,20 +291,19 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         System.Collections.Generic.List<TransferReceiveDto> unpaired,
         AnyTaskProgressBarVM? progressBarVM,
         int percentBase,
-        int percentSpan)
+        int percentSpan,
+        Func<string, string>? formatStage = null)
     {
+        formatStage ??= static s => s;
         Action<int, string>? report = progressBarVM is null
             ? null
             : (percent, text) => progressBarVM.SetProgressBar(percent, text);
         var progress = new ProgressReporter(report, percentBase, percentBase + Math.Max(0, percentSpan));
         var total = unpaired.Count;
         var done = 0;
-        progress.Report(0, total, $"заполнение листа «Форма 1.3»: 0 из {total}");
+        progress.Report(0, total, formatStage($"заполнение листа «Форма 1.3»: 0 из {total}"));
 
-        foreach (var row in unpaired
-                     .OrderBy(op => DateOnly.TryParse(op.StartPeriod, out var d) ? d : DateOnly.MaxValue)
-                     .ThenBy(op => op.NumberInOrder)
-                     .ThenBy(op => op.Id))
+        foreach (var row in OrderForExport(unpaired))
         {
             WriteOperationBlock(row, startCol: 1, applyHighlight: true, isSource: true,
                 closestMatches: _form13ClosestMatches, writeAggregateState: true);
@@ -268,7 +317,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
             CurrentRow++;
             done++;
-            progress.Report(done, total, $"заполнение листа «Форма 1.3»: {done} из {total}");
+            progress.Report(done, total, formatStage($"заполнение листа «Форма 1.3»: {done} из {total}"));
         }
     }
 
@@ -557,6 +606,38 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             TransferReceiveField.PackNumber => 17,
             _ => null
         };
+
+    #endregion
+
+    #region Common helpers
+
+    private static readonly CustomReportsComparer OrgRegNoComparer = new();
+
+    /// <summary>
+    /// Статус прогресса при записи Excel. При orgCount/orgIndex &gt; 0 — префикс «Организация i из N».
+    /// Режим «вся БД» должен всегда передавать progressBarVM и эти индексы (не null).
+    /// </summary>
+    private static string FormatOrgExcelStage(int orgIndex, int orgCount, string stage, string? orgLabel = null)
+    {
+        if (orgCount <= 0 || orgIndex <= 0)
+        {
+            return stage;
+        }
+
+        var label = string.IsNullOrWhiteSpace(orgLabel) ? string.Empty : $", {orgLabel}";
+        return $"Организация {orgIndex} из {orgCount}{label}: {stage}";
+    }
+
+    /// <summary>
+    /// Порядок строк в Excel: рег.№ (как в списке организаций), начало/конец периода, № п/п, Id.
+    /// </summary>
+    private static IOrderedEnumerable<TransferReceiveDto> OrderForExport(List<TransferReceiveDto> unpaired) =>
+        unpaired
+            .OrderBy(op => op.OrgRegNo, OrgRegNoComparer)
+            .ThenBy(op => DateOnly.TryParse(op.StartPeriod, out var start) ? start : DateOnly.MaxValue)
+            .ThenBy(op => DateOnly.TryParse(op.EndPeriod, out var end) ? end : DateOnly.MaxValue)
+            .ThenBy(op => op.NumberInOrder)
+            .ThenBy(op => op.Id);
 
     #endregion
 }

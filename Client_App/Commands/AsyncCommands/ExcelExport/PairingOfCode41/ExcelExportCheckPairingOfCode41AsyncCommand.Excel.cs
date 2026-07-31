@@ -2,12 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels.ProgressBar;
-using Models.Collections;
-using Models.Forms.Form1;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
-using OfficeOpenXml.Table;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41;
@@ -21,24 +19,151 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     private static readonly Color PairingLegendTitleFill = Color.FromArgb(33, 78, 128);
     private static readonly Color PairingLegendSectionFill = Color.FromArgb(217, 226, 243);
     private static readonly Color PairingLegendBorder = Color.FromArgb(180, 180, 180);
+    private static readonly Color SourceSectionFill = Color.FromArgb(217, 226, 243);
+    private static readonly Color ClosestSectionFill = Color.FromArgb(255, 242, 204);
+    private static readonly Color SeparatorFill = Color.FromArgb(89, 89, 89);
 
-    /// <summary>
-    /// Создаёт лист «Легенда» и 6 листов форм с заголовками (без данных и без Excel-таблиц).
-    /// </summary>
+    private const int HeaderRows = 2;
+    private const int DataStartRow = 3;
+
+    /// <summary>Число общих «информационных» колонок в начале каждого блока (Рег.№ … № п/п).</summary>
+    private const int InfoColCount = 7;
+
+    private static readonly string[] InfoHeaders =
+    [
+        "Рег.№",
+        "ОКПО",
+        "Сокр. наименование",
+        "№ формы",
+        "Дата начала периода",
+        "Дата конца периода",
+        "№ п/п"
+    ];
+
+    /// <summary>Разметка одного листа: сколько колонок в блоке, где разделитель, где начинается второй блок.</summary>
+    private readonly record struct SheetLayout(int SourceColCount)
+    {
+        public int SeparatorCol => SourceColCount + 1;
+        public int ClosestStartCol => SeparatorCol + 1;
+        public int TotalColCount => SourceColCount * 2 + 1;
+    }
+
+    private static readonly SheetLayout Layout1115 = new(InfoColCount + 17);
+    private static readonly SheetLayout Layout12 = new(InfoColCount + 12);
+    private static readonly SheetLayout Layout13 = new(InfoColCount + 15);
+    private static readonly SheetLayout Layout14 = new(InfoColCount + 17);
+    private static readonly SheetLayout Layout16 = new(InfoColCount + 16);
+
+    private static readonly string[] Form1115DataHeaders =
+    [
+        "Код",
+        "Дата",
+        "Номер паспорта (сертификата)",
+        "Тип",
+        "Радионуклиды",
+        "Заводской номер",
+        "Количество, шт",
+        "Суммарная активность, Бк",
+        "Дата выпуска",
+        "Вид документа",
+        "Номер документа",
+        "Дата документа",
+        "ОКПО поставщика или получателя",
+        "ОКПО перевозчика",
+        "Наименование упаковки",
+        "Тип УКТ",
+        "Номер УКТ"
+    ];
+
+    private static readonly string[] Form12DataHeaders =
+    [
+        "Дата",
+        "Масса, т",
+        "Бета-, гамма-активность, Бк",
+        "Альфа-активность, Бк",
+        "Дата измерения активности",
+        "Вид документа",
+        "Номер документа",
+        "Дата документа",
+        "Наименование упаковки",
+        "Тип УКТ",
+        "Номер УКТ",
+        "Код РАО"
+    ];
+
+    private static readonly string[] Form13DataHeaders =
+    [
+        "Дата",
+        "Основные радионуклиды",
+        "Активность трития, Бк",
+        "Бета-, гамма-активность, Бк",
+        "Альфа-активность, Бк",
+        "Активность трансурановых, Бк",
+        "Дата измерения активности",
+        "Агрегатное состояние",
+        "Вид документа",
+        "Номер документа",
+        "Дата документа",
+        "Наименование упаковки",
+        "Тип УКТ",
+        "Номер УКТ",
+        "Код РАО"
+    ];
+
+    private static readonly string[] Form14DataHeaders =
+    [
+        "Дата",
+        "Объём, м³",
+        "Масса, т",
+        "Основные радионуклиды",
+        "Активность трития, Бк",
+        "Бета-, гамма-активность, Бк",
+        "Альфа-активность, Бк",
+        "Активность трансурановых, Бк",
+        "Дата измерения активности",
+        "Агрегатное состояние",
+        "Вид документа",
+        "Номер документа",
+        "Дата документа",
+        "Наименование упаковки",
+        "Тип УКТ",
+        "Номер УКТ",
+        "Код РАО"
+    ];
+
+    private static readonly string[] Form16DataHeaders =
+    [
+        "Дата",
+        "Код РАО",
+        "Объём, м³",
+        "Масса, т",
+        "Основные радионуклиды",
+        "Активность трития, Бк",
+        "Бета-, гамма-активность, Бк",
+        "Альфа-активность, Бк",
+        "Активность трансурановых, Бк",
+        "Дата измерения активности",
+        "Вид документа",
+        "Номер документа",
+        "Дата документа",
+        "Наименование упаковки",
+        "Тип УКТ",
+        "Номер УКТ"
+    ];
+
+    /// <summary>Создаёт лист «Легенда» и 6 листов форм с заголовками (без данных).</summary>
     private void InitializePairingWorkbook(ExcelPackage excelPackage)
     {
         CreatePairingLegendSheet(excelPackage);
-        CreateEmptyPairingSheet(excelPackage, "Форма 1.1", "1.1");
-        CreateEmptyPairingSheet(excelPackage, "Форма 1.2", "1.2");
-        CreateEmptyPairingSheet(excelPackage, "Форма 1.3", "1.3");
-        CreateEmptyPairingSheet(excelPackage, "Форма 1.4", "1.4");
-        CreateEmptyPairingSheet(excelPackage, "Форма 1.5", "1.5");
-        CreateEmptyPairingSheet(excelPackage, "Форма 1.6", "1.6");
+        CreateEmptyPairingSheet(excelPackage, "Форма 1.1", Layout1115, Form1115DataHeaders);
+        CreateEmptyPairingSheet(excelPackage, "Форма 1.2", Layout12, Form12DataHeaders);
+        CreateEmptyPairingSheet(excelPackage, "Форма 1.3", Layout13, Form13DataHeaders);
+        CreateEmptyPairingSheet(excelPackage, "Форма 1.4", Layout14, Form14DataHeaders);
+        CreateEmptyPairingSheet(excelPackage, "Форма 1.5", Layout1115, Form1115DataHeaders);
+        CreateEmptyPairingSheet(excelPackage, "Форма 1.6", Layout16, Form16DataHeaders);
     }
 
-    /// <summary>
-    /// Первый лист книги: пояснения для пользователя (цвета, пары форм, код 14, qty, допуск).
-    /// </summary>
+    /// <summary>Первый лист книги: пояснения для пользователя (структура блоков, цвета, пары форм, допуски).</summary>
     private static void CreatePairingLegendSheet(ExcelPackage excelPackage)
     {
         var sheet = excelPackage.Workbook.Worksheets.Add("Легенда");
@@ -109,6 +234,18 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             row++;
         }
 
+        void BoldBody(string text)
+        {
+            sheet.Cells[row, 1, row, 2].Merge = true;
+            var cell = sheet.Cells[row, 1];
+            cell.Value = text;
+            cell.Style.WrapText = true;
+            cell.Style.Font.Bold = true;
+            cell.Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+            sheet.Row(row).Height = EstimateWrappedRowHeight(text, 100);
+            row++;
+        }
+
         void Bullet(string text) => Body("•  " + text);
 
         void ColorRow(Color fill, string label, string explanation)
@@ -140,7 +277,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         }
 
         Title("Непарные операции с кодом 41 — как читать отчёт");
-        Subtitle("Ниже — кратко о том, что означают строки и цвета на листах форм.");
+        Subtitle("Ниже — кратко о том, что означают блоки, строки и цвета на листах форм.");
         Blank();
 
         Section("Зачем этот файл");
@@ -149,19 +286,42 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         Bullet("Этот лист «Легенда» — пояснения; данные организаций на нём не выводятся.");
         Blank();
 
+        Section("Структура листов форм");
+        Body("Каждая строка листа — одна непарная операция. Слева (голубой заголовок) — сама непарная операция. Справа, после тёмной разделительной колонки (жёлтый заголовок «Ближайшее совпадение») — наиболее похожая операция с парной формы. Что именно значит «ближайшее» — в следующем разделе.");
+        Bullet("Если ближайшего совпадения нет (парная форма пуста или не нашлось ни одного кандидата) — правый блок остаётся пустым.");
+        Bullet("Колонки Рег.№, ОКПО, наименование, № формы, период и № п/п — только для наглядности, в сравнении не участвуют.");
+        Blank();
+
+        Section("Что такое «ближайшее совпадение»");
+        Body("«Ближайшее совпадение» — это не найденная пара (иначе строка не попала бы в отчёт), а подсказка: какая операция на парной форме больше всего похожа на непарную строку.");
+        Bullet("Программа сравнивает непарную строку со всеми операциями той же организации на парной форме.");
+        Bullet("Для каждого кандидата считается, сколько полей совпало — учитываются только поля с галочками в окне параметров перед выгрузкой.");
+        Bullet("В правый блок попадает кандидат с наибольшим числом совпавших полей. Зелёные и красные ячейки показывают, что совпало, а что нет (одинаковая подсветка слева и справа).");
+        Bullet("На листе 1.6 кандидат ищется среди форм 1.2, 1.3 и 1.4; при равном числе совпадений предпочтение у формы 1.2.");
+        Bullet("Если на парной форме нечего сравнивать — правый блок пустой, подсветки нет. Это нормально и не означает ошибку выгрузки.");
+        Body("Частый случай — парную строку не ввели: для операции с кодом 41 на соответствующей форме нет записи. Тогда справа окажется не «настоящая» пара, а просто наиболее похожая из уже имеющихся — другая операция, другой источник или другой период. Красные ячейки сравнивают непарную строку с «чужой» записью и могут указывать на ложные расхождения: проблема не в опечатках, а в том, что парной строки нет вовсе.");
+        Body("Другой случай — настоящая парная строка есть, но в ней много опечаток и ошибок (не совпадает сразу несколько полей). Рядом в отчёте может лежать другая, почти идентичная строка, где отличается, например, только один символ в заводском номере, а остальные поля совпадают. Программа выберет именно её как «ближайшую», потому что совпавших полей больше. Подсветка тогда сравнивает не с ожидаемой парой, а с «похожей чужой» строкой и тоже может вводить в заблуждение.");
+        BoldBody("Важно: зелёная и красная подсветка — это предположение программы о возможных расхождениях с наиболее похожей строкой, а не точный диагноз с гарантией 100%. Сначала убедитесь, что справа действительно ожидаемая парная операция (а не пропуск ввода и не «похожая чужая» строка); только после этого ориентируйтесь на красные ячейки.");
+        Blank();
+
         Section("Цвета ячеек");
-        Body("На листах форм часть ячеек подкрашена. Цвет показывает сравнение непарной строки с наиболее похожей строкой на другой стороне («ближайшее совпадение»).");
+        Body("На листах форм часть ячеек подкрашена. Цвет показывает сравнение непарной строки с ближайшим совпадением; заливкой отмечены соответствующие ячейки в ОБОИХ блоках.");
         ColorRow(
             PairingFieldMatchFill,
             "Зелёный",
-            "Значение совпало с ближайшим совпадением на парной форме.");
+            "Значение совпало с ближайшим совпадением на парной форме (если справа действительно ожидаемая пара).");
         ColorRow(
             PairingFieldMismatchFill,
             "Красный",
-            "Значение не совпало с ближайшим совпадением. Это подсказка, где искать расхождение.");
-        Body("Без заливки — сравнение по этому полю не выполнялось. Так бывает в двух случаях:");
+            "Значение не совпало с ближайшим совпадением. Подсказка, где смотреть — но только если справа подходящая строка, а не случайный похожий кандидат.");
+        Body("Без заливки — сравнение по этому полю не выполнялось. Так бывает в трёх случаях:");
         Bullet("на парной форме у организации нет ни одной операции с кодом 41, с которой можно сравнить строку (для 1.1 парная форма — 1.5; для 1.2, 1.3 и 1.4 — 1.6; для 1.5 — 1.1; для 1.6 — 1.2, 1.3 и 1.4);");
-        Bullet("перед выгрузкой в окне параметров вы сняли галочку с этого поля — оно не участвует в сравнении и не подсвечивается.");
+        Bullet("перед выгрузкой в окне параметров вы сняли галочку с этого поля — оно не участвует в сравнении и не подсвечивается;");
+        Bullet("на листе «Форма 1.6» поле не входит в набор сравнения с формой ближайшего совпадения (1.2, 1.3 или 1.4) — см. раздел ниже.");
+        Blank();
+
+        Section("Агрегатное состояние и код РАО");
+        Body("На листах 1.3 и 1.4 колонка «Агрегатное состояние» подсвечивается отдельно: зелёным, если её значение совпадает с первой цифрой кода РАО ближайшего совпадения на 1.6, красным — если не совпадает. На листе 1.6, если ближайшее совпадение найдено среди 1.3/1.4, этим же правилом подсвечивается колонка «Код РАО».");
         Blank();
 
         Section("Какие формы сравниваются");
@@ -178,16 +338,22 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         PairRow("1.6", "1.2, затем 1.3, затем 1.4");
         Blank();
 
+        Section("Лист «Форма 1.6»: зелёные, красные и белые ячейки");
+        Body("На листе 1.6 колонки одни и те же для всех строк, а набор сравниваемых полей зависит от того, с какой формой РВ найдено ближайшее совпадение. Смотрите колонку «№ формы» в правом блоке: там будет 1.2, 1.3 или 1.4. Белая ячейка при включённых галочках — не ошибка выгрузки: по этому полю сравнение с выбранным кандидатом просто не делается.");
+        Bullet("Ближайшее совпадение с формы 1.2: подсвечиваются масса, β/γ- и α-активности, код РАО, даты, документ и упаковка. Объём, основные радионуклиды, активность трития и трансурановых остаются белыми — в форме 1.2 этих реквизитов нет.");
+        Bullet("Ближайшее совпадение с формы 1.3: подсвечиваются основные радионуклиды, четыре вида активностей, код РАО, даты, документ и упаковка. Объём и масса остаются белыми — в ключе парности 1.3↔1.6 их нет.");
+        Bullet("Ближайшее совпадение с формы 1.4: подсвечиваются объём, масса, основные радионуклиды, четыре вида активностей, код РАО, даты, документ и упаковка — полный набор колонок данных 1.6.");
+        Blank();
+
         Section("Особый случай: код 14 на форме 1.5");
         Body("Иногда на форме 1.5 вместо кода 41 указывают код 14. Программа учитывает такие строки при поиске пары для формы 1.1 (код 41), но:");
         Bullet("строка формы 1.5 с кодом 14 в этот отчёт не выводится;");
-        Bullet("если на 1.1 осталась непарная строка, а ближайшее совпадение на 1.5 имеет код 14, ячейка «Код операции» на листе 1.1 будет красной — коды 41 и 14 не совпали.");
+        Bullet("если на 1.1 осталась непарная строка, а ближайшее совпадение на 1.5 имеет код 14, ячейка «Код» на листе 1.1 будет красной — коды 41 и 14 не совпали.");
         Blank();
 
         Section("Пустые паспорт и заводской номер");
-        Body("Если паспорт и заводской номер пустые (или стоят заглушки вроде «-», «б.н.», «без номера»), несколько строк могут описывать одну партию: одна строка с количеством N или несколько строк, сумма количеств которых равна N. Такие записи считаются одной партией.");
-        Bullet("В отчёте подсвечивается красным только неверно указанное количество.");
-        Bullet("Если строка в отчёте из‑за несовпадения по количеству, ячейка «Количество» подсвечивается красным .");
+        Body("Если паспорт и заводской номер пустые (или стоят заглушки вроде «-», «б.н.», «без номера»), несколько строк могут описывать одну партию: одна строка с количеством N или несколько строк, сумма количеств которых равна N. Такие записи считаются одной партией при совпадении остальных ключевых полей, включая номер упаковки.");
+        Bullet("В подсветке «ближайшего совпадения» количество сравнивается построчно (одинаковые числа — зелёные). Красное количество значит, что у этой пары строк числа разные (например 8 и 5), а не «всегда ошибка» для безсерийных.");
         Blank();
 
         Section("Допуск ±10%");
@@ -200,8 +366,9 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
         Section("Краткий порядок работы");
         Bullet("Откройте нужный лист формы.");
-        Bullet("Посмотрите красные ячейки — они указывают на расхождения с ближайшим совпадением.");
-        Bullet("Сверьте проблемные ячейки с соответствующей парной строчкой в данном отчёте (если есть) или в программе.");
+        Bullet("Сначала проверьте, что справа — ожидаемая парная операция, а не просто похожая чужая строка (в том числе когда у настоящей пары много ошибок, а у «соседа» почти всё совпало).");
+        Bullet("Если справа подходящий кандидат — смотрите красные ячейки как подсказку по расхождениям.");
+        Bullet("Если парной строки нет вовсе — ищите пропущенный ввод на парной форме, а не правьте данные только по цветам.");
         Bullet("При необходимости откройте исходные отчёты организации в программе и исправьте данные, внеся корректировку в отчёт.");
 
         sheet.View.FreezePanes(3, 1);
@@ -221,15 +388,17 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         return Math.Min(72, 16 + lines * 14);
     }
 
-    private void CreateEmptyPairingSheet(ExcelPackage excelPackage, string sheetName, string formNum)
+    private void CreateEmptyPairingSheet(ExcelPackage excelPackage, string sheetName, SheetLayout layout, string[] dataHeaders)
     {
         Worksheet = excelPackage.Workbook.Worksheets.Add(sheetName);
-        SetupHeaders(formNum);
+        SetupPairingFormHeaders(layout, dataHeaders);
     }
 
     /// <summary>
     /// Дописывает непарные строки одной организации на уже созданные листы.
     /// Подсветка closest-match берётся из полей экземпляра (пересобраны для этой org).
+    /// Важно: CurrentRow продолжается с конца листа (не с DataStartRow) — иначе при режиме
+    /// «вся БД» организации перезаписывают друг друга, а справа остаётся «чужой» closest.
     /// </summary>
     private void AppendOrganizationToPairingWorkbook(
         ExcelPackage excelPackage,
@@ -238,773 +407,631 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         int percentBase = 0,
         int percentSpan = 0)
     {
-        SetExportActivitiesCache(export.UnpairedForm13, export.UnpairedForm14);
+        var step = percentSpan > 0 ? Math.Max(1, percentSpan / 6) : 0;
 
-        void Progress(int step, string sheetTitle)
-        {
-            if (progressBarVM is null || percentSpan <= 0)
-            {
-                return;
-            }
+        Worksheet = excelPackage.Workbook.Worksheets["Форма 1.1"];
+        CurrentRow = GetNextDataRow(Worksheet);
+        WriteForm1115Rows(export.UnpairedForm11, _form11ClosestMatchHighlights, Layout1115, "Форма 1.1", progressBarVM, percentBase, step);
 
-            var percent = percentBase + percentSpan * step / 6;
-            progressBarVM.SetProgressBar(percent, $"Заполнение листа «{sheetTitle}»");
-        }
+        Worksheet = excelPackage.Workbook.Worksheets["Форма 1.2"];
+        CurrentRow = GetNextDataRow(Worksheet);
+        WriteForm12Rows(export.UnpairedForm12, progressBarVM, percentBase + step, step);
 
-        Progress(0, "Форма 1.1");
-        AppendToPairingSheet(excelPackage, "Форма 1.1", export.Form11, WriteForm11Rows);
-        Progress(1, "Форма 1.2");
-        AppendToPairingSheet(excelPackage, "Форма 1.2", export.Form12, WriteForm12Rows);
-        Progress(2, "Форма 1.3");
-        AppendToPairingSheet(excelPackage, "Форма 1.3", export.Form13, WriteForm13Rows);
-        Progress(3, "Форма 1.4");
-        AppendToPairingSheet(excelPackage, "Форма 1.4", export.Form14, WriteForm14Rows);
-        Progress(4, "Форма 1.5");
-        AppendToPairingSheet(excelPackage, "Форма 1.5", export.Form15, WriteForm15Rows);
-        Progress(5, "Форма 1.6");
-        AppendToPairingSheet(excelPackage, "Форма 1.6", export.Form16, WriteForm16Rows);
+        Worksheet = excelPackage.Workbook.Worksheets["Форма 1.3"];
+        CurrentRow = GetNextDataRow(Worksheet);
+        WriteForm13Rows(export.UnpairedForm13, progressBarVM, percentBase + step * 2, step);
+
+        Worksheet = excelPackage.Workbook.Worksheets["Форма 1.4"];
+        CurrentRow = GetNextDataRow(Worksheet);
+        WriteForm14Rows(export.UnpairedForm14, progressBarVM, percentBase + step * 3, step);
+
+        Worksheet = excelPackage.Workbook.Worksheets["Форма 1.5"];
+        CurrentRow = GetNextDataRow(Worksheet);
+        WriteForm1115Rows(export.UnpairedForm15, _form15ClosestMatchHighlights, Layout1115, "Форма 1.5", progressBarVM, percentBase + step * 4, step);
+
+        Worksheet = excelPackage.Workbook.Worksheets["Форма 1.6"];
+        CurrentRow = GetNextDataRow(Worksheet);
+        WriteForm16Rows(export.UnpairedForm16, progressBarVM, percentBase + step * 5, step);
     }
 
-    private void AppendToPairingSheet(
-        ExcelPackage excelPackage,
-        string sheetName,
-        Reports reports,
-        Action writeRows)
+    /// <summary>Следующая свободная строка данных на листе (после заголовков / уже записанных org).</summary>
+    private static int GetNextDataRow(ExcelWorksheet sheet)
     {
-        Worksheet = excelPackage.Workbook.Worksheets[sheetName];
-        CurrentReports = reports;
-        CurrentRow = Worksheet.Dimension!.End.Row + 1;
-        writeRows();
+        var lastRow = sheet.Dimension?.End.Row ?? HeaderRows;
+        return lastRow < DataStartRow ? DataStartRow : lastRow + 1;
     }
 
-    /// <summary>
-    /// Создаёт Excel-таблицы.
-    /// </summary>
+    /// <summary>Автофильтр по строке заголовков + тонкая сетка по данным (без затирания заливки подсветки).</summary
     private static void FinalizePairingWorkbookTables(ExcelPackage excelPackage)
     {
-        AddPairingExcelTable(excelPackage.Workbook.Worksheets["Форма 1.1"], 29, "tbl_Pair41_Form11");
-        AddPairingExcelTable(excelPackage.Workbook.Worksheets["Форма 1.2"], 30, "tbl_Pair41_Form12");
-        AddPairingExcelTable(excelPackage.Workbook.Worksheets["Форма 1.3"], 31, "tbl_Pair41_Form13");
-        AddPairingExcelTable(excelPackage.Workbook.Worksheets["Форма 1.4"], 33, "tbl_Pair41_Form14");
-        AddPairingExcelTable(excelPackage.Workbook.Worksheets["Форма 1.5"], 32, "tbl_Pair41_Form15");
-        AddPairingExcelTable(excelPackage.Workbook.Worksheets["Форма 1.6"], 30, "tbl_Pair41_Form16");
+        FinalizePairingSheetTable(excelPackage.Workbook.Worksheets["Форма 1.1"], Layout1115);
+        FinalizePairingSheetTable(excelPackage.Workbook.Worksheets["Форма 1.2"], Layout12);
+        FinalizePairingSheetTable(excelPackage.Workbook.Worksheets["Форма 1.3"], Layout13);
+        FinalizePairingSheetTable(excelPackage.Workbook.Worksheets["Форма 1.4"], Layout14);
+        FinalizePairingSheetTable(excelPackage.Workbook.Worksheets["Форма 1.5"], Layout1115);
+        FinalizePairingSheetTable(excelPackage.Workbook.Worksheets["Форма 1.6"], Layout16);
     }
 
-    private static void AddPairingExcelTable(ExcelWorksheet sheet, int columnCount, string tableName)
+    private static void FinalizePairingSheetTable(ExcelWorksheet sheet, SheetLayout layout)
     {
-        var lastRow = sheet.Dimension?.End.Row ?? 1;
-        if (lastRow < 2)
+        var lastRow = sheet.Dimension?.End.Row ?? HeaderRows;
+        if (lastRow < DataStartRow)
         {
             return;
         }
 
-        var table = sheet.Tables.Add(sheet.Cells[1, 1, lastRow, columnCount], tableName);
-        table.TableStyle = TableStyles.Medium2;
-        table.ShowRowStripes = true;
+        sheet.Cells[HeaderRows, 1, HeaderRows, layout.TotalColCount].AutoFilter = true;
+        ApplyThinGridBorders(sheet, DataStartRow, lastRow, layout);
+    }
+
+    private static void ApplyThinGridBorders(ExcelWorksheet sheet, int firstRow, int lastRow, SheetLayout layout)
+    {
+        var borderColor = Color.FromArgb(180, 180, 180);
+        for (var row = firstRow; row <= lastRow; row++)
+        {
+            for (var col = 1; col <= layout.TotalColCount; col++)
+            {
+                if (col == layout.SeparatorCol)
+                {
+                    continue;
+                }
+
+                var border = sheet.Cells[row, col].Style.Border;
+                border.Top.Style = ExcelBorderStyle.Thin;
+                border.Bottom.Style = ExcelBorderStyle.Thin;
+                border.Left.Style = ExcelBorderStyle.Thin;
+                border.Right.Style = ExcelBorderStyle.Thin;
+                border.Top.Color.SetColor(borderColor);
+                border.Bottom.Color.SetColor(borderColor);
+                border.Left.Color.SetColor(borderColor);
+                border.Right.Color.SetColor(borderColor);
+            }
+        }
     }
 
     #endregion
 
     #region Headers / column sizing
 
-    private void SetupHeaders(string formNum)
+    private void SetupPairingFormHeaders(SheetLayout layout, string[] dataHeaders)
     {
-        FillFormHeadersWithoutNotes(formNum);
+        var sheet = Worksheet;
 
-        if (OperatingSystem.IsWindows())
-        {
-            Worksheet.Cells.AutoFitColumns();
-        }
+        sheet.Cells[1, 1, 1, layout.SourceColCount].Merge = true;
+        sheet.Cells[1, 1].Value = "Непарная операция";
+        sheet.Cells[1, 1].Style.Font.Bold = true;
+        sheet.Cells[1, 1].Style.Font.Color.SetColor(Color.FromArgb(30, 30, 30));
+        sheet.Cells[1, 1, 1, layout.SourceColCount].Style.Fill.SetBackground(SourceSectionFill, ExcelFillStyle.Solid);
+        sheet.Cells[1, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
-        ApplyPairingSheetColumnSizing(formNum);
+        sheet.Cells[1, layout.SeparatorCol].Value = string.Empty;
+        sheet.Column(layout.SeparatorCol).Width = 2.5;
+        sheet.Cells[1, layout.SeparatorCol, 2, layout.SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
 
-        Worksheet.View.FreezePanes(2, 1);
+        sheet.Cells[1, layout.ClosestStartCol, 1, layout.TotalColCount].Merge = true;
+        sheet.Cells[1, layout.ClosestStartCol].Value = "Ближайшее совпадение";
+        sheet.Cells[1, layout.ClosestStartCol].Style.Font.Bold = true;
+        sheet.Cells[1, layout.ClosestStartCol, 1, layout.TotalColCount].Style.Fill.SetBackground(ClosestSectionFill, ExcelFillStyle.Solid);
+        sheet.Cells[1, layout.ClosestStartCol].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+
+        WriteFieldHeaders(2, 1, dataHeaders);
+        WriteFieldHeaders(2, layout.ClosestStartCol, dataHeaders);
+
+        sheet.Cells[2, layout.SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
+
+        ApplyPairingFieldHeaderStyle(sheet, 1, layout.SourceColCount);
+        ApplyPairingFieldHeaderStyle(sheet, layout.ClosestStartCol, layout.TotalColCount);
+
+        sheet.Columns[layout.SeparatorCol].Style.Border.Left.Style = ExcelBorderStyle.Medium;
+        sheet.Columns[layout.SeparatorCol].Style.Border.Right.Style = ExcelBorderStyle.Medium;
+        sheet.Columns[layout.SeparatorCol].Style.Border.Left.Color.SetColor(SeparatorFill);
+        sheet.Columns[layout.SeparatorCol].Style.Border.Right.Color.SetColor(SeparatorFill);
+
+        sheet.Row(1).Height = 22;
+        sheet.Row(2).Height = ExcelHeaderRowMinHeight;
+        ApplyPairingColumnWidths(sheet, layout);
+        sheet.View.FreezePanes(DataStartRow, 1);
     }
 
-    private void ApplyPairingSheetColumnSizing(string formNum)
+    /// <summary>Синяя шапка наименований колонок — как в остальных Excel-выгрузках.</summary>
+    private static void ApplyPairingFieldHeaderStyle(ExcelWorksheet sheet, int firstCol, int lastCol)
     {
-        var lastCol = formNum switch
-        {
-            "1.1" => 29,
-            "1.2" => 30,
-            "1.3" => 31,
-            "1.4" => 33,
-            "1.5" => 32,
-            "1.6" => 30,
-            _ => 29
-        };
+        var headerRange = sheet.Cells[HeaderRows, firstCol, HeaderRows, lastCol];
+        headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
+        headerRange.Style.Fill.BackgroundColor.SetColor(ExcelHeaderFillColor);
+        headerRange.Style.Font.Bold = true;
+        headerRange.Style.Font.Size = ExcelHeaderFontSize;
+        headerRange.Style.Font.Color.SetColor(ExcelHeaderFontColor);
+        headerRange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        headerRange.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        headerRange.Style.WrapText = true;
 
-        int[] dateColumns = formNum switch
+        for (var col = firstCol; col <= lastCol; col++)
         {
-            "1.1" => [4, 5, 9, 17, 24],
-            "1.2" => [4, 5, 9, 16, 22],
-            "1.3" => [4, 5, 9, 17, 23],
-            "1.4" => [4, 5, 9, 15, 22],
-            "1.5" => [4, 5, 9, 16, 20],
-            "1.6" => [4, 5, 9, 20, 23],
-            _ => []
-        };
-
-        foreach (var colIndex in dateColumns)
-        {
-            Worksheet.Column(colIndex).Width *= 1.1;
-        }
-
-        Worksheet.Row(1).Height = formNum is "1.5" or "1.4" ? 52 : 44;
-        Worksheet.Cells[1, 1, 1, lastCol].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
-        Worksheet.Cells[1, 1, 1, lastCol].Style.WrapText = true;
-
-        // Длинный заголовок паспорта на 1.5 уже переносится — колонку держим уже.
-        if (formNum == "1.5")
-        {
-            Worksheet.Column(10).Width *= 0.5;
+            var border = sheet.Cells[HeaderRows, col].Style.Border;
+            border.Top.Style = ExcelBorderStyle.Thin;
+            border.Bottom.Style = ExcelBorderStyle.Thin;
+            border.Left.Style = ExcelBorderStyle.Thin;
+            border.Right.Style = ExcelBorderStyle.Thin;
+            border.Top.Color.SetColor(ExcelHeaderBorderColor);
+            border.Bottom.Color.SetColor(ExcelHeaderBorderColor);
+            border.Left.Color.SetColor(ExcelHeaderBorderColor);
+            border.Right.Color.SetColor(ExcelHeaderBorderColor);
         }
     }
 
-    private void FillFormHeadersWithoutNotes(string formNum)
+    /// <summary>Ширины колонок в «пикселях» Excel (перевод в единицы EPPlus: (px − 5) / 7).</summary>
+    private static void ApplyPairingColumnWidths(ExcelWorksheet sheet, SheetLayout layout)
     {
-        switch (formNum)
+        int[] infoWidthsPx = [70, 90, 210, 60, 110, 110, 50];
+        var dataColCount = layout.SourceColCount - InfoColCount;
+        var dataWidthPx = dataColCount switch
         {
-            case "1.1":
-                Worksheet.Cells[1, 1].Value = "Рег.№";
-                Worksheet.Cells[1, 2].Value = "ОКПО";
-                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 4].Value = "Дата начала периода";
-                Worksheet.Cells[1, 5].Value = "Дата конца периода";
-                Worksheet.Cells[1, 6].Value = "Номер корректировки";
-                Worksheet.Cells[1, 7].Value = "№ п/п";
-                Worksheet.Cells[1, 8].Value = "Код";
-                Worksheet.Cells[1, 9].Value = "Дата";
-                Worksheet.Cells[1, 10].Value = "Номер паспорта (сертификата)";
-                Worksheet.Cells[1, 11].Value = "Тип";
-                Worksheet.Cells[1, 12].Value = "Радионуклиды";
-                Worksheet.Cells[1, 13].Value = "Заводской номер";
-                Worksheet.Cells[1, 14].Value = "Количество, шт";
-                Worksheet.Cells[1, 15].Value = "Суммарная активность, Бк";
-                Worksheet.Cells[1, 16].Value = "Код ОКПО изготовителя";
-                Worksheet.Cells[1, 17].Value = "Дата выпуска";
-                Worksheet.Cells[1, 18].Value = "Категория";
-                Worksheet.Cells[1, 19].Value = "НСС, мес";
-                Worksheet.Cells[1, 20].Value = "Код формы собственности";
-                Worksheet.Cells[1, 21].Value = "Код ОКПО правообладателя";
-                Worksheet.Cells[1, 22].Value = "Вид документа";
-                Worksheet.Cells[1, 23].Value = "Номер документа";
-                Worksheet.Cells[1, 24].Value = "Дата документа";
-                Worksheet.Cells[1, 25].Value = "ОКПО поставщика или получателя";
-                Worksheet.Cells[1, 26].Value = "ОКПО перевозчика";
-                Worksheet.Cells[1, 27].Value = "Наименование упаковки";
-                Worksheet.Cells[1, 28].Value = "Тип УКТ";
-                Worksheet.Cells[1, 29].Value = "Номер УКТ";
-                break;
+            <= 12 => 110,
+            <= 15 => 100,
+            _ => 95
+        };
 
-            case "1.2":
-                Worksheet.Cells[1, 1].Value = "Рег.№";
-                Worksheet.Cells[1, 2].Value = "ОКПО";
-                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 4].Value = "Дата начала периода";
-                Worksheet.Cells[1, 5].Value = "Дата конца периода";
-                Worksheet.Cells[1, 6].Value = "Номер корректировки";
-                Worksheet.Cells[1, 7].Value = "№ п/п";
-                Worksheet.Cells[1, 8].Value = "Код";
-                Worksheet.Cells[1, 9].Value = "Дата";
-                Worksheet.Cells[1, 10].Value = "Номер паспорта (сертификата)";
-                Worksheet.Cells[1, 11].Value = "Наименование ИОУ";
-                Worksheet.Cells[1, 12].Value = "Заводской номер";
-                Worksheet.Cells[1, 13].Value = "Масса, кг";
-                Worksheet.Cells[1, 14].Value = "Масса для сопоставления, т";
-                Worksheet.Cells[1, 15].Value = "Код ОКПО изготовителя";
-                Worksheet.Cells[1, 16].Value = "Дата выпуска";
-                Worksheet.Cells[1, 17].Value = "НСС, мес";
-                Worksheet.Cells[1, 18].Value = "Код формы собственности";
-                Worksheet.Cells[1, 19].Value = "Код ОКПО правообладателя";
-                Worksheet.Cells[1, 20].Value = "Вид документа";
-                Worksheet.Cells[1, 21].Value = "Номер документа";
-                Worksheet.Cells[1, 22].Value = "Дата документа";
-                Worksheet.Cells[1, 23].Value = "ОКПО поставщика или получателя";
-                Worksheet.Cells[1, 24].Value = "ОКПО перевозчика";
-                Worksheet.Cells[1, 25].Value = "Наименование упаковки";
-                Worksheet.Cells[1, 26].Value = "Тип УКТ";
-                Worksheet.Cells[1, 27].Value = "Номер УКТ";
-                Worksheet.Cells[1, 28].Value = "Бета-, гамма-активность, Бк";
-                Worksheet.Cells[1, 29].Value = "Альфа-активность, Бк";
-                break;
+        for (var i = 0; i < infoWidthsPx.Length; i++)
+        {
+            var width = ExcelWidthFromPixels(infoWidthsPx[i]);
+            sheet.Column(1 + i).Width = width;
+            sheet.Column(layout.ClosestStartCol + i).Width = width;
+        }
 
-            case "1.3":
-                Worksheet.Cells[1, 1].Value = "Рег.№";
-                Worksheet.Cells[1, 2].Value = "ОКПО";
-                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 4].Value = "Дата начала периода";
-                Worksheet.Cells[1, 5].Value = "Дата конца периода";
-                Worksheet.Cells[1, 6].Value = "Номер корректировки";
-                Worksheet.Cells[1, 7].Value = "№ п/п";
-                Worksheet.Cells[1, 8].Value = "Код";
-                Worksheet.Cells[1, 9].Value = "Дата";
-                Worksheet.Cells[1, 10].Value = "Номер паспорта (сертификата)";
-                Worksheet.Cells[1, 11].Value = "Тип";
-                Worksheet.Cells[1, 12].Value = "Радионуклиды";
-                Worksheet.Cells[1, 13].Value = "Заводской номер";
-                Worksheet.Cells[1, 14].Value = "Суммарная активность, Бк";
-                Worksheet.Cells[1, 15].Value = "Код ОКПО изготовителя";
-                Worksheet.Cells[1, 16].Value = "Дата выпуска";
-                Worksheet.Cells[1, 17].Value = "Агрегатное состояние";
-                Worksheet.Cells[1, 18].Value = "Код формы собственности";
-                Worksheet.Cells[1, 19].Value = "Код ОКПО правообладателя";
-                Worksheet.Cells[1, 20].Value = "Вид документа";
-                Worksheet.Cells[1, 21].Value = "Номер документа";
-                Worksheet.Cells[1, 22].Value = "Дата документа";
-                Worksheet.Cells[1, 23].Value = "ОКПО поставщика или получателя";
-                Worksheet.Cells[1, 24].Value = "ОКПО перевозчика";
-                Worksheet.Cells[1, 25].Value = "Наименование упаковки";
-                Worksheet.Cells[1, 26].Value = "Тип УКТ";
-                Worksheet.Cells[1, 27].Value = "Номер УКТ";
-                Worksheet.Cells[1, 28].Value = "Активность трития, Бк";
-                Worksheet.Cells[1, 29].Value = "Бета-, гамма-активность, Бк";
-                Worksheet.Cells[1, 30].Value = "Альфа-активность, Бк";
-                Worksheet.Cells[1, 31].Value = "Активность трансурановых, Бк";
-                break;
+        for (var i = InfoColCount; i < layout.SourceColCount; i++)
+        {
+            var width = ExcelWidthFromPixels(dataWidthPx);
+            sheet.Column(1 + i).Width = width;
+            sheet.Column(layout.ClosestStartCol + i).Width = width;
+        }
 
-            case "1.4":
-                Worksheet.Cells[1, 1].Value = "Рег.№";
-                Worksheet.Cells[1, 2].Value = "ОКПО";
-                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 4].Value = "Дата начала периода";
-                Worksheet.Cells[1, 5].Value = "Дата конца периода";
-                Worksheet.Cells[1, 6].Value = "Номер корректировки";
-                Worksheet.Cells[1, 7].Value = "№ п/п";
-                Worksheet.Cells[1, 8].Value = "Код";
-                Worksheet.Cells[1, 9].Value = "Дата";
-                Worksheet.Cells[1, 10].Value = "Номер паспорта (сертификата)";
-                Worksheet.Cells[1, 11].Value = "Наименование";
-                Worksheet.Cells[1, 12].Value = "Сорт";
-                Worksheet.Cells[1, 13].Value = "Радионуклиды";
-                Worksheet.Cells[1, 14].Value = "Суммарная активность, Бк";
-                Worksheet.Cells[1, 15].Value = "Дата измерения активности";
-                Worksheet.Cells[1, 16].Value = "Объём, м³";
-                Worksheet.Cells[1, 17].Value = "Масса, кг";
-                Worksheet.Cells[1, 18].Value = "Масса для сопоставления, т";
-                Worksheet.Cells[1, 19].Value = "Агрегатное состояние";
-                Worksheet.Cells[1, 20].Value = "Код формы собственности";
-                Worksheet.Cells[1, 21].Value = "Код ОКПО правообладателя";
-                Worksheet.Cells[1, 22].Value = "Вид документа";
-                Worksheet.Cells[1, 23].Value = "Номер документа";
-                Worksheet.Cells[1, 24].Value = "Дата документа";
-                Worksheet.Cells[1, 25].Value = "ОКПО поставщика или получателя";
-                Worksheet.Cells[1, 26].Value = "ОКПО перевозчика";
-                Worksheet.Cells[1, 27].Value = "Наименование упаковки";
-                Worksheet.Cells[1, 28].Value = "Тип УКТ";
-                Worksheet.Cells[1, 29].Value = "Номер УКТ";
-                Worksheet.Cells[1, 30].Value = "Активность трития, Бк";
-                Worksheet.Cells[1, 31].Value = "Бета-, гамма-активность, Бк";
-                Worksheet.Cells[1, 32].Value = "Альфа-активность, Бк";
-                Worksheet.Cells[1, 33].Value = "Активность трансурановых, Бк";
-                break;
+        sheet.Column(layout.SeparatorCol).Width = 2.5;
+    }
 
-            case "1.5":
-                Worksheet.Cells[1, 1].Value = "Рег.№";
-                Worksheet.Cells[1, 2].Value = "ОКПО";
-                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 4].Value = "Дата начала периода";
-                Worksheet.Cells[1, 5].Value = "Дата конца периода";
-                Worksheet.Cells[1, 6].Value = "Номер корректировки";
-                Worksheet.Cells[1, 7].Value = "№ п/п";
-                Worksheet.Cells[1, 8].Value = "Код операции";
-                Worksheet.Cells[1, 9].Value = "Дата";
-                Worksheet.Cells[1, 10].Value = "Номер паспорта (сертификата) ЗРИ, акта определения характеристик ОЗИИ";
-                Worksheet.Cells[1, 11].Value = "Тип";
-                Worksheet.Cells[1, 12].Value = "Радионуклиды";
-                Worksheet.Cells[1, 13].Value = "Заводской номер";
-                Worksheet.Cells[1, 14].Value = "Количество, шт";
-                Worksheet.Cells[1, 15].Value = "Суммарная активность, Бк";
-                Worksheet.Cells[1, 16].Value = "Дата выпуска";
-                Worksheet.Cells[1, 17].Value = "Статус РАО";
-                Worksheet.Cells[1, 18].Value = "Вид документа";
-                Worksheet.Cells[1, 19].Value = "Номер документа";
-                Worksheet.Cells[1, 20].Value = "Дата документа";
-                Worksheet.Cells[1, 21].Value = "ОКПО поставщика или получателя";
-                Worksheet.Cells[1, 22].Value = "ОКПО перевозчика";
-                Worksheet.Cells[1, 23].Value = "Наименование упаковки";
-                Worksheet.Cells[1, 24].Value = "Тип УКТ";
-                Worksheet.Cells[1, 25].Value = "Номер УКТ";
-                Worksheet.Cells[1, 26].Value = "Наименование места хранения";
-                Worksheet.Cells[1, 27].Value = "Код места хранения";
-                Worksheet.Cells[1, 28].Value = "Код переработки / сортировки РАО";
-                Worksheet.Cells[1, 29].Value = "Субсидия, %";
-                Worksheet.Cells[1, 30].Value = "Номер мероприятия ФЦП";
-                Worksheet.Cells[1, 31].Value = "Номер договора";
-                Worksheet.Cells[1, 32].Value = "Текст статуса РАО";
-                break;
+    private static double ExcelWidthFromPixels(int pixels) =>
+        Math.Max(1.0, (pixels - 5) / 7.0);
 
-            case "1.6":
-                Worksheet.Cells[1, 1].Value = "Рег.№";
-                Worksheet.Cells[1, 2].Value = "ОКПО";
-                Worksheet.Cells[1, 3].Value = "Сокращенное наименование";
-                Worksheet.Cells[1, 4].Value = "Дата начала периода";
-                Worksheet.Cells[1, 5].Value = "Дата конца периода";
-                Worksheet.Cells[1, 6].Value = "Номер корректировки";
-                Worksheet.Cells[1, 7].Value = "№ п/п";
-                Worksheet.Cells[1, 8].Value = "Код";
-                Worksheet.Cells[1, 9].Value = "Дата";
-                Worksheet.Cells[1, 10].Value = "Код РАО";
-                Worksheet.Cells[1, 11].Value = "Статус РАО";
-                Worksheet.Cells[1, 12].Value = "Объём, м³";
-                Worksheet.Cells[1, 13].Value = "Масса, т";
-                Worksheet.Cells[1, 14].Value = "Количество ОЗИИ, шт";
-                Worksheet.Cells[1, 15].Value = "Основные радионуклиды";
-                Worksheet.Cells[1, 16].Value = "Активность трития, Бк";
-                Worksheet.Cells[1, 17].Value = "Бета-, гамма-активность, Бк";
-                Worksheet.Cells[1, 18].Value = "Альфа-активность, Бк";
-                Worksheet.Cells[1, 19].Value = "Активность трансурановых, Бк";
-                Worksheet.Cells[1, 20].Value = "Дата измерения активности";
-                Worksheet.Cells[1, 21].Value = "Вид документа";
-                Worksheet.Cells[1, 22].Value = "Номер документа";
-                Worksheet.Cells[1, 23].Value = "Дата документа";
-                Worksheet.Cells[1, 24].Value = "ОКПО поставщика или получателя";
-                Worksheet.Cells[1, 25].Value = "ОКПО перевозчика";
-                Worksheet.Cells[1, 26].Value = "Наименование упаковки";
-                Worksheet.Cells[1, 27].Value = "Тип УКТ";
-                Worksheet.Cells[1, 28].Value = "Номер УКТ";
-                Worksheet.Cells[1, 29].Value = "Наименование места хранения";
-                Worksheet.Cells[1, 30].Value = "Текст статуса РАО";
-                break;
+    private void WriteFieldHeaders(int row, int startCol, string[] dataHeaders)
+    {
+        for (var i = 0; i < InfoHeaders.Length; i++)
+        {
+            Worksheet.Cells[row, startCol + i].Value = InfoHeaders[i];
+        }
+
+        for (var i = 0; i < dataHeaders.Length; i++)
+        {
+            Worksheet.Cells[row, startCol + InfoColCount + i].Value = dataHeaders[i];
         }
     }
 
     #endregion
 
-    #region Write form rows
+    #region Write blocks — common info
 
-    private void WriteOrgReportColumns(Report rep, int rowOffset)
+    /// <summary>Пишет общие информационные колонки (Рег.№ … № п/п). Возвращает индекс первой колонки данных.</summary>
+    private int WriteInfoBlock(Operation41PairingDto op, int startCol)
     {
-        Worksheet.Cells[CurrentRow, 1].Value = CurrentReports.Master_DB.RegNoRep.Value;
-        Worksheet.Cells[CurrentRow, 2].Value = CurrentReports.Master_DB.OkpoRep.Value;
-        Worksheet.Cells[CurrentRow, 3].Value = CurrentReports.Master_DB.ShortJurLicoRep.Value;
-        Worksheet.Cells[CurrentRow, 4].Value = ConvertToExcelDate(rep.StartPeriod_DB, Worksheet, CurrentRow, 4);
-        Worksheet.Cells[CurrentRow, 5].Value = ConvertToExcelDate(rep.EndPeriod_DB, Worksheet, CurrentRow, 5);
-        Worksheet.Cells[CurrentRow, 6].Value = rep.CorrectionNumber_DB;
-        Worksheet.Cells[CurrentRow, 7].Value = rowOffset;
-    }
-
-    private void WriteForm11Rows()
-    {
-        foreach (var rep in OrderedReports("1.1", rep => rep.Rows11))
-        {
-            foreach (var repForm in rep.Rows11.OrderBy(form => form.NumberInOrder_DB))
-            {
-                WriteOrgReportColumns(rep, repForm.NumberInOrder_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.OperationCode_DB);
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelDate(repForm.OperationDate_DB, Worksheet, CurrentRow, 9);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.PassportNumber_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.Type_DB);
-                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.Radionuclids_DB);
-                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.FactoryNumber_DB);
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.Quantity_DB is null ? "-" : repForm.Quantity_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.Activity_DB);
-                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelString(repForm.CreatorOKPO_DB);
-                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDate(repForm.CreationDate_DB, Worksheet, CurrentRow, 17);
-                Worksheet.Cells[CurrentRow, 18].Value = repForm.Category_DB is null ? "-" : repForm.Category_DB;
-                Worksheet.Cells[CurrentRow, 19].Value = repForm.SignedServicePeriod_DB is null ? "-" : repForm.SignedServicePeriod_DB;
-                Worksheet.Cells[CurrentRow, 20].Value = repForm.PropertyCode_DB is null ? "-" : repForm.PropertyCode_DB;
-                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelString(repForm.Owner_DB);
-                Worksheet.Cells[CurrentRow, 22].Value = repForm.DocumentVid_DB is null ? "-" : repForm.DocumentVid_DB;
-                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
-                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelDate(repForm.DocumentDate_DB, Worksheet, CurrentRow, 24);
-                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
-                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.TransporterOKPO_DB);
-                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.PackName_DB);
-                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelString(repForm.PackType_DB);
-                Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelString(repForm.PackNumber_DB);
-                ApplyForm11ClosestMatchHighlight(repForm.Id);
-                CurrentRow++;
-            }
-        }
-    }
-
-    private void WriteForm12Rows()
-    {
-        foreach (var rep in OrderedReports("1.2", rep => rep.Rows12))
-        {
-            foreach (var repForm in rep.Rows12.OrderBy(form => form.NumberInOrder_DB))
-            {
-                WriteOrgReportColumns(rep, repForm.NumberInOrder_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.OperationCode_DB);
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelDate(repForm.OperationDate_DB, Worksheet, CurrentRow, 9);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.PassportNumber_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.NameIOU_DB);
-                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.FactoryNumber_DB);
-                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.Mass_DB);
-                var massTon = ToMassTon(repForm.Mass_DB);
-                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(massTon);
-                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelString(repForm.CreatorOKPO_DB);
-                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDate(repForm.CreationDate_DB, Worksheet, CurrentRow, 16);
-                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDouble(repForm.SignedServicePeriod_DB);
-                Worksheet.Cells[CurrentRow, 18].Value = repForm.PropertyCode_DB is null ? "-" : repForm.PropertyCode_DB;
-                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelString(repForm.Owner_DB);
-                Worksheet.Cells[CurrentRow, 20].Value = repForm.DocumentVid_DB is null ? "-" : repForm.DocumentVid_DB;
-                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
-                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelDate(repForm.DocumentDate_DB, Worksheet, CurrentRow, 22);
-                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
-                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelString(repForm.TransporterOKPO_DB);
-                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.PackName_DB);
-                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.PackType_DB);
-                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.PackNumber_DB);
-                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelDouble(ComputeFromMass(massTon, 25_000_000_000d));
-                Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelDouble(ComputeFromMass(massTon, 16_100_000_000d));
-                ApplyForm12ClosestMatchHighlight(repForm.Id);
-                CurrentRow++;
-            }
-        }
-    }
-
-    private void WriteForm13Rows()
-    {
-        foreach (var rep in OrderedReports("1.3", rep => rep.Rows13))
-        {
-            foreach (var repForm in rep.Rows13.OrderBy(form => form.NumberInOrder_DB))
-            {
-                var activities = ResolveActivitiesForExport(repForm.Id, repForm.Radionuclids_DB, repForm.Activity_DB);
-                WriteOrgReportColumns(rep, repForm.NumberInOrder_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.OperationCode_DB);
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelDate(repForm.OperationDate_DB, Worksheet, CurrentRow, 9);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.PassportNumber_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.Type_DB);
-                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.Radionuclids_DB);
-                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.FactoryNumber_DB);
-                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.Activity_DB);
-                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelString(repForm.CreatorOKPO_DB);
-                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDate(repForm.CreationDate_DB, Worksheet, CurrentRow, 16);
-                Worksheet.Cells[CurrentRow, 17].Value = repForm.AggregateState_DB is null ? "-" : repForm.AggregateState_DB;
-                Worksheet.Cells[CurrentRow, 18].Value = repForm.PropertyCode_DB is null ? "-" : repForm.PropertyCode_DB;
-                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelString(repForm.Owner_DB);
-                Worksheet.Cells[CurrentRow, 20].Value = repForm.DocumentVid_DB is null ? "-" : repForm.DocumentVid_DB;
-                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
-                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelDate(repForm.DocumentDate_DB, Worksheet, CurrentRow, 22);
-                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
-                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelString(repForm.TransporterOKPO_DB);
-                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.PackName_DB);
-                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.PackType_DB);
-                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.PackNumber_DB);
-                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelDouble(activities["tritium"]);
-                Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelDouble(activities["beta"]);
-                Worksheet.Cells[CurrentRow, 30].Value = ConvertToExcelDouble(activities["alpha"]);
-                Worksheet.Cells[CurrentRow, 31].Value = ConvertToExcelDouble(activities["transuranium"]);
-                ApplyForm13ClosestMatchHighlight(repForm.Id);
-                CurrentRow++;
-            }
-        }
-    }
-
-    private void WriteForm14Rows()
-    {
-        foreach (var rep in OrderedReports("1.4", rep => rep.Rows14))
-        {
-            foreach (var repForm in rep.Rows14.OrderBy(form => form.NumberInOrder_DB))
-            {
-                var activities = ResolveActivitiesForExport(repForm.Id, repForm.Radionuclids_DB, repForm.Activity_DB);
-                WriteOrgReportColumns(rep, repForm.NumberInOrder_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.OperationCode_DB);
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelDate(repForm.OperationDate_DB, Worksheet, CurrentRow, 9);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.PassportNumber_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.Name_DB);
-                Worksheet.Cells[CurrentRow, 12].Value = repForm.Sort_DB is null ? "-" : repForm.Sort_DB;
-                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.Radionuclids_DB);
-                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelDouble(repForm.Activity_DB);
-                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDate(repForm.ActivityMeasurementDate_DB, Worksheet, CurrentRow, 15);
-                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDouble(repForm.Volume_DB);
-                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDouble(repForm.Mass_DB);
-                var massTon = ToMassTon(repForm.Mass_DB);
-                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDouble(massTon);
-                Worksheet.Cells[CurrentRow, 19].Value = repForm.AggregateState_DB is null ? "-" : repForm.AggregateState_DB;
-                Worksheet.Cells[CurrentRow, 20].Value = repForm.PropertyCode_DB is null ? "-" : repForm.PropertyCode_DB;
-                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelString(repForm.Owner_DB);
-                Worksheet.Cells[CurrentRow, 22].Value = repForm.DocumentVid_DB is null ? "-" : repForm.DocumentVid_DB;
-                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
-                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelDate(repForm.DocumentDate_DB, Worksheet, CurrentRow, 24);
-                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
-                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.TransporterOKPO_DB);
-                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.PackName_DB);
-                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelString(repForm.PackType_DB);
-                Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelString(repForm.PackNumber_DB);
-                Worksheet.Cells[CurrentRow, 30].Value = ConvertToExcelDouble(activities["tritium"]);
-                Worksheet.Cells[CurrentRow, 31].Value = ConvertToExcelDouble(activities["beta"]);
-                Worksheet.Cells[CurrentRow, 32].Value = ConvertToExcelDouble(activities["alpha"]);
-                Worksheet.Cells[CurrentRow, 33].Value = ConvertToExcelDouble(activities["transuranium"]);
-                ApplyForm14ClosestMatchHighlight(repForm.Id);
-                CurrentRow++;
-            }
-        }
-    }
-
-    private void WriteForm15Rows()
-    {
-        foreach (var rep in OrderedReports("1.5", rep => rep.Rows15))
-        {
-            foreach (var repForm in rep.Rows15.OrderBy(form => form.NumberInOrder_DB))
-            {
-                WriteOrgReportColumns(rep, repForm.NumberInOrder_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.OperationCode_DB);
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelDate(repForm.OperationDate_DB, Worksheet, CurrentRow, 9);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.PassportNumber_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.Type_DB);
-                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelString(repForm.Radionuclids_DB);
-                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelString(repForm.FactoryNumber_DB);
-                Worksheet.Cells[CurrentRow, 14].Value = repForm.Quantity_DB is null ? "-" : repForm.Quantity_DB;
-                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelDouble(repForm.Activity_DB);
-                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDate(repForm.CreationDate_DB, Worksheet, CurrentRow, 16);
-                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelString(repForm.StatusRAO_DB);
-                Worksheet.Cells[CurrentRow, 18].Value = repForm.DocumentVid_DB is null ? "-" : repForm.DocumentVid_DB;
-                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
-                Worksheet.Cells[CurrentRow, 20].Value = ConvertToExcelDate(repForm.DocumentDate_DB, Worksheet, CurrentRow, 20);
-                Worksheet.Cells[CurrentRow, 21].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
-                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelString(repForm.TransporterOKPO_DB);
-                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelString(repForm.PackName_DB);
-                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelString(repForm.PackType_DB);
-                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.PackNumber_DB);
-                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.StoragePlaceName_DB);
-                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.StoragePlaceCode_DB);
-                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelString(repForm.RefineOrSortRAOCode_DB);
-                Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelString(repForm.Subsidy_DB);
-                Worksheet.Cells[CurrentRow, 30].Value = ConvertToExcelString(repForm.FcpNumber_DB);
-                Worksheet.Cells[CurrentRow, 31].Value = ConvertToExcelString(repForm.ContractNumber_DB);
-                Worksheet.Cells[CurrentRow, 32].Value = StatusRaoToDescription(repForm.StatusRAO_DB);
-                ApplyForm15ClosestMatchHighlight(repForm.Id);
-                CurrentRow++;
-            }
-        }
-    }
-
-    private void WriteForm16Rows()
-    {
-        foreach (var rep in OrderedReports("1.6", rep => rep.Rows16))
-        {
-            foreach (var repForm in rep.Rows16.OrderBy(form => form.NumberInOrder_DB))
-            {
-                WriteOrgReportColumns(rep, repForm.NumberInOrder_DB);
-                Worksheet.Cells[CurrentRow, 8].Value = ConvertToExcelString(repForm.OperationCode_DB);
-                Worksheet.Cells[CurrentRow, 9].Value = ConvertToExcelDate(repForm.OperationDate_DB, Worksheet, CurrentRow, 9);
-                Worksheet.Cells[CurrentRow, 10].Value = ConvertToExcelString(repForm.CodeRAO_DB);
-                Worksheet.Cells[CurrentRow, 11].Value = ConvertToExcelString(repForm.StatusRAO_DB);
-                Worksheet.Cells[CurrentRow, 12].Value = ConvertToExcelDouble(repForm.Volume_DB);
-                Worksheet.Cells[CurrentRow, 13].Value = ConvertToExcelDouble(repForm.Mass_DB);
-                Worksheet.Cells[CurrentRow, 14].Value = ConvertToExcelInt(repForm.QuantityOZIII_DB);
-                Worksheet.Cells[CurrentRow, 15].Value = ConvertToExcelString(repForm.MainRadionuclids_DB);
-                Worksheet.Cells[CurrentRow, 16].Value = ConvertToExcelDouble(repForm.TritiumActivity_DB);
-                Worksheet.Cells[CurrentRow, 17].Value = ConvertToExcelDouble(repForm.BetaGammaActivity_DB);
-                Worksheet.Cells[CurrentRow, 18].Value = ConvertToExcelDouble(repForm.AlphaActivity_DB);
-                Worksheet.Cells[CurrentRow, 19].Value = ConvertToExcelDouble(repForm.TransuraniumActivity_DB);
-                Worksheet.Cells[CurrentRow, 20].Value = ConvertToExcelDate(repForm.ActivityMeasurementDate_DB, Worksheet, CurrentRow, 20);
-                Worksheet.Cells[CurrentRow, 21].Value = repForm.DocumentVid_DB is null ? "-" : repForm.DocumentVid_DB;
-                Worksheet.Cells[CurrentRow, 22].Value = ConvertToExcelString(repForm.DocumentNumber_DB);
-                Worksheet.Cells[CurrentRow, 23].Value = ConvertToExcelDate(repForm.DocumentDate_DB, Worksheet, CurrentRow, 23);
-                Worksheet.Cells[CurrentRow, 24].Value = ConvertToExcelString(repForm.ProviderOrRecieverOKPO_DB);
-                Worksheet.Cells[CurrentRow, 25].Value = ConvertToExcelString(repForm.TransporterOKPO_DB);
-                Worksheet.Cells[CurrentRow, 26].Value = ConvertToExcelString(repForm.PackName_DB);
-                Worksheet.Cells[CurrentRow, 27].Value = ConvertToExcelString(repForm.PackType_DB);
-                Worksheet.Cells[CurrentRow, 28].Value = ConvertToExcelString(repForm.PackNumber_DB);
-                Worksheet.Cells[CurrentRow, 29].Value = ConvertToExcelString(repForm.StoragePlaceName_DB);
-                Worksheet.Cells[CurrentRow, 30].Value = StatusRaoToDescription(repForm.StatusRAO_DB);
-                ApplyForm16ClosestMatchHighlight(repForm.Id);
-                CurrentRow++;
-            }
-        }
-    }
-
-    private IEnumerable<Report> OrderedReports<T>(string formNum, Func<Report, ICollection<T>?> getRows)
-        where T : Form1 =>
-        CurrentReports.Report_Collection
-            .Where(rep => rep.FormNum_DB == formNum && getRows(rep) is { Count: > 0 })
-            .OrderBy(rep => DateOnly.TryParse(rep.StartPeriod_DB, out var startDate) ? startDate : DateOnly.MaxValue)
-            .ThenBy(rep => DateOnly.TryParse(rep.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue);
-
-    private static string StatusRaoToDescription(string? status)
-    {
-        var tmp = status?.Trim();
-        return tmp switch
-        {
-            "1" => "накопленные",
-            "2" => "федеральные",
-            "3" => "собственность субъекта РФ",
-            "4" => "муниципальная собственность",
-            "6" => "бесхозяйные",
-            "9" => "прочая собственность",
-            "-" or "" or null => "-",
-            _ => "вновь образованные"
-        };
+        var c = startCol;
+        Worksheet.Cells[CurrentRow, c++].Value = op.OrgRegNo;
+        Worksheet.Cells[CurrentRow, c++].Value = op.OrgOkpo;
+        Worksheet.Cells[CurrentRow, c++].Value = op.OrgShortName;
+        Worksheet.Cells[CurrentRow, c++].Value = op.FormNum;
+        Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelDate(op.StartPeriod, Worksheet, CurrentRow, c);
+        c++;
+        Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelDate(op.EndPeriod, Worksheet, CurrentRow, c);
+        c++;
+        Worksheet.Cells[CurrentRow, c++].Value = op.NumberInOrder;
+        return c;
     }
 
     #endregion
 
-    #region Closest-match cell highlight
+    #region Write blocks — 1.1 / 1.5
 
-    private void ApplyForm11ClosestMatchHighlight(int formId)
+    private void WriteForm1115Block(Operation41PairingDto op, int startCol, IReadOnlyDictionary<Pairing11To15Field, bool>? fieldMatches)
     {
-        if (!_form11ClosestMatchHighlights.TryGetValue(formId, out var highlight))
+        var c = WriteInfoBlock(op, startCol);
+        void WriteDate(int col, string? value) => Worksheet.Cells[CurrentRow, col].Value = ConvertToExcelDate(value, Worksheet, CurrentRow, col);
+
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.OpCode);
+        WriteDate(c++, op.OpDate);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PasNum);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Type);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.FacNum);
+        Worksheet.Cells[CurrentRow, c++].Value = op.Quantity is null ? "-" : op.Quantity;
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Activity);
+        WriteDate(c++, op.CreationDate);
+        Worksheet.Cells[CurrentRow, c++].Value = op.DocumentVid is null ? "-" : op.DocumentVid;
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.DocumentNumber);
+        WriteDate(c++, op.DocumentDate);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.TransporterOkpo);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackName);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackType);
+        Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.PackNumber);
+
+        if (fieldMatches is null)
         {
             return;
         }
 
-        foreach (var (field, matches) in highlight.FieldMatches)
+        foreach (var (field, matched) in fieldMatches)
         {
-            if (GetForm11Column(field) is int column)
+            if (GetForm1115FieldOffset(field) is int offset)
             {
-                ApplyPairingComparisonCellFill(CurrentRow, column, matches);
+                ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, matched);
             }
         }
     }
 
-    private void ApplyForm15ClosestMatchHighlight(int formId)
+    private static int? GetForm1115FieldOffset(Pairing11To15Field field) =>
+        field switch
+        {
+            Pairing11To15Field.OperationCode => InfoColCount + 0,
+            Pairing11To15Field.OperationDate => InfoColCount + 1,
+            Pairing11To15Field.PassportNumber => InfoColCount + 2,
+            Pairing11To15Field.Type => InfoColCount + 3,
+            Pairing11To15Field.Radionuclids => InfoColCount + 4,
+            Pairing11To15Field.FactoryNumber => InfoColCount + 5,
+            Pairing11To15Field.Quantity => InfoColCount + 6,
+            Pairing11To15Field.Activity => InfoColCount + 7,
+            Pairing11To15Field.CreationDate => InfoColCount + 8,
+            Pairing11To15Field.DocumentVid => InfoColCount + 9,
+            Pairing11To15Field.DocumentNumber => InfoColCount + 10,
+            Pairing11To15Field.DocumentDate => InfoColCount + 11,
+            Pairing11To15Field.ProviderOrRecieverOkpo => InfoColCount + 12,
+            Pairing11To15Field.TransporterOkpo => InfoColCount + 13,
+            Pairing11To15Field.PackName => InfoColCount + 14,
+            Pairing11To15Field.PackType => InfoColCount + 15,
+            Pairing11To15Field.PackNumber => InfoColCount + 16,
+            _ => null
+        };
+
+    private void WriteForm1115Rows(
+        List<Operation41PairingDto> unpaired,
+        Dictionary<int, ClosestMatchHighlight> closestMatches,
+        SheetLayout layout,
+        string sheetLabel,
+        AnyTaskProgressBarVM? progressBarVM,
+        int percentBase,
+        int percentSpan)
     {
-        if (!_form15ClosestMatchHighlights.TryGetValue(formId, out var highlight))
+        Action<int, string>? report = progressBarVM is null ? null : (percent, text) => progressBarVM.SetProgressBar(percent, text);
+        var progress = new ProgressReporter(report, percentBase, percentBase + Math.Max(0, percentSpan));
+        var total = unpaired.Count;
+        var done = 0;
+        progress.Report(0, total, $"заполнение листа «{sheetLabel}»: 0 из {total}");
+
+        foreach (var row in OrderForExport(unpaired))
+        {
+            closestMatches.TryGetValue(row.Id, out var closest);
+            WriteForm1115Block(row, 1, closest?.FieldMatches);
+            Worksheet.Cells[CurrentRow, layout.SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
+
+            if (closest is not null)
+            {
+                WriteForm1115Block(closest.Candidate, layout.ClosestStartCol, closest.FieldMatches);
+            }
+
+            CurrentRow++;
+            done++;
+            progress.Report(done, total, $"заполнение листа «{sheetLabel}»: {done} из {total}");
+        }
+    }
+
+    #endregion
+
+    #region Write blocks — 1.2
+
+    private void WriteForm12Block(Operation41PairingDto op, int startCol, IReadOnlyDictionary<Pairing12To16Field, bool>? fieldMatches)
+    {
+        var c = WriteInfoBlock(op, startCol);
+        void WriteDate(int col, string? value) => Worksheet.Cells[CurrentRow, col].Value = ConvertToExcelDate(value, Worksheet, CurrentRow, col);
+
+        WriteDate(c++, op.OpDate);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Mass);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.BetaGammaActivity);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.AlphaActivity);
+        WriteDate(c++, op.ActivityMeasurementDate);
+        Worksheet.Cells[CurrentRow, c++].Value = op.DocumentVid is null ? "-" : op.DocumentVid;
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.DocumentNumber);
+        WriteDate(c++, op.DocumentDate);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackName);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackType);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackNumber);
+        Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.CodeRao);
+
+        if (fieldMatches is null)
         {
             return;
         }
 
-        foreach (var (field, matches) in highlight.FieldMatches)
+        foreach (var (field, matched) in fieldMatches)
         {
-            if (GetForm15Column(field) is int column)
+            if (GetForm12FieldOffset(field) is int offset)
             {
-                ApplyPairingComparisonCellFill(CurrentRow, column, matches);
+                ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, matched);
             }
         }
     }
 
-    private static void ApplyPairingComparisonCellFill(ExcelWorksheet worksheet, int row, int column, bool matches)
-    {
-        worksheet.Cells[row, column].Style.Fill.SetBackground(
-            matches ? PairingFieldMatchFill : PairingFieldMismatchFill,
-            ExcelFillStyle.Solid);
-    }
-
-    private void ApplyPairingComparisonCellFill(int row, int column, bool matches) =>
-        ApplyPairingComparisonCellFill(Worksheet, row, column, matches);
-
-    private static int? GetForm11Column(Pairing11To15Field field) =>
+    private static int? GetForm12FieldOffset(Pairing12To16Field field) =>
         field switch
         {
-            Pairing11To15Field.OperationCode => 8,
-            Pairing11To15Field.OperationDate => 9,
-            Pairing11To15Field.PassportNumber => 10,
-            Pairing11To15Field.Type => 11,
-            Pairing11To15Field.Radionuclids => 12,
-            Pairing11To15Field.FactoryNumber => 13,
-            Pairing11To15Field.Quantity => 14,
-            Pairing11To15Field.Activity => 15,
-            Pairing11To15Field.CreationDate => 17,
-            Pairing11To15Field.DocumentVid => 22,
-            Pairing11To15Field.DocumentNumber => 23,
-            Pairing11To15Field.DocumentDate => 24,
-            Pairing11To15Field.ProviderOrRecieverOkpo => 25,
-            Pairing11To15Field.TransporterOkpo => 26,
-            Pairing11To15Field.PackName => 27,
-            Pairing11To15Field.PackType => 28,
-            Pairing11To15Field.PackNumber => 29,
+            Pairing12To16Field.OperationDate => InfoColCount + 0,
+            Pairing12To16Field.Mass => InfoColCount + 1,
+            Pairing12To16Field.BetaGammaActivity => InfoColCount + 2,
+            Pairing12To16Field.AlphaActivity => InfoColCount + 3,
+            Pairing12To16Field.ActivityMeasurementDate => InfoColCount + 4,
+            Pairing12To16Field.DocumentVid => InfoColCount + 5,
+            Pairing12To16Field.DocumentNumber => InfoColCount + 6,
+            Pairing12To16Field.DocumentDate => InfoColCount + 7,
+            Pairing12To16Field.PackName => InfoColCount + 8,
+            Pairing12To16Field.PackType => InfoColCount + 9,
+            Pairing12To16Field.PackNumber => InfoColCount + 10,
+            Pairing12To16Field.CodeRao => InfoColCount + 11,
             _ => null
         };
 
-    private static int? GetForm15Column(Pairing11To15Field field) =>
+    private void WriteForm12Rows(
+        List<Operation41PairingDto> unpaired,
+        AnyTaskProgressBarVM? progressBarVM,
+        int percentBase,
+        int percentSpan)
+    {
+        Action<int, string>? report = progressBarVM is null ? null : (percent, text) => progressBarVM.SetProgressBar(percent, text);
+        var progress = new ProgressReporter(report, percentBase, percentBase + Math.Max(0, percentSpan));
+        var total = unpaired.Count;
+        var done = 0;
+        progress.Report(0, total, $"заполнение листа «Форма 1.2»: 0 из {total}");
+
+        foreach (var row in OrderForExport(unpaired))
+        {
+            _form12ClosestMatchHighlights.TryGetValue(row.Id, out var closest);
+            WriteForm12Block(row, 1, closest?.FieldMatches);
+            Worksheet.Cells[CurrentRow, Layout12.SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
+
+            if (closest is not null)
+            {
+                WriteForm12Block(closest.Candidate, Layout12.ClosestStartCol, closest.FieldMatches);
+            }
+
+            CurrentRow++;
+            done++;
+            progress.Report(done, total, $"заполнение листа «Форма 1.2»: {done} из {total}");
+        }
+    }
+
+    #endregion
+
+    #region Write blocks — 1.3
+
+    private void WriteForm13Block(
+        Operation41PairingDto op,
+        int startCol,
+        IReadOnlyDictionary<Pairing13To16Field, bool>? fieldMatches,
+        bool? aggregateStateMatch)
+    {
+        var c = WriteInfoBlock(op, startCol);
+        void WriteDate(int col, string? value) => Worksheet.Cells[CurrentRow, col].Value = ConvertToExcelDate(value, Worksheet, CurrentRow, col);
+
+        WriteDate(c++, op.OpDate);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.MainRadionuclids);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.TritiumActivity);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.BetaGammaActivity);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.AlphaActivity);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.TransuraniumActivity);
+        WriteDate(c++, op.ActivityMeasurementDate);
+        var aggregateStateCol = c;
+        Worksheet.Cells[CurrentRow, c++].Value = op.AggregateState is null ? "-" : op.AggregateState;
+        Worksheet.Cells[CurrentRow, c++].Value = op.DocumentVid is null ? "-" : op.DocumentVid;
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.DocumentNumber);
+        WriteDate(c++, op.DocumentDate);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackName);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackType);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackNumber);
+        Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.CodeRao);
+
+        if (aggregateStateMatch is bool aggMatch)
+        {
+            ApplyPairingComparisonCellFill(CurrentRow, aggregateStateCol, aggMatch);
+        }
+
+        if (fieldMatches is null)
+        {
+            return;
+        }
+
+        foreach (var (field, matched) in fieldMatches)
+        {
+            if (GetForm13FieldOffset(field) is int offset)
+            {
+                ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, matched);
+            }
+        }
+    }
+
+    private static int? GetForm13FieldOffset(Pairing13To16Field field) =>
         field switch
         {
-            Pairing11To15Field.OperationCode => 8,
-            Pairing11To15Field.OperationDate => 9,
-            Pairing11To15Field.PassportNumber => 10,
-            Pairing11To15Field.Type => 11,
-            Pairing11To15Field.Radionuclids => 12,
-            Pairing11To15Field.FactoryNumber => 13,
-            Pairing11To15Field.Quantity => 14,
-            Pairing11To15Field.Activity => 15,
-            Pairing11To15Field.CreationDate => 16,
-            Pairing11To15Field.DocumentVid => 18,
-            Pairing11To15Field.DocumentNumber => 19,
-            Pairing11To15Field.DocumentDate => 20,
-            Pairing11To15Field.ProviderOrRecieverOkpo => 21,
-            Pairing11To15Field.TransporterOkpo => 22,
-            Pairing11To15Field.PackName => 23,
-            Pairing11To15Field.PackType => 24,
-            Pairing11To15Field.PackNumber => 25,
+            Pairing13To16Field.OperationDate => InfoColCount + 0,
+            Pairing13To16Field.MainRadionuclids => InfoColCount + 1,
+            Pairing13To16Field.TritiumActivity => InfoColCount + 2,
+            Pairing13To16Field.BetaGammaActivity => InfoColCount + 3,
+            Pairing13To16Field.AlphaActivity => InfoColCount + 4,
+            Pairing13To16Field.TransuraniumActivity => InfoColCount + 5,
+            Pairing13To16Field.ActivityMeasurementDate => InfoColCount + 6,
+            Pairing13To16Field.DocumentVid => InfoColCount + 8,
+            Pairing13To16Field.DocumentNumber => InfoColCount + 9,
+            Pairing13To16Field.DocumentDate => InfoColCount + 10,
+            Pairing13To16Field.PackName => InfoColCount + 11,
+            Pairing13To16Field.PackType => InfoColCount + 12,
+            Pairing13To16Field.PackNumber => InfoColCount + 13,
+            Pairing13To16Field.CodeRao => InfoColCount + 14,
             _ => null
         };
 
-    private void ApplyForm12ClosestMatchHighlight(int formId)
+    private void WriteForm13Rows(
+        List<Operation41PairingDto> unpaired,
+        AnyTaskProgressBarVM? progressBarVM,
+        int percentBase,
+        int percentSpan)
     {
-        if (!_form12ClosestMatchHighlights.TryGetValue(formId, out var map)) return;
-        foreach (var (field, matched) in map)
+        Action<int, string>? report = progressBarVM is null ? null : (percent, text) => progressBarVM.SetProgressBar(percent, text);
+        var progress = new ProgressReporter(report, percentBase, percentBase + Math.Max(0, percentSpan));
+        var total = unpaired.Count;
+        var done = 0;
+        progress.Report(0, total, $"заполнение листа «Форма 1.3»: 0 из {total}");
+
+        foreach (var row in OrderForExport(unpaired))
         {
-            var col = field switch
+            _form13ClosestMatchHighlights.TryGetValue(row.Id, out var closest);
+            WriteForm13Block(row, 1, closest?.FieldMatches, closest?.AggregateStateMatchesCodeRao);
+            Worksheet.Cells[CurrentRow, Layout13.SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
+
+            if (closest is not null)
             {
-                Pairing12To16Field.OperationDate => 9,
-                Pairing12To16Field.Mass => 14,
-                Pairing12To16Field.BetaGammaActivity => 28,
-                Pairing12To16Field.AlphaActivity => 29,
-                // Для 1.2 дата измерения активности при переводе = дата операции.
-                Pairing12To16Field.ActivityMeasurementDate => 9,
-                Pairing12To16Field.DocumentVid => 20,
-                Pairing12To16Field.DocumentNumber => 21,
-                Pairing12To16Field.DocumentDate => 22,
-                Pairing12To16Field.PackName => 25,
-                Pairing12To16Field.PackType => 26,
-                Pairing12To16Field.PackNumber => 27,
-                _ => -1
-            };
-            if (col > 0) ApplyPairingComparisonCellFill(CurrentRow, col, matched);
+                WriteForm13Block(closest.Candidate, Layout13.ClosestStartCol, closest.FieldMatches, closest.AggregateStateMatchesCodeRao);
+            }
+
+            CurrentRow++;
+            done++;
+            progress.Report(done, total, $"заполнение листа «Форма 1.3»: {done} из {total}");
         }
     }
 
-    private void ApplyForm13ClosestMatchHighlight(int formId)
+    #endregion
+
+    #region Write blocks — 1.4
+
+    private void WriteForm14Block(
+        Operation41PairingDto op,
+        int startCol,
+        IReadOnlyDictionary<Pairing14To16Field, bool>? fieldMatches,
+        bool? aggregateStateMatch)
     {
-        if (!_form13ClosestMatchHighlights.TryGetValue(formId, out var map)) return;
-        foreach (var (field, matched) in map)
+        var c = WriteInfoBlock(op, startCol);
+        void WriteDate(int col, string? value) => Worksheet.Cells[CurrentRow, col].Value = ConvertToExcelDate(value, Worksheet, CurrentRow, col);
+
+        WriteDate(c++, op.OpDate);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Volume);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Mass);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.MainRadionuclids);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.TritiumActivity);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.BetaGammaActivity);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.AlphaActivity);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.TransuraniumActivity);
+        WriteDate(c++, op.ActivityMeasurementDate);
+        var aggregateStateCol = c;
+        Worksheet.Cells[CurrentRow, c++].Value = op.AggregateState is null ? "-" : op.AggregateState;
+        Worksheet.Cells[CurrentRow, c++].Value = op.DocumentVid is null ? "-" : op.DocumentVid;
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.DocumentNumber);
+        WriteDate(c++, op.DocumentDate);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackName);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackType);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackNumber);
+        Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.CodeRao);
+
+        if (aggregateStateMatch is bool aggMatch)
         {
-            var col = field switch
+            ApplyPairingComparisonCellFill(CurrentRow, aggregateStateCol, aggMatch);
+        }
+
+        if (fieldMatches is null)
+        {
+            return;
+        }
+
+        foreach (var (field, matched) in fieldMatches)
+        {
+            if (GetForm14FieldOffset(field) is int offset)
             {
-                Pairing13To16Field.OperationDate => 9,
-                Pairing13To16Field.MainRadionuclids => 12,
-                Pairing13To16Field.TritiumActivity => 28,
-                Pairing13To16Field.BetaGammaActivity => 29,
-                Pairing13To16Field.AlphaActivity => 30,
-                Pairing13To16Field.TransuraniumActivity => 31,
-                Pairing13To16Field.ActivityMeasurementDate => 16,
-                Pairing13To16Field.DocumentVid => 20,
-                Pairing13To16Field.DocumentNumber => 21,
-                Pairing13To16Field.DocumentDate => 22,
-                Pairing13To16Field.PackName => 25,
-                Pairing13To16Field.PackType => 26,
-                Pairing13To16Field.PackNumber => 27,
-                _ => -1
-            };
-            if (col > 0) ApplyPairingComparisonCellFill(CurrentRow, col, matched);
+                ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, matched);
+            }
         }
     }
 
-    private void ApplyForm14ClosestMatchHighlight(int formId)
-    {
-        if (!_form14ClosestMatchHighlights.TryGetValue(formId, out var map)) return;
-        foreach (var (field, matched) in map)
+    private static int? GetForm14FieldOffset(Pairing14To16Field field) =>
+        field switch
         {
-            var col = field switch
+            Pairing14To16Field.OperationDate => InfoColCount + 0,
+            Pairing14To16Field.Volume => InfoColCount + 1,
+            Pairing14To16Field.Mass => InfoColCount + 2,
+            Pairing14To16Field.MainRadionuclids => InfoColCount + 3,
+            Pairing14To16Field.TritiumActivity => InfoColCount + 4,
+            Pairing14To16Field.BetaGammaActivity => InfoColCount + 5,
+            Pairing14To16Field.AlphaActivity => InfoColCount + 6,
+            Pairing14To16Field.TransuraniumActivity => InfoColCount + 7,
+            Pairing14To16Field.ActivityMeasurementDate => InfoColCount + 8,
+            Pairing14To16Field.DocumentVid => InfoColCount + 10,
+            Pairing14To16Field.DocumentNumber => InfoColCount + 11,
+            Pairing14To16Field.DocumentDate => InfoColCount + 12,
+            Pairing14To16Field.PackName => InfoColCount + 13,
+            Pairing14To16Field.PackType => InfoColCount + 14,
+            Pairing14To16Field.PackNumber => InfoColCount + 15,
+            Pairing14To16Field.CodeRao => InfoColCount + 16,
+            _ => null
+        };
+
+    private void WriteForm14Rows(
+        List<Operation41PairingDto> unpaired,
+        AnyTaskProgressBarVM? progressBarVM,
+        int percentBase,
+        int percentSpan)
+    {
+        Action<int, string>? report = progressBarVM is null ? null : (percent, text) => progressBarVM.SetProgressBar(percent, text);
+        var progress = new ProgressReporter(report, percentBase, percentBase + Math.Max(0, percentSpan));
+        var total = unpaired.Count;
+        var done = 0;
+        progress.Report(0, total, $"заполнение листа «Форма 1.4»: 0 из {total}");
+
+        foreach (var row in OrderForExport(unpaired))
+        {
+            _form14ClosestMatchHighlights.TryGetValue(row.Id, out var closest);
+            WriteForm14Block(row, 1, closest?.FieldMatches, closest?.AggregateStateMatchesCodeRao);
+            Worksheet.Cells[CurrentRow, Layout14.SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
+
+            if (closest is not null)
             {
-                Pairing14To16Field.OperationDate => 9,
-                Pairing14To16Field.Volume => 16,
-                Pairing14To16Field.Mass => 18,
-                Pairing14To16Field.MainRadionuclids => 13,
-                Pairing14To16Field.TritiumActivity => 30,
-                Pairing14To16Field.BetaGammaActivity => 31,
-                Pairing14To16Field.AlphaActivity => 32,
-                Pairing14To16Field.TransuraniumActivity => 33,
-                Pairing14To16Field.ActivityMeasurementDate => 15,
-                Pairing14To16Field.DocumentVid => 22,
-                Pairing14To16Field.DocumentNumber => 23,
-                Pairing14To16Field.DocumentDate => 24,
-                Pairing14To16Field.PackName => 27,
-                Pairing14To16Field.PackType => 28,
-                Pairing14To16Field.PackNumber => 29,
-                _ => -1
-            };
-            if (col > 0) ApplyPairingComparisonCellFill(CurrentRow, col, matched);
+                WriteForm14Block(closest.Candidate, Layout14.ClosestStartCol, closest.FieldMatches, closest.AggregateStateMatchesCodeRao);
+            }
+
+            CurrentRow++;
+            done++;
+            progress.Report(done, total, $"заполнение листа «Форма 1.4»: {done} из {total}");
         }
     }
 
-    private void ApplyForm16ClosestMatchHighlight(int formId)
+    #endregion
+
+    #region Write blocks — 1.6
+
+    private void WriteForm16Block(Operation41PairingDto op, int startCol, Form16ClosestMatchHighlight? highlight)
     {
-        if (!_form16ClosestMatchHighlights.TryGetValue(formId, out var highlight))
+        var c = WriteInfoBlock(op, startCol);
+        void WriteDate(int col, string? value) => Worksheet.Cells[CurrentRow, col].Value = ConvertToExcelDate(value, Worksheet, CurrentRow, col);
+
+        WriteDate(c++, op.OpDate);
+        var codeRaoCol = c;
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.CodeRao);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Volume);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Mass);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.MainRadionuclids);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.TritiumActivity);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.BetaGammaActivity);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.AlphaActivity);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.TransuraniumActivity);
+        WriteDate(c++, op.ActivityMeasurementDate);
+        Worksheet.Cells[CurrentRow, c++].Value = op.DocumentVid is null ? "-" : op.DocumentVid;
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.DocumentNumber);
+        WriteDate(c++, op.DocumentDate);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackName);
+        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackType);
+        Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.PackNumber);
+
+        if (highlight is null)
         {
             return;
         }
@@ -1014,76 +1041,158 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             case Form16MatchProfile.Form12 when highlight.Matches12 is not null:
                 foreach (var (field, matched) in highlight.Matches12)
                 {
-                    var col = field switch
+                    if (GetForm16Form12FieldOffset(field) is int offset)
                     {
-                        Pairing12To16Field.OperationDate => 9,
-                        Pairing12To16Field.Mass => 13,
-                        Pairing12To16Field.BetaGammaActivity => 17,
-                        Pairing12To16Field.AlphaActivity => 18,
-                        Pairing12To16Field.ActivityMeasurementDate => 20,
-                        Pairing12To16Field.DocumentVid => 21,
-                        Pairing12To16Field.DocumentNumber => 22,
-                        Pairing12To16Field.DocumentDate => 23,
-                        Pairing12To16Field.PackName => 26,
-                        Pairing12To16Field.PackType => 27,
-                        Pairing12To16Field.PackNumber => 28,
-                        _ => -1
-                    };
-                    if (col > 0) ApplyPairingComparisonCellFill(CurrentRow, col, matched);
+                        ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, matched);
+                    }
                 }
+
                 break;
 
             case Form16MatchProfile.Form13 when highlight.Matches13 is not null:
                 foreach (var (field, matched) in highlight.Matches13)
                 {
-                    var col = field switch
+                    if (GetForm16Form13FieldOffset(field) is int offset)
                     {
-                        Pairing13To16Field.OperationDate => 9,
-                        Pairing13To16Field.MainRadionuclids => 15,
-                        Pairing13To16Field.TritiumActivity => 16,
-                        Pairing13To16Field.BetaGammaActivity => 17,
-                        Pairing13To16Field.AlphaActivity => 18,
-                        Pairing13To16Field.TransuraniumActivity => 19,
-                        Pairing13To16Field.ActivityMeasurementDate => 20,
-                        Pairing13To16Field.DocumentVid => 21,
-                        Pairing13To16Field.DocumentNumber => 22,
-                        Pairing13To16Field.DocumentDate => 23,
-                        Pairing13To16Field.PackName => 26,
-                        Pairing13To16Field.PackType => 27,
-                        Pairing13To16Field.PackNumber => 28,
-                        _ => -1
-                    };
-                    if (col > 0) ApplyPairingComparisonCellFill(CurrentRow, col, matched);
+                        ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, matched);
+                    }
                 }
+
                 break;
 
             case Form16MatchProfile.Form14 when highlight.Matches14 is not null:
                 foreach (var (field, matched) in highlight.Matches14)
                 {
-                    var col = field switch
+                    if (GetForm16Form14FieldOffset(field) is int offset)
                     {
-                        Pairing14To16Field.OperationDate => 9,
-                        Pairing14To16Field.Volume => 12,
-                        Pairing14To16Field.Mass => 13,
-                        Pairing14To16Field.MainRadionuclids => 15,
-                        Pairing14To16Field.TritiumActivity => 16,
-                        Pairing14To16Field.BetaGammaActivity => 17,
-                        Pairing14To16Field.AlphaActivity => 18,
-                        Pairing14To16Field.TransuraniumActivity => 19,
-                        Pairing14To16Field.ActivityMeasurementDate => 20,
-                        Pairing14To16Field.DocumentVid => 21,
-                        Pairing14To16Field.DocumentNumber => 22,
-                        Pairing14To16Field.DocumentDate => 23,
-                        Pairing14To16Field.PackName => 26,
-                        Pairing14To16Field.PackType => 27,
-                        Pairing14To16Field.PackNumber => 28,
-                        _ => -1
-                    };
-                    if (col > 0) ApplyPairingComparisonCellFill(CurrentRow, col, matched);
+                        ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, matched);
+                    }
                 }
+
                 break;
         }
+
+        // Для профилей 1.3/1.4 совпадение агрегатного состояния важнее формального совпадения кода РАО.
+        if (highlight.AggregateStateMatchesCodeRao is bool aggMatch)
+        {
+            ApplyPairingComparisonCellFill(CurrentRow, codeRaoCol, aggMatch);
+        }
     }
+
+    private static int? GetForm16Form12FieldOffset(Pairing12To16Field field) =>
+        field switch
+        {
+            Pairing12To16Field.OperationDate => InfoColCount + 0,
+            Pairing12To16Field.CodeRao => InfoColCount + 1,
+            Pairing12To16Field.Mass => InfoColCount + 3,
+            Pairing12To16Field.BetaGammaActivity => InfoColCount + 6,
+            Pairing12To16Field.AlphaActivity => InfoColCount + 7,
+            Pairing12To16Field.ActivityMeasurementDate => InfoColCount + 9,
+            Pairing12To16Field.DocumentVid => InfoColCount + 10,
+            Pairing12To16Field.DocumentNumber => InfoColCount + 11,
+            Pairing12To16Field.DocumentDate => InfoColCount + 12,
+            Pairing12To16Field.PackName => InfoColCount + 13,
+            Pairing12To16Field.PackType => InfoColCount + 14,
+            Pairing12To16Field.PackNumber => InfoColCount + 15,
+            _ => null
+        };
+
+    private static int? GetForm16Form13FieldOffset(Pairing13To16Field field) =>
+        field switch
+        {
+            Pairing13To16Field.OperationDate => InfoColCount + 0,
+            Pairing13To16Field.CodeRao => InfoColCount + 1,
+            Pairing13To16Field.MainRadionuclids => InfoColCount + 4,
+            Pairing13To16Field.TritiumActivity => InfoColCount + 5,
+            Pairing13To16Field.BetaGammaActivity => InfoColCount + 6,
+            Pairing13To16Field.AlphaActivity => InfoColCount + 7,
+            Pairing13To16Field.TransuraniumActivity => InfoColCount + 8,
+            Pairing13To16Field.ActivityMeasurementDate => InfoColCount + 9,
+            Pairing13To16Field.DocumentVid => InfoColCount + 10,
+            Pairing13To16Field.DocumentNumber => InfoColCount + 11,
+            Pairing13To16Field.DocumentDate => InfoColCount + 12,
+            Pairing13To16Field.PackName => InfoColCount + 13,
+            Pairing13To16Field.PackType => InfoColCount + 14,
+            Pairing13To16Field.PackNumber => InfoColCount + 15,
+            _ => null
+        };
+
+    private static int? GetForm16Form14FieldOffset(Pairing14To16Field field) =>
+        field switch
+        {
+            Pairing14To16Field.OperationDate => InfoColCount + 0,
+            Pairing14To16Field.CodeRao => InfoColCount + 1,
+            Pairing14To16Field.Volume => InfoColCount + 2,
+            Pairing14To16Field.Mass => InfoColCount + 3,
+            Pairing14To16Field.MainRadionuclids => InfoColCount + 4,
+            Pairing14To16Field.TritiumActivity => InfoColCount + 5,
+            Pairing14To16Field.BetaGammaActivity => InfoColCount + 6,
+            Pairing14To16Field.AlphaActivity => InfoColCount + 7,
+            Pairing14To16Field.TransuraniumActivity => InfoColCount + 8,
+            Pairing14To16Field.ActivityMeasurementDate => InfoColCount + 9,
+            Pairing14To16Field.DocumentVid => InfoColCount + 10,
+            Pairing14To16Field.DocumentNumber => InfoColCount + 11,
+            Pairing14To16Field.DocumentDate => InfoColCount + 12,
+            Pairing14To16Field.PackName => InfoColCount + 13,
+            Pairing14To16Field.PackType => InfoColCount + 14,
+            Pairing14To16Field.PackNumber => InfoColCount + 15,
+            _ => null
+        };
+
+    private void WriteForm16Rows(
+        List<Operation41PairingDto> unpaired,
+        AnyTaskProgressBarVM? progressBarVM,
+        int percentBase,
+        int percentSpan)
+    {
+        Action<int, string>? report = progressBarVM is null ? null : (percent, text) => progressBarVM.SetProgressBar(percent, text);
+        var progress = new ProgressReporter(report, percentBase, percentBase + Math.Max(0, percentSpan));
+        var total = unpaired.Count;
+        var done = 0;
+        progress.Report(0, total, $"заполнение листа «Форма 1.6»: 0 из {total}");
+
+        foreach (var row in OrderForExport(unpaired))
+        {
+            _form16ClosestMatchHighlights.TryGetValue(row.Id, out var highlight);
+            WriteForm16Block(row, 1, highlight);
+            Worksheet.Cells[CurrentRow, Layout16.SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
+
+            if (highlight is not null)
+            {
+                WriteForm16Block(highlight.Candidate, Layout16.ClosestStartCol, highlight);
+            }
+
+            CurrentRow++;
+            done++;
+            progress.Report(done, total, $"заполнение листа «Форма 1.6»: {done} из {total}");
+        }
+    }
+
+    #endregion
+
+    #region Common helpers
+
+    private static readonly CustomReportsComparer OrgRegNoComparer = new();
+
+    /// <summary>
+    /// Порядок строк в Excel: рег.№ (как в списке организаций), начало/конец периода, № п/п, Id.
+    /// Непарсящиеся даты периода уходят в конец (DateOnly.MaxValue).
+    /// </summary>
+    private static IOrderedEnumerable<Operation41PairingDto> OrderForExport(List<Operation41PairingDto> unpaired) =>
+        unpaired
+            .OrderBy(op => op.OrgRegNo, OrgRegNoComparer)
+            .ThenBy(op => DateOnly.TryParse(op.StartPeriod, out var start) ? start : DateOnly.MaxValue)
+            .ThenBy(op => DateOnly.TryParse(op.EndPeriod, out var end) ? end : DateOnly.MaxValue)
+            .ThenBy(op => op.NumberInOrder)
+            .ThenBy(op => op.Id);
+
+    private static void ApplyPairingComparisonCellFill(ExcelWorksheet worksheet, int row, int column, bool matches) =>
+        worksheet.Cells[row, column].Style.Fill.SetBackground(
+            matches ? PairingFieldMatchFill : PairingFieldMismatchFill,
+            ExcelFillStyle.Solid);
+
+    private void ApplyPairingComparisonCellFill(int row, int column, bool matches) =>
+        ApplyPairingComparisonCellFill(Worksheet, row, column, matches);
 
     #endregion
 }

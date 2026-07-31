@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
+using Client_App.Resources;
 
 namespace Test.Pairing41;
 
@@ -13,6 +14,8 @@ internal static partial class Pairing41TestCases
         yield return B03_MassOutsideTolerance_BothSidesUnpaired();
         yield return B04_ActivityMeasurementDateMismatch_Unpaired();
         yield return B05_DocumentAndPackLookalike_Paired();
+        yield return B06_CodeRaoMatches_Paired();
+        yield return B07_CodeRaoMismatch_BothSidesUnpaired();
     }
 
     /// <summary>B01. Идеальная пара 1.2↔1.6 → непарных нет.</summary>
@@ -69,5 +72,25 @@ internal static partial class Pairing41TestCases
         Form16 = [Row16From12(202, documentNumber: "COC-1", packNumber: "УКТ-O1")],
         ExpectedUnpaired12 = [],
         ExpectedUnpaired16 = []
+    };
+
+    /// <summary>B06. Код РАО совпадает (изделия из ОУ) — парные.</summary>
+    private static Pairing41TestCase B06_CodeRaoMatches_Paired() => new()
+    {
+        Name = "B06. Код РАО совпадает на 1.2 и 1.6 — парные.",
+        Form12 = [Row12(2, codeRao: RaoCodeHelper.Form12CodeRao)],
+        Form16 = [Row16From12(202, codeRao: RaoCodeHelper.Form12CodeRao)],
+        ExpectedUnpaired12 = [],
+        ExpectedUnpaired16 = []
+    };
+
+    /// <summary>B07. Остальные поля совпадают, но код РАО разный — непарные с обеих сторон.</summary>
+    private static Pairing41TestCase B07_CodeRaoMismatch_BothSidesUnpaired() => new()
+    {
+        Name = "B07. Расхождение кода РАО — непарные с обеих сторон (1.2↔1.6).",
+        Form12 = [Row12(2, codeRao: RaoCodeHelper.Form12CodeRao)],
+        Form16 = [Row16From12(202, codeRao: "00000000000")],
+        ExpectedUnpaired12 = [2],
+        ExpectedUnpaired16 = [202]
     };
 }

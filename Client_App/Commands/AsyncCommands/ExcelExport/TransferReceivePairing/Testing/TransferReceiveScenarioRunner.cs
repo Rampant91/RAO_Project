@@ -39,6 +39,9 @@ public static class TransferReceiveScenarioRunner
     public static TransferReceiveScenarioResult Run(TransferReceiveTestCase testCase) =>
         ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveTestAccess.RunScenario(testCase);
 
+    public static TransferReceiveScenarioResult RunWithSharedFullPool(TransferReceiveTestCase testCase) =>
+        ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveTestAccess.RunScenarioWithSharedFullPool(testCase);
+
     public static TransferReceiveClosestMatchResult RunClosestMatches(TransferReceiveTestCase testCase) =>
         ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveTestAccess.RunClosestMatches(testCase);
 }

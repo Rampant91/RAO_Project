@@ -43,6 +43,40 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 new TransferReceiveDto { Activity = rightActivity ?? string.Empty, OpCode = "31", IsTransfer = false },
                 checkActivity);
 
+        public static void CreateLegendSheetForTests(OfficeOpenXml.ExcelPackage excelPackage) =>
+            CreateLegendSheet(excelPackage);
+
+        public static int SourceColCountForTests => SourceColCount;
+
+        public static int SeparatorColForTests => SeparatorCol;
+
+        public static int ClosestStartColForTests => ClosestStartCol;
+
+        public static int TotalColCountForTests => TotalColCount;
+
+        public static int? GetComparableColumnOffsetForTests(TransferReceiveField field) =>
+            GetComparableColumnOffset(field);
+
+        public static int GetNextDataRowForTests(OfficeOpenXml.ExcelWorksheet sheet) => GetNextDataRow(sheet);
+
+        /// <summary>Порядок Id после OrderForExport (RegNo → периоды → № п/п → Id).</summary>
+        public static IReadOnlyList<int> OrderForExportIdsForTests(
+            IEnumerable<(int Id, string OrgRegNo, string StartPeriod, string EndPeriod, int NumberInOrder)> rows) =>
+            OrderForExport(rows.Select(r => new TransferReceiveDto
+                {
+                    Id = r.Id,
+                    NumberInOrder = r.NumberInOrder,
+                    OrgRegNo = r.OrgRegNo,
+                    StartPeriod = r.StartPeriod,
+                    EndPeriod = r.EndPeriod
+                }).ToList())
+                .Select(op => op.Id)
+                .ToList();
+
+        public static string FormatMultiOrgExcelStageForTests(
+            int orgIndex, int orgCount, string stage, string? orgLabel = null) =>
+            FormatOrgExcelStage(orgIndex, orgCount, stage, orgLabel);
+
         public static TransferReceiveScenarioResult RunScenario(TransferReceiveTestCase testCase)
         {
             var ourOkpoNorm = NormalizeNumber(testCase.OurOkpo);
@@ -52,6 +86,27 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
             var (unpaired, _) = AnalyzeForm11ForOrganization(
                 ourOps, counterpartOps, ourOkpoNorm, testCase.Params, aliases);
+
+            return new TransferReceiveScenarioResult(
+                unpaired.Select(row => row.Id).OrderBy(id => id).ToList());
+        }
+
+        /// <summary>
+        /// Как whole-DB: один общий пул по всем ops, затем только ComputeUnpaired по ourOps.
+        /// </summary>
+        public static TransferReceiveScenarioResult RunScenarioWithSharedFullPool(TransferReceiveTestCase testCase)
+        {
+            var ourOkpoNorm = NormalizeNumber(testCase.OurOkpo);
+            var ourOps = ToDtoList(testCase.OurOps, fallbackOrgOkpo: testCase.OurOkpo, testCase.FormNum);
+            var counterpartOps = ToDtoList(testCase.CounterpartOps, fallbackOrgOkpo: null, testCase.FormNum);
+            var aliases = ToAliasMap(testCase.OkpoAliases);
+
+            var ourIds = ourOps.Select(op => op.Id).ToHashSet();
+            var allOps = ourOps
+                .Concat(counterpartOps.Where(op => !ourIds.Contains(op.Id)))
+                .ToList();
+            var sharedPool = BuildOpsPoolByOrgOkpo([], allOps, aliases);
+            var unpaired = ComputeUnpairedForm11(ourOps, sharedPool, ourOkpoNorm, testCase.Params);
 
             return new TransferReceiveScenarioResult(
                 unpaired.Select(row => row.Id).OrderBy(id => id).ToList());

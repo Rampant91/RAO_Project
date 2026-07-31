@@ -197,7 +197,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
     #region Load DTO
 
-    /// <summary>Коды передачи/приёма форм 1.1 и 1.3.</summary>
+    /// <summary>
+    /// Коды передачи/приёма форм 1.1 и 1.3.
+    /// Без 26/36 — эта пара ожидается только на формах 1.5–1.8.
+    /// </summary>
     private static readonly string[] TransferReceiveCodesForm11And13 =
     [
         "21", "22", "25", "27", "28", "29",
@@ -206,6 +209,288 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
     /// <summary>Алиас для загрузчиков формы 1.1.</summary>
     private static readonly string[] Form11TransferReceiveCodes = TransferReceiveCodesForm11And13;
+
+    /// <summary>
+    /// Bulk для режима «вся БД»: один scan form_11 + один form_13 (как Pairing41),
+    /// титулы из discover, карта ОКПО→RepsId с догрузкой только «хвоста».
+    /// </summary>
+    private static async Task<TransferReceiveBulkLoad> LoadAllTransferReceiveBulkAsync(
+        DBModel db,
+        IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
+        CancellationToken cancellationToken,
+        ProgressReporter? progress = null)
+    {
+        const int stages = 5;
+        var stage = 0;
+
+        progress?.ReportNow(stage, stages, "bulk: загрузка формы 1.1…");
+        var allOps11 = await LoadAllForm11TransferReceiveAsync(db, orgTitles, cancellationToken);
+        stage++;
+        progress?.ReportNow(stage, stages, $"bulk: форма 1.1 — {allOps11.Count} строк ({stage} из {stages})");
+
+        progress?.Status("bulk: загрузка формы 1.3…");
+        var allOps13 = await LoadAllForm13TransferReceiveAsync(db, orgTitles, cancellationToken);
+        stage++;
+        progress?.ReportNow(stage, stages, $"bulk: форма 1.3 — {allOps13.Count} строк ({stage} из {stages})");
+
+        progress?.Status("bulk: карта ОКПО→орг.…");
+        var repsIdsByNormOkpo = await BuildOkpoAliasMapForWholeDbAsync(
+            db, orgTitles, allOps11, allOps13, cancellationToken, progress);
+        stage++;
+        progress?.ReportNow(stage, stages, $"bulk: ОКПО-алиасы — {repsIdsByNormOkpo.Count} ключей ({stage} из {stages})");
+
+        progress?.Status("bulk: группировка по организациям…");
+        var ops11ByRepsId = allOps11
+            .GroupBy(op => op.RepsId)
+            .ToDictionary(g => g.Key, g => g.OrderBy(op => op.Id).ToList());
+        var ops13ByRepsId = allOps13
+            .GroupBy(op => op.RepsId)
+            .ToDictionary(g => g.Key, g => g.OrderBy(op => op.Id).ToList());
+        stage++;
+        progress?.ReportNow(stage, stages,
+            $"bulk: готово — 1.1={allOps11.Count}, 1.3={allOps13.Count}, орг.={orgTitles.Count} ({stage} из {stages})");
+
+        return new TransferReceiveBulkLoad
+        {
+            AllOps11 = allOps11,
+            AllOps13 = allOps13,
+            Ops11ByRepsId = ops11ByRepsId,
+            Ops13ByRepsId = ops13ByRepsId,
+            RepsIdsByNormOkpo = repsIdsByNormOkpo
+        };
+    }
+
+    /// <summary>
+    /// Один запрос: все операции приёма/передачи формы 1.1 по БД (RepsId из навигации).
+    /// </summary>
+    private static async Task<List<TransferReceiveDto>> LoadAllForm11TransferReceiveAsync(
+        DBModel db,
+        IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
+        CancellationToken cancellationToken)
+    {
+        var codes = Form11TransferReceiveCodes;
+        var rows = await db.form_11
+            .AsNoTracking()
+            .Where(form => form.Report != null
+                           && form.Report.Reports != null
+                           && form.OperationCode_DB != null
+                           && codes.Contains(form.OperationCode_DB))
+            .Select(form => new
+            {
+                form.Id,
+                ReportId = form.ReportId ?? 0,
+                RepsId = form.Report!.Reports.Id,
+                NumberInOrder = form.NumberInOrder_DB,
+                OpCode = form.OperationCode_DB,
+                OpDate = form.OperationDate_DB,
+                PasNum = form.PassportNumber_DB,
+                FacNum = form.FactoryNumber_DB,
+                Type = form.Type_DB,
+                Radionuclids = form.Radionuclids_DB,
+                PackNumber = form.PackNumber_DB,
+                ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                Quantity = form.Quantity_DB,
+                Activity = form.Activity_DB,
+                CreatorOkpo = form.CreatorOKPO_DB,
+                CreationDate = form.CreationDate_DB,
+                StartPeriod = form.Report.StartPeriod_DB,
+                EndPeriod = form.Report.EndPeriod_DB
+            })
+            .ToListAsync(cancellationToken);
+
+        var result = new List<TransferReceiveDto>(rows.Count);
+        foreach (var row in rows)
+        {
+            if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+            {
+                continue;
+            }
+
+            orgTitles.TryGetValue(row.RepsId, out var title);
+            result.Add(new TransferReceiveDto
+            {
+                Id = row.Id,
+                RepsId = row.RepsId,
+                ReportId = row.ReportId,
+                NumberInOrder = row.NumberInOrder,
+                OrgOkpo = title?.Okpo ?? string.Empty,
+                OrgRegNo = title?.RegNo ?? string.Empty,
+                OrgShortName = title?.ShortName ?? string.Empty,
+                OpCode = row.OpCode ?? string.Empty,
+                OpDate = row.OpDate ?? string.Empty,
+                PasNum = row.PasNum ?? string.Empty,
+                FacNum = row.FacNum ?? string.Empty,
+                Type = row.Type ?? string.Empty,
+                Radionuclids = row.Radionuclids ?? string.Empty,
+                PackNumber = row.PackNumber ?? string.Empty,
+                ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
+                Quantity = row.Quantity,
+                Activity = row.Activity ?? string.Empty,
+                CreatorOkpo = row.CreatorOkpo ?? string.Empty,
+                CreationDate = row.CreationDate ?? string.Empty,
+                StartPeriod = row.StartPeriod ?? string.Empty,
+                EndPeriod = row.EndPeriod ?? string.Empty,
+                IsTransfer = IsTransferCodeForm11(row.OpCode)
+            });
+        }
+
+        return result.OrderBy(row => row.Id).ToList();
+    }
+
+    /// <summary>
+    /// Один запрос: все операции приёма/передачи формы 1.3 по БД.
+    /// </summary>
+    private static async Task<List<TransferReceiveDto>> LoadAllForm13TransferReceiveAsync(
+        DBModel db,
+        IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
+        CancellationToken cancellationToken)
+    {
+        var codes = TransferReceiveCodesForm11And13;
+        var rows = await db.form_13
+            .AsNoTracking()
+            .Where(form => form.Report != null
+                           && form.Report.Reports != null
+                           && form.OperationCode_DB != null
+                           && codes.Contains(form.OperationCode_DB))
+            .Select(form => new
+            {
+                form.Id,
+                ReportId = form.ReportId ?? 0,
+                RepsId = form.Report!.Reports.Id,
+                NumberInOrder = form.NumberInOrder_DB,
+                OpCode = form.OperationCode_DB,
+                OpDate = form.OperationDate_DB,
+                PasNum = form.PassportNumber_DB,
+                FacNum = form.FactoryNumber_DB,
+                Type = form.Type_DB,
+                Radionuclids = form.Radionuclids_DB,
+                PackNumber = form.PackNumber_DB,
+                ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                Activity = form.Activity_DB,
+                CreatorOkpo = form.CreatorOKPO_DB,
+                CreationDate = form.CreationDate_DB,
+                AggregateState = form.AggregateState_DB,
+                StartPeriod = form.Report.StartPeriod_DB,
+                EndPeriod = form.Report.EndPeriod_DB
+            })
+            .ToListAsync(cancellationToken);
+
+        var result = new List<TransferReceiveDto>(rows.Count);
+        foreach (var row in rows)
+        {
+            if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+            {
+                continue;
+            }
+
+            orgTitles.TryGetValue(row.RepsId, out var title);
+            result.Add(new TransferReceiveDto
+            {
+                Id = row.Id,
+                RepsId = row.RepsId,
+                ReportId = row.ReportId,
+                NumberInOrder = row.NumberInOrder,
+                OrgOkpo = title?.Okpo ?? string.Empty,
+                OrgRegNo = title?.RegNo ?? string.Empty,
+                OrgShortName = title?.ShortName ?? string.Empty,
+                OpCode = row.OpCode ?? string.Empty,
+                OpDate = row.OpDate ?? string.Empty,
+                PasNum = row.PasNum ?? string.Empty,
+                FacNum = row.FacNum ?? string.Empty,
+                Type = row.Type ?? string.Empty,
+                Radionuclids = row.Radionuclids ?? string.Empty,
+                PackNumber = row.PackNumber ?? string.Empty,
+                ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
+                Quantity = 1,
+                AggregateState = row.AggregateState,
+                Activity = row.Activity ?? string.Empty,
+                CreatorOkpo = row.CreatorOkpo ?? string.Empty,
+                CreationDate = row.CreationDate ?? string.Empty,
+                StartPeriod = row.StartPeriod ?? string.Empty,
+                EndPeriod = row.EndPeriod ?? string.Empty,
+                IsTransfer = IsTransferCodeForm11(row.OpCode)
+            });
+        }
+
+        return result.OrderBy(row => row.Id).ToList();
+    }
+
+    /// <summary>
+    /// Whole-DB ОКПО-карта: сначала титулы кандидатов; <see cref="LoadRepsIdsByOkpoAsync"/> —
+    /// только для сырых ОКПО кол. 19, которых ещё нет после нормализации.
+    /// </summary>
+    private static async Task<Dictionary<string, List<int>>> BuildOkpoAliasMapForWholeDbAsync(
+        DBModel db,
+        IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
+        IReadOnlyList<TransferReceiveDto> allOps11,
+        IReadOnlyList<TransferReceiveDto> allOps13,
+        CancellationToken cancellationToken,
+        ProgressReporter? progress = null)
+    {
+        var byNorm = new Dictionary<string, List<int>>(StringComparer.Ordinal);
+        foreach (var (repsId, title) in orgTitles)
+        {
+            var norm = NormalizeNumber(title.Okpo);
+            if (norm.Length == 0)
+            {
+                continue;
+            }
+
+            if (!byNorm.TryGetValue(norm, out var list))
+            {
+                list = [];
+                byNorm[norm] = list;
+            }
+
+            if (!list.Contains(repsId))
+            {
+                list.Add(repsId);
+            }
+        }
+
+        var counterpartRawOkpos = allOps11
+            .Concat(allOps13)
+            .Select(op => op.ProviderOrRecieverOkpo?.Trim() ?? string.Empty)
+            .Where(okpo => okpo.Length > 0 && okpo != "-")
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
+        var missingRaw = counterpartRawOkpos
+            .Where(raw =>
+            {
+                var norm = NormalizeNumber(raw);
+                return norm.Length > 0 && !byNorm.ContainsKey(norm);
+            })
+            .ToList();
+
+        if (missingRaw.Count == 0)
+        {
+            progress?.Status($"bulk: ОКПО — все {counterpartRawOkpos.Count} закрыты титулами кандидатов");
+            return byNorm;
+        }
+
+        progress?.Status(
+            $"bulk: ОКПО — догрузка хвоста {missingRaw.Count} из {counterpartRawOkpos.Count}…");
+        var (extra, _) = await LoadRepsIdsByOkpoAsync(db, missingRaw, cancellationToken, progress);
+        foreach (var (norm, repsIds) in extra)
+        {
+            if (!byNorm.TryGetValue(norm, out var list))
+            {
+                byNorm[norm] = repsIds.ToList();
+                continue;
+            }
+
+            foreach (var repsId in repsIds)
+            {
+                if (!list.Contains(repsId))
+                {
+                    list.Add(repsId);
+                }
+            }
+        }
+
+        return byNorm;
+    }
 
     private static async Task<List<TransferReceiveDto>> LoadForm11TransferReceiveForRepsAsync(
         DBModel db,

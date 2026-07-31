@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.Resources.CustomComparers;
 using Client_App.Views.ProgressBar;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using Models.Forms.Form1;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
@@ -15,10 +18,31 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 {
     #region Mode / export model
 
+    private const string WholeDbParameter = "All";
+
+    private static bool IsWholeDbMode(object? parameter) =>
+        parameter is string s && string.Equals(s, WholeDbParameter, StringComparison.OrdinalIgnoreCase);
+
     private sealed class OrganizationTransferReceiveExport
     {
         public List<TransferReceiveDto> UnpairedForm11 { get; init; } = [];
         public List<TransferReceiveDto> UnpairedForm13 { get; init; } = [];
+    }
+
+    private sealed class TransferReceiveBulkLoad
+    {
+        public List<TransferReceiveDto> AllOps11 { get; init; } = [];
+        public List<TransferReceiveDto> AllOps13 { get; init; } = [];
+        public Dictionary<int, List<TransferReceiveDto>> Ops11ByRepsId { get; init; } = new();
+        public Dictionary<int, List<TransferReceiveDto>> Ops13ByRepsId { get; init; } = new();
+        public Dictionary<string, List<int>> RepsIdsByNormOkpo { get; init; } = new(StringComparer.Ordinal);
+    }
+
+    /// <summary>Кандидат whole-DB: Id + титул без тяжёлого Include(Master→Rows10).</summary>
+    private sealed class TransferReceiveOrgCandidate
+    {
+        public required int Id { get; init; }
+        public required OrgTitleInfo Title { get; init; }
     }
 
     #endregion
@@ -72,12 +96,209 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
     #endregion
 
+    #region Execute whole DB
+
+    private async Task ExecuteForWholeDatabaseAsync(
+        TransferReceiveParamsSet pairingParams,
+        AnyTaskProgressBar progressBar,
+        CancellationTokenSource cts)
+    {
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
+        const string fileName = "проверка_приёма_передачи_вся_БД";
+
+        progressBarVM.SetProgressBar(5, "Запрос пути сохранения", "Вся БД", "Выгрузка в .xlsx");
+        var (fullPath, openTemp) = await ExcelGetFullPathWithUniqueIndex(fileName, cts, progressBar);
+        if (string.IsNullOrEmpty(fullPath))
+        {
+            return;
+        }
+
+        progressBarVM.SetProgressBar(10, "Создание временной БД", "Вся БД", "Выгрузка в .xlsx");
+        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
+        await using var db = new DBModel(tmpDbPath);
+
+        progressBarVM.SetProgressBar(12, "Поиск организаций с операциями приёма/передачи", "Вся БД", "Выгрузка в .xlsx");
+        var discoverProgress = new ProgressReporter(
+            (percent, text) => progressBarVM.SetProgressBar(percent, text, "Вся БД"),
+            percentMin: 12,
+            percentMax: 28);
+        var candidates = await LoadOrganizationsWithTransferReceiveAsync(db, cts.Token, discoverProgress);
+        if (candidates.Count == 0)
+        {
+            await ShowNoUnpairedOperationsMessage(progressBar, wholeDatabase: true);
+            await CleanupAndClose(progressBar, tmpDbPath);
+            return;
+        }
+
+        var bulkProgress = new ProgressReporter(
+            (percent, text) => progressBarVM.SetProgressBar(percent, text, "Вся БД"),
+            percentMin: 28,
+            percentMax: 52);
+        var orgTitles = candidates.ToDictionary(c => c.Id, c => c.Title);
+        var bulk = await LoadAllTransferReceiveBulkAsync(db, orgTitles, cts.Token, bulkProgress);
+
+        progressBarVM.SetProgressBar(52, "Построение общих пулов сопоставления", "Вся БД", "Выгрузка в .xlsx");
+        var sharedPool11 = BuildOpsPoolByOrgOkpo([], bulk.AllOps11, bulk.RepsIdsByNormOkpo);
+        var sharedPool13 = BuildOpsPoolByOrgOkpo([], bulk.AllOps13, bulk.RepsIdsByNormOkpo);
+
+        progressBarVM.SetProgressBar(55, "Инициализация Excel пакета", "Вся БД", "Выгрузка в .xlsx");
+        using var excelPackage = await InitializeExcelPackage(fullPath);
+        InitializeWorkbook(excelPackage);
+
+        var anyUnpairedWritten = false;
+        var total = candidates.Count;
+        for (var i = 0; i < total; i++)
+        {
+            cts.Token.ThrowIfCancellationRequested();
+            var org = candidates[i];
+            var orgIndex = i + 1;
+            var regNum = RemoveForbiddenChars(org.Title.RegNo);
+            var okpo = RemoveForbiddenChars(org.Title.Okpo);
+            var exportName = $"{regNum}_{okpo}";
+            var percentBase = 55 + (int)(38.0 * i / total);
+            var percentSpan = Math.Max(1, (int)(38.0 / total));
+
+            void Status(int offsetWithinOrg, string stage) =>
+                progressBarVM.SetProgressBar(
+                    Math.Min(94, percentBase + offsetWithinOrg),
+                    $"Организация {orgIndex} из {total}: {stage}",
+                    exportName);
+
+            Status(0, "сопоставление");
+            bulk.Ops11ByRepsId.TryGetValue(org.Id, out var our11);
+            bulk.Ops13ByRepsId.TryGetValue(org.Id, out var our13);
+            our11 ??= [];
+            our13 ??= [];
+
+            var export = BuildOrganizationExportFromSharedPools(
+                org.Title.Okpo,
+                our11,
+                our13,
+                sharedPool11,
+                sharedPool13,
+                pairingParams,
+                (p, text) => Status(Math.Min(percentSpan - 1, Math.Max(0, p / 5)), text));
+
+            if (export is null)
+            {
+                continue;
+            }
+
+            Status(percentSpan - 1, "запись в Excel");
+            AppendOrganizationToWorkbook(
+                excelPackage,
+                export,
+                progressBarVM,
+                percentBase: percentBase,
+                percentSpan: percentSpan,
+                orgIndex: orgIndex,
+                orgCount: total,
+                orgLabel: exportName);
+            anyUnpairedWritten = true;
+        }
+
+        if (!anyUnpairedWritten)
+        {
+            await ShowNoUnpairedOperationsMessage(progressBar, wholeDatabase: true);
+            await CleanupAndClose(progressBar, tmpDbPath);
+            return;
+        }
+
+        FinalizeWorkbookTables(excelPackage);
+        progressBarVM.SetProgressBar(95, "Сохранение", "Вся БД", "Выгрузка в .xlsx");
+        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+        await CleanupAndClose(progressBar, tmpDbPath);
+    }
+
+    #endregion
+
+    #region Discover orgs with transfer/receive
+
+    /// <summary>
+    /// Организации с хотя бы одной операцией приёма/передачи на 1.1 или 1.3.
+    /// Id — Distinct по таблицам форм; титулы — точечно из form_10 (без Include Master→Rows10).
+    /// </summary>
+    private static async Task<List<TransferReceiveOrgCandidate>> LoadOrganizationsWithTransferReceiveAsync(
+        DBModel db,
+        CancellationToken cancellationToken,
+        ProgressReporter? progress = null)
+    {
+        var repsIds = new HashSet<int>();
+        progress?.ReportNow(0, 2, "поиск организаций: сканирование формы 1.1 (1 из 2)");
+        await AddRepsIdsWithTransferReceiveCodesAsync(db.form_11, repsIds, cancellationToken);
+        progress?.ReportNow(1, 2, $"поиск организаций: форма 1.1 — найдено организаций: {repsIds.Count}");
+        await AddRepsIdsWithTransferReceiveCodesAsync(db.form_13, repsIds, cancellationToken);
+        progress?.ReportNow(2, 2, $"поиск организаций: форма 1.3 — найдено организаций: {repsIds.Count}");
+
+        if (repsIds.Count == 0)
+        {
+            return [];
+        }
+
+        // Только org из активной коллекции (как раньше Where DBObservable != null).
+        var orderedIds = repsIds.OrderBy(id => id).ToList();
+        var activeIds = new List<int>(orderedIds.Count);
+        var idChunks = ChunkIds(orderedIds).ToList();
+        for (var i = 0; i < idChunks.Count; i++)
+        {
+            progress?.ReportNow(i, idChunks.Count,
+                $"поиск организаций: фильтр активных карточек {i + 1} из {idChunks.Count}");
+            var batch = await db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .Where(reps => reps.DBObservable != null && idChunks[i].Contains(reps.Id))
+                .Select(reps => reps.Id)
+                .ToListAsync(cancellationToken);
+            activeIds.AddRange(batch);
+        }
+
+        if (activeIds.Count == 0)
+        {
+            return [];
+        }
+
+        progress?.Status($"поиск организаций: загрузка титулов ({activeIds.Count} орг.)…");
+        var orgTitles = new Dictionary<int, OrgTitleInfo>();
+        await LoadOrgTitlesForRepsIdsAsync(db, activeIds, orgTitles, cancellationToken);
+        progress?.ReportNow(1, 1, $"поиск организаций: готово — {orgTitles.Count}");
+
+        var regNoComparer = new CustomReportsComparer();
+        return orgTitles
+            .Select(kv => new TransferReceiveOrgCandidate { Id = kv.Key, Title = kv.Value })
+            .OrderBy(c => c.Title.RegNo, regNoComparer)
+            .ThenBy(c => c.Title.Okpo, regNoComparer)
+            .ToList();
+    }
+
+    private static async Task AddRepsIdsWithTransferReceiveCodesAsync<TForm>(
+        DbSet<TForm> forms,
+        HashSet<int> repsIds,
+        CancellationToken cancellationToken)
+        where TForm : Form1
+    {
+        var codes = TransferReceiveCodesForm11And13;
+        var ids = await forms
+            .AsNoTracking()
+            .Where(form => form.OperationCode_DB != null
+                           && codes.Contains(form.OperationCode_DB)
+                           && form.Report != null
+                           && form.Report.Reports != null)
+            .Select(form => form.Report!.Reports.Id)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+
+        foreach (var id in ids)
+        {
+            repsIds.Add(id);
+        }
+    }
+
+    #endregion
+
     #region Build organization export
 
     /// <summary>
     /// Режим выбранной организации: загрузка данных + общее ядро анализа.
-    /// В будущем режим «вся БД» должен вызывать то же <see cref="AnalyzeForm11ForOrganization"/>
-    /// после одного bulk-load, без отдельной копии алгоритма.
+    /// Режим «вся БД» вызывает <see cref="BuildOrganizationExportFromLoaded"/> после bulk-load.
     /// </summary>
     private async Task<OrganizationTransferReceiveExport?> BuildOrganizationExportAsync(
         DBModel db,
@@ -88,7 +309,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     {
         _currentParams = pairingParams;
         var ourOkpo = selectedReports.Master_DB.OkpoRep.Value?.Trim() ?? string.Empty;
-        var ourOkpoNorm = NormalizeNumber(ourOkpo);
         var ourRegNo = selectedReports.Master_DB.RegNoRep.Value?.Trim() ?? string.Empty;
         var ourShortName = selectedReports.Master_DB.ShortJurLicoRep.Value?.Trim() ?? string.Empty;
 
@@ -132,7 +352,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var (repsIdsByOkpo, orgTitles) =
             await LoadRepsIdsByOkpoAsync(db, counterpartRawOkpos, cancellationToken, okpoProgress);
 
-        // Свою org не перезагружаем — её ops уже загружены и попадут в пул в ядре анализа.
         var counterpartRepsIds = repsIdsByOkpo.Values
             .SelectMany(ids => ids)
             .Where(id => id != selectedReports.Id)
@@ -155,6 +374,35 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             44,
             $"загружено операций контрагентов: 1.1={counterpartOps11.Count}, 1.3={counterpartOps13.Count}, {counterpartRepsIds.Count} орг.");
 
+        return BuildOrganizationExportFromLoaded(
+            ourOkpo,
+            ourOps11,
+            ourOps13,
+            counterpartOps11,
+            counterpartOps13,
+            repsIdsByOkpo,
+            pairingParams,
+            reportProgress);
+    }
+
+    /// <summary>
+    /// Сопоставление + closest из уже загруженных DTO (org после точечной загрузки).
+    /// <paramref name="counterpartOrAllOps11"/> — операции контрагентов либо полный пул 1.1
+    /// (включая «свои»; дубли по Id отфильтрует ядро).
+    /// </summary>
+    private OrganizationTransferReceiveExport? BuildOrganizationExportFromLoaded(
+        string ourOkpo,
+        List<TransferReceiveDto> ourOps11,
+        List<TransferReceiveDto> ourOps13,
+        List<TransferReceiveDto> counterpartOrAllOps11,
+        List<TransferReceiveDto> counterpartOrAllOps13,
+        IReadOnlyDictionary<string, List<int>> repsIdsByOkpo,
+        TransferReceiveParamsSet pairingParams,
+        Action<int, string>? reportProgress = null)
+    {
+        _currentParams = pairingParams;
+        var ourOkpoNorm = NormalizeNumber(ourOkpo);
+
         var unpaired11 = new List<TransferReceiveDto>();
         var unpaired13 = new List<TransferReceiveDto>();
 
@@ -163,7 +411,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var matchProgress = new ProgressReporter(reportProgress, percentMin: 45, percentMax: 50);
             matchProgress.Status($"сопоставление формы 1.1: 0 из {ourOps11.Count} операций");
             var (unpaired, opsByOrgOkpo) = AnalyzeForm11ForOrganization(
-                ourOps11, counterpartOps11, ourOkpoNorm, pairingParams.Form11, repsIdsByOkpo, matchProgress);
+                ourOps11, counterpartOrAllOps11, ourOkpoNorm, pairingParams.Form11, repsIdsByOkpo, matchProgress);
             unpaired11 = unpaired;
 
             reportProgress?.Invoke(50, $"непарных операций 1.1: {unpaired11.Count} из {ourOps11.Count}");
@@ -183,7 +431,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var matchProgress = new ProgressReporter(reportProgress, percentMin: 55, percentMax: 62);
             matchProgress.Status($"сопоставление формы 1.3: 0 из {ourOps13.Count} операций");
             var (unpaired, opsByOrgOkpo) = AnalyzeForm11ForOrganization(
-                ourOps13, counterpartOps13, ourOkpoNorm, pairingParams.Form13, repsIdsByOkpo, matchProgress);
+                ourOps13, counterpartOrAllOps13, ourOkpoNorm, pairingParams.Form13, repsIdsByOkpo, matchProgress);
             unpaired13 = unpaired;
 
             reportProgress?.Invoke(62, $"непарных операций 1.3: {unpaired13.Count} из {ourOps13.Count}");
@@ -210,13 +458,81 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         };
     }
 
+    /// <summary>
+    /// Whole-DB: пул ОКПО уже построен один раз; per-org только unpaired + closest.
+    /// </summary>
+    private OrganizationTransferReceiveExport? BuildOrganizationExportFromSharedPools(
+        string ourOkpo,
+        List<TransferReceiveDto> ourOps11,
+        List<TransferReceiveDto> ourOps13,
+        IReadOnlyDictionary<string, List<TransferReceiveDto>> sharedPool11,
+        IReadOnlyDictionary<string, List<TransferReceiveDto>> sharedPool13,
+        TransferReceiveParamsSet pairingParams,
+        Action<int, string>? reportProgress = null)
+    {
+        _currentParams = pairingParams;
+        var ourOkpoNorm = NormalizeNumber(ourOkpo);
+
+        var unpaired11 = new List<TransferReceiveDto>();
+        var unpaired13 = new List<TransferReceiveDto>();
+
+        if (ourOps11.Count > 0)
+        {
+            var matchProgress = new ProgressReporter(reportProgress, percentMin: 45, percentMax: 50);
+            matchProgress.Status($"сопоставление формы 1.1: 0 из {ourOps11.Count} операций");
+            unpaired11 = ComputeUnpairedForm11(
+                ourOps11, sharedPool11, ourOkpoNorm, pairingParams.Form11, matchProgress);
+
+            reportProgress?.Invoke(50, $"непарных операций 1.1: {unpaired11.Count} из {ourOps11.Count}");
+
+            var closestProgress = new ProgressReporter(reportProgress, percentMin: 50, percentMax: 55);
+            closestProgress.Status($"поиск ближайших совпадений 1.1: 0 из {unpaired11.Count}");
+            _form11ClosestMatches = BuildClosestMatchResults(
+                unpaired11, sharedPool11, pairingParams.Form11, closestProgress);
+        }
+        else
+        {
+            _form11ClosestMatches = new Dictionary<int, ClosestMatchResult>();
+        }
+
+        if (ourOps13.Count > 0)
+        {
+            var matchProgress = new ProgressReporter(reportProgress, percentMin: 55, percentMax: 62);
+            matchProgress.Status($"сопоставление формы 1.3: 0 из {ourOps13.Count} операций");
+            unpaired13 = ComputeUnpairedForm11(
+                ourOps13, sharedPool13, ourOkpoNorm, pairingParams.Form13, matchProgress);
+
+            reportProgress?.Invoke(62, $"непарных операций 1.3: {unpaired13.Count} из {ourOps13.Count}");
+
+            var closestProgress = new ProgressReporter(reportProgress, percentMin: 62, percentMax: 68);
+            closestProgress.Status($"поиск ближайших совпадений 1.3: 0 из {unpaired13.Count}");
+            _form13ClosestMatches = BuildClosestMatchResults(
+                unpaired13, sharedPool13, pairingParams.Form13, closestProgress);
+        }
+        else
+        {
+            _form13ClosestMatches = new Dictionary<int, ClosestMatchResult>();
+        }
+
+        if (unpaired11.Count == 0 && unpaired13.Count == 0)
+        {
+            return null;
+        }
+
+        return new OrganizationTransferReceiveExport
+        {
+            UnpairedForm11 = unpaired11,
+            UnpairedForm13 = unpaired13
+        };
+    }
+
     #endregion
 
-    #region Shared analysis core (org + future All)
+    #region Shared analysis core (org + whole-DB)
 
     /// <summary>
     /// Единое ядро: пул кандидатов + непарные. Без обращений к БД.
-    /// Org-режим и будущий All отличаются только тем, откуда взяты <paramref name="ourOps"/> /
+    /// Org-режим и whole-DB отличаются только тем, откуда взяты <paramref name="ourOps"/> /
     /// <paramref name="counterpartOps"/> (точечная загрузка vs bulk).
     /// </summary>
     private static (List<TransferReceiveDto> Unpaired, Dictionary<string, List<TransferReceiveDto>> OpsByOrgOkpo)

@@ -133,16 +133,13 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             _ => false
         };
 
-    private static bool QuantityMatchesForClosest(TransferReceiveNorm left, TransferReceiveNorm right)
-    {
-        if (left.PasNum.Length == 0 && left.FacNum.Length == 0
-            && right.PasNum.Length == 0 && right.FacNum.Length == 0)
-        {
-            return false;
-        }
-
-        return left.Quantity == right.Quantity;
-    }
+    /// <summary>
+    /// Closest: количество сравнивается построчно (как в Pairing41).
+    /// Для пустых серий парность считается по сумме qty, а подсветка — по числам в самой строке
+    /// (1↔1 зелёный, 8↔5 красный), иначе qty всегда казалось бы «несовпавшим».
+    /// </summary>
+    private static bool QuantityMatchesForClosest(TransferReceiveNorm left, TransferReceiveNorm right) =>
+        left.Quantity == right.Quantity;
 
     private static bool ActivityMatchesNorm(string left, string right)
     {

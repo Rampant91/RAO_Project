@@ -6,8 +6,8 @@ using Xunit;
 namespace Test.TransferReceive;
 
 /// <summary>
-/// Регрессии масштаба и детерминизма общего ядра <c>AnalyzeForm11ForOrganization</c>
-/// (то же, что будут использовать org- и whole-DB режимы выгрузки).
+/// Equivalence org ↔ All: то же ядро <c>AnalyzeForm11ForOrganization</c>;
+/// org передаёт пул контрагентов, All — полный merged-пул (свои + чужие, дедуп по Id).
 /// Полное покрытие эталонов — в <see cref="TransferReceiveScenarioTests"/>.
 /// </summary>
 public class TransferReceiveModeEquivalenceTests
@@ -32,6 +32,139 @@ public class TransferReceiveModeEquivalenceTests
         TransferReceiveAssertions.EqualClosestMatches(testCase, first);
         TransferReceiveAssertions.EqualClosestMatches(testCase, second);
         Assert.Equal(first.Closest.Keys.OrderBy(id => id), second.Closest.Keys.OrderBy(id => id));
+    }
+
+    /// <summary>
+    /// Org-пул контрагентов ≡ All-стиль (наши + контрагенты в одном пуле; ядро дедупит по Id).
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(TransferReceiveTestCases.All), MemberType = typeof(TransferReceiveTestCases))]
+    public void OrgCounterpartPool_EqualsMergedFullPool(string name, TransferReceiveTestCase testCase)
+    {
+        Assert.Equal(name, testCase.Name);
+        var orgStyle = TransferReceiveScenarioRunner.Run(testCase);
+
+        var allStyleCase = CloneWithCounterpartPool(
+            testCase,
+            testCase.OurOps.Concat(testCase.CounterpartOps).ToList());
+        var allStyle = TransferReceiveScenarioRunner.Run(allStyleCase);
+
+        TransferReceiveAssertions.EqualIds(
+            orgStyle.UnpairedIds,
+            allStyle.UnpairedIds,
+            $"{name}: org ↔ All (merged pool)");
+    }
+
+    /// <summary>
+    /// Shared pool (whole-DB once) ≡ обычный Analyze с counterpart-пулом.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(TransferReceiveTestCases.All), MemberType = typeof(TransferReceiveTestCases))]
+    public void SharedFullPool_EqualsOrgAnalyze(string name, TransferReceiveTestCase testCase)
+    {
+        Assert.Equal(name, testCase.Name);
+        var orgStyle = TransferReceiveScenarioRunner.Run(testCase);
+        var shared = TransferReceiveScenarioRunner.RunWithSharedFullPool(testCase);
+        TransferReceiveAssertions.EqualIds(
+            orgStyle.UnpairedIds,
+            shared.UnpairedIds,
+            $"{name}: shared pool ↔ org Analyze");
+    }
+
+    /// <summary>
+    /// Closest: org-пул ≡ merged full-пул (как при bulk All).
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(TransferReceiveTestCases.ClosestMatchOnly), MemberType = typeof(TransferReceiveTestCases))]
+    public void OrgCounterpartPool_EqualsMergedFullPool_Closest(string name, TransferReceiveTestCase testCase)
+    {
+        Assert.Equal(name, testCase.Name);
+        var orgStyle = TransferReceiveScenarioRunner.RunClosestMatches(testCase);
+
+        var allStyleCase = CloneWithCounterpartPool(
+            testCase,
+            testCase.OurOps.Concat(testCase.CounterpartOps).ToList());
+        var allStyle = TransferReceiveScenarioRunner.RunClosestMatches(allStyleCase);
+
+        Assert.Equal(
+            orgStyle.Closest.Keys.OrderBy(id => id),
+            allStyle.Closest.Keys.OrderBy(id => id));
+        foreach (var id in orgStyle.Closest.Keys)
+        {
+            Assert.Equal(
+                orgStyle.Closest[id].OrderBy(kv => kv.Key).Select(kv => (kv.Key, kv.Value)),
+                allStyle.Closest[id].OrderBy(kv => kv.Key).Select(kv => (kv.Key, kv.Value)));
+        }
+    }
+
+    /// <summary>
+    /// Лишние ops чужой org (другой ОКПО) в full-пуле не меняют результат выбранной org.
+    /// </summary>
+    [Fact]
+    public void FullPoolWithUnrelatedNoise_SameAsOrgPool()
+    {
+        var baseCase = new TransferReceiveTestCase
+        {
+            Name = "EQ. Noise org в full-пуле — результат как у org-пула.",
+            OurOkpo = "10000001",
+            OurOps =
+            [
+                TransferReceiveTestCases.CreateTransferForScale(1)
+            ],
+            CounterpartOps =
+            [
+                TransferReceiveTestCases.CreateReceiveForScale(101, pairTransferId: 1)
+            ],
+            ExpectedUnpairedIds = []
+        };
+
+        var noise = new List<TransferReceiveRow>
+        {
+            new()
+            {
+                Id = 9001,
+                RepsId = 99,
+                OrgOkpo = "99999999",
+                OpCode = "21",
+                OpDate = "2024-06-15",
+                PasNum = "P-9001",
+                FacNum = "F-9001",
+                Type = "ИИИ",
+                Radionuclids = "Cs-137",
+                ProviderOrRecieverOkpo = "88888888",
+                Activity = "1.0e+6",
+                CreatorOkpo = "99999999",
+                CreationDate = "2020-01-01",
+                Quantity = 1,
+                IsTransfer = true
+            },
+            new()
+            {
+                Id = 9002,
+                RepsId = 98,
+                OrgOkpo = "88888888",
+                OpCode = "31",
+                OpDate = "2024-06-15",
+                PasNum = "P-9001",
+                FacNum = "F-9001",
+                Type = "ИИИ",
+                Radionuclids = "Cs-137",
+                ProviderOrRecieverOkpo = "99999999",
+                Activity = "1.0e+6",
+                CreatorOkpo = "88888888",
+                CreationDate = "2020-01-01",
+                Quantity = 1,
+                IsTransfer = false
+            }
+        };
+
+        var orgStyle = TransferReceiveScenarioRunner.Run(baseCase);
+        var allStyle = TransferReceiveScenarioRunner.Run(CloneWithCounterpartPool(
+            baseCase,
+            baseCase.OurOps.Concat(baseCase.CounterpartOps).Concat(noise).ToList()));
+
+        TransferReceiveAssertions.EqualIds(orgStyle.UnpairedIds, allStyle.UnpairedIds, "noise pool");
+        TransferReceiveAssertions.EqualScenario(baseCase, allStyle);
     }
 
     /// <summary>
@@ -142,4 +275,20 @@ public class TransferReceiveModeEquivalenceTests
         var actual = TransferReceiveScenarioRunner.Run(testCase);
         TransferReceiveAssertions.EqualScenario(testCase, actual);
     }
+
+    private static TransferReceiveTestCase CloneWithCounterpartPool(
+        TransferReceiveTestCase source,
+        IReadOnlyList<TransferReceiveRow> counterpartOps) =>
+        new()
+        {
+            Name = source.Name,
+            FormNum = source.FormNum,
+            Params = source.Params,
+            OurOkpo = source.OurOkpo,
+            OurOps = source.OurOps,
+            CounterpartOps = counterpartOps,
+            OkpoAliases = source.OkpoAliases,
+            ExpectedUnpairedIds = source.ExpectedUnpairedIds,
+            ExpectedClosest = source.ExpectedClosest
+        };
 }

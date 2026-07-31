@@ -37,6 +37,10 @@ public sealed class Pairing41Row
     public string Volume { get; init; } = string.Empty;
     public string ActivityMeasurementDate { get; init; } = string.Empty;
     public int? Quantity { get; init; }
+    public string FormNum { get; init; } = string.Empty;
+    public string CodeRao { get; init; } = string.Empty;
+    public byte? AggregateState { get; init; }
+    public string OrgRegNo { get; init; } = string.Empty;
 }
 
 /// <summary>
@@ -85,6 +89,30 @@ public sealed class Pairing41TestCase
     public IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing13To16Field, bool>>? ExpectedClosest13 { get; init; }
     public IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing14To16Field, bool>>? ExpectedClosest14 { get; init; }
     public IReadOnlyDictionary<int, Pairing41Form16ClosestExpectation>? ExpectedClosest16 { get; init; }
+
+    /// <summary>Id непарной → Id ближайшего кандидата (форма 1.5). Null = не проверять.</summary>
+    public IReadOnlyDictionary<int, int>? ExpectedClosestCandidate11 { get; init; }
+
+    /// <summary>Id непарной 1.5 → Id ближайшего кандидата (форма 1.1).</summary>
+    public IReadOnlyDictionary<int, int>? ExpectedClosestCandidate15 { get; init; }
+
+    /// <summary>Id непарной 1.2 → Id ближайшего кандидата 1.6.</summary>
+    public IReadOnlyDictionary<int, int>? ExpectedClosestCandidate12 { get; init; }
+
+    /// <summary>Id непарной 1.3 → Id ближайшего кандидата 1.6.</summary>
+    public IReadOnlyDictionary<int, int>? ExpectedClosestCandidate13 { get; init; }
+
+    /// <summary>Id непарной 1.4 → Id ближайшего кандидата 1.6.</summary>
+    public IReadOnlyDictionary<int, int>? ExpectedClosestCandidate14 { get; init; }
+
+    /// <summary>Id непарной 1.6 → Id ближайшего кандидата на стороне РВ.</summary>
+    public IReadOnlyDictionary<int, int>? ExpectedClosestCandidate16 { get; init; }
+
+    /// <summary>Id → ожидаемое AggregateStateMatchesCodeRao closest-кандидата на 1.6 (для непарной 1.3).</summary>
+    public IReadOnlyDictionary<int, bool>? ExpectedAggregateStateMatch13 { get; init; }
+
+    /// <summary>Id → ожидаемое AggregateStateMatchesCodeRao closest-кандидата на 1.6 (для непарной 1.4).</summary>
+    public IReadOnlyDictionary<int, bool>? ExpectedAggregateStateMatch14 { get; init; }
 }
 
 public sealed record Pairing41ScenarioResult(
@@ -101,4 +129,12 @@ public sealed record Pairing41ClosestMatchResult(
     IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing12To16Field, bool>> Closest12,
     IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing13To16Field, bool>> Closest13,
     IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing14To16Field, bool>> Closest14,
-    IReadOnlyDictionary<int, Form16ClosestMatchHighlight> Closest16);
+    IReadOnlyDictionary<int, Form16ClosestMatchHighlight> Closest16,
+    IReadOnlyDictionary<int, bool?> Closest13AggregateStateMatch,
+    IReadOnlyDictionary<int, bool?> Closest14AggregateStateMatch,
+    IReadOnlyDictionary<int, int> Closest11CandidateIds,
+    IReadOnlyDictionary<int, int> Closest15CandidateIds,
+    IReadOnlyDictionary<int, int> Closest12CandidateIds,
+    IReadOnlyDictionary<int, int> Closest13CandidateIds,
+    IReadOnlyDictionary<int, int> Closest14CandidateIds,
+    IReadOnlyDictionary<int, int> Closest16CandidateIds);

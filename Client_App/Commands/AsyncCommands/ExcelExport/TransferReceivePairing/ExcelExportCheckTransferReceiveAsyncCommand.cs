@@ -18,7 +18,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
 
 /// <summary>
 /// Выгрузка в .xlsx непарных операций приёма/передачи (формы 1.1–1.8).
-/// Сейчас реализована сверка для форм 1.1 и 1.3 по выбранной организации.
+/// Реализована сверка для форм 1.1 и 1.3: выбранная организация или вся БД.
 /// </summary>
 public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBaseAllAsyncCommand
 {
@@ -32,10 +32,11 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
     private const int FirebirdInListMaxCount = 1000;
 
     /// <summary>
-    /// Размер пакета при загрузке операций контрагентов.
-    /// Меньше лимита Firebird IN — чтобы прогрессбар двигался на десятках org, а не ждал один огромный запрос.
+    /// Размер пакета при загрузке операций контрагентов (org-режим).
+    /// Меньше лимита Firebird IN — чтобы прогрессбар двигался; 50 — компромисс скорость/плавность.
+    /// Whole-DB bulk грузит формы целиком (один scan), без этого чанка.
     /// </summary>
-    private const int CounterpartOpsLoadChunkSize = 20;
+    private const int CounterpartOpsLoadChunkSize = 50;
 
     private static readonly HashSet<string> TransferCodesForm11To14 = new(StringComparer.Ordinal)
     {
@@ -47,7 +48,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
         "31", "32", "35", "37", "38", "39"
     };
 
-    /// <summary>Парность кодов передачи ↔ приёма (в обе стороны).</summary>
+    /// <summary>
+    /// Парность кодов передачи ↔ приёма (в обе стороны).
+    /// 26↔36 — валидная пара, но применяется на формах 1.5–1.8; на 1.1/1.3 в load-set не входит.
+    /// </summary>
     private static readonly Dictionary<string, string> TransferToReceiveCode = new(StringComparer.Ordinal)
     {
         ["21"] = "31",
@@ -74,22 +78,13 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
     }
 
     public override bool CanExecute(object? parameter) =>
-        parameter is Reports
+        IsWholeDbMode(parameter)
+        || parameter is Reports
         || parameter is IKeyCollection
         || _mainWindowVM.SelectedReports is not null;
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (!TryGetReports(parameter, out var selectedReports))
-        {
-            if (_mainWindowVM.SelectedReports is null)
-            {
-                return;
-            }
-
-            selectedReports = _mainWindowVM.SelectedReports;
-        }
-
         var pairingParams = await AskTransferReceiveParamsAsync();
         if (pairingParams is null)
         {
@@ -99,6 +94,23 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
         var cts = new CancellationTokenSource();
         ExportType = "Проверка_приёма_передачи";
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
+
+        if (IsWholeDbMode(parameter))
+        {
+            await ExecuteForWholeDatabaseAsync(pairingParams, progressBar, cts);
+            return;
+        }
+
+        if (!TryGetReports(parameter, out var selectedReports))
+        {
+            if (_mainWindowVM.SelectedReports is null)
+            {
+                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                return;
+            }
+
+            selectedReports = _mainWindowVM.SelectedReports;
+        }
 
         await ExecuteForSelectedOrganizationAsync(selectedReports, pairingParams, progressBar, cts);
     }
@@ -329,16 +341,21 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
 
     #region Messages
 
-    private static async Task ShowNoUnpairedOperationsMessage(AnyTaskProgressBar progressBar)
+    private static async Task ShowNoUnpairedOperationsMessage(
+        AnyTaskProgressBar progressBar,
+        bool wholeDatabase = false)
     {
+        var contentMessage = wholeDatabase
+            ? "Непарные операции приёма/передачи по формам 1.1 и 1.3 по всей базе не обнаружены."
+            : "Непарные операции приёма/передачи по формам 1.1 и 1.3 у выбранной организации не обнаружены.";
+
         await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
             {
                 ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
                 ContentTitle = "Выгрузка в .xlsx",
                 ContentHeader = "Уведомление",
-                ContentMessage =
-                    "Непарные операции приёма/передачи по формам 1.1 и 1.3 у выбранной организации не обнаружены.",
+                ContentMessage = contentMessage,
                 MinWidth = 400,
                 MinHeight = 150,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner

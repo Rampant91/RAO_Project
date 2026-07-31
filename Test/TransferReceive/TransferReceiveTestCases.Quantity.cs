@@ -13,6 +13,7 @@ internal static partial class TransferReceiveTestCases
         yield return Q02_EmptySerial_QtyPartial_InReport();
         yield return Q03_EmptySerial_QtyDrainAcrossTwoCandidates();
         yield return Q04_CheckQuantityOff_PartialQty_Paired();
+        yield return Q05_EmptySerial_DifferentPack_Unpaired();
     }
 
     private static TransferReceiveRow EmptySerialTransfer(
@@ -66,5 +67,18 @@ internal static partial class TransferReceiveTestCases
         OurOps = [EmptySerialTransfer(1, 8)],
         CounterpartOps = [EmptySerialReceive(101, 5)],
         ExpectedUnpairedIds = []
+    };
+
+    /// <summary>
+    /// Q05. Пустые серии, одинаковый qty, разный номер упаковки — не пара
+    /// (УКТ входит в ключ при CheckPackNumber).
+    /// </summary>
+    private static TransferReceiveTestCase Q05_EmptySerial_DifferentPack_Unpaired() => new()
+    {
+        Name = "Q05. Пустые серии, разный УКТ — непарные.",
+        OurOkpo = DefaultOurOkpo,
+        OurOps = [RowTransfer(1, pasNum: "-", facNum: "-", quantity: 8, pack: "УКТ-A")],
+        CounterpartOps = [RowReceive(101, pasNum: "-", facNum: "-", quantity: 8, pack: "УКТ-B")],
+        ExpectedUnpairedIds = [1]
     };
 }
