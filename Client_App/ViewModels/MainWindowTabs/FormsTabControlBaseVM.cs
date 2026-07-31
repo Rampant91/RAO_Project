@@ -2,6 +2,7 @@
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.ExcelExport;
+using Client_App.Commands.AsyncCommands.Import;
 using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Resources.CustomComparers;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +41,11 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     public ICommand NewChangeReports => new NewChangeReportsAsyncCommand(this);
 
     /// <summary>
+    /// Выбранная организация -> Импортировать отчёт в организацию -> Из Excel
+    /// </summary>
+    public ICommand ImportExcel => new ImportExcelAsyncCommand(this);
+
+    /// <summary>
     /// Удалить выбранный отчёт
     /// </summary>
     public ICommand DeleteReport => new NewDeleteFormAsyncCommand(this);
@@ -49,6 +55,14 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     /// </summary>
     public ICommand ExcelExportFormPrint => new ExcelExportFormPrintAsyncCommand(this);
 
+    /// <summary>
+    /// Выгрузить только титульный лист в Excel
+    /// </summary>
+    public ICommand ExcelExportTitleList => new ExcelExportTitleListAsyncCommand(this);
+    /// <summary>
+    /// Выгрузить только титульный лист в RAODB
+    /// </summary>
+    public ICommand ExportTitleList => new ExportTitleListAsyncCommand(this.MainWindowVM);
     /// <summary>
     /// Экспорт отчёта в файл .RAODB
     /// </summary>

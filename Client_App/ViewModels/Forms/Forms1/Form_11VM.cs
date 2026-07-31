@@ -66,6 +66,8 @@ public class Form_11VM : BaseFormVM
         new(OperationCodesProvider.AllOperationCodes
             .Where(x => ValidOperationCodes.Contains(x.Code)));
 
+    
+
     /// <summary>
     /// Список допустимых кодов операции для валидации (только коды без описаний)
     /// </summary>

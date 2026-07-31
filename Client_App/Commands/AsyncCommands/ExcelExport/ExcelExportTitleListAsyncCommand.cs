@@ -24,18 +24,19 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Client_App.ViewModels.ProgressBar;
+
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 /// <summary>
-/// Выбранная форма -> Выгрузка Excel -> Для печати.
+/// Выгрузить только титульный лист
 /// </summary>
-public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
+public class ExcelExportTitleListAsyncCommand : ExcelBaseAsyncCommand
 {
     private readonly FormsTabControlBaseVM _formsTabControlVM;
 
-    public ExcelExportFormPrintAsyncCommand(FormsTabControlBaseVM formsTabControlVM)
+    public ExcelExportTitleListAsyncCommand(FormsTabControlBaseVM formsTabControlVM)
     {
         _formsTabControlVM = formsTabControlVM;
 
@@ -48,24 +49,11 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         };
     }
 
-    public override bool CanExecute(object? parameter) => _formsTabControlVM.SelectedReport is not null;
+    public override bool CanExecute(object? parameter) => _formsTabControlVM.SelectedReports is not null;
 
     public override async Task AsyncExecute(object? parameter)
     {
-        Report? repParam;
-        int repId;
-        if (parameter is ObservableCollectionWithItemPropertyChanged<IKey> forms)
-        {
-            repParam = (Report)forms.First();
-            repId = repParam.Id;
-        }
-        else if (parameter is Report report)
-        {
-            repParam = report;
-            repId = repParam.Id;
-        }
-        else
-            return;
+        if (parameter is not Reports reports) return;
 
         var cts = new CancellationTokenSource();
         ExportType = "Для_печати";
@@ -73,7 +61,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
         progressBarVM.SetProgressBar(5, "Определение имени файла");
-        var fileName = await GetFileName(repParam, progressBar, cts);
+        var fileName = await GetFileName(reports, progressBar, cts);
 
         progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
         var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
@@ -81,23 +69,12 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         progressBarVM.SetProgressBar(15, "Создание временной БД", "Выгрузка отчёта для печати", ExportType);
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
 
-        progressBarVM.SetProgressBar(30, "Загрузка отчёта");
-        var rep = await GetReportWithRows(repId, tmpDbPath, cts);
-
         progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath, rep);
+        using var excelPackage = await InitializeExcelPackage(fullPath, reports.Master_DB);
 
-        progressBarVM.SetProgressBar(75, "Проверка отчёта");
-        await CheckForm(rep, cts, progressBar);
 
-        try
-        {
-            progressBarVM.SetProgressBar(80, "Выгрузка данных");
-            await FillExcel(excelPackage, rep);
-        }catch(Exception ex)
-        {
-            throw ex;
-        }
+        progressBarVM.SetProgressBar(80, "Выгрузка данных");
+        await FillExcel(excelPackage, reports);
 
         progressBarVM.SetProgressBar(90, "Сохранение");
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
@@ -123,7 +100,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="report">Отчёт для выгрузки.</param>
     /// <param name="destinationFolder">Папка назначения.</param>
     /// <param name="suppressDialogs">Подавлять ли диалоги (true для пакетной обработки).</param>
-    public async Task AsyncExecute(Report report, string destinationFolder, bool suppressDialogs = false)
+    public async Task AsyncExecute(Reports reports, string destinationFolder, bool suppressDialogs = false)
     {
         var cts = new CancellationTokenSource();
         ExportType = "Для_печати";
@@ -140,7 +117,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
         try
         {
-            var fileName = await GetFileName(report, progressBar, cts);
+            var fileName = await GetFileName(reports, progressBar, cts);
             var fullPath = Path.Combine(destinationFolder, fileName + ".xlsx");
 
             // Проверяем существование файла и генерируем уникальное имя при необходимости
@@ -168,29 +145,18 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
             {
                 progressBarVM.SetProgressBar(30, "Загрузка отчёта");
             }
-            var rep = await GetReportWithRows(report.Id, tmpDbPath, cts);
 
             if (!suppressDialogs && progressBarVM != null)
             {
                 progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
             }
-            using var excelPackage = await InitializeExcelPackage(fullPath, rep);
-
-            if (!suppressDialogs && progressBarVM != null)
-            {
-                progressBarVM.SetProgressBar(75, "Проверка отчёта");
-            }
-            // Проверка на ошибки только при одиночной выгрузке
-            if (!suppressDialogs)
-            {
-                await CheckForm(rep, cts, progressBar);
-            }
+            using var excelPackage = await InitializeExcelPackage(fullPath, reports.Master_DB);
 
             if (!suppressDialogs && progressBarVM != null)
             {
                 progressBarVM.SetProgressBar(80, "Выгрузка данных");
             }
-            await FillExcel(excelPackage, rep);
+            await FillExcel(excelPackage, reports);
 
             if (!suppressDialogs && progressBarVM != null)
             {
@@ -329,26 +295,17 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="excelPackage">Пакет Excel.</param>
     /// <param name="rep">Отчёт.</param>
     /// <returns>Успешно выполненная Task.</returns>
-    private static Task FillExcel(ExcelPackage excelPackage, Report rep)
+    private static Task FillExcel(ExcelPackage excelPackage, Reports reps)
     {
         var worksheetTitle = excelPackage.Workbook.Worksheets[0];
-        var worksheetMain = excelPackage.Workbook.Worksheets[1];
 
 
-        ExcelPrintTitleExport(rep.FormNum_DB, worksheetTitle, rep, rep.Reports.Master);
+        ExcelPrintTitleExport(reps.Master_DB.FormNum_DB, worksheetTitle, null, reps.Master_DB);
 
+        var list = excelPackage.Workbook.Worksheets.ToList();
+        while(excelPackage.Workbook.Worksheets.Count>1)
+            excelPackage.Workbook.Worksheets.Delete(1);
 
-        ExcelPrintSubMainExport(rep.FormNum_DB, worksheetMain, rep);
-
-        if (worksheetTitle.Name is "1.0" or "2.0" or "Форма 5.0" && (worksheetMain.Name is not "Форма 5.7"))
-            ExcelPrintNotesExport(rep.FormNum_DB, worksheetMain, rep);
-
-
-        ExcelPrintRowsExport(rep.FormNum_DB, worksheetMain, rep);
-
-        var notesExported = worksheetTitle.Name is "1.0" or "2.0" or "Форма 5.0"
-                            && worksheetMain.Name is not "Форма 5.7";
-        ApplyExcelExecutorWrapText(rep.FormNum_DB, worksheetMain, rep, notesExported);
 
         return Task.CompletedTask;
     }
@@ -364,124 +321,38 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Имя файла.</returns>
-    private async Task<string> GetFileName(Report rep, AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    private async Task<string> GetFileName(Reports reps, AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
         string formNum;
+
         string regNum = "";
         string okpo = "";
-        string corNum = "";
 
-        formNum = RemoveForbiddenChars(rep.FormNum_DB);
+        formNum = RemoveForbiddenChars(reps.Master.FormNum_DB);
 
-        if (rep.Reports.Master.RegNoRep != null)
-            regNum = RemoveForbiddenChars(rep.Reports.Master.RegNoRep.Value);
+        string fileName = $"_{formNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
 
-        if (rep.Reports.Master.OkpoRep != null)
-            okpo = RemoveForbiddenChars(rep.Reports.Master.OkpoRep.Value);
+        if (reps.Master.RegNoRep != null)
+            regNum = RemoveForbiddenChars(reps.Master.RegNoRep.Value);
 
-        if (rep.CorrectionNumber_DB != null)
-            corNum = Convert.ToString(rep.CorrectionNumber_DB);
+        if (reps.Master.OkpoRep != null)
+            okpo = RemoveForbiddenChars(reps.Master.OkpoRep.Value);
 
-        string fileName;
-        switch (formNum[0])
+
+        if (formNum[0] is '1' or '2')
+            fileName = $"{regNum}_{okpo}_{formNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
+        else if (formNum[0] is '4')
         {
-            case '1':
-                {
-                    var startPeriod = RemoveForbiddenChars(rep.StartPeriod_DB);
-                    var endPeriod = RemoveForbiddenChars(rep.EndPeriod_DB);
-                    fileName = $"{regNum}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
-                    break;
-                }
-            case '2':
-                {
-                    var year = RemoveForbiddenChars(rep.Year_DB);
-                    fileName = $"{regNum}_{okpo}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
-                    break;
-                }
-            case '4':
-                {
-                    var codeSubjectRF = RemoveForbiddenChars(rep.Reports.Master_DB.Rows40[0].CodeSubjectRF.Value);
-                    var year = RemoveForbiddenChars(rep.Year_DB);
-                    fileName = $"{codeSubjectRF}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
-                    break;
-                }
-            case '5':
-                {
-                    var year = RemoveForbiddenChars(rep.Year_DB);
-                    fileName = $"{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
-                    break;
-                }
-            default:
-                {
-                    await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-                    fileName = "";
-                    break;
-                }
+            string codeSubjectRF = reps.Master_DB.Rows40[0].CodeSubjectRF_DB;
+            fileName = $"{codeSubjectRF}_{formNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
         }
+
         return fileName;
     }
 
     #endregion
 
-    #region GetReportWithRows
-
-    /// <summary>
-    /// Получение отчёта вместе со строчками из БД.
-    /// </summary>
-    /// <param name="repId">Id отчёта.</param>
-    /// <param name="dbPath">Полный путь к временной БД.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Отчёт вместе со строчками.</returns>
-    private static async Task<Report> GetReportWithRows(int repId, string dbPath, CancellationTokenSource cts)
-    {
-        await using var db = new DBModel(dbPath);
-        var rep = await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(rep => rep.Reports).ThenInclude(reps => reps.DBObservable)
-                .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows40)
-                .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows50)
-                .Include(rep => rep.Rows11.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows12.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows13.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows14.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows15.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows16.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows17.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows18.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows19.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows21.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows22.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows23.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows24.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows25.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows26.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows27.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows28.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows29.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows210.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows211.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows212.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows41.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows51.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows52.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows53.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows54.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows55.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows56.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows57.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Notes.OrderBy(note => note.Order))
-                .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null)
-                .FirstAsync(rep => rep.Id == repId, cts.Token);
-        await rep.SortAsync();
-        return rep;
-    }
-        
-
-    #endregion
+    
 
     #region InitializeExcelPackage
 
@@ -493,10 +364,16 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
     /// <returns>Пакет Excel.</returns>
     private static Task<ExcelPackage> InitializeExcelPackage(string fullPath, Report rep)
     {
+        string formNumSample = rep.FormNum_DB;
+
+        //Если мы хотим выгрузить только титульник, то берем любой шаблон с соответствующим титульником
+        if (formNumSample.Split('.')[1] == "0")
+            formNumSample = formNumSample.Split('.')[0] + ".1";
+
 #if DEBUG
-        var appFolderPath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Excel", $"{rep.FormNum_DB}.xlsx");
+        var appFolderPath = Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Excel", $"{formNumSample}.xlsx");
 #else
-        var appFolderPath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Excel", $"{rep.FormNum_DB}.xlsx");
+        var appFolderPath = Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Excel", $"{formNumSample}.xlsx");
 #endif
         if (!File.Exists(appFolderPath))
         {
@@ -510,13 +387,17 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         if (strTitle is "4.0" or "5.0")
             strTitle = "Форма " + $"{strTitle}";
         var worksheetTitle = excelPackage.Workbook.Worksheets[strTitle];
-
-        var strMain = rep.FormNum_DB;
-        if (strMain is "4.1" or "5.1" or "5.2" or "5.3" or "5.4" or "5.5" or "5.6" or "5.7")
-            strMain = "Форма " + $"{strMain}";
-        var worksheetMain = excelPackage.Workbook.Worksheets[strMain];
-
         worksheetTitle.Cells.Style.ShrinkToFit = true;
+
+        if (rep.FormNum_DB.Split('.')[1] != "0")
+        {
+            var strMain = rep.FormNum_DB;
+            if (strMain is "4.1" or "5.1" or "5.2" or "5.3" or "5.4" or "5.5" or "5.6" or "5.7")
+                strMain = "Форма " + $"{strMain}";
+            var worksheetMain = excelPackage.Workbook.Worksheets[strMain];
+
+            worksheetMain.Cells.Style.ShrinkToFit = true;
+        }
         return Task.FromResult(excelPackage);
     }
 

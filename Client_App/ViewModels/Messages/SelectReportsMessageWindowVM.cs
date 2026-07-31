@@ -45,6 +45,7 @@ public sealed class SelectReportsMessageWindowVM : INotifyPropertyChanged
     /// </summary>
     public ObservableCollection<OrganizationInfo> Organizations { get; }
 
+
     /// <summary>
     /// Выбранная организация
     /// </summary>
@@ -63,6 +64,10 @@ public sealed class SelectReportsMessageWindowVM : INotifyPropertyChanged
             }
         }
     }
+
+    public bool IsFormNum10or20 => _formNum is "1.0" or "2.0";
+    public bool IsFormNum40 => _formNum is "4.0";
+    public bool IsFormNum50 => _formNum is "5.0";
 
     /// <summary>
     /// Флаг загрузки данных
@@ -166,14 +171,44 @@ public sealed class SelectReportsMessageWindowVM : INotifyPropertyChanged
 
     public SelectReportsMessageWindowVM(List<Reports> repsList)
     {
-        var repsDtoList = repsList
-            .Select(reps => new OrganizationInfo 
-            {
-                Okpo = reps.Master.OkpoRep.Value, 
-                ShortName = reps.Master.ShortJurLicoRep.Value, 
-                RegNum = reps.Master.RegNoRep.Value
-            })
-            .ToList();
+        List<OrganizationInfo>? repsDtoList= null;
+        switch (_formNum)
+        {
+            case "1.0" or "2.0":
+                repsDtoList = repsList
+                .Select(reps => new OrganizationInfo
+                {
+                    ReportsId = reps.Id,
+                    Okpo = reps.Master.OkpoRep.Value,
+                    ShortName = reps.Master.ShortJurLicoRep.Value,
+                    RegNum = reps.Master.RegNoRep.Value
+                })
+                .OrderBy(org => org.RegNum)
+                .ThenBy(org => org.Okpo)
+                .ThenBy(org => org.ShortName)
+                .ToList();
+                break;
+            case "4.0":
+                repsDtoList = repsList
+                .Select(reps => new OrganizationInfo
+                {
+                    ReportsId = reps.Id,
+                    CodeSubjectRF = reps.Master_DB.Rows40[0].CodeSubjectRF_DB,
+                })
+                .OrderBy(org => org.CodeSubjectRF)
+                .ToList();
+                break;
+            case "5.0":
+                repsDtoList = repsList
+                .Select(reps => new OrganizationInfo
+                {
+                    ReportsId = reps.Id,
+                    ShortName = reps.Master_DB.Rows50[0].ShortName_DB,
+                })
+                .OrderBy(org => org.CodeSubjectRF)
+                .ToList();
+                break;
+        }
         Organizations = new ObservableCollection<OrganizationInfo>(repsDtoList);
         _okCommand = new RelayCommand(OkAsync, CanOk);
     }
@@ -188,18 +223,44 @@ public sealed class SelectReportsMessageWindowVM : INotifyPropertyChanged
         FormInfo = $"Импортируются отчёты организации {impReps.Master_DB.RegNoRep.Value}_{impReps.Master.OkpoRep.Value} по форме {_formNum}";
 
         // Сортируем организации: по рег.№, потом по ОКПО, потом по наименованию
-        var repsDtoList = repsList
-            .Select(reps => new OrganizationInfo 
-            {
-                Okpo = reps.Master.OkpoRep.Value, 
-                ShortName = reps.Master.ShortJurLicoRep.Value, 
-                RegNum = reps.Master.RegNoRep.Value
-            })
-            .OrderBy(org => org.RegNum)
-            .ThenBy(org => org.Okpo)
-            .ThenBy(org => org.ShortName)
-            .ToList();
-            
+        List<OrganizationInfo>? repsDtoList = null;
+        switch (_formNum)
+        {
+            case "1.0" or "2.0": 
+                repsDtoList = repsList
+                .Select(reps => new OrganizationInfo
+                {
+                    ReportsId = reps.Id,
+                    Okpo = reps.Master.OkpoRep.Value,
+                    ShortName = reps.Master.ShortJurLicoRep.Value,
+                    RegNum = reps.Master.RegNoRep.Value
+                })
+                .OrderBy(org => org.RegNum)
+                .ThenBy(org => org.Okpo)
+                .ThenBy(org => org.ShortName)
+                .ToList();
+                break;
+            case "4.0":
+                repsDtoList = repsList
+                .Select(reps => new OrganizationInfo
+                {
+                    ReportsId = reps.Id,
+                    CodeSubjectRF = reps.Master_DB.Rows40[0].CodeSubjectRF_DB,
+                })
+                .OrderBy(org => org.CodeSubjectRF)
+                .ToList();
+                break;
+            case "5.0":
+                repsDtoList = repsList
+                .Select(reps => new OrganizationInfo
+                {
+                    ReportsId = reps.Id,
+                    ShortName = reps.Master_DB.Rows50[0].ShortName_DB,
+                })
+                .OrderBy(org => org.CodeSubjectRF)
+                .ToList();
+                break;
+        }
         Organizations = new ObservableCollection<OrganizationInfo>(repsDtoList);
         _okCommand = new RelayCommand(OkAsync, CanOk);
     }
@@ -232,10 +293,28 @@ public sealed class SelectReportsMessageWindowVM : INotifyPropertyChanged
     /// </summary>
     public sealed class OrganizationInfo : INotifyPropertyChanged
     {
+        private int _reportsId;
         private string _regNum;
         private string _shortName;
         private string _okpo;
+        private string _codeSubjectRF;
+        private string _subjectRF;
 
+        /// <summary>
+        /// ID организации
+        /// </summary>
+        public int ReportsId
+        {
+            get => _reportsId;
+            set
+            {
+                if (_reportsId != value)
+                {
+                    _reportsId = value;
+                    OnPropertyChanged(nameof(ReportsId));
+                }
+            }
+        }
         /// <summary>
         /// Регистрационный номер организации
         /// </summary>
@@ -280,6 +359,30 @@ public sealed class SelectReportsMessageWindowVM : INotifyPropertyChanged
                 {
                     _okpo = value;
                     OnPropertyChanged(nameof(Okpo));
+                }
+            }
+        }
+        public string CodeSubjectRF
+        {
+            get => _codeSubjectRF;
+            set
+            {
+                if (_codeSubjectRF != value)
+                {
+                    _codeSubjectRF = value;
+                    OnPropertyChanged(nameof(CodeSubjectRF));
+                }
+            }
+        }
+        public string SubjectRF
+        {
+            get => _subjectRF;
+            set
+            {
+                if (_subjectRF != value)
+                {
+                    _subjectRF = value;
+                    OnPropertyChanged(nameof(SubjectRF));
                 }
             }
         }

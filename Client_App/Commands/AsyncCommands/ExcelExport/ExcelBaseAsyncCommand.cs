@@ -215,13 +215,15 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// <param name="worksheet">Лист Excel.</param>
     /// <param name="rep">Отчёт.</param>
     /// <param name="master">Головной отчёт организации.</param>
-    private protected static void ExcelPrintTitleExport(string formNum, ExcelWorksheet worksheet, Report rep, Report master)
+    private protected static void ExcelPrintTitleExport(string formNum, ExcelWorksheet worksheet, Report? rep, Report master)
     {
         if (formNum.Split('.')[0] == "2")
         {
             var frmYur = master.Rows20[0];
             var frmObosob = master.Rows20[1];
-            worksheet.Cells["G10"].Value = rep.Year_DB;
+            
+            if (rep != null)
+                worksheet.Cells["G10"].Value = rep.Year_DB;
 
             worksheet.Cells["F6"].Value = frmYur.RegNo_DB;
             worksheet.Cells["F15"].Value = frmYur.OrganUprav_DB;
@@ -313,7 +315,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             worksheet.Cells["B8"].Value = form40.CodeSubjectRF_DB;
             worksheet.Cells["B9"].Value = form40.SubjectRF_DB;
 
-            worksheet.Cells["B15"].Value = rep.Year_DB;
+            if (rep != null)
+                worksheet.Cells["B15"].Value = rep.Year_DB;
 
             worksheet.Cells["B19"].Value = form40.NameOrganUprav_DB;
             worksheet.Cells["B20"].Value = form40.ShortNameOrganUprav_DB;
@@ -338,7 +341,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             var form50 = master.Rows50[0];
 
-            worksheet.Cells["B16"].Value = rep.Year_DB;
+            if (rep != null)
+                worksheet.Cells["B16"].Value = rep.Year_DB;
 
             worksheet.Cells["A9"].Value = form50.ExecutiveAuthority_DB;
             if(form50.Rosatom_DB)
@@ -609,15 +613,14 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 break;
         }
 
-        for (var i = 0; i < rep.Notes.Count - 1; i++)
+        for (var i = 0; i < rep.Notes.Count; i++)
         {
-            worksheet.InsertRow(start + 1, 1, start);
             if (i == 0) //Костыль, чтобы у первой строки тоже высота автоматически подбиралась.
             {
                 worksheet.DeleteRow(start);
-                worksheet.InsertRow(start + 1, 1, start);
             }
-            var cells = worksheet.Cells[$"A{start + 1}:B{start + 1}"];
+            worksheet.InsertRow(start, 1, start-1);
+            var cells = worksheet.Cells[$"A{start}:B{start}"];
             foreach (var cell in cells)
             {
                 var btm = cell.Style.Border.Bottom;
@@ -635,8 +638,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             }
 
             string range = formNum.Split('.')[0] is "1" or "2"
-                ? $"C{start + 1}:L{start + 1}"
-                : $"C{start + 1}";
+                ? $"C{start}:L{start}"
+                : $"C{start}";
             var cellCL = worksheet.Cells[range];
             cellCL.Merge = true;
             var btmCL = cellCL.Style.Border.Bottom;
@@ -1404,6 +1407,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             foreach (var mergedRange in worksheet.MergedCells)
             {
+                if (mergedRange is null) continue;
                 var range = worksheet.Cells[mergedRange];
                 if (row < range.Start.Row || row > range.End.Row
                     || col < range.Start.Column || col > range.End.Column)

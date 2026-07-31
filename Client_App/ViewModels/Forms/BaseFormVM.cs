@@ -7,7 +7,10 @@ using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.Commands.AsyncCommands.SwitchReport;
 using Client_App.Commands.SyncCommands;
 using Client_App.ViewModels.Controls;
+using Client_App.ViewModels.Forms.Forms1.Items;
+using Models.Attributes;
 using Models.Collections;
+using Models.DBRealization;
 using Models.Forms;
 using System;
 using System.Collections.ObjectModel;
@@ -16,8 +19,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Models.Attributes;
-using Models.DBRealization;
 
 namespace Client_App.ViewModels.Forms;
 
@@ -61,6 +62,20 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
+    #region SpravochnikOKSM
+    /// <summary>
+    /// Справочник ОКСМ (Общероссийский классификатор стран мира)
+    /// </summary>
+    public ObservableCollection<BaseItem<string, string>> OKSM =>
+        new(Spravochniki.Spravochniks.OKSM.Select(oksm =>
+            new BaseItem<string, string>()
+            {
+                Code = oksm.Key,
+                Description = oksm.Value,
+                DescriptionPrintMode = true,
+            }).AsEnumerable());
+    #endregion
 
     #region Report
 

@@ -409,7 +409,7 @@ public class Form13 : Form1
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp;
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
         }
@@ -424,7 +424,7 @@ public class Form13 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (Spravochniks.OKSM.Contains(value.Value.ToUpper()))
+        if (Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()))
         {
             return true;
         }
@@ -610,7 +610,7 @@ public class Form13 : Form1
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp;
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
         }
@@ -625,7 +625,7 @@ public class Form13 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (Spravochniks.OKSM.Contains(value.Value.ToUpper()))
+        if (Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()))
         {
             return true;
         }
@@ -679,7 +679,7 @@ public class Form13 : Form1
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp;
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
         }
@@ -694,7 +694,7 @@ public class Form13 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("Минобороны") || value.Value.Equals("прим.") || Spravochniks.OKSM.Contains(value.Value.ToUpper()))
+        if (value.Value.Equals("Минобороны") || value.Value.Equals("прим.") || Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()))
         {
             return true;
         }
@@ -756,7 +756,7 @@ public class Form13 : Form1
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp;
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
         }
@@ -774,7 +774,7 @@ public class Form13 : Form1
         if (value.Value.Equals("-") 
             || value.Value.Equals("Минобороны") 
             || value.Value.Equals("прим.") 
-            || Spravochniks.OKSM.Contains(value.Value.ToUpper()))
+            || Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()))
         {
             return true;
         }
