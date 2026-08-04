@@ -88,8 +88,7 @@
 
             <MenuItem Name="ExcelMenu"
                       Header="_Аналитика">
-                <MenuItem Header="Список организаций"
-                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
+                <MenuItem Header="Список организаций">
                     <MenuItem Command="{Binding ExcelExportListOfOrgs, Mode=OneWay}" 
                               Header="Количество форм"/>
                     <MenuItem Command="{Binding ExcelExportListOfOrgs, Mode=OneWay}"
@@ -109,11 +108,10 @@
                           CommandParameter="AllReps"
                           Header="Все формы"
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
-                <MenuItem Header="Формы 1"
-                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
+                <MenuItem Header="Формы 1">
                     <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
-                              CommandParameter="1.1"
-                              Header="Форма 1.1"/>
+                                                            CommandParameter="1.1"
+                                                            Header="Форма 1.1"/>
                     <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="1.2"
                               Header="Форма 1.2"/>
@@ -139,8 +137,7 @@
                               CommandParameter="1.9"
                               Header="Форма 1.9"/>
                 </MenuItem>
-                <MenuItem Header="Формы 2"
-                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
+                <MenuItem Header="Формы 2">
                     <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="2.1"
                               Header="Форма 2.1"/>
