@@ -7,10 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Client_App.Resources.CustomComparers.SnkComparers;
 using Microsoft.EntityFrameworkCore;
-using Models.Collections;
 using Models.Comparers.FormContent;
 using Models.DBRealization;
-using Models.Forms.Form1;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
 
@@ -100,21 +98,37 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             return true;
         }
 
-        if (!TryParseActivity(left.Activity, out var leftActivity) || !TryParseActivity(right.Activity, out var rightActivity))
+        return NumericWithinRelativeTolerance(left.Activity, right.Activity, relativeTolerance: 0.10);
+    }
+
+    /// <summary>Масса (кг): для пары — тот же допуск ±10%, что и у активности.</summary>
+    private static bool MassMatches(TransferReceiveDto left, TransferReceiveDto right, bool checkMass)
+    {
+        if (!checkMass)
+        {
+            return true;
+        }
+
+        return NumericWithinRelativeTolerance(left.Mass, right.Mass, relativeTolerance: 0.10);
+    }
+
+    private static bool NumericWithinRelativeTolerance(string? leftRaw, string? rightRaw, double relativeTolerance)
+    {
+        if (!TryParseActivity(leftRaw, out var leftValue) || !TryParseActivity(rightRaw, out var rightValue))
         {
             return string.Equals(
-                NormalizeNumber(left.Activity),
-                NormalizeNumber(right.Activity),
+                NormalizeNumber(leftRaw),
+                NormalizeNumber(rightRaw),
                 StringComparison.Ordinal);
         }
 
-        var scale = Math.Max(Math.Abs(leftActivity), Math.Abs(rightActivity));
+        var scale = Math.Max(Math.Abs(leftValue), Math.Abs(rightValue));
         if (scale <= double.Epsilon)
         {
             return true;
         }
 
-        return Math.Abs(leftActivity - rightActivity) <= scale * 0.10;
+        return Math.Abs(leftValue - rightValue) <= scale * relativeTolerance;
     }
 
     /// <summary>
@@ -133,6 +147,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         if (options.CheckType) parts.Add(NormalizeNumber(row.Type));
         if (options.CheckRadionuclids) parts.Add(NormalizeRads(row.Radionuclids));
         if (includeSerial && options.CheckFactoryNumber) parts.Add(NormalizeSerialNumber(row.FacNum));
+        if (options.CheckPackType) parts.Add(NormalizeNumber(row.PackType));
         if (options.CheckPackNumber) parts.Add(NormalizeNumber(row.PackNumber));
         if (options.CheckCreatorOkpo) parts.Add(NormalizeNumber(row.CreatorOkpo));
         if (options.CheckCreationDate) parts.Add(NormalizeDate(row.CreationDate));
@@ -154,7 +169,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         TransferReceiveDto candidate,
         TransferReceiveFormParams options,
         string ourOkpoNorm,
-        bool includeSerial)
+        bool includeSerial,
+        string? precomputedSourceKey = null,
+        string? precomputedCandidateKey = null,
+        string? precomputedSourceOrgOkpoNorm = null)
     {
         if (options.CheckOperationCode && !OpCodesArePaired(source.OpCode, candidate.OpCode))
         {
@@ -167,8 +185,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         }
 
         var includeQuantity = includeSerial && options.CheckQuantity;
-        var sourceKey = BuildPairingKey(source, options, includeSerial, includeQuantity);
-        var candidateKey = BuildPairingKey(candidate, options, includeSerial, includeQuantity);
+        var sourceKey = precomputedSourceKey
+                        ?? BuildPairingKey(source, options, includeSerial, includeQuantity);
+        var candidateKey = precomputedCandidateKey
+                           ?? BuildPairingKey(candidate, options, includeSerial, includeQuantity);
         if (!string.Equals(sourceKey, candidateKey, StringComparison.Ordinal))
         {
             return false;
@@ -179,11 +199,17 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             return false;
         }
 
+        if (!MassMatches(source, candidate, options.CheckMass))
+        {
+            return false;
+        }
+
         if (options.CheckProviderOrRecieverOkpo)
         {
-            var candidatePointsToUs = NormalizeNumber(candidate.ProviderOrRecieverOkpo) == ourOkpoNorm
-                                      || NormalizeNumber(candidate.ProviderOrRecieverOkpo)
-                                      == NormalizeNumber(source.OrgOkpo);
+            var sourceOrgOkpo = precomputedSourceOrgOkpoNorm ?? NormalizeNumber(source.OrgOkpo);
+            var candidateProvider = NormalizeNumber(candidate.ProviderOrRecieverOkpo);
+            var candidatePointsToUs = candidateProvider == ourOkpoNorm
+                                      || candidateProvider == sourceOrgOkpo;
             if (!candidatePointsToUs)
             {
                 return false;
@@ -198,75 +224,16 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     #region Load DTO
 
     /// <summary>
-    /// Коды передачи/приёма форм 1.1 и 1.3.
+    /// Коды передачи/приёма форм 1.1–1.3 (и задел под те же коды на 1.4).
     /// Без 26/36 — эта пара ожидается только на формах 1.5–1.8.
     /// </summary>
-    private static readonly string[] TransferReceiveCodesForm11And13 =
+    private static readonly string[] TransferReceiveOpCodes =
     [
         "21", "22", "25", "27", "28", "29",
         "31", "32", "35", "37", "38", "39"
     ];
 
-    /// <summary>Алиас для загрузчиков формы 1.1.</summary>
-    private static readonly string[] Form11TransferReceiveCodes = TransferReceiveCodesForm11And13;
-
-    /// <summary>
-    /// Bulk для режима «вся БД»: один scan на каждую включённую форму,
-    /// титулы из discover, карта ОКПО→RepsId с догрузкой только «хвоста».
-    /// </summary>
-    private static async Task<TransferReceiveBulkLoad> LoadAllTransferReceiveBulkAsync(
-        DBModel db,
-        IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
-        CancellationToken cancellationToken,
-        ProgressReporter? progress = null,
-        IReadOnlySet<TransferReceiveFormId>? enabledFormIds = null)
-    {
-        enabledFormIds ??= ImplementedFormDescriptors.Select(d => d.Id).ToHashSet();
-        var enabledDescriptors = ImplementedFormDescriptors
-            .Where(d => enabledFormIds.Contains(d.Id))
-            .ToList();
-        var stages = 2 + enabledDescriptors.Count;
-        var stage = 0;
-
-        var allOpsByForm = new Dictionary<TransferReceiveFormId, List<TransferReceiveDto>>();
-        var opsByRepsIdByForm = new Dictionary<TransferReceiveFormId, Dictionary<int, List<TransferReceiveDto>>>();
-
-        foreach (var descriptor in enabledDescriptors)
-        {
-            progress?.ReportNow(stage, stages, $"bulk: загрузка формы {descriptor.FormNum}…");
-            var allOps = await LoadAllFormOpsAsync(descriptor.Id, db, orgTitles, cancellationToken);
-            allOpsByForm[descriptor.Id] = allOps;
-            opsByRepsIdByForm[descriptor.Id] = allOps
-                .GroupBy(op => op.RepsId)
-                .ToDictionary(g => g.Key, g => g.OrderBy(op => op.Id).ToList());
-            stage++;
-            progress?.ReportNow(stage, stages,
-                $"bulk: форма {descriptor.FormNum} — {allOps.Count} строк ({stage} из {stages})");
-        }
-
-        progress?.Status("bulk: карта ОКПО→орг.…");
-        var allOpsConcat = allOpsByForm.Values.SelectMany(ops => ops).ToList();
-        var repsIdsByNormOkpo = await BuildOkpoAliasMapForWholeDbAsync(
-            db, orgTitles, allOpsConcat, cancellationToken, progress);
-        stage++;
-        progress?.ReportNow(stage, stages, $"bulk: ОКПО-алиасы — {repsIdsByNormOkpo.Count} ключей ({stage} из {stages})");
-
-        progress?.Status("bulk: группировка по организациям…");
-        stage++;
-        var counts = string.Join(", ",
-            enabledDescriptors.Select(d => $"{d.FormNum}={allOpsByForm[d.Id].Count}"));
-        progress?.ReportNow(stage, stages,
-            $"bulk: готово — {counts}, орг.={orgTitles.Count} ({stage} из {stages})");
-
-        return new TransferReceiveBulkLoad
-        {
-            AllOpsByForm = allOpsByForm,
-            OpsByRepsIdByForm = opsByRepsIdByForm,
-            RepsIdsByNormOkpo = repsIdsByNormOkpo
-        };
-    }
-
-    /// <summary>Диспетчер bulk-загрузки по форме (точка расширения для 1.2+).</summary>
+    /// <summary>Диспетчер bulk-загрузки по форме.</summary>
     private static Task<List<TransferReceiveDto>> LoadAllFormOpsAsync(
         TransferReceiveFormId formId,
         DBModel db,
@@ -275,11 +242,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         formId switch
         {
             TransferReceiveFormId.Form11 => LoadAllForm11TransferReceiveAsync(db, orgTitles, cancellationToken),
+            TransferReceiveFormId.Form12 => LoadAllForm12TransferReceiveAsync(db, orgTitles, cancellationToken),
             TransferReceiveFormId.Form13 => LoadAllForm13TransferReceiveAsync(db, orgTitles, cancellationToken),
             _ => throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет bulk-загрузчика для формы.")
         };
 
-    /// <summary>Диспетчер точечной загрузки своих ops (точка расширения для 1.2+).</summary>
+    /// <summary>Диспетчер точечной загрузки своих ops.</summary>
     private static Task<List<TransferReceiveDto>> LoadFormOpsForRepsAsync(
         TransferReceiveFormId formId,
         DBModel db,
@@ -289,26 +257,417 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         formId switch
         {
             TransferReceiveFormId.Form11 => LoadForm11TransferReceiveForRepsAsync(db, repsId, orgOkpo, cancellationToken),
+            TransferReceiveFormId.Form12 => LoadForm12TransferReceiveForRepsAsync(db, repsId, orgOkpo, cancellationToken),
             TransferReceiveFormId.Form13 => LoadForm13TransferReceiveForRepsAsync(db, repsId, orgOkpo, cancellationToken),
             _ => throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет загрузчика для формы.")
         };
 
-    /// <summary>Диспетчер загрузки ops контрагентов (точка расширения для 1.2+).</summary>
+    /// <summary>Диспетчер загрузки ops контрагентов.</summary>
+    /// <param name="providerOkpoRawVariants">
+    /// Если задан — в SQL оставляем только строки, где кол.19 ∈ variants
+    /// (org-режим при включённом CheckProviderOrRecieverOkpo). Не использовать при выключенной проверке ОКПО.
+    /// </param>
+    /// <param name="ourOkpoNormFilter">
+    /// Доп. отсев в памяти по <see cref="NormalizeNumber"/> после SQL (ведущие нули / мусор в кол.19).
+    /// </param>
     private static Task<List<TransferReceiveDto>> LoadFormOpsForRepsIdsAsync(
         TransferReceiveFormId formId,
         DBModel db,
         IReadOnlyList<int> repsIds,
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
         CancellationToken cancellationToken,
-        ProgressReporter? progress = null) =>
+        ProgressReporter? progress = null,
+        IReadOnlyList<string>? providerOkpoRawVariants = null,
+        string? ourOkpoNormFilter = null,
+        int chunkSize = CounterpartOpsLoadChunkSize,
+        string progressEntityLabel = "контрагентов") =>
         formId switch
         {
             TransferReceiveFormId.Form11 => LoadForm11TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress),
+                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoNormFilter,
+                chunkSize, progressEntityLabel),
+            TransferReceiveFormId.Form12 => LoadForm12TransferReceiveForRepsIdsAsync(
+                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoNormFilter,
+                chunkSize, progressEntityLabel),
             TransferReceiveFormId.Form13 => LoadForm13TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress),
+                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoNormFilter,
+                chunkSize, progressEntityLabel),
             _ => throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет загрузчика для формы.")
         };
+
+    /// <summary>
+    /// Whole-DB: один проход по строкам формы keyset-пагинацией (Id &gt; lastId Take N).
+    /// Титулы подставляются позже; прогресс — после каждой страницы.
+    /// </summary>
+    private static Task<List<TransferReceiveDto>> LoadFormOpsPagedWholeDbAsync(
+        TransferReceiveFormId formId,
+        DBModel db,
+        CancellationToken cancellationToken,
+        ProgressReporter? progress,
+        string formNum) =>
+        formId switch
+        {
+            TransferReceiveFormId.Form11 => LoadForm11TransferReceivePagedWholeDbAsync(
+                db, cancellationToken, progress, formNum),
+            TransferReceiveFormId.Form12 => LoadForm12TransferReceivePagedWholeDbAsync(
+                db, cancellationToken, progress, formNum),
+            TransferReceiveFormId.Form13 => LoadForm13TransferReceivePagedWholeDbAsync(
+                db, cancellationToken, progress, formNum),
+            _ => throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет paged-загрузчика для формы.")
+        };
+
+    private static async Task<List<TransferReceiveDto>> LoadForm11TransferReceivePagedWholeDbAsync(
+        DBModel db,
+        CancellationToken cancellationToken,
+        ProgressReporter? progress,
+        string formNum)
+    {
+        var codes = TransferReceiveOpCodes;
+        var pageSize = WholeDbOpsPageSize > 0 ? WholeDbOpsPageSize : 2000;
+        var result = new List<TransferReceiveDto>();
+        var lastId = 0;
+        var page = 0;
+
+        progress?.ReportNow(0, 1, $"форма {formNum}: загрузка операций (страницами по {pageSize})…");
+
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            page++;
+            progress?.ReportNow(
+                result.Count,
+                result.Count + pageSize,
+                $"форма {formNum}: загружено {result.Count} строк, чтение пакета {page}…");
+
+            var rows = await db.form_11
+                .AsNoTracking()
+                .Where(form => form.Id > lastId
+                               && form.Report != null
+                               && form.Report.Reports != null
+                               && form.OperationCode_DB != null
+                               && codes.Contains(form.OperationCode_DB))
+                .OrderBy(form => form.Id)
+                .Take(pageSize)
+                .Select(form => new
+                {
+                    form.Id,
+                    ReportId = form.ReportId ?? 0,
+                    RepsId = form.Report!.Reports.Id,
+                    NumberInOrder = form.NumberInOrder_DB,
+                    OpCode = form.OperationCode_DB,
+                    OpDate = form.OperationDate_DB,
+                    PasNum = form.PassportNumber_DB,
+                    FacNum = form.FactoryNumber_DB,
+                    Type = form.Type_DB,
+                    Radionuclids = form.Radionuclids_DB,
+                    PackNumber = form.PackNumber_DB,
+                    ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                    Quantity = form.Quantity_DB,
+                    Activity = form.Activity_DB,
+                    CreatorOkpo = form.CreatorOKPO_DB,
+                    CreationDate = form.CreationDate_DB,
+                    StartPeriod = form.Report.StartPeriod_DB,
+                    EndPeriod = form.Report.EndPeriod_DB
+                })
+                .ToListAsync(cancellationToken);
+
+            if (rows.Count == 0)
+            {
+                break;
+            }
+
+            lastId = rows[^1].Id;
+            foreach (var row in rows)
+            {
+                if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                {
+                    continue;
+                }
+
+                result.Add(new TransferReceiveDto
+                {
+                    Id = row.Id,
+                    RepsId = row.RepsId,
+                    ReportId = row.ReportId,
+                    NumberInOrder = row.NumberInOrder,
+                    OpCode = row.OpCode ?? string.Empty,
+                    OpDate = row.OpDate ?? string.Empty,
+                    PasNum = row.PasNum ?? string.Empty,
+                    FacNum = row.FacNum ?? string.Empty,
+                    Type = row.Type ?? string.Empty,
+                    Radionuclids = row.Radionuclids ?? string.Empty,
+                    PackNumber = row.PackNumber ?? string.Empty,
+                    ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
+                    Quantity = row.Quantity,
+                    Activity = row.Activity ?? string.Empty,
+                    CreatorOkpo = row.CreatorOkpo ?? string.Empty,
+                    CreationDate = row.CreationDate ?? string.Empty,
+                    StartPeriod = row.StartPeriod ?? string.Empty,
+                    EndPeriod = row.EndPeriod ?? string.Empty,
+                    IsTransfer = IsTransferCodeForm11(row.OpCode)
+                });
+            }
+
+            progress?.ReportNow(
+                result.Count,
+                rows.Count < pageSize ? result.Count : result.Count + pageSize,
+                $"форма {formNum}: загружено {result.Count} строк (пакет {page})");
+
+            if (rows.Count < pageSize)
+            {
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    private static async Task<List<TransferReceiveDto>> LoadForm12TransferReceivePagedWholeDbAsync(
+        DBModel db,
+        CancellationToken cancellationToken,
+        ProgressReporter? progress,
+        string formNum)
+    {
+        var codes = TransferReceiveOpCodes;
+        var pageSize = WholeDbOpsPageSize > 0 ? WholeDbOpsPageSize : 2000;
+        var result = new List<TransferReceiveDto>();
+        var lastId = 0;
+        var page = 0;
+
+        progress?.ReportNow(0, 1, $"форма {formNum}: загрузка операций (страницами по {pageSize})…");
+
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            page++;
+            progress?.ReportNow(
+                result.Count,
+                result.Count + pageSize,
+                $"форма {formNum}: загружено {result.Count} строк, чтение пакета {page}…");
+
+            var rows = await db.form_12
+                .AsNoTracking()
+                .Where(form => form.Id > lastId
+                               && form.Report != null
+                               && form.Report.Reports != null
+                               && form.OperationCode_DB != null
+                               && codes.Contains(form.OperationCode_DB))
+                .OrderBy(form => form.Id)
+                .Take(pageSize)
+                .Select(form => new
+                {
+                    form.Id,
+                    ReportId = form.ReportId ?? 0,
+                    RepsId = form.Report!.Reports.Id,
+                    NumberInOrder = form.NumberInOrder_DB,
+                    OpCode = form.OperationCode_DB,
+                    OpDate = form.OperationDate_DB,
+                    PasNum = form.PassportNumber_DB,
+                    FacNum = form.FactoryNumber_DB,
+                    Name = form.NameIOU_DB,
+                    Mass = form.Mass_DB,
+                    PackType = form.PackType_DB,
+                    PackNumber = form.PackNumber_DB,
+                    ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                    CreatorOkpo = form.CreatorOKPO_DB,
+                    CreationDate = form.CreationDate_DB,
+                    StartPeriod = form.Report.StartPeriod_DB,
+                    EndPeriod = form.Report.EndPeriod_DB
+                })
+                .ToListAsync(cancellationToken);
+
+            if (rows.Count == 0)
+            {
+                break;
+            }
+
+            lastId = rows[^1].Id;
+            foreach (var row in rows)
+            {
+                if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                {
+                    continue;
+                }
+
+                result.Add(new TransferReceiveDto
+                {
+                    Id = row.Id,
+                    RepsId = row.RepsId,
+                    ReportId = row.ReportId,
+                    NumberInOrder = row.NumberInOrder,
+                    OpCode = row.OpCode ?? string.Empty,
+                    OpDate = row.OpDate ?? string.Empty,
+                    PasNum = row.PasNum ?? string.Empty,
+                    FacNum = row.FacNum ?? string.Empty,
+                    Type = row.Name ?? string.Empty,
+                    PackType = row.PackType ?? string.Empty,
+                    PackNumber = row.PackNumber ?? string.Empty,
+                    ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
+                    Quantity = 1,
+                    Mass = row.Mass ?? string.Empty,
+                    CreatorOkpo = row.CreatorOkpo ?? string.Empty,
+                    CreationDate = row.CreationDate ?? string.Empty,
+                    StartPeriod = row.StartPeriod ?? string.Empty,
+                    EndPeriod = row.EndPeriod ?? string.Empty,
+                    IsTransfer = IsTransferCodeForm11(row.OpCode)
+                });
+            }
+
+            progress?.ReportNow(
+                result.Count,
+                rows.Count < pageSize ? result.Count : result.Count + pageSize,
+                $"форма {formNum}: загружено {result.Count} строк (пакет {page})");
+
+            if (rows.Count < pageSize)
+            {
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    private static async Task<List<TransferReceiveDto>> LoadForm13TransferReceivePagedWholeDbAsync(
+        DBModel db,
+        CancellationToken cancellationToken,
+        ProgressReporter? progress,
+        string formNum)
+    {
+        var codes = TransferReceiveOpCodes;
+        var pageSize = WholeDbOpsPageSize > 0 ? WholeDbOpsPageSize : 2000;
+        var result = new List<TransferReceiveDto>();
+        var lastId = 0;
+        var page = 0;
+
+        progress?.ReportNow(0, 1, $"форма {formNum}: загрузка операций (страницами по {pageSize})…");
+
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            page++;
+            progress?.ReportNow(
+                result.Count,
+                result.Count + pageSize,
+                $"форма {formNum}: загружено {result.Count} строк, чтение пакета {page}…");
+
+            var rows = await db.form_13
+                .AsNoTracking()
+                .Where(form => form.Id > lastId
+                               && form.Report != null
+                               && form.Report.Reports != null
+                               && form.OperationCode_DB != null
+                               && codes.Contains(form.OperationCode_DB))
+                .OrderBy(form => form.Id)
+                .Take(pageSize)
+                .Select(form => new
+                {
+                    form.Id,
+                    ReportId = form.ReportId ?? 0,
+                    RepsId = form.Report!.Reports.Id,
+                    NumberInOrder = form.NumberInOrder_DB,
+                    OpCode = form.OperationCode_DB,
+                    OpDate = form.OperationDate_DB,
+                    PasNum = form.PassportNumber_DB,
+                    FacNum = form.FactoryNumber_DB,
+                    Type = form.Type_DB,
+                    Radionuclids = form.Radionuclids_DB,
+                    PackNumber = form.PackNumber_DB,
+                    ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                    Activity = form.Activity_DB,
+                    CreatorOkpo = form.CreatorOKPO_DB,
+                    CreationDate = form.CreationDate_DB,
+                    AggregateState = form.AggregateState_DB,
+                    StartPeriod = form.Report.StartPeriod_DB,
+                    EndPeriod = form.Report.EndPeriod_DB
+                })
+                .ToListAsync(cancellationToken);
+
+            if (rows.Count == 0)
+            {
+                break;
+            }
+
+            lastId = rows[^1].Id;
+            foreach (var row in rows)
+            {
+                if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                {
+                    continue;
+                }
+
+                result.Add(new TransferReceiveDto
+                {
+                    Id = row.Id,
+                    RepsId = row.RepsId,
+                    ReportId = row.ReportId,
+                    NumberInOrder = row.NumberInOrder,
+                    OpCode = row.OpCode ?? string.Empty,
+                    OpDate = row.OpDate ?? string.Empty,
+                    PasNum = row.PasNum ?? string.Empty,
+                    FacNum = row.FacNum ?? string.Empty,
+                    Type = row.Type ?? string.Empty,
+                    Radionuclids = row.Radionuclids ?? string.Empty,
+                    PackNumber = row.PackNumber ?? string.Empty,
+                    ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
+                    Quantity = 1,
+                    AggregateState = row.AggregateState,
+                    Activity = row.Activity ?? string.Empty,
+                    CreatorOkpo = row.CreatorOkpo ?? string.Empty,
+                    CreationDate = row.CreationDate ?? string.Empty,
+                    StartPeriod = row.StartPeriod ?? string.Empty,
+                    EndPeriod = row.EndPeriod ?? string.Empty,
+                    IsTransfer = IsTransferCodeForm11(row.OpCode)
+                });
+            }
+
+            progress?.ReportNow(
+                result.Count,
+                rows.Count < pageSize ? result.Count : result.Count + pageSize,
+                $"форма {formNum}: загружено {result.Count} строк (пакет {page})");
+
+            if (rows.Count < pageSize)
+            {
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Сырые варианты нашего ОКПО для SQL IN: как в титуле, нормализованный, с ведущими нулями.
+    /// Не покрывает lookalike-буквы — для ОКПО обычно цифры; пары после NormalizeNumber всё равно
+    /// дополнительно отсекаются <c>ourOkpoNormFilter</c> в памяти.
+    /// </summary>
+    private static List<string> BuildOurOkpoSqlMatchVariants(string ourOkpoRaw)
+    {
+        var result = new HashSet<string>(StringComparer.Ordinal);
+        void Add(string? value)
+        {
+            if (string.IsNullOrWhiteSpace(value) || value == "-")
+            {
+                return;
+            }
+
+            result.Add(value.Trim());
+        }
+
+        Add(ourOkpoRaw);
+        var norm = NormalizeNumber(ourOkpoRaw);
+        Add(norm);
+        if (norm.Length is > 0 and <= 12)
+        {
+            for (var pad = 1; pad <= 4; pad++)
+            {
+                result.Add(norm.PadLeft(norm.Length + pad, '0'));
+            }
+        }
+
+        return result.ToList();
+    }
+
+    private static bool CounterpartProviderPointsToUs(string? providerRaw, string ourOkpoNorm) =>
+        ourOkpoNorm.Length > 0 && NormalizeNumber(providerRaw) == ourOkpoNorm;
 
     /// <summary>
     /// Один запрос: все операции приёма/передачи формы 1.1 по БД (RepsId из навигации).
@@ -318,7 +677,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
         CancellationToken cancellationToken)
     {
-        var codes = Form11TransferReceiveCodes;
+        var codes = TransferReceiveOpCodes;
         var rows = await db.form_11
             .AsNoTracking()
             .Where(form => form.Report != null
@@ -388,6 +747,83 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     }
 
     /// <summary>
+    /// Один запрос: все операции приёма/передачи формы 1.2 по БД.
+    /// NameIOU → Type, Mass → Mass, PackType → PackType; количество всегда 1.
+    /// </summary>
+    private static async Task<List<TransferReceiveDto>> LoadAllForm12TransferReceiveAsync(
+        DBModel db,
+        IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
+        CancellationToken cancellationToken)
+    {
+        var codes = TransferReceiveOpCodes;
+        var rows = await db.form_12
+            .AsNoTracking()
+            .Where(form => form.Report != null
+                           && form.Report.Reports != null
+                           && form.OperationCode_DB != null
+                           && codes.Contains(form.OperationCode_DB))
+            .Select(form => new
+            {
+                form.Id,
+                ReportId = form.ReportId ?? 0,
+                RepsId = form.Report!.Reports.Id,
+                NumberInOrder = form.NumberInOrder_DB,
+                OpCode = form.OperationCode_DB,
+                OpDate = form.OperationDate_DB,
+                PasNum = form.PassportNumber_DB,
+                FacNum = form.FactoryNumber_DB,
+                Name = form.NameIOU_DB,
+                Mass = form.Mass_DB,
+                PackType = form.PackType_DB,
+                PackNumber = form.PackNumber_DB,
+                ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                CreatorOkpo = form.CreatorOKPO_DB,
+                CreationDate = form.CreationDate_DB,
+                StartPeriod = form.Report.StartPeriod_DB,
+                EndPeriod = form.Report.EndPeriod_DB
+            })
+            .ToListAsync(cancellationToken);
+
+        var result = new List<TransferReceiveDto>(rows.Count);
+        foreach (var row in rows)
+        {
+            if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+            {
+                continue;
+            }
+
+            orgTitles.TryGetValue(row.RepsId, out var title);
+            result.Add(new TransferReceiveDto
+            {
+                Id = row.Id,
+                RepsId = row.RepsId,
+                ReportId = row.ReportId,
+                NumberInOrder = row.NumberInOrder,
+                OrgOkpo = title?.Okpo ?? string.Empty,
+                OrgRegNo = title?.RegNo ?? string.Empty,
+                OrgShortName = title?.ShortName ?? string.Empty,
+                OpCode = row.OpCode ?? string.Empty,
+                OpDate = row.OpDate ?? string.Empty,
+                PasNum = row.PasNum ?? string.Empty,
+                FacNum = row.FacNum ?? string.Empty,
+                Type = row.Name ?? string.Empty,
+                PackType = row.PackType ?? string.Empty,
+                PackNumber = row.PackNumber ?? string.Empty,
+                ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
+                Quantity = 1,
+                Mass = row.Mass ?? string.Empty,
+                CreatorOkpo = row.CreatorOkpo ?? string.Empty,
+                CreationDate = row.CreationDate ?? string.Empty,
+                StartPeriod = row.StartPeriod ?? string.Empty,
+                EndPeriod = row.EndPeriod ?? string.Empty,
+                IsTransfer = IsTransferCodeForm11(row.OpCode)
+            });
+        }
+
+        return result.OrderBy(row => row.Id).ToList();
+    }
+
+    /// <summary>
     /// Один запрос: все операции приёма/передачи формы 1.3 по БД.
     /// </summary>
     private static async Task<List<TransferReceiveDto>> LoadAllForm13TransferReceiveAsync(
@@ -395,7 +831,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
         CancellationToken cancellationToken)
     {
-        var codes = TransferReceiveCodesForm11And13;
+        var codes = TransferReceiveOpCodes;
         var rows = await db.form_13
             .AsNoTracking()
             .Where(form => form.Report != null
@@ -466,8 +902,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     }
 
     /// <summary>
-    /// Whole-DB ОКПО-карта: сначала титулы кандидатов; <see cref="LoadRepsIdsByOkpoAsync"/> —
-    /// только для сырых ОКПО кол. 19, которых ещё нет после нормализации.
+    /// Whole-DB ОКПО-карта: сначала все загруженные титулы (в т.ч. контрагенты с ops);
+    /// <see cref="LoadRepsIdsByOkpoAsync"/> — только для сырых ОКПО кол. 19, которых ещё нет после нормализации.
     /// </summary>
     private static async Task<Dictionary<string, List<int>>> BuildOkpoAliasMapForWholeDbAsync(
         DBModel db,
@@ -475,6 +911,55 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyList<TransferReceiveDto> allOps,
         CancellationToken cancellationToken,
         ProgressReporter? progress = null)
+    {
+        var byNorm = SeedOkpoAliasMapFromTitles(orgTitles);
+
+        var counterpartRawOkpos = allOps
+            .Select(op => op.ProviderOrRecieverOkpo?.Trim() ?? string.Empty)
+            .Where(okpo => okpo.Length > 0 && okpo != "-")
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
+        var missingRaw = counterpartRawOkpos
+            .Where(raw =>
+            {
+                var norm = NormalizeNumber(raw);
+                return norm.Length > 0 && !byNorm.ContainsKey(norm);
+            })
+            .ToList();
+
+        if (missingRaw.Count == 0)
+        {
+            progress?.Status($"ОКПО — все {counterpartRawOkpos.Count} закрыты титулами");
+            return byNorm;
+        }
+
+        progress?.Status(
+            $"ОКПО — догрузка хвоста {missingRaw.Count} из {counterpartRawOkpos.Count}…");
+        var (extra, _) = await LoadRepsIdsByOkpoAsync(db, missingRaw, cancellationToken, progress);
+        foreach (var (norm, repsIds) in extra)
+        {
+            if (!byNorm.TryGetValue(norm, out var list))
+            {
+                byNorm[norm] = repsIds.ToList();
+                continue;
+            }
+
+            foreach (var repsId in repsIds)
+            {
+                if (!list.Contains(repsId))
+                {
+                    list.Add(repsId);
+                }
+            }
+        }
+
+        return byNorm;
+    }
+
+    /// <summary>Нормализованный ОКПО титула → RepsId (без SQL).</summary>
+    private static Dictionary<string, List<int>> SeedOkpoAliasMapFromTitles(
+        IReadOnlyDictionary<int, OrgTitleInfo> orgTitles)
     {
         var byNorm = new Dictionary<string, List<int>>(StringComparer.Ordinal);
         foreach (var (repsId, title) in orgTitles)
@@ -497,46 +982,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             }
         }
 
-        var counterpartRawOkpos = allOps
-            .Select(op => op.ProviderOrRecieverOkpo?.Trim() ?? string.Empty)
-            .Where(okpo => okpo.Length > 0 && okpo != "-")
-            .Distinct(StringComparer.Ordinal)
-            .ToList();
-
-        var missingRaw = counterpartRawOkpos
-            .Where(raw =>
-            {
-                var norm = NormalizeNumber(raw);
-                return norm.Length > 0 && !byNorm.ContainsKey(norm);
-            })
-            .ToList();
-
-        if (missingRaw.Count == 0)
-        {
-            progress?.Status($"bulk: ОКПО — все {counterpartRawOkpos.Count} закрыты титулами кандидатов");
-            return byNorm;
-        }
-
-        progress?.Status(
-            $"bulk: ОКПО — догрузка хвоста {missingRaw.Count} из {counterpartRawOkpos.Count}…");
-        var (extra, _) = await LoadRepsIdsByOkpoAsync(db, missingRaw, cancellationToken, progress);
-        foreach (var (norm, repsIds) in extra)
-        {
-            if (!byNorm.TryGetValue(norm, out var list))
-            {
-                byNorm[norm] = repsIds.ToList();
-                continue;
-            }
-
-            foreach (var repsId in repsIds)
-            {
-                if (!list.Contains(repsId))
-                {
-                    list.Add(repsId);
-                }
-            }
-        }
-
         return byNorm;
     }
 
@@ -547,7 +992,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         CancellationToken cancellationToken)
     {
         // Запрос через form_11 (без SelectMany по коллекциям) — Firebird не поддерживает APPLY.
-        var codes = Form11TransferReceiveCodes;
+        var codes = TransferReceiveOpCodes;
         var rows = await db.form_11
             .AsNoTracking()
             .Where(form => form.Report != null
@@ -615,37 +1060,49 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyList<int> repsIds,
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitlesByRepsId,
         CancellationToken cancellationToken,
-        ProgressReporter? progress = null)
+        ProgressReporter? progress = null,
+        IReadOnlyList<string>? providerOkpoRawVariants = null,
+        string? ourOkpoNormFilter = null,
+        int chunkSize = CounterpartOpsLoadChunkSize,
+        string progressEntityLabel = "контрагентов")
     {
         if (repsIds.Count == 0)
         {
-            progress?.Report(0, 0, "загрузка операций контрагентов: нет организаций");
+            progress?.Report(0, 0, $"загрузка операций {progressEntityLabel}: нет организаций");
             return [];
         }
 
-        var codes = Form11TransferReceiveCodes;
+        var codes = TransferReceiveOpCodes;
         var result = new List<TransferReceiveDto>();
         var totalOrgs = repsIds.Count;
         var orgsDone = 0;
-        progress?.ReportNow(0, totalOrgs, $"загрузка операций контрагентов: 0 из {totalOrgs} орг.");
+        var filterByProvider = providerOkpoRawVariants is { Count: > 0 };
+        var effectiveChunk = chunkSize > 0 ? chunkSize : CounterpartOpsLoadChunkSize;
+        progress?.ReportNow(0, totalOrgs, $"загрузка операций {progressEntityLabel}: 0 из {totalOrgs} орг.");
 
-        // Пакеты меньше Firebird IN-лимита — иначе при ~100 org один запрос и прогресс «0 из N» до конца.
-        foreach (var idChunk in ChunkIds(repsIds, CounterpartOpsLoadChunkSize))
+        foreach (var idChunk in ChunkIds(repsIds, effectiveChunk))
         {
             var chunkFrom = orgsDone + 1;
             var chunkTo = orgsDone + idChunk.Count;
             progress?.ReportNow(
                 orgsDone,
                 totalOrgs,
-                $"загрузка операций контрагентов: {orgsDone} из {totalOrgs} орг. (запрос {chunkFrom}–{chunkTo})…");
+                $"загрузка операций {progressEntityLabel}: {orgsDone} из {totalOrgs} орг. (запрос {chunkFrom}–{chunkTo})…");
 
-            var rows = await db.form_11
+            var query = db.form_11
                 .AsNoTracking()
                 .Where(form => form.Report != null
                                && form.Report.Reports != null
                                && idChunk.Contains(form.Report.Reports.Id)
                                && form.OperationCode_DB != null
-                               && codes.Contains(form.OperationCode_DB))
+                               && codes.Contains(form.OperationCode_DB));
+            if (filterByProvider)
+            {
+                query = query.Where(form => form.ProviderOrRecieverOKPO_DB != null
+                                           && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
+            }
+
+            var rows = await query
                 .Select(form => new
                 {
                     form.Id,
@@ -672,6 +1129,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             foreach (var row in rows)
             {
                 if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                {
+                    continue;
+                }
+
+                if (ourOkpoNormFilter is { Length: > 0 }
+                    && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoNormFilter))
                 {
                     continue;
                 }
@@ -708,7 +1171,192 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             progress?.ReportNow(
                 orgsDone,
                 totalOrgs,
-                $"загрузка операций контрагентов: {orgsDone} из {totalOrgs} орг., строк: {result.Count}");
+                $"загрузка операций {progressEntityLabel}: {orgsDone} из {totalOrgs} орг., строк: {result.Count}");
+        }
+
+        return result.OrderBy(row => row.Id).ToList();
+    }
+
+    private static async Task<List<TransferReceiveDto>> LoadForm12TransferReceiveForRepsAsync(
+        DBModel db,
+        int repsId,
+        string orgOkpo,
+        CancellationToken cancellationToken)
+    {
+        var codes = TransferReceiveOpCodes;
+        var rows = await db.form_12
+            .AsNoTracking()
+            .Where(form => form.Report != null
+                           && form.Report.Reports != null
+                           && form.Report.Reports.Id == repsId
+                           && form.OperationCode_DB != null
+                           && codes.Contains(form.OperationCode_DB))
+            .Select(form => new
+            {
+                form.Id,
+                ReportId = form.ReportId ?? 0,
+                NumberInOrder = form.NumberInOrder_DB,
+                OpCode = form.OperationCode_DB,
+                OpDate = form.OperationDate_DB,
+                PasNum = form.PassportNumber_DB,
+                FacNum = form.FactoryNumber_DB,
+                Name = form.NameIOU_DB,
+                Mass = form.Mass_DB,
+                PackType = form.PackType_DB,
+                PackNumber = form.PackNumber_DB,
+                ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                CreatorOkpo = form.CreatorOKPO_DB,
+                CreationDate = form.CreationDate_DB,
+                StartPeriod = form.Report!.StartPeriod_DB,
+                EndPeriod = form.Report.EndPeriod_DB
+            })
+            .ToListAsync(cancellationToken);
+
+        return rows
+            .Select(row => new TransferReceiveDto
+            {
+                Id = row.Id,
+                RepsId = repsId,
+                ReportId = row.ReportId,
+                NumberInOrder = row.NumberInOrder,
+                OrgOkpo = orgOkpo,
+                OpCode = row.OpCode ?? string.Empty,
+                OpDate = row.OpDate ?? string.Empty,
+                PasNum = row.PasNum ?? string.Empty,
+                FacNum = row.FacNum ?? string.Empty,
+                Type = row.Name ?? string.Empty,
+                PackType = row.PackType ?? string.Empty,
+                PackNumber = row.PackNumber ?? string.Empty,
+                ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
+                Quantity = 1,
+                Mass = row.Mass ?? string.Empty,
+                CreatorOkpo = row.CreatorOkpo ?? string.Empty,
+                CreationDate = row.CreationDate ?? string.Empty,
+                StartPeriod = row.StartPeriod ?? string.Empty,
+                EndPeriod = row.EndPeriod ?? string.Empty,
+                IsTransfer = IsTransferCodeForm11(row.OpCode)
+            })
+            .Where(row => IsTransferOrReceiveCodeForm11(row.OpCode))
+            .OrderBy(row => row.Id)
+            .ToList();
+    }
+
+    private static async Task<List<TransferReceiveDto>> LoadForm12TransferReceiveForRepsIdsAsync(
+        DBModel db,
+        IReadOnlyList<int> repsIds,
+        IReadOnlyDictionary<int, OrgTitleInfo> orgTitlesByRepsId,
+        CancellationToken cancellationToken,
+        ProgressReporter? progress = null,
+        IReadOnlyList<string>? providerOkpoRawVariants = null,
+        string? ourOkpoNormFilter = null,
+        int chunkSize = CounterpartOpsLoadChunkSize,
+        string progressEntityLabel = "1.2 контрагентов")
+    {
+        if (repsIds.Count == 0)
+        {
+            progress?.Report(0, 0, $"загрузка операций {progressEntityLabel}: нет организаций");
+            return [];
+        }
+
+        var codes = TransferReceiveOpCodes;
+        var result = new List<TransferReceiveDto>();
+        var totalOrgs = repsIds.Count;
+        var orgsDone = 0;
+        var filterByProvider = providerOkpoRawVariants is { Count: > 0 };
+        var effectiveChunk = chunkSize > 0 ? chunkSize : CounterpartOpsLoadChunkSize;
+        progress?.ReportNow(0, totalOrgs, $"загрузка операций {progressEntityLabel}: 0 из {totalOrgs} орг.");
+
+        foreach (var idChunk in ChunkIds(repsIds, effectiveChunk))
+        {
+            var chunkFrom = orgsDone + 1;
+            var chunkTo = orgsDone + idChunk.Count;
+            progress?.ReportNow(
+                orgsDone,
+                totalOrgs,
+                $"загрузка операций {progressEntityLabel}: {orgsDone} из {totalOrgs} орг. (запрос {chunkFrom}–{chunkTo})…");
+
+            var query = db.form_12
+                .AsNoTracking()
+                .Where(form => form.Report != null
+                               && form.Report.Reports != null
+                               && idChunk.Contains(form.Report.Reports.Id)
+                               && form.OperationCode_DB != null
+                               && codes.Contains(form.OperationCode_DB));
+            if (filterByProvider)
+            {
+                query = query.Where(form => form.ProviderOrRecieverOKPO_DB != null
+                                           && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
+            }
+
+            var rows = await query
+                .Select(form => new
+                {
+                    form.Id,
+                    ReportId = form.ReportId ?? 0,
+                    RepsId = form.Report!.Reports.Id,
+                    NumberInOrder = form.NumberInOrder_DB,
+                    OpCode = form.OperationCode_DB,
+                    OpDate = form.OperationDate_DB,
+                    PasNum = form.PassportNumber_DB,
+                    FacNum = form.FactoryNumber_DB,
+                    Name = form.NameIOU_DB,
+                    Mass = form.Mass_DB,
+                    PackType = form.PackType_DB,
+                    PackNumber = form.PackNumber_DB,
+                    ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                    CreatorOkpo = form.CreatorOKPO_DB,
+                    CreationDate = form.CreationDate_DB,
+                    StartPeriod = form.Report.StartPeriod_DB,
+                    EndPeriod = form.Report.EndPeriod_DB
+                })
+                .ToListAsync(cancellationToken);
+
+            foreach (var row in rows)
+            {
+                if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                {
+                    continue;
+                }
+
+                if (ourOkpoNormFilter is { Length: > 0 }
+                    && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoNormFilter))
+                {
+                    continue;
+                }
+
+                orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
+                result.Add(new TransferReceiveDto
+                {
+                    Id = row.Id,
+                    RepsId = row.RepsId,
+                    ReportId = row.ReportId,
+                    NumberInOrder = row.NumberInOrder,
+                    OrgOkpo = title?.Okpo ?? string.Empty,
+                    OrgRegNo = title?.RegNo ?? string.Empty,
+                    OrgShortName = title?.ShortName ?? string.Empty,
+                    OpCode = row.OpCode ?? string.Empty,
+                    OpDate = row.OpDate ?? string.Empty,
+                    PasNum = row.PasNum ?? string.Empty,
+                    FacNum = row.FacNum ?? string.Empty,
+                    Type = row.Name ?? string.Empty,
+                    PackType = row.PackType ?? string.Empty,
+                    PackNumber = row.PackNumber ?? string.Empty,
+                    ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
+                    Quantity = 1,
+                    Mass = row.Mass ?? string.Empty,
+                    CreatorOkpo = row.CreatorOkpo ?? string.Empty,
+                    CreationDate = row.CreationDate ?? string.Empty,
+                    StartPeriod = row.StartPeriod ?? string.Empty,
+                    EndPeriod = row.EndPeriod ?? string.Empty,
+                    IsTransfer = IsTransferCodeForm11(row.OpCode)
+                });
+            }
+
+            orgsDone += idChunk.Count;
+            progress?.ReportNow(
+                orgsDone,
+                totalOrgs,
+                $"загрузка операций {progressEntityLabel}: {orgsDone} из {totalOrgs} орг., строк: {result.Count}");
         }
 
         return result.OrderBy(row => row.Id).ToList();
@@ -720,7 +1368,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         string orgOkpo,
         CancellationToken cancellationToken)
     {
-        var codes = TransferReceiveCodesForm11And13;
+        var codes = TransferReceiveOpCodes;
         var rows = await db.form_13
             .AsNoTracking()
             .Where(form => form.Report != null
@@ -785,36 +1433,49 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyList<int> repsIds,
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitlesByRepsId,
         CancellationToken cancellationToken,
-        ProgressReporter? progress = null)
+        ProgressReporter? progress = null,
+        IReadOnlyList<string>? providerOkpoRawVariants = null,
+        string? ourOkpoNormFilter = null,
+        int chunkSize = CounterpartOpsLoadChunkSize,
+        string progressEntityLabel = "1.3 контрагентов")
     {
         if (repsIds.Count == 0)
         {
-            progress?.Report(0, 0, "загрузка операций 1.3 контрагентов: нет организаций");
+            progress?.Report(0, 0, $"загрузка операций {progressEntityLabel}: нет организаций");
             return [];
         }
 
-        var codes = TransferReceiveCodesForm11And13;
+        var codes = TransferReceiveOpCodes;
         var result = new List<TransferReceiveDto>();
         var totalOrgs = repsIds.Count;
         var orgsDone = 0;
-        progress?.ReportNow(0, totalOrgs, $"загрузка операций 1.3 контрагентов: 0 из {totalOrgs} орг.");
+        var filterByProvider = providerOkpoRawVariants is { Count: > 0 };
+        var effectiveChunk = chunkSize > 0 ? chunkSize : CounterpartOpsLoadChunkSize;
+        progress?.ReportNow(0, totalOrgs, $"загрузка операций {progressEntityLabel}: 0 из {totalOrgs} орг.");
 
-        foreach (var idChunk in ChunkIds(repsIds, CounterpartOpsLoadChunkSize))
+        foreach (var idChunk in ChunkIds(repsIds, effectiveChunk))
         {
             var chunkFrom = orgsDone + 1;
             var chunkTo = orgsDone + idChunk.Count;
             progress?.ReportNow(
                 orgsDone,
                 totalOrgs,
-                $"загрузка операций 1.3 контрагентов: {orgsDone} из {totalOrgs} орг. (запрос {chunkFrom}–{chunkTo})…");
+                $"загрузка операций {progressEntityLabel}: {orgsDone} из {totalOrgs} орг. (запрос {chunkFrom}–{chunkTo})…");
 
-            var rows = await db.form_13
+            var query = db.form_13
                 .AsNoTracking()
                 .Where(form => form.Report != null
                                && form.Report.Reports != null
                                && idChunk.Contains(form.Report.Reports.Id)
                                && form.OperationCode_DB != null
-                               && codes.Contains(form.OperationCode_DB))
+                               && codes.Contains(form.OperationCode_DB));
+            if (filterByProvider)
+            {
+                query = query.Where(form => form.ProviderOrRecieverOKPO_DB != null
+                                           && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
+            }
+
+            var rows = await query
                 .Select(form => new
                 {
                     form.Id,
@@ -841,6 +1502,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             foreach (var row in rows)
             {
                 if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                {
+                    continue;
+                }
+
+                if (ourOkpoNormFilter is { Length: > 0 }
+                    && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoNormFilter))
                 {
                     continue;
                 }
@@ -878,7 +1545,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             progress?.ReportNow(
                 orgsDone,
                 totalOrgs,
-                $"загрузка операций 1.3 контрагентов: {orgsDone} из {totalOrgs} орг., строк: {result.Count}");
+                $"загрузка операций {progressEntityLabel}: {orgsDone} из {totalOrgs} орг., строк: {result.Count}");
         }
 
         return result.OrderBy(row => row.Id).ToList();
@@ -1267,105 +1934,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
     #endregion
 
-    #region Build reports for Excel export
-
-    private static async Task<Reports> BuildReportsForExportAsync(
-        DBModel db,
-        Reports masterReports,
-        List<TransferReceiveDto> unpairedOperations,
-        CancellationToken cancellationToken)
-    {
-        var result = new Reports { Master = masterReports.Master };
-        if (unpairedOperations.Count == 0)
-        {
-            return result;
-        }
-
-        var formIds = unpairedOperations.Select(op => op.Id).Distinct().ToList();
-        var reportIds = unpairedOperations
-            .Where(op => op.ReportId != 0)
-            .Select(op => op.ReportId)
-            .Distinct()
-            .ToList();
-
-        if (reportIds.Count == 0)
-        {
-            return result;
-        }
-
-        var reports = await LoadReportsByIdsAsync(db, reportIds, cancellationToken);
-        var forms = await LoadForm11ByIdsAsync(db, formIds, cancellationToken);
-        AttachFormsToReports(reports, forms);
-
-        foreach (var report in OrderReportsForExport(reports))
-        {
-            if (report.Rows11.Count > 0)
-            {
-                result.Report_Collection.Add(report);
-            }
-        }
-
-        return result;
-    }
-
-    private static void AttachFormsToReports(List<Report> reports, List<Form11> forms)
-    {
-        var formsByReportId = forms
-            .GroupBy(form => form.ReportId ?? 0)
-            .ToDictionary(
-                group => group.Key,
-                group => group.OrderBy(form => form.NumberInOrder_DB).ToList());
-
-        foreach (var report in OrderReportsForExport(reports))
-        {
-            if (!formsByReportId.TryGetValue(report.Id, out var rowList) || rowList.Count == 0)
-            {
-                continue;
-            }
-
-            report.Rows11.Clear();
-            foreach (var form in rowList)
-            {
-                report.Rows11.Add(form);
-            }
-        }
-    }
-
-    private static async Task<List<Report>> LoadReportsByIdsAsync(
-        DBModel db,
-        IReadOnlyList<int> reportIds,
-        CancellationToken cancellationToken)
-    {
-        var reports = new List<Report>();
-        foreach (var idChunk in ChunkIds(reportIds))
-        {
-            var batch = await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .Where(rep => idChunk.Contains(rep.Id))
-                .ToListAsync(cancellationToken);
-            reports.AddRange(batch);
-        }
-
-        return reports;
-    }
-
-    private static async Task<List<Form11>> LoadForm11ByIdsAsync(
-        DBModel db,
-        IReadOnlyList<int> formIds,
-        CancellationToken cancellationToken)
-    {
-        var forms = new List<Form11>();
-        foreach (var idChunk in ChunkIds(formIds))
-        {
-            var batch = await db.form_11
-                .AsNoTracking()
-                .Where(form => idChunk.Contains(form.Id))
-                .ToListAsync(cancellationToken);
-            forms.AddRange(batch);
-        }
-
-        return forms;
-    }
+    #region Chunk helpers
 
     private static IEnumerable<List<int>> ChunkIds(IReadOnlyList<int> ids, int chunkSize = FirebirdInListMaxCount)
     {
@@ -1375,11 +1944,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             yield return ids.Skip(offset).Take(size).ToList();
         }
     }
-
-    private static IEnumerable<Report> OrderReportsForExport(List<Report> reports) =>
-        reports
-            .OrderBy(rep => DateOnly.TryParse(rep.StartPeriod_DB, out var startDate) ? startDate : DateOnly.MaxValue)
-            .ThenBy(rep => DateOnly.TryParse(rep.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue);
 
     #endregion
 
@@ -1403,9 +1967,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         public string FacNum { get; init; } = string.Empty;
         public string Type { get; init; } = string.Empty;
         public string Radionuclids { get; init; } = string.Empty;
+        public string PackType { get; init; } = string.Empty;
         public string PackNumber { get; init; } = string.Empty;
         public string ProviderOrRecieverOkpo { get; init; } = string.Empty;
         public string Activity { get; init; } = string.Empty;
+        /// <summary>Масса обеднённого урана, кг (форма 1.2).</summary>
+        public string Mass { get; init; } = string.Empty;
         public string CreatorOkpo { get; init; } = string.Empty;
         public string CreationDate { get; init; } = string.Empty;
         public int? Quantity { get; init; }

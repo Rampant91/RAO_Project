@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +9,6 @@ using Client_App.Views.ProgressBar;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
-using Models.Forms.Form1;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
@@ -95,6 +95,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         using var excelPackage = await InitializeExcelPackage(fullPath);
         InitializeWorkbook(excelPackage);
         AppendOrganizationToWorkbook(excelPackage, export, progressBarVM, percentBase: 75, percentSpan: 15);
+        Status(93, "Оформление таблиц Excel (фильтры, сетка)…");
         FinalizeWorkbookTables(excelPackage);
 
         Status(95, "Сохранение");
@@ -125,14 +126,13 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(12, "Поиск организаций с операциями приёма/передачи", "Вся БД", "Выгрузка в .xlsx");
-        var discoverProgress = new ProgressReporter(
-            (percent, text) => progressBarVM.SetProgressBar(percent, text, "Вся БД"),
-            percentMin: 12,
-            percentMax: 28);
+        progressBarVM.SetProgressBar(12, "Загрузка операций приёма/передачи (вся БД)", "Вся БД", "Выгрузка в .xlsx");
         var enabledIds = pairingParams.EnabledFormIds;
-        var candidates = await LoadOrganizationsWithTransferReceiveAsync(
-            db, cts.Token, discoverProgress, enabledIds);
+        var (candidates, bulk) = await LoadWholeDatabaseTransferReceiveAsync(
+            db,
+            cts.Token,
+            BindProgressToUi(progressBarVM, "Вся БД"),
+            enabledIds);
         if (candidates.Count == 0)
         {
             await ShowNoUnpairedOperationsMessage(progressBar, wholeDatabase: true);
@@ -140,19 +140,14 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             return;
         }
 
-        var bulkProgress = new ProgressReporter(
-            (percent, text) => progressBarVM.SetProgressBar(percent, text, "Вся БД"),
-            percentMin: 28,
-            percentMax: 52);
-        var orgTitles = candidates.ToDictionary(c => c.Id, c => c.Title);
-        var bulk = await LoadAllTransferReceiveBulkAsync(
-            db, orgTitles, cts.Token, bulkProgress, enabledIds);
-
-        progressBarVM.SetProgressBar(52, "Построение общих пулов сопоставления", "Вся БД", "Выгрузка в .xlsx");
+        progressBarVM.SetProgressBar(52, "Построение общих пулов и индексов сопоставления", "Вся БД", "Выгрузка в .xlsx");
         var sharedPools = new Dictionary<TransferReceiveFormId, Dictionary<string, List<TransferReceiveDto>>>();
+        var sharedIndexes = new Dictionary<TransferReceiveFormId, SharedFormSearchIndexes>();
         foreach (var formId in enabledIds)
         {
-            sharedPools[formId] = BuildOpsPoolByOrgOkpo([], bulk.GetAllOps(formId), bulk.RepsIdsByNormOkpo);
+            var pool = BuildOpsPoolByOrgOkpo([], bulk.GetAllOps(formId), bulk.RepsIdsByNormOkpo);
+            sharedPools[formId] = pool;
+            sharedIndexes[formId] = SharedFormSearchIndexes.Build(pool, pairingParams.GetParams(formId));
         }
 
         progressBarVM.SetProgressBar(55, "Инициализация Excel пакета", "Вся БД", "Выгрузка в .xlsx");
@@ -191,7 +186,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 ourOpsByForm,
                 sharedPools,
                 pairingParams,
-                (p, text) => Status(Math.Min(percentSpan - 1, Math.Max(0, p / 5)), text));
+                (p, text) => Status(Math.Min(percentSpan - 1, Math.Max(0, p / 5)), text),
+                sharedIndexes);
 
             if (export is null)
             {
@@ -218,6 +214,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             return;
         }
 
+        progressBarVM.SetProgressBar(93, "Оформление таблиц Excel (фильтры, сетка)…", "Вся БД", "Выгрузка в .xlsx");
         FinalizeWorkbookTables(excelPackage);
         progressBarVM.SetProgressBar(95, "Сохранение", "Вся БД", "Выгрузка в .xlsx");
         await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
@@ -226,45 +223,73 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
     #endregion
 
-    #region Discover orgs with transfer/receive
+    #region Whole-DB load (ops → titles → candidates)
 
     /// <summary>
-    /// Организации с хотя бы одной операцией приёма/передачи на 1.1 или 1.3.
-    /// Id — Distinct по таблицам форм; титулы — точечно из form_10 (без Include Master→Rows10).
+    /// Whole-DB: Distinct org по форме → пакетная загрузка ops → титулы → кандидаты.
     /// </summary>
-    private static async Task<List<TransferReceiveOrgCandidate>> LoadOrganizationsWithTransferReceiveAsync(
-        DBModel db,
-        CancellationToken cancellationToken,
-        ProgressReporter? progress = null,
-        IReadOnlySet<TransferReceiveFormId>? enabledFormIds = null)
+    private static async Task<(List<TransferReceiveOrgCandidate> Candidates, TransferReceiveBulkLoad Bulk)>
+        LoadWholeDatabaseTransferReceiveAsync(
+            DBModel db,
+            CancellationToken cancellationToken,
+            Action<int, string>? reportProgress = null,
+            IReadOnlySet<TransferReceiveFormId>? enabledFormIds = null)
     {
         enabledFormIds ??= ImplementedFormDescriptors.Select(d => d.Id).ToHashSet();
-        var repsIds = new HashSet<int>();
-        var stages = Math.Max(1, enabledFormIds.Count);
-        var stage = 0;
-        foreach (var descriptor in ImplementedFormDescriptors.Where(d => enabledFormIds.Contains(d.Id)))
+        var enabledDescriptors = ImplementedFormDescriptors
+            .Where(d => enabledFormIds.Contains(d.Id))
+            .ToList();
+        if (enabledDescriptors.Count == 0)
         {
-            progress?.ReportNow(stage, stages,
-                $"поиск организаций: сканирование формы {descriptor.FormNum} ({stage + 1} из {stages})");
-            await AddRepsIdsForFormAsync(db, descriptor.Id, repsIds, cancellationToken);
-            stage++;
-            progress?.ReportNow(stage, stages,
-                $"поиск организаций: форма {descriptor.FormNum} — найдено организаций: {repsIds.Count}");
+            return ([], new TransferReceiveBulkLoad());
         }
 
-        if (repsIds.Count == 0)
+        var allOpsByForm = new Dictionary<TransferReceiveFormId, List<TransferReceiveDto>>();
+        var formCount = enabledDescriptors.Count;
+        // 12–45%: постраничная загрузка форм; 45–52%: активные / титулы / ОКПО.
+        const int formsBandMin = 12;
+        const int formsBandMax = 45;
+        const int loadBandMax = 52;
+
+        for (var i = 0; i < formCount; i++)
         {
-            return [];
+            var descriptor = enabledDescriptors[i];
+            var nestMin = formsBandMin + (formsBandMax - formsBandMin) * i / formCount;
+            var nestMax = formsBandMin + (formsBandMax - formsBandMin) * (i + 1) / formCount;
+            var formProgress = new ProgressReporter(reportProgress, nestMin, nestMax);
+
+            // Один проход по строкам формы (keyset по Id) — без долгого Distinct «в тишине».
+            var allOps = await LoadFormOpsPagedWholeDbAsync(
+                descriptor.Id,
+                db,
+                cancellationToken,
+                formProgress,
+                descriptor.FormNum);
+            allOpsByForm[descriptor.Id] = allOps;
+            formProgress.ReportNow(
+                1, 1, $"форма {descriptor.FormNum}: готово — {allOps.Count} строк");
         }
 
-        // Только org из активной коллекции (как раньше Where DBObservable != null).
-        var orderedIds = repsIds.OrderBy(id => id).ToList();
-        var activeIds = new List<int>(orderedIds.Count);
-        var idChunks = ChunkIds(orderedIds).ToList();
+        var repsIdsFromOps = allOpsByForm.Values
+            .SelectMany(ops => ops)
+            .Select(op => op.RepsId)
+            .Distinct()
+            .OrderBy(id => id)
+            .ToList();
+
+        if (repsIdsFromOps.Count == 0)
+        {
+            return ([], new TransferReceiveBulkLoad());
+        }
+
+        var postProgress = new ProgressReporter(reportProgress, formsBandMax, loadBandMax);
+        postProgress.Status($"фильтр активных карточек ({repsIdsFromOps.Count} орг.)…");
+        var activeIds = new List<int>(repsIdsFromOps.Count);
+        var idChunks = ChunkIds(repsIdsFromOps).ToList();
         for (var i = 0; i < idChunks.Count; i++)
         {
-            progress?.ReportNow(i, idChunks.Count,
-                $"поиск организаций: фильтр активных карточек {i + 1} из {idChunks.Count}");
+            postProgress.ReportNow(i, idChunks.Count,
+                $"фильтр активных карточек {i + 1} из {idChunks.Count}");
             var batch = await db.ReportsCollectionDbSet
                 .AsNoTracking()
                 .Where(reps => reps.DBObservable != null && idChunks[i].Contains(reps.Id))
@@ -273,63 +298,71 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             activeIds.AddRange(batch);
         }
 
+        postProgress.ReportNow(1, 3, $"активных организаций: {activeIds.Count}");
+
         if (activeIds.Count == 0)
         {
-            return [];
+            return ([], new TransferReceiveBulkLoad());
         }
 
-        progress?.Status($"поиск организаций: загрузка титулов ({activeIds.Count} орг.)…");
+        postProgress.Status($"загрузка титулов ({repsIdsFromOps.Count} орг.)…");
         var orgTitles = new Dictionary<int, OrgTitleInfo>();
-        await LoadOrgTitlesForRepsIdsAsync(db, activeIds, orgTitles, cancellationToken);
-        progress?.ReportNow(1, 1, $"поиск организаций: готово — {orgTitles.Count}");
+        await LoadOrgTitlesForRepsIdsAsync(db, repsIdsFromOps, orgTitles, cancellationToken);
+        postProgress.ReportNow(2, 3, $"титулы: {orgTitles.Count}");
 
+        foreach (var ops in allOpsByForm.Values)
+        {
+            ApplyOrgTitlesToOps(ops, orgTitles);
+        }
+
+        var opsByRepsIdByForm = new Dictionary<TransferReceiveFormId, Dictionary<int, List<TransferReceiveDto>>>();
+        foreach (var (formId, allOps) in allOpsByForm)
+        {
+            opsByRepsIdByForm[formId] = allOps
+                .GroupBy(op => op.RepsId)
+                .ToDictionary(g => g.Key, g => g.OrderBy(op => op.Id).ToList());
+        }
+
+        postProgress.Status("карта ОКПО→орг.…");
+        var allOpsConcat = allOpsByForm.Values.SelectMany(ops => ops).ToList();
+        var repsIdsByNormOkpo = await BuildOkpoAliasMapForWholeDbAsync(
+            db, orgTitles, allOpsConcat, cancellationToken, postProgress);
+
+        var activeSet = activeIds.ToHashSet();
         var regNoComparer = new CustomReportsComparer();
-        return orgTitles
+        var candidates = orgTitles
+            .Where(kv => activeSet.Contains(kv.Key))
             .Select(kv => new TransferReceiveOrgCandidate { Id = kv.Key, Title = kv.Value })
             .OrderBy(c => c.Title.RegNo, regNoComparer)
             .ThenBy(c => c.Title.Okpo, regNoComparer)
             .ToList();
+
+        var counts = string.Join(", ",
+            enabledDescriptors.Select(d => $"{d.FormNum}={allOpsByForm[d.Id].Count}"));
+        postProgress.ReportNow(3, 3, $"готово — {counts}, кандидатов={candidates.Count}");
+
+        return (candidates, new TransferReceiveBulkLoad
+        {
+            AllOpsByForm = allOpsByForm,
+            OpsByRepsIdByForm = opsByRepsIdByForm,
+            RepsIdsByNormOkpo = repsIdsByNormOkpo
+        });
     }
 
-    private static async Task AddRepsIdsForFormAsync(
-        DBModel db,
-        TransferReceiveFormId formId,
-        HashSet<int> repsIds,
-        CancellationToken cancellationToken)
+    private static void ApplyOrgTitlesToOps(
+        IEnumerable<TransferReceiveDto> ops,
+        IReadOnlyDictionary<int, OrgTitleInfo> orgTitles)
     {
-        switch (formId)
+        foreach (var op in ops)
         {
-            case TransferReceiveFormId.Form11:
-                await AddRepsIdsWithTransferReceiveCodesAsync(db.form_11, repsIds, cancellationToken);
-                break;
-            case TransferReceiveFormId.Form13:
-                await AddRepsIdsWithTransferReceiveCodesAsync(db.form_13, repsIds, cancellationToken);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет discover-загрузчика для формы.");
-        }
-    }
+            if (!orgTitles.TryGetValue(op.RepsId, out var title))
+            {
+                continue;
+            }
 
-    private static async Task AddRepsIdsWithTransferReceiveCodesAsync<TForm>(
-        DbSet<TForm> forms,
-        HashSet<int> repsIds,
-        CancellationToken cancellationToken)
-        where TForm : Form1
-    {
-        var codes = TransferReceiveCodesForm11And13;
-        var ids = await forms
-            .AsNoTracking()
-            .Where(form => form.OperationCode_DB != null
-                           && codes.Contains(form.OperationCode_DB)
-                           && form.Report != null
-                           && form.Report.Reports != null)
-            .Select(form => form.Report!.Reports.Id)
-            .Distinct()
-            .ToListAsync(cancellationToken);
-
-        foreach (var id in ids)
-        {
-            repsIds.Add(id);
+            op.OrgOkpo = title.Okpo;
+            op.OrgRegNo = title.RegNo;
+            op.OrgShortName = title.ShortName;
         }
     }
 
@@ -417,8 +450,25 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var percentMin = 34 + i * loadSpan;
             var percentMax = Math.Min(44, percentMin + loadSpan);
             var loadProgress = new ProgressReporter(reportProgress, percentMin, percentMax);
+
+            // Сужение SQL по кол.19 только если ОКПО участвует в сверке — иначе сломаем пары/closest.
+            IReadOnlyList<string>? providerOkpoVariants = null;
+            string? ourOkpoNormFilter = null;
+            if (pairingParams.GetParams(descriptor.Id).CheckProviderOrRecieverOkpo)
+            {
+                providerOkpoVariants = BuildOurOkpoSqlMatchVariants(ourOkpo);
+                ourOkpoNormFilter = NormalizeNumber(ourOkpo);
+            }
+
             counterpartOpsByForm[descriptor.Id] = await LoadFormOpsForRepsIdsAsync(
-                descriptor.Id, db, counterpartRepsIds, orgTitles, cancellationToken, loadProgress);
+                descriptor.Id,
+                db,
+                counterpartRepsIds,
+                orgTitles,
+                cancellationToken,
+                loadProgress,
+                providerOkpoVariants,
+                ourOkpoNormFilter);
         }
 
         var counterpartSummary = string.Join(", ",
@@ -502,14 +552,15 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     }
 
     /// <summary>
-    /// Whole-DB: пул ОКПО уже построен один раз; per-org только unpaired + closest.
+    /// Whole-DB: пул ОКПО и поисковые индексы уже построены один раз; per-org только unpaired + closest.
     /// </summary>
     private OrganizationTransferReceiveExport? BuildOrganizationExportFromSharedPools(
         string ourOkpo,
         IReadOnlyDictionary<TransferReceiveFormId, List<TransferReceiveDto>> ourOpsByForm,
         IReadOnlyDictionary<TransferReceiveFormId, Dictionary<string, List<TransferReceiveDto>>> sharedPools,
         TransferReceiveParamsSet pairingParams,
-        Action<int, string>? reportProgress = null)
+        Action<int, string>? reportProgress = null,
+        IReadOnlyDictionary<TransferReceiveFormId, SharedFormSearchIndexes>? sharedIndexes = null)
     {
         _currentParams = pairingParams;
         var ourOkpoNorm = NormalizeNumber(ourOkpo);
@@ -526,6 +577,11 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             ourOps ??= [];
             sharedPools.TryGetValue(descriptor.Id, out var sharedPool);
             sharedPool ??= new Dictionary<string, List<TransferReceiveDto>>(StringComparer.Ordinal);
+            SharedFormSearchIndexes? formIndexes = null;
+            if (sharedIndexes is not null)
+            {
+                sharedIndexes.TryGetValue(descriptor.Id, out formIndexes);
+            }
 
             var matchMin = 45 + (int)(20.0 * i / formCount);
             var matchMax = 45 + (int)(20.0 * (i + 0.5) / formCount);
@@ -541,7 +597,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var matchProgress = new ProgressReporter(reportProgress, matchMin, matchMax);
             matchProgress.Status($"сопоставление формы {descriptor.FormNum}: 0 из {ourOps.Count} операций");
             var unpaired = ComputeUnpairedOperations(
-                ourOps, sharedPool, ourOkpoNorm, formOptions, matchProgress);
+                ourOps, sharedPool, ourOkpoNorm, formOptions, matchProgress, formIndexes?.Pairing);
             unpairedByForm[descriptor.Id] = unpaired;
 
             reportProgress?.Invoke(matchMax,
@@ -551,7 +607,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             closestProgress.Status(
                 $"поиск ближайших совпадений {descriptor.FormNum}: 0 из {unpaired.Count}");
             _closestByForm[descriptor.Id] = BuildClosestMatchResults(
-                unpaired, sharedPool, formOptions, closestProgress);
+                unpaired,
+                sharedPool,
+                formOptions,
+                closestProgress,
+                formIndexes?.Closest,
+                formIndexes?.Norms);
         }
 
         if (unpairedByForm.Values.All(list => list.Count == 0))
@@ -565,6 +626,26 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     #endregion
 
     #region Shared analysis core (org + whole-DB)
+
+    /// <summary>
+    /// Индексы поиска, общие для всех org в режиме «вся БД» (immutable после Build).
+    /// </summary>
+    private sealed class SharedFormSearchIndexes
+    {
+        public required PairingCandidateIndex Pairing { get; init; }
+        public required ClosestCandidateIndex Closest { get; init; }
+        public required System.Collections.Concurrent.ConcurrentDictionary<int, TransferReceiveNorm> Norms { get; init; }
+
+        public static SharedFormSearchIndexes Build(
+            IReadOnlyDictionary<string, List<TransferReceiveDto>> pool,
+            TransferReceiveFormParams options) =>
+            new()
+            {
+                Pairing = PairingCandidateIndex.Build(pool, options),
+                Closest = ClosestCandidateIndex.Build(pool, options.CheckOperationDate),
+                Norms = BuildClosestNormCache([], pool)
+            };
+    }
 
     /// <summary>
     /// Единое ядро: пул кандидатов + непарные. Без обращений к БД.
@@ -585,7 +666,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         return (unpaired, opsByOrgOkpo);
     }
 
-    /// <summary>Алиас для тестов / старых вызовов.</summary>
+    /// <summary>Устаревший алиас — то же, что <see cref="AnalyzeFormForOrganization"/>.</summary>
     private static (List<TransferReceiveDto> Unpaired, Dictionary<string, List<TransferReceiveDto>> OpsByOrgOkpo)
         AnalyzeForm11ForOrganization(
             List<TransferReceiveDto> ourOps,
@@ -673,7 +754,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<string, List<TransferReceiveDto>> opsByOrgOkpo,
         string ourOkpoNorm,
         TransferReceiveFormParams options,
-        ProgressReporter? progress = null)
+        ProgressReporter? progress = null,
+        PairingCandidateIndex? prebuiltIndex = null)
     {
         var usedCandidateIds = new HashSet<int>();
         var pairedOurIds = new HashSet<int>();
@@ -688,12 +770,13 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
         var ourTransfers = ourOps.Where(op => op.IsTransfer).OrderBy(op => op.Id).ToList();
         var ourReceives = ourOps.Where(op => !op.IsTransfer).OrderBy(op => op.Id).ToList();
+        var index = prebuiltIndex ?? PairingCandidateIndex.Build(opsByOrgOkpo, options);
 
-        MatchSide(ourTransfers, isSourceTransfer: true, opsByOrgOkpo, usedCandidateIds, pairedOurIds, ourOkpoNorm, options, OnSourceDone);
+        MatchSide(ourTransfers, isSourceTransfer: true, index, usedCandidateIds, pairedOurIds, ourOkpoNorm, options, OnSourceDone);
         MatchSide(
             ourReceives.Where(op => !pairedOurIds.Contains(op.Id)).ToList(),
             isSourceTransfer: false,
-            opsByOrgOkpo,
+            index,
             usedCandidateIds,
             pairedOurIds,
             ourOkpoNorm,
@@ -722,7 +805,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     private static void MatchSide(
         List<TransferReceiveDto> sources,
         bool isSourceTransfer,
-        IReadOnlyDictionary<string, List<TransferReceiveDto>> opsByOrgOkpo,
+        PairingCandidateIndex index,
         HashSet<int> usedCandidateIds,
         HashSet<int> pairedOurIds,
         string ourOkpoNorm,
@@ -732,14 +815,14 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var withSerial = sources.Where(op => !SerialNumbersAreEmpty(op)).ToList();
         var withoutSerial = sources.Where(SerialNumbersAreEmpty).ToList();
 
-        MatchWithSerial(withSerial, isSourceTransfer, opsByOrgOkpo, usedCandidateIds, pairedOurIds, ourOkpoNorm, options, onSourceDone);
-        MatchWithoutSerial(withoutSerial, isSourceTransfer, opsByOrgOkpo, usedCandidateIds, pairedOurIds, ourOkpoNorm, options, onSourceDone);
+        MatchWithSerial(withSerial, isSourceTransfer, index, usedCandidateIds, pairedOurIds, ourOkpoNorm, options, onSourceDone);
+        MatchWithoutSerial(withoutSerial, isSourceTransfer, index, usedCandidateIds, pairedOurIds, ourOkpoNorm, options, onSourceDone);
     }
 
     private static void MatchWithSerial(
         List<TransferReceiveDto> sources,
         bool isSourceTransfer,
-        IReadOnlyDictionary<string, List<TransferReceiveDto>> opsByOrgOkpo,
+        PairingCandidateIndex index,
         HashSet<int> usedCandidateIds,
         HashSet<int> pairedOurIds,
         string ourOkpoNorm,
@@ -754,23 +837,27 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 continue;
             }
 
-            var candidates = GetCounterpartCandidates(source, isSourceTransfer, opsByOrgOkpo);
+            var sourceOrgOkpoNorm = NormalizeNumber(source.OrgOkpo);
+            var sourceKey = BuildPairingKey(
+                source, options, includeSerial: true, includeQuantity: options.CheckQuantity);
+            var candidates = index.LookupWithSerial(source, isSourceTransfer, sourceKey, options);
             TransferReceiveDto? claimed = null;
-            foreach (var candidate in candidates)
+            foreach (var (candidate, candidateKey) in candidates)
             {
                 if (usedCandidateIds.Contains(candidate.Id) || candidate.Id == source.Id)
                 {
                     continue;
                 }
 
-                // ±N дней — только сужение поиска; пара требует точной даты (IsPairMatch).
-                if (options.CheckOperationDate
-                    && !DateWithinTolerance(source.OpDate, candidate.OpDate))
-                {
-                    continue;
-                }
-
-                if (!IsPairMatch(source, candidate, options, ourOkpoNorm, includeSerial: true))
+                if (!IsPairMatch(
+                        source,
+                        candidate,
+                        options,
+                        ourOkpoNorm,
+                        includeSerial: true,
+                        precomputedSourceKey: sourceKey,
+                        precomputedCandidateKey: candidateKey,
+                        precomputedSourceOrgOkpoNorm: sourceOrgOkpoNorm))
                 {
                     continue;
                 }
@@ -796,7 +883,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     private static void MatchWithoutSerial(
         List<TransferReceiveDto> sources,
         bool isSourceTransfer,
-        IReadOnlyDictionary<string, List<TransferReceiveDto>> opsByOrgOkpo,
+        PairingCandidateIndex index,
         HashSet<int> usedCandidateIds,
         HashSet<int> pairedOurIds,
         string ourOkpoNorm,
@@ -825,19 +912,21 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             }
 
             var remainingSourceQty = options.CheckQuantity ? GetQuantityForComparison(source) : 1;
-            var candidates = GetCounterpartCandidates(source, isSourceTransfer, opsByOrgOkpo)
-                .Where(c => !usedCandidateIds.Contains(c.Id) && c.Id != source.Id)
-                .Where(SerialNumbersAreEmpty)
-                .Where(c => !options.CheckOperationDate
-                            || DateWithinTolerance(source.OpDate, c.OpDate))
-                .OrderBy(c => c.Id)
-                .ToList();
+            var sourceOrgOkpoNorm = NormalizeNumber(source.OrgOkpo);
+            var sourceKey = BuildPairingKey(
+                source, options, includeSerial: false, includeQuantity: false);
+            var candidates = index.LookupWithoutSerial(source, isSourceTransfer, sourceKey, options);
 
-            foreach (var candidate in candidates)
+            foreach (var (candidate, candidateKey) in candidates)
             {
                 if (remainingSourceQty <= 0)
                 {
                     break;
+                }
+
+                if (usedCandidateIds.Contains(candidate.Id) || candidate.Id == source.Id)
+                {
+                    continue;
                 }
 
                 var state = GetOrCreateState(candidate);
@@ -847,7 +936,15 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 }
 
                 // Для безсерийных qty в ключе не участвует — проверяем остальные поля + активность/коды/даты.
-                if (!IsPairMatch(source, state.Row, options, ourOkpoNorm, includeSerial: false))
+                if (!IsPairMatch(
+                        source,
+                        state.Row,
+                        options,
+                        ourOkpoNorm,
+                        includeSerial: false,
+                        precomputedSourceKey: sourceKey,
+                        precomputedCandidateKey: candidateKey,
+                        precomputedSourceOrgOkpoNorm: sourceOrgOkpoNorm))
                 {
                     continue;
                 }
@@ -883,21 +980,186 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         }
     }
 
-    private static List<TransferReceiveDto> GetCounterpartCandidates(
-        TransferReceiveDto source,
-        bool isSourceTransfer,
-        IReadOnlyDictionary<string, List<TransferReceiveDto>> opsByOrgOkpo)
+    /// <summary>
+    /// Индекс кандидатов для точного pairing: по ОКПО контрагента, направлению и ключу пары.
+    /// При включённой дате — дополнительно по дню (пара требует точного совпадения даты).
+    /// </summary>
+    private sealed class PairingCandidateIndex
     {
-        var counterpartOkpo = NormalizeNumber(source.ProviderOrRecieverOkpo);
-        if (counterpartOkpo.Length == 0
-            || !opsByOrgOkpo.TryGetValue(counterpartOkpo, out var ops))
+        private readonly Dictionary<string, OkpoDirectionBuckets> _byOkpo;
+
+        private PairingCandidateIndex(Dictionary<string, OkpoDirectionBuckets> byOkpo) =>
+            _byOkpo = byOkpo;
+
+        public static PairingCandidateIndex Build(
+            IReadOnlyDictionary<string, List<TransferReceiveDto>> opsByOrgOkpo,
+            TransferReceiveFormParams options)
         {
-            return [];
+            var byOkpo = new Dictionary<string, OkpoDirectionBuckets>(opsByOrgOkpo.Count, StringComparer.Ordinal);
+            foreach (var (okpo, ops) in opsByOrgOkpo)
+            {
+                var transfers = new DirectionBucket();
+                var receives = new DirectionBucket();
+                foreach (var op in ops)
+                {
+                    var bucket = op.IsTransfer ? transfers : receives;
+                    var keyWithSerial = BuildPairingKey(
+                        op, options, includeSerial: true, includeQuantity: options.CheckQuantity);
+                    bucket.AddWithSerial(op, keyWithSerial, options.CheckOperationDate);
+
+                    if (SerialNumbersAreEmpty(op))
+                    {
+                        var keyWithoutSerial = BuildPairingKey(
+                            op, options, includeSerial: false, includeQuantity: false);
+                        bucket.AddWithoutSerial(op, keyWithoutSerial, options.CheckOperationDate);
+                    }
+                }
+
+                transfers.SortAll();
+                receives.SortAll();
+                byOkpo[okpo] = new OkpoDirectionBuckets(transfers, receives);
+            }
+
+            return new PairingCandidateIndex(byOkpo);
         }
 
-        return ops
-            .Where(op => isSourceTransfer ? !op.IsTransfer : op.IsTransfer)
-            .ToList();
+        public IEnumerable<(TransferReceiveDto Row, string PairingKey)> LookupWithSerial(
+            TransferReceiveDto source,
+            bool isSourceTransfer,
+            string sourcePairingKey,
+            TransferReceiveFormParams options)
+        {
+            if (!TryGetDirection(source, isSourceTransfer, out var bucket))
+            {
+                return [];
+            }
+
+            return bucket.LookupWithSerial(source, sourcePairingKey, options.CheckOperationDate);
+        }
+
+        public IEnumerable<(TransferReceiveDto Row, string PairingKey)> LookupWithoutSerial(
+            TransferReceiveDto source,
+            bool isSourceTransfer,
+            string sourcePairingKey,
+            TransferReceiveFormParams options)
+        {
+            if (!TryGetDirection(source, isSourceTransfer, out var bucket))
+            {
+                return [];
+            }
+
+            return bucket.LookupWithoutSerial(source, sourcePairingKey, options.CheckOperationDate);
+        }
+
+        private bool TryGetDirection(
+            TransferReceiveDto source,
+            bool isSourceTransfer,
+            out DirectionBucket bucket)
+        {
+            var counterpartOkpo = NormalizeNumber(source.ProviderOrRecieverOkpo);
+            if (counterpartOkpo.Length == 0
+                || !_byOkpo.TryGetValue(counterpartOkpo, out var pools))
+            {
+                bucket = DirectionBucket.Empty;
+                return false;
+            }
+
+            // Передача ищет приём у контрагента и наоборот.
+            bucket = isSourceTransfer ? pools.Receives : pools.Transfers;
+            return true;
+        }
+
+        private sealed class OkpoDirectionBuckets(DirectionBucket transfers, DirectionBucket receives)
+        {
+            public DirectionBucket Transfers { get; } = transfers;
+            public DirectionBucket Receives { get; } = receives;
+        }
+
+        private sealed class DirectionBucket
+        {
+            public static DirectionBucket Empty { get; } = new();
+
+            private readonly Dictionary<string, List<(TransferReceiveDto Row, string PairingKey)>> _withSerial =
+                new(StringComparer.Ordinal);
+
+            private readonly Dictionary<string, List<(TransferReceiveDto Row, string PairingKey)>> _withoutSerial =
+                new(StringComparer.Ordinal);
+
+            public void AddWithSerial(TransferReceiveDto op, string pairingKey, bool indexByDate) =>
+                Add(_withSerial, op, pairingKey, indexByDate);
+
+            public void AddWithoutSerial(TransferReceiveDto op, string pairingKey, bool indexByDate) =>
+                Add(_withoutSerial, op, pairingKey, indexByDate);
+
+            public void SortAll()
+            {
+                foreach (var list in _withSerial.Values)
+                {
+                    list.Sort(static (a, b) => a.Row.Id.CompareTo(b.Row.Id));
+                }
+
+                foreach (var list in _withoutSerial.Values)
+                {
+                    list.Sort(static (a, b) => a.Row.Id.CompareTo(b.Row.Id));
+                }
+            }
+
+            public IEnumerable<(TransferReceiveDto Row, string PairingKey)> LookupWithSerial(
+                TransferReceiveDto source,
+                string sourcePairingKey,
+                bool filterByDate) =>
+                Lookup(_withSerial, source, sourcePairingKey, filterByDate);
+
+            public IEnumerable<(TransferReceiveDto Row, string PairingKey)> LookupWithoutSerial(
+                TransferReceiveDto source,
+                string sourcePairingKey,
+                bool filterByDate) =>
+                Lookup(_withoutSerial, source, sourcePairingKey, filterByDate);
+
+            private static void Add(
+                Dictionary<string, List<(TransferReceiveDto Row, string PairingKey)>> map,
+                TransferReceiveDto op,
+                string pairingKey,
+                bool indexByDate)
+            {
+                var lookupKey = MakeLookupKey(pairingKey, op.OpDate, indexByDate);
+                if (!map.TryGetValue(lookupKey, out var list))
+                {
+                    list = [];
+                    map[lookupKey] = list;
+                }
+
+                list.Add((op, pairingKey));
+            }
+
+            private static IEnumerable<(TransferReceiveDto Row, string PairingKey)> Lookup(
+                Dictionary<string, List<(TransferReceiveDto Row, string PairingKey)>> map,
+                TransferReceiveDto source,
+                string sourcePairingKey,
+                bool filterByDate)
+            {
+                var lookupKey = MakeLookupKey(sourcePairingKey, source.OpDate, filterByDate);
+                return map.TryGetValue(lookupKey, out var list) ? list : [];
+            }
+
+            /// <summary>
+            /// Ключ индекса: pairingKey, либо pairingKey + точный день / нормализованная непарсибельная дата.
+            /// </summary>
+            private static string MakeLookupKey(string pairingKey, string? opDate, bool indexByDate)
+            {
+                if (!indexByDate)
+                {
+                    return pairingKey;
+                }
+
+                if (DateOnly.TryParse(opDate, out var date))
+                {
+                    return string.Concat(pairingKey, "\0d:", date.DayNumber.ToString(CultureInfo.InvariantCulture));
+                }
+
+                return string.Concat(pairingKey, "\0u:", NormalizeDate(opDate));
+            }
+        }
     }
 
     private sealed class RemainingRowState(TransferReceiveDto row, int remainingQuantity)

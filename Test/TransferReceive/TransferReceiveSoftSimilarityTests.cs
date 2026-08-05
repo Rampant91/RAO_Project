@@ -214,6 +214,54 @@ public sealed class TransferReceiveSoftSimilarityTests
     }
 
     [Fact]
+    public void Mass_WithinTenPercent_IsExact_AndPairs()
+    {
+        var level = TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.Mass,
+            new TransferReceiveRow { Id = 1, OpCode = "21", Mass = "1.50", IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", Mass = "1.60", IsTransfer = false });
+        Assert.Equal(FieldMatchLevel.Exact, level);
+        Assert.True(TransferReceiveTestAccess.MassMatchesForTests("1.50", "1.60"));
+        Assert.False(TransferReceiveTestAccess.MassMatchesForTests("1.50", "2.00"));
+    }
+
+    [Fact]
+    public void Mass_OrderOfMagnitude_IsNear()
+    {
+        var level = TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.Mass,
+            new TransferReceiveRow { Id = 1, OpCode = "21", Mass = "1.5", IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", Mass = "15", IsTransfer = false });
+        Assert.Equal(FieldMatchLevel.Near, level);
+    }
+
+    [Fact]
+    public void Mass_KgVsTon_ThousandFold_IsNear()
+    {
+        var level = TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.Mass,
+            new TransferReceiveRow { Id = 1, OpCode = "21", Mass = "1.5", IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", Mass = "1500", IsTransfer = false });
+        Assert.Equal(FieldMatchLevel.Near, level);
+        Assert.False(TransferReceiveTestAccess.MassMatchesForTests("1.5", "1500"));
+    }
+
+    [Fact]
+    public void Mass_NonNumeric_FallsBackToNormalizedEquality()
+    {
+        var exact = TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.Mass,
+            new TransferReceiveRow { Id = 1, OpCode = "21", Mass = "н/д", IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", Mass = "н/д", IsTransfer = false });
+        var mismatch = TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.Mass,
+            new TransferReceiveRow { Id = 1, OpCode = "21", Mass = "н/д", IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", Mass = "1.5", IsTransfer = false });
+        Assert.Equal(FieldMatchLevel.Exact, exact);
+        Assert.NotEqual(FieldMatchLevel.Exact, mismatch);
+    }
+
+    [Fact]
     public void OperationCode_UnpairedTransferReceive_IsNear()
     {
         var level = TransferReceiveTestAccess.SimilarityLevelForTests(

@@ -18,21 +18,8 @@ public sealed class TransferReceiveFormEnableTests
     [Fact]
     public void Form11Disabled_SkipsUnpairedEvenWhenOpsPresent_Form13StillRuns()
     {
-        var form11Off = new TransferReceiveFormParams(
-            CheckOperationCode: false,
-            CheckOperationDate: false,
-            CheckPassportNumber: false,
-            CheckType: false,
-            CheckRadionuclids: false,
-            CheckFactoryNumber: false,
-            CheckQuantity: false,
-            CheckActivity: false,
-            CheckCreatorOkpo: false,
-            CheckCreationDate: false,
-            CheckProviderOrRecieverOkpo: false,
-            CheckPackNumber: false);
-
-        var pairing = new TransferReceiveParamsSet(form11Off, DefaultForm13Params());
+        var form11Off = DisabledFormParams();
+        var pairing = TransferReceiveParamsSet.Form11And13(form11Off, DefaultForm13Params());
 
         var our11 = new List<TransferReceiveRow>
         {
@@ -54,7 +41,7 @@ public sealed class TransferReceiveFormEnableTests
                 IsTransfer = true
             }
         };
-        var cp11 = new List<TransferReceiveRow>(); // нет пары → были бы непарные, если форма включена
+        var cp11 = new List<TransferReceiveRow>();
 
         var our13 = new List<TransferReceiveRow>
         {
@@ -78,17 +65,22 @@ public sealed class TransferReceiveFormEnableTests
         };
         var cp13 = new List<TransferReceiveRow>();
 
-        var (unpaired11, unpaired13) = TransferReceiveTestAccess.AnalyzeEnabledFormsUnpairedForTests(
-            OurOkpo, our11, our13, cp11, cp13, pairing);
+        var (unpaired11, unpaired12, unpaired13) = TransferReceiveTestAccess.AnalyzeEnabledFormsUnpairedForTests(
+            OurOkpo, our11, [], our13, cp11, [], cp13, pairing);
 
         Assert.Empty(unpaired11);
+        Assert.Empty(unpaired12);
         Assert.Equal([13], unpaired13);
     }
 
     [Fact]
-    public void Form11Enabled_WithSameOps_ReportsUnpaired()
+    public void Form12Disabled_SkipsUnpairedEvenWhenOpsPresent_Form11StillRuns()
     {
-        var pairing = new TransferReceiveParamsSet(new TransferReceiveFormParams(), DefaultForm13Params());
+        var pairing = new TransferReceiveParamsSet(
+            new TransferReceiveFormParams(),
+            DisabledFormParams(),
+            DefaultForm13Params());
+
         var our11 = new List<TransferReceiveRow>
         {
             new()
@@ -110,8 +102,97 @@ public sealed class TransferReceiveFormEnableTests
             }
         };
 
-        var (unpaired11, _) = TransferReceiveTestAccess.AnalyzeEnabledFormsUnpairedForTests(
-            OurOkpo, our11, [], [], [], pairing);
+        var our12 = new List<TransferReceiveRow>
+        {
+            new()
+            {
+                Id = 12,
+                OpCode = "21",
+                OpDate = OpDate,
+                PasNum = "P-12",
+                FacNum = "F-12",
+                Type = "Изделие",
+                PackType = "УКТ-1",
+                PackNumber = "N-1",
+                ProviderOrRecieverOkpo = CounterpartOkpo,
+                Mass = "1.5",
+                CreatorOkpo = "30000003",
+                CreationDate = OpDate,
+                Quantity = 1,
+                IsTransfer = true
+            }
+        };
+
+        var (unpaired11, unpaired12, _) = TransferReceiveTestAccess.AnalyzeEnabledFormsUnpairedForTests(
+            OurOkpo, our11, our12, [], [], [], [], pairing);
+
+        Assert.Equal([1], unpaired11);
+        Assert.Empty(unpaired12);
+    }
+
+    [Fact]
+    public void Form12Enabled_WithSameOps_ReportsUnpaired()
+    {
+        var pairing = new TransferReceiveParamsSet(
+            DisabledFormParams(),
+            DefaultForm12Params(),
+            DisabledFormParams());
+
+        var our12 = new List<TransferReceiveRow>
+        {
+            new()
+            {
+                Id = 12,
+                OpCode = "21",
+                OpDate = OpDate,
+                PasNum = "P-12",
+                FacNum = "F-12",
+                Type = "Изделие",
+                PackType = "УКТ-1",
+                PackNumber = "N-1",
+                ProviderOrRecieverOkpo = CounterpartOkpo,
+                Mass = "1.5",
+                CreatorOkpo = "30000003",
+                CreationDate = OpDate,
+                Quantity = 1,
+                IsTransfer = true
+            }
+        };
+
+        var (_, unpaired12, _) = TransferReceiveTestAccess.AnalyzeEnabledFormsUnpairedForTests(
+            OurOkpo, [], our12, [], [], [], [], pairing);
+
+        Assert.Equal([12], unpaired12);
+    }
+
+    [Fact]
+    public void Form11Enabled_WithSameOps_ReportsUnpaired()
+    {
+        var pairing = TransferReceiveParamsSet.Form11And13(
+            new TransferReceiveFormParams(), DefaultForm13Params());
+        var our11 = new List<TransferReceiveRow>
+        {
+            new()
+            {
+                Id = 1,
+                OpCode = "21",
+                OpDate = OpDate,
+                PasNum = "P-1",
+                FacNum = "F-1",
+                Type = "T",
+                Radionuclids = "Cs-137",
+                PackNumber = "U",
+                ProviderOrRecieverOkpo = CounterpartOkpo,
+                Activity = "1e6",
+                CreatorOkpo = "30000003",
+                CreationDate = OpDate,
+                Quantity = 1,
+                IsTransfer = true
+            }
+        };
+
+        var (unpaired11, _, _) = TransferReceiveTestAccess.AnalyzeEnabledFormsUnpairedForTests(
+            OurOkpo, our11, [], [], [], [], [], pairing);
 
         Assert.Equal([1], unpaired11);
     }

@@ -24,12 +24,36 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     private static readonly Color ClosestSectionFill = Color.FromArgb(255, 242, 204);
     private static readonly Color SeparatorFill = Color.FromArgb(89, 89, 89);
 
-    private const int SourceColCount = 18;
-    private const int SeparatorCol = 19;
-    /// <summary>Индекс схожести closest (0–100%), между разделителем и блоком полей.</summary>
-    private const int ConfidenceCol = 20;
-    private const int ClosestStartCol = 21;
-    private const int TotalColCount = 38;
+    /// <summary>
+    /// Число колонок блока полей (левый/правый). Зависит от формы:
+    /// 1.1/1.3 — 18, 1.2 — 17 (тип УКТ только на 1.2, где участвует в сверке).
+    /// </summary>
+    private static int SourceColCountFor(TransferReceiveSheetLayout layout) =>
+        layout == TransferReceiveSheetLayout.Form12 ? 17 : 18;
+
+    private static int SeparatorColFor(TransferReceiveSheetLayout layout) =>
+        SourceColCountFor(layout) + 1;
+
+    private static int ConfidenceColFor(TransferReceiveSheetLayout layout) =>
+        SourceColCountFor(layout) + 2;
+
+    private static int ClosestStartColFor(TransferReceiveSheetLayout layout) =>
+        SourceColCountFor(layout) + 3;
+
+    private static int TotalColCountFor(TransferReceiveSheetLayout layout) =>
+        ClosestStartColFor(layout) + SourceColCountFor(layout) - 1;
+
+    /// <summary>Совместимость тестов: раскладка формы 1.1 (18 колонок в блоке данных).</summary>
+    private static int SourceColCount => SourceColCountFor(TransferReceiveSheetLayout.Form11);
+
+    private static int SeparatorCol => SeparatorColFor(TransferReceiveSheetLayout.Form11);
+
+    private static int ConfidenceCol => ConfidenceColFor(TransferReceiveSheetLayout.Form11);
+
+    private static int ClosestStartCol => ClosestStartColFor(TransferReceiveSheetLayout.Form11);
+
+    private static int TotalColCount => TotalColCountFor(TransferReceiveSheetLayout.Form11);
+
     private const int HeaderRows = 2;
     private const int DataStartRow = 3;
 
@@ -133,12 +157,13 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Title("Проверка операций приёма-передачи — как читать отчёт");
         Blank();
 
-        Section("Структура листов «Форма 1.1» и «Форма 1.3»");
-        Body("Слева — непарная операция выбранной организации. Справа после тёмной разделительной колонки — наиболее похожая операция у контрагента (жёлтый заголовок «Ближайшее совпадение у контрагента»). Формы сверяются только сами с собой (1.1 с 1.1, 1.3 с 1.3).");
+        Section("Структура листов «Форма 1.1», «Форма 1.2» и «Форма 1.3»");
+        Body("Слева — непарная операция выбранной организации. Справа после тёмной разделительной колонки — наиболее похожая операция у контрагента (жёлтый заголовок «Ближайшее совпадение у контрагента»).");
         Bullet("Голубой заголовок слева — исходная (непарная) операция.");
         Bullet("Жёлтый заголовок справа — наиболее похожая операция у контрагента.");
         Bullet("Если в параметрах у формы сняты все поля («Выбрать все» = выкл.) — форма не загружается, не сопоставляется и не заполняется в Excel.");
-        Bullet("Форма 1.3: вместо количества — агрегатное состояние (1/2/3); количество всегда считается равным 1.");
+        Bullet("Форма 1.2: наименование изделия, тип УКТ, масса обеднённого урана (кг); количество всегда считается равным 1.");
+        Bullet("Форма 1.3: количество всегда считается равным 1.");
         Blank();
 
         Section("Что такое «ближайшее совпадение»");
@@ -172,11 +197,13 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Blank();
 
         Section("Параметры сравнения");
-        Body("Перед выгрузкой выбираются поля сопоставления отдельно для форм 1.1 и 1.3. Рег.№, ОКПО организации, наименование, период и № п/п всегда только для наглядности и в сравнении не участвуют.");
-        Bullet("Активность: допуск ±10% для пары и зелёной подсветки; отличие примерно на порядок обычно жёлтое.");
+        Body("Перед выгрузкой выбираются поля сопоставления отдельно для форм 1.1, 1.2 и 1.3.");
+        Bullet("Активность (1.1/1.3): допуск ±10% для пары и зелёной подсветки; отличие примерно на порядок обычно жёлтое.");
+        Bullet("Масса (1.2): тот же допуск ±10%; путаница кг и тонн (ровно в 1000 раз) — жёлтый.");
         Bullet("Дата операции: для пары нужна одна и та же дата. Окно ±15 дней только ограничивает поиск похожих строк; отличие в несколько дней справа — жёлтый.");
         Bullet("Код операции: для пары нужны соответствующие коды приёма и передачи (например, 21 и 31). Непарный код из того же набора справа — жёлтый.");
-        Bullet("Радионуклиды: порядок в списке не важен; если нуклида нет у одной из сторон — красный.");
+        Bullet("Радионуклиды (1.1/1.3): порядок в списке не важен; если нуклида нет у одной из сторон — красный.");
+        Bullet("Тип УКТ (1.2): сравнивается как обычное текстовое поле, но сильнее влияет на «Схожесть, %», чем большинство других полей.");
         Bullet("Агрегатное состояние (форма 1.3): значения 1, 2 или 3 должны совпасть.");
         Blank();
 
@@ -207,6 +234,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         {
             SetupForm11Headers();
         }
+        else if (formNum == "1.2")
+        {
+            SetupForm12Headers();
+        }
         else if (formNum == "1.3")
         {
             SetupForm13Headers();
@@ -220,7 +251,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     }
 
     /// <summary>
-    /// Дописывает непарные строки одной организации на листы 1.1 и 1.3.
+    /// Дописывает непарные строки одной организации на листы включённых форм.
     /// CurrentRow берётся через <see cref="GetNextDataRow"/> — в режиме «вся БД»
     /// организации не перезаписывают друг друга.
     /// <paramref name="orgIndex"/>/<paramref name="orgCount"/> &gt; 0 — префикс «Организация i из N» в прогрессе
@@ -301,18 +332,23 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             closestMatches = new Dictionary<int, ClosestMatchResult>();
         }
 
+        var layout = descriptor.Layout;
+        var sepCol = SeparatorColFor(layout);
+        var confCol = ConfidenceColFor(layout);
+        var closestStart = ClosestStartColFor(layout);
+
         foreach (var row in OrderForExport(unpaired))
         {
             WriteOperationBlock(row, startCol: 1, applyHighlight: true, isSource: true,
-                closestMatches: closestMatches, writeAggregateState: descriptor.UsesAggregateStateColumn);
-            Worksheet.Cells[CurrentRow, SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
+                closestMatches: closestMatches, layout: layout);
+            Worksheet.Cells[CurrentRow, sepCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
 
             if (closestMatches.TryGetValue(row.Id, out var closest))
             {
-                WriteConfidenceCell(closest.ConfidencePercent);
-                WriteOperationBlock(closest.Candidate, startCol: ClosestStartCol, applyHighlight: true, isSource: false,
+                WriteConfidenceCell(confCol, closest.ConfidencePercent);
+                WriteOperationBlock(closest.Candidate, startCol: closestStart, applyHighlight: true, isSource: false,
                     closestMatches: closestMatches,
-                    writeAggregateState: descriptor.UsesAggregateStateColumn,
+                    layout: layout,
                     closest: closest);
             }
 
@@ -326,44 +362,55 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     {
         foreach (var descriptor in ImplementedFormDescriptors)
         {
-            FinalizeFormSheetTable(excelPackage.Workbook.Worksheets[descriptor.SheetName]);
+            FinalizeFormSheetTable(excelPackage.Workbook.Worksheets[descriptor.SheetName], descriptor.Layout);
         }
     }
 
-    private static void FinalizeFormSheetTable(ExcelWorksheet sheet)
+    private static void FinalizeFormSheetTable(ExcelWorksheet sheet, TransferReceiveSheetLayout layout)
     {
         var lastRow = sheet.Dimension?.End.Row ?? HeaderRows;
+        var totalCols = TotalColCountFor(layout);
+        var sepCol = SeparatorColFor(layout);
         if (lastRow >= DataStartRow)
         {
-            sheet.Cells[HeaderRows, 1, HeaderRows, TotalColCount].AutoFilter = true;
-            ApplyThinGridBorders(sheet, DataStartRow, lastRow);
+            sheet.Cells[HeaderRows, 1, HeaderRows, totalCols].AutoFilter = true;
+            ApplyThinGridBorders(sheet, DataStartRow, lastRow, totalCols, sepCol);
         }
     }
 
-    /// <summary>Тонкая сетка по ячейкам данных (без затирания заливки подсветки).</summary>
-    private static void ApplyThinGridBorders(ExcelWorksheet sheet, int firstRow, int lastRow)
+    /// <summary>
+    /// Тонкая сетка по диапазонам слева/справа от разделителя (без поячеечного цикла).
+    /// </summary>
+    private static void ApplyThinGridBorders(
+        ExcelWorksheet sheet,
+        int firstRow,
+        int lastRow,
+        int totalColCount,
+        int separatorCol)
     {
         var borderColor = Color.FromArgb(180, 180, 180);
-        for (var row = firstRow; row <= lastRow; row++)
-        {
-            for (var col = 1; col <= TotalColCount; col++)
-            {
-                if (col == SeparatorCol)
-                {
-                    continue;
-                }
 
-                var border = sheet.Cells[row, col].Style.Border;
-                border.Top.Style = ExcelBorderStyle.Thin;
-                border.Bottom.Style = ExcelBorderStyle.Thin;
-                border.Left.Style = ExcelBorderStyle.Thin;
-                border.Right.Style = ExcelBorderStyle.Thin;
-                border.Top.Color.SetColor(borderColor);
-                border.Bottom.Color.SetColor(borderColor);
-                border.Left.Color.SetColor(borderColor);
-                border.Right.Color.SetColor(borderColor);
+        void ApplyBlock(int fromCol, int toCol)
+        {
+            if (toCol < fromCol || lastRow < firstRow)
+            {
+                return;
             }
+
+            var range = sheet.Cells[firstRow, fromCol, lastRow, toCol];
+            var border = range.Style.Border;
+            border.Top.Style = ExcelBorderStyle.Thin;
+            border.Bottom.Style = ExcelBorderStyle.Thin;
+            border.Left.Style = ExcelBorderStyle.Thin;
+            border.Right.Style = ExcelBorderStyle.Thin;
+            border.Top.Color.SetColor(borderColor);
+            border.Bottom.Color.SetColor(borderColor);
+            border.Left.Color.SetColor(borderColor);
+            border.Right.Color.SetColor(borderColor);
         }
+
+        ApplyBlock(1, separatorCol - 1);
+        ApplyBlock(separatorCol + 1, totalColCount);
     }
 
     #endregion
@@ -372,59 +419,69 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
     private void SetupForm11Headers()
     {
-        SetupSharedFormHeaders(quantityOrAggregateHeader: "Количество, шт");
+        SetupSharedFormHeaders(TransferReceiveSheetLayout.Form11);
+    }
+
+    private void SetupForm12Headers()
+    {
+        SetupSharedFormHeaders(TransferReceiveSheetLayout.Form12);
     }
 
     private void SetupForm13Headers()
     {
-        SetupSharedFormHeaders(quantityOrAggregateHeader: "Агрегатное состояние");
+        SetupSharedFormHeaders(TransferReceiveSheetLayout.Form13);
     }
 
-    private void SetupSharedFormHeaders(string quantityOrAggregateHeader)
+    private void SetupSharedFormHeaders(TransferReceiveSheetLayout layout)
     {
         var sheet = Worksheet;
+        var sourceCols = SourceColCountFor(layout);
+        var sepCol = SeparatorColFor(layout);
+        var confCol = ConfidenceColFor(layout);
+        var closestStart = ClosestStartColFor(layout);
+        var totalCols = TotalColCountFor(layout);
 
-        sheet.Cells[1, 1, 1, SourceColCount].Merge = true;
+        sheet.Cells[1, 1, 1, sourceCols].Merge = true;
         sheet.Cells[1, 1].Value = "Непарная операция выбранной организации";
         sheet.Cells[1, 1].Style.Font.Bold = true;
         sheet.Cells[1, 1].Style.Font.Color.SetColor(Color.FromArgb(30, 30, 30));
-        sheet.Cells[1, 1, 1, SourceColCount].Style.Fill.SetBackground(SourceSectionFill, ExcelFillStyle.Solid);
+        sheet.Cells[1, 1, 1, sourceCols].Style.Fill.SetBackground(SourceSectionFill, ExcelFillStyle.Solid);
         sheet.Cells[1, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
-        sheet.Cells[1, SeparatorCol].Value = string.Empty;
-        sheet.Column(SeparatorCol).Width = 2.5;
-        sheet.Cells[1, SeparatorCol, 2, SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
+        sheet.Cells[1, sepCol].Value = string.Empty;
+        sheet.Column(sepCol).Width = 2.5;
+        sheet.Cells[1, sepCol, 2, sepCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
 
-        sheet.Cells[1, ConfidenceCol].Value = string.Empty;
-        sheet.Cells[1, ConfidenceCol].Style.Fill.SetBackground(ClosestSectionFill, ExcelFillStyle.Solid);
+        sheet.Cells[1, confCol].Value = string.Empty;
+        sheet.Cells[1, confCol].Style.Fill.SetBackground(ClosestSectionFill, ExcelFillStyle.Solid);
 
-        sheet.Cells[1, ClosestStartCol, 1, TotalColCount].Merge = true;
-        sheet.Cells[1, ClosestStartCol].Value = "Ближайшее совпадение у контрагента";
-        sheet.Cells[1, ClosestStartCol].Style.Font.Bold = true;
-        sheet.Cells[1, ClosestStartCol, 1, TotalColCount].Style.Fill.SetBackground(ClosestSectionFill, ExcelFillStyle.Solid);
-        sheet.Cells[1, ClosestStartCol].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        sheet.Cells[1, closestStart, 1, totalCols].Merge = true;
+        sheet.Cells[1, closestStart].Value = "Ближайшее совпадение у контрагента";
+        sheet.Cells[1, closestStart].Style.Font.Bold = true;
+        sheet.Cells[1, closestStart, 1, totalCols].Style.Fill.SetBackground(ClosestSectionFill, ExcelFillStyle.Solid);
+        sheet.Cells[1, closestStart].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
-        WriteFieldHeaders(2, startCol: 1, quantityOrAggregateHeader);
-        WriteFieldHeaders(2, startCol: ClosestStartCol, quantityOrAggregateHeader);
+        WriteFieldHeaders(2, startCol: 1, layout);
+        WriteFieldHeaders(2, startCol: closestStart, layout);
 
-        sheet.Cells[2, SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
-        sheet.Cells[2, ConfidenceCol].Value = "Схожесть, %";
-        sheet.Cells[2, ConfidenceCol].Style.Font.Bold = true;
-        sheet.Cells[2, ConfidenceCol].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
-        sheet.Cells[2, ConfidenceCol].Style.WrapText = true;
+        sheet.Cells[2, sepCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
+        sheet.Cells[2, confCol].Value = "Схожесть, %";
+        sheet.Cells[2, confCol].Style.Font.Bold = true;
+        sheet.Cells[2, confCol].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        sheet.Cells[2, confCol].Style.WrapText = true;
 
-        ApplyForm11FieldHeaderStyle(sheet, 1, SourceColCount);
-        ApplyForm11FieldHeaderStyle(sheet, ConfidenceCol, ConfidenceCol);
-        ApplyForm11FieldHeaderStyle(sheet, ClosestStartCol, TotalColCount);
+        ApplyForm11FieldHeaderStyle(sheet, 1, sourceCols);
+        ApplyForm11FieldHeaderStyle(sheet, confCol, confCol);
+        ApplyForm11FieldHeaderStyle(sheet, closestStart, totalCols);
 
-        sheet.Columns[SeparatorCol].Style.Border.Left.Style = ExcelBorderStyle.Medium;
-        sheet.Columns[SeparatorCol].Style.Border.Right.Style = ExcelBorderStyle.Medium;
-        sheet.Columns[SeparatorCol].Style.Border.Left.Color.SetColor(SeparatorFill);
-        sheet.Columns[SeparatorCol].Style.Border.Right.Color.SetColor(SeparatorFill);
+        sheet.Columns[sepCol].Style.Border.Left.Style = ExcelBorderStyle.Medium;
+        sheet.Columns[sepCol].Style.Border.Right.Style = ExcelBorderStyle.Medium;
+        sheet.Columns[sepCol].Style.Border.Left.Color.SetColor(SeparatorFill);
+        sheet.Columns[sepCol].Style.Border.Right.Color.SetColor(SeparatorFill);
 
         sheet.Row(1).Height = 22;
         sheet.Row(2).Height = ExcelHeaderRowMinHeight;
-        ApplyForm11ColumnWidths(sheet);
+        ApplyFormColumnWidths(sheet, layout);
         sheet.View.FreezePanes(DataStartRow, 1);
     }
 
@@ -457,74 +514,139 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
     /// <summary>
     /// Ширины колонок в «пикселях» Excel (перевод в единицы EPPlus: (px − 5) / 7).
+    /// Порядок совпадает с заголовками формы (без пустых слотов).
     /// </summary>
-    private static void ApplyForm11ColumnWidths(ExcelWorksheet sheet)
+    private static void ApplyFormColumnWidths(ExcelWorksheet sheet, TransferReceiveSheetLayout layout)
     {
-        // Рег.№, ОКПО, наим., нач.пер., кон.пер., №п/п, код, дата, паспорт, тип,
-        // рад., зав.№, кол-во, акт., ОКПО изг., дата вып., ОКПО пост/пол., УКТ
-        int[] widthsPx =
-        [
-            70,
-            90,
-            210, // сокращённое наименование ~в 1.5 раза шире типичного autofit заголовка
-            110,
-            110,
-            50,
-            50,
-            110,
-            140,
-            80,
-            130,
-            120,
-            80,
-            120,
-            110,
-            110,
-            130,
-            100
-        ];
+        int[] widthsPx = layout switch
+        {
+            TransferReceiveSheetLayout.Form12 =>
+            [
+                70, 90, 210, 110, 110, 50, 50, 110,
+                140, // паспорт
+                120, // наименование
+                120, // зав.№
+                130, // масса
+                110, // ОКПО изг.
+                110, // дата вып.
+                130, // ОКПО пост/пол.
+                100, // тип УКТ
+                100  // номер УКТ
+            ],
+            TransferReceiveSheetLayout.Form13 =>
+            [
+                70, 90, 210, 110, 110, 50, 50, 110,
+                140, 80, 130, 120,
+                120, // активность
+                110, // ОКПО изг.
+                110, // дата вып.
+                90,  // агр. состояние (после даты выпуска, как в форме)
+                130, // ОКПО пост/пол.
+                100  // номер УКТ
+            ],
+            _ => // Form11
+            [
+                70, 90, 210, 110, 110, 50, 50, 110,
+                140, 80, 130, 120, 80, 120,
+                110, 110, 130,
+                100  // номер УКТ (тип УКТ не выгружаем — не участвует в сверке)
+            ]
+        };
 
+        var closestStart = ClosestStartColFor(layout);
         for (var i = 0; i < widthsPx.Length; i++)
         {
             var width = ExcelWidthFromPixels(widthsPx[i]);
             sheet.Column(1 + i).Width = width;
-            sheet.Column(ClosestStartCol + i).Width = width;
+            sheet.Column(closestStart + i).Width = width;
         }
 
-        sheet.Column(SeparatorCol).Width = 2.5;
-        sheet.Column(ConfidenceCol).Width = ExcelWidthFromPixels(70);
+        sheet.Column(SeparatorColFor(layout)).Width = 2.5;
+        sheet.Column(ConfidenceColFor(layout)).Width = ExcelWidthFromPixels(70);
     }
 
     private static double ExcelWidthFromPixels(int pixels) =>
         Math.Max(1.0, (pixels - 5) / 7.0);
 
-    private void WriteFieldHeaders(int row, int startCol, string quantityOrAggregateHeader = "Количество, шт")
+    private void WriteFieldHeaders(int row, int startCol, TransferReceiveSheetLayout layout) =>
+        WriteFieldHeadersToSheet(Worksheet, row, startCol, layout);
+
+    private static void WriteFieldHeadersToSheet(
+        ExcelWorksheet sheet,
+        int row,
+        int startCol,
+        TransferReceiveSheetLayout layout)
     {
-        string[] headers =
-        [
-            "Рег.№",
-            "ОКПО",
-            "Сокращенное наименование",
-            "Дата начала периода",
-            "Дата конца периода",
-            "№ п/п",
-            "Код",
-            "Дата",
-            "Номер паспорта (сертификата)",
-            "Тип",
-            "Радионуклиды",
-            "Заводской номер",
-            quantityOrAggregateHeader,
-            "Суммарная активность",
-            "Код ОКПО изготовителя",
-            "Дата выпуска",
-            "ОКПО поставщика или получателя",
-            "Номер УКТ"
-        ];
+        // Порядок выгружаемых колонок = порядок в форме (пропуская невыгружаемые поля).
+        string[] headers = layout switch
+        {
+            TransferReceiveSheetLayout.Form12 =>
+            [
+                "Рег.№",
+                "ОКПО",
+                "Сокращенное наименование",
+                "Дата начала периода",
+                "Дата конца периода",
+                "№ п/п",
+                "Код",
+                "Дата",
+                "Номер паспорта (сертификата)",
+                "Наименование",
+                "Заводской номер",
+                "Масса обеднённого урана, кг",
+                "Код ОКПО изготовителя",
+                "Дата выпуска",
+                "ОКПО поставщика или получателя",
+                "Тип УКТ",
+                "Номер УКТ"
+            ],
+            TransferReceiveSheetLayout.Form13 =>
+            [
+                "Рег.№",
+                "ОКПО",
+                "Сокращенное наименование",
+                "Дата начала периода",
+                "Дата конца периода",
+                "№ п/п",
+                "Код",
+                "Дата",
+                "Номер паспорта (сертификата)",
+                "Тип",
+                "Радионуклиды",
+                "Заводской номер",
+                "Суммарная активность",
+                "Код ОКПО изготовителя",
+                "Дата выпуска",
+                "Агрегатное состояние",
+                "ОКПО поставщика или получателя",
+                "Номер УКТ"
+            ],
+            _ =>
+            [
+                "Рег.№",
+                "ОКПО",
+                "Сокращенное наименование",
+                "Дата начала периода",
+                "Дата конца периода",
+                "№ п/п",
+                "Код",
+                "Дата",
+                "Номер паспорта (сертификата)",
+                "Тип",
+                "Радионуклиды",
+                "Заводской номер",
+                "Количество, шт",
+                "Суммарная активность",
+                "Код ОКПО изготовителя",
+                "Дата выпуска",
+                "ОКПО поставщика или получателя",
+                "Номер УКТ"
+            ]
+        };
 
         for (var i = 0; i < headers.Length; i++)
         {
-            Worksheet.Cells[row, startCol + i].Value = headers[i];
+            sheet.Cells[row, startCol + i].Value = headers[i];
         }
     }
 
@@ -532,13 +654,15 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
     #region Write form rows
 
-    private void WriteConfidenceCell(int confidencePercent)
+    private void WriteConfidenceCell(int confidenceCol, int confidencePercent)
     {
-        var cell = Worksheet.Cells[CurrentRow, ConfidenceCol];
+        var cell = Worksheet.Cells[CurrentRow, confidenceCol];
         cell.Value = confidencePercent;
         cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
         cell.Style.Font.Bold = true;
-        cell.Style.Fill.SetBackground(ConfidenceFill(confidencePercent), ExcelFillStyle.Solid);
+        cell.Style.Fill.SetBackground(
+            ConfidenceFill(confidencePercent),
+            ExcelFillStyle.Solid);
     }
 
     private static Color ConfidenceFill(int percent) =>
@@ -554,7 +678,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         bool applyHighlight,
         bool isSource,
         System.Collections.Generic.Dictionary<int, ClosestMatchResult> closestMatches,
-        bool writeAggregateState,
+        TransferReceiveSheetLayout layout,
         ClosestMatchResult? closest = null)
     {
         void WriteDate(int col, string? value) =>
@@ -570,23 +694,45 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.OpCode);
         WriteDate(c++, op.OpDate);
         Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PasNum);
-        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Type);
-        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
-        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.FacNum);
-        if (writeAggregateState)
+
+        if (layout == TransferReceiveSheetLayout.Form12)
         {
+            // Форма 1.2: Наименование → зав.№ → масса → … → тип УКТ → номер УКТ (без пустых колонок).
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Type);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.FacNum);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Mass);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.CreatorOkpo);
+            WriteDate(c++, op.CreationDate);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackType);
+            Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.PackNumber);
+        }
+        else if (layout == TransferReceiveSheetLayout.Form13)
+        {
+            // Форма 1.3: … зав.№ → акт. → изг. → дата вып. → агр. → пост/пол. → номер УКТ.
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Type);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.FacNum);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Activity);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.CreatorOkpo);
+            WriteDate(c++, op.CreationDate);
             Worksheet.Cells[CurrentRow, c++].Value = op.AggregateState is null ? "-" : op.AggregateState;
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
+            Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.PackNumber);
         }
         else
         {
+            // Форма 1.1: … зав.№ → кол-во → акт. → изг. → дата вып. → пост/пол. → номер УКТ.
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Type);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.FacNum);
             Worksheet.Cells[CurrentRow, c++].Value = op.Quantity is null ? "-" : op.Quantity;
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Activity);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.CreatorOkpo);
+            WriteDate(c++, op.CreationDate);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
+            Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.PackNumber);
         }
-
-        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Activity);
-        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.CreatorOkpo);
-        WriteDate(c++, op.CreationDate);
-        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
-        Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.PackNumber);
 
         if (!applyHighlight)
         {
@@ -606,7 +752,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
         foreach (var (field, level) in highlightSource.FieldLevels)
         {
-            if (GetComparableColumnOffset(field) is int offset)
+            if (GetComparableColumnOffset(field, layout) is int offset)
             {
                 Worksheet.Cells[CurrentRow, startCol + offset].Style.Fill.SetBackground(
                     FillForMatchLevel(level),
@@ -623,24 +769,62 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             _ => PairingFieldMismatchFill
         };
 
-    /// <summary>Смещение колонки сравниваемого поля внутри блока из 18 колонок (0-based index from start of block).</summary>
-    private static int? GetComparableColumnOffset(TransferReceiveField field) =>
-        field switch
+    /// <summary>
+    /// Смещение колонки сравниваемого поля внутри блока (0-based).
+    /// Совпадает с порядком колонок формы / WriteOperationBlock.
+    /// </summary>
+    private static int? GetComparableColumnOffset(
+        TransferReceiveField field,
+        TransferReceiveSheetLayout layout = TransferReceiveSheetLayout.Form11) =>
+        layout switch
         {
-            TransferReceiveField.OperationCode => 6,
-            TransferReceiveField.OperationDate => 7,
-            TransferReceiveField.PassportNumber => 8,
-            TransferReceiveField.Type => 9,
-            TransferReceiveField.Radionuclids => 10,
-            TransferReceiveField.FactoryNumber => 11,
-            TransferReceiveField.Quantity => 12,
-            TransferReceiveField.AggregateState => 12,
-            TransferReceiveField.Activity => 13,
-            TransferReceiveField.CreatorOkpo => 14,
-            TransferReceiveField.CreationDate => 15,
-            TransferReceiveField.ProviderOrRecieverOkpo => 16,
-            TransferReceiveField.PackNumber => 17,
-            _ => null
+            TransferReceiveSheetLayout.Form12 => field switch
+            {
+                TransferReceiveField.OperationCode => 6,
+                TransferReceiveField.OperationDate => 7,
+                TransferReceiveField.PassportNumber => 8,
+                TransferReceiveField.Type => 9,
+                TransferReceiveField.FactoryNumber => 10,
+                TransferReceiveField.Mass => 11,
+                TransferReceiveField.CreatorOkpo => 12,
+                TransferReceiveField.CreationDate => 13,
+                TransferReceiveField.ProviderOrRecieverOkpo => 14,
+                TransferReceiveField.PackType => 15,
+                TransferReceiveField.PackNumber => 16,
+                _ => null
+            },
+            TransferReceiveSheetLayout.Form13 => field switch
+            {
+                TransferReceiveField.OperationCode => 6,
+                TransferReceiveField.OperationDate => 7,
+                TransferReceiveField.PassportNumber => 8,
+                TransferReceiveField.Type => 9,
+                TransferReceiveField.Radionuclids => 10,
+                TransferReceiveField.FactoryNumber => 11,
+                TransferReceiveField.Activity => 12,
+                TransferReceiveField.CreatorOkpo => 13,
+                TransferReceiveField.CreationDate => 14,
+                TransferReceiveField.AggregateState => 15,
+                TransferReceiveField.ProviderOrRecieverOkpo => 16,
+                TransferReceiveField.PackNumber => 17,
+                _ => null
+            },
+            _ => field switch
+            {
+                TransferReceiveField.OperationCode => 6,
+                TransferReceiveField.OperationDate => 7,
+                TransferReceiveField.PassportNumber => 8,
+                TransferReceiveField.Type => 9,
+                TransferReceiveField.Radionuclids => 10,
+                TransferReceiveField.FactoryNumber => 11,
+                TransferReceiveField.Quantity => 12,
+                TransferReceiveField.Activity => 13,
+                TransferReceiveField.CreatorOkpo => 14,
+                TransferReceiveField.CreationDate => 15,
+                TransferReceiveField.ProviderOrRecieverOkpo => 16,
+                TransferReceiveField.PackNumber => 17,
+                _ => null
+            }
         };
 
     #endregion

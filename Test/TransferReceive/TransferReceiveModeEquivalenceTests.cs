@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
+using Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
 using Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.Testing;
 using Xunit;
+using static Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
 
 namespace Test.TransferReceive;
 
 /// <summary>
-/// Equivalence org ↔ All: то же ядро <c>AnalyzeForm11ForOrganization</c>;
+/// Equivalence org ↔ All: то же ядро <c>AnalyzeFormForOrganization</c>;
 /// org передаёт пул контрагентов, All — полный merged-пул (свои + чужие, дедуп по Id).
 /// Полное покрытие эталонов — в <see cref="TransferReceiveScenarioTests"/>.
 /// </summary>
@@ -69,6 +71,28 @@ public class TransferReceiveModeEquivalenceTests
             orgStyle.UnpairedIds,
             shared.UnpairedIds,
             $"{name}: shared pool ↔ org Analyze");
+    }
+
+    /// <summary>
+    /// Shared pool + заранее построенные индексы (как All после оптимизации) ≡ обычный Analyze.
+    /// </summary>
+    [Theory]
+    [MemberData(nameof(TransferReceiveTestCases.ClosestMatchOnly), MemberType = typeof(TransferReceiveTestCases))]
+    public void SharedIndexes_EqualsOrgAnalyze_Closest(string name, TransferReceiveTestCase testCase)
+    {
+        Assert.Equal(name, testCase.Name);
+        var orgStyle = TransferReceiveScenarioRunner.RunClosestMatches(testCase);
+        var shared = TransferReceiveTestAccess.RunClosestMatchesWithSharedIndexes(testCase);
+        TransferReceiveAssertions.EqualClosestMatches(testCase, orgStyle);
+        TransferReceiveAssertions.EqualClosestMatches(testCase, shared);
+        Assert.Equal(
+            orgStyle.Closest.Keys.OrderBy(id => id),
+            shared.Closest.Keys.OrderBy(id => id));
+        foreach (var id in orgStyle.Closest.Keys)
+        {
+            Assert.Equal(orgStyle.ConfidencePercent[id], shared.ConfidencePercent[id]);
+            Assert.Equal(orgStyle.CandidateIds[id], shared.CandidateIds[id]);
+        }
     }
 
     /// <summary>

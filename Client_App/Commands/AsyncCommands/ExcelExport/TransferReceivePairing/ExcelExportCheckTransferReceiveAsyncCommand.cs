@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
+using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
@@ -18,7 +19,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
 
 /// <summary>
 /// Выгрузка в .xlsx непарных операций приёма/передачи (формы 1.1–1.8).
-/// Реализована сверка для форм 1.1 и 1.3: выбранная организация или вся БД.
+/// Реализована сверка для форм 1.1, 1.2 и 1.3: выбранная организация или вся БД.
 /// </summary>
 public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBaseAllAsyncCommand
 {
@@ -33,10 +34,15 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
 
     /// <summary>
     /// Размер пакета при загрузке операций контрагентов (org-режим).
-    /// Меньше лимита Firebird IN — чтобы прогрессбар двигался; 50 — компромисс скорость/плавность.
-    /// Whole-DB bulk грузит формы целиком (один scan), без этого чанка.
+    /// Меньше лимита Firebird IN — чтобы прогрессбар двигался чаще (сейчас 20).
     /// </summary>
     private const int CounterpartOpsLoadChunkSize = 20;
+
+    /// <summary>
+    /// Размер страницы (строк формы) при whole-DB загрузке ops keyset-пагинацией по Id.
+    /// Без предварительного Distinct по всей таблице — прогресс после каждой страницы.
+    /// </summary>
+    private const int WholeDbOpsPageSize = 2000;
 
     private static readonly HashSet<string> TransferCodesForm11To14 = new(StringComparer.Ordinal)
     {
@@ -157,36 +163,60 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
             return null;
         }
 
+        return MapParamsFromDialogVm(dialog.Vm);
+    }
+
+    /// <summary>
+    /// Маппинг VM диалога → набор параметров (без ShowDialog). Для unit-тестов и Ask*.
+    /// </summary>
+    internal static TransferReceiveParamsSet MapParamsFromDialogVm(Client_App.ViewModels.Messages.GetTransferReceiveParamsVM vm)
+    {
         var form11 = new TransferReceiveFormParams(
-            dialog.Vm.CheckOperationCode,
-            dialog.Vm.CheckOperationDate,
-            dialog.Vm.CheckPassportNumber,
-            dialog.Vm.CheckType,
-            dialog.Vm.CheckRadionuclids,
-            dialog.Vm.CheckFactoryNumber,
-            dialog.Vm.CheckQuantity,
-            dialog.Vm.CheckActivity,
-            dialog.Vm.CheckCreatorOkpo,
-            dialog.Vm.CheckCreationDate,
-            dialog.Vm.CheckProviderOrRecieverOkpo,
-            dialog.Vm.CheckPackNumber);
+            CheckOperationCode: vm.CheckOperationCode,
+            CheckOperationDate: vm.CheckOperationDate,
+            CheckPassportNumber: vm.CheckPassportNumber,
+            CheckType: vm.CheckType,
+            CheckRadionuclids: vm.CheckRadionuclids,
+            CheckFactoryNumber: vm.CheckFactoryNumber,
+            CheckQuantity: vm.CheckQuantity,
+            CheckActivity: vm.CheckActivity,
+            CheckCreatorOkpo: vm.CheckCreatorOkpo,
+            CheckCreationDate: vm.CheckCreationDate,
+            CheckProviderOrRecieverOkpo: vm.CheckProviderOrRecieverOkpo,
+            CheckPackNumber: vm.CheckPackNumber);
+
+        var form12 = new TransferReceiveFormParams(
+            CheckOperationCode: vm.CheckOperationCode12,
+            CheckOperationDate: vm.CheckOperationDate12,
+            CheckPassportNumber: vm.CheckPassportNumber12,
+            CheckType: vm.CheckName12,
+            CheckRadionuclids: false,
+            CheckFactoryNumber: vm.CheckFactoryNumber12,
+            CheckQuantity: false,
+            CheckActivity: false,
+            CheckMass: vm.CheckMass12,
+            CheckCreatorOkpo: vm.CheckCreatorOkpo12,
+            CheckCreationDate: vm.CheckCreationDate12,
+            CheckProviderOrRecieverOkpo: vm.CheckProviderOrRecieverOkpo12,
+            CheckPackNumber: vm.CheckPackNumber12,
+            CheckPackType: vm.CheckPackType12);
 
         var form13 = new TransferReceiveFormParams(
-            CheckOperationCode: dialog.Vm.CheckOperationCode13,
-            CheckOperationDate: dialog.Vm.CheckOperationDate13,
-            CheckPassportNumber: dialog.Vm.CheckPassportNumber13,
-            CheckType: dialog.Vm.CheckType13,
-            CheckRadionuclids: dialog.Vm.CheckRadionuclids13,
-            CheckFactoryNumber: dialog.Vm.CheckFactoryNumber13,
+            CheckOperationCode: vm.CheckOperationCode13,
+            CheckOperationDate: vm.CheckOperationDate13,
+            CheckPassportNumber: vm.CheckPassportNumber13,
+            CheckType: vm.CheckType13,
+            CheckRadionuclids: vm.CheckRadionuclids13,
+            CheckFactoryNumber: vm.CheckFactoryNumber13,
             CheckQuantity: false,
-            CheckActivity: dialog.Vm.CheckActivity13,
-            CheckCreatorOkpo: dialog.Vm.CheckCreatorOkpo13,
-            CheckCreationDate: dialog.Vm.CheckCreationDate13,
-            CheckProviderOrRecieverOkpo: dialog.Vm.CheckProviderOrRecieverOkpo13,
-            CheckPackNumber: dialog.Vm.CheckPackNumber13,
-            CheckAggregateState: dialog.Vm.CheckAggregateState13);
+            CheckActivity: vm.CheckActivity13,
+            CheckCreatorOkpo: vm.CheckCreatorOkpo13,
+            CheckCreationDate: vm.CheckCreationDate13,
+            CheckProviderOrRecieverOkpo: vm.CheckProviderOrRecieverOkpo13,
+            CheckPackNumber: vm.CheckPackNumber13,
+            CheckAggregateState: vm.CheckAggregateState13);
 
-        return new TransferReceiveParamsSet(form11, form13);
+        return TransferReceiveParamsSet.Create(form11, form12, form13);
     }
 
     #endregion
@@ -271,6 +301,25 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
     #region Progress
 
     /// <summary>
+    /// Прогресс в UI-потоке Avalonia: иначе при загрузке на thread-pool
+    /// привязки прогрессбара могут не перерисовываться до конца длинного SQL.
+    /// </summary>
+    private static Action<int, string> BindProgressToUi(AnyTaskProgressBarVM progressBarVM, string exportName) =>
+        (percent, text) =>
+        {
+            void Apply() => progressBarVM.SetProgressBar(percent, text, exportName);
+
+            if (Dispatcher.UIThread.CheckAccess())
+            {
+                Apply();
+                return;
+            }
+
+            // Ждём отрисовки, чтобы статус менялся между страницами SQL, а не «залипал».
+            Dispatcher.UIThread.InvokeAsync(Apply).GetAwaiter().GetResult();
+        };
+
+    /// <summary>
     /// Редкие обновления прогрессбара (не чаще чем раз в <see cref="MinIntervalMs"/> мс),
     /// плюс всегда границы этапа — без заметной потери производительности.
     /// </summary>
@@ -278,6 +327,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
     {
         private const int MinIntervalMs = 300;
         private long _lastReportTicks = long.MinValue / 2;
+        private readonly object _gate = new();
 
         public void Status(string text) =>
             report?.Invoke(percentMin, text);
@@ -296,22 +346,25 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
                 return;
             }
 
-            var now = Environment.TickCount64;
-            var isBoundary = done <= 0 || total <= 0 || done >= total;
-            if (!force && !isBoundary && now - _lastReportTicks < MinIntervalMs)
+            lock (_gate)
             {
-                return;
-            }
+                var now = Environment.TickCount64;
+                var isBoundary = done <= 0 || total <= 0 || done >= total;
+                if (!force && !isBoundary && now - _lastReportTicks < MinIntervalMs)
+                {
+                    return;
+                }
 
-            _lastReportTicks = now;
-            var percent = percentMin;
-            if (total > 0)
-            {
-                var t = Math.Clamp(done / (double)total, 0, 1);
-                percent = percentMin + (int)((percentMax - percentMin) * t);
-            }
+                _lastReportTicks = now;
+                var percent = percentMin;
+                if (total > 0)
+                {
+                    var t = Math.Clamp(done / (double)total, 0, 1);
+                    percent = percentMin + (int)((percentMax - percentMin) * t);
+                }
 
-            report(percent, text);
+                report(percent, text);
+            }
         }
     }
 
@@ -324,8 +377,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
         bool wholeDatabase = false)
     {
         var contentMessage = wholeDatabase
-            ? "Непарные операции приёма/передачи по формам 1.1 и 1.3 по всей базе не обнаружены."
-            : "Непарные операции приёма/передачи по формам 1.1 и 1.3 у выбранной организации не обнаружены.";
+            ? "Непарные операции приёма/передачи по формам 1.1–1.3 по всей базе не обнаружены."
+            : "Непарные операции приёма/передачи по формам 1.1–1.3 у выбранной организации не обнаружены.";
 
         await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
@@ -350,7 +403,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
                 ContentTitle = "Проверка приёма-передачи",
                 ContentHeader = "Уведомление",
                 ContentMessage =
-                    "Не выбрано ни одного поля для форм 1.1 и 1.3. Отметьте параметры хотя бы для одной формы — иначе проверку выполнять нечего.",
+                    "Не выбрано ни одного поля для форм 1.1–1.3. Отметьте параметры хотя бы для одной формы — иначе проверку выполнять нечего.",
                 MinWidth = 420,
                 MinHeight = 160,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner

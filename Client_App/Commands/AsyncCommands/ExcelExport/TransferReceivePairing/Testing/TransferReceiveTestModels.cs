@@ -19,9 +19,11 @@ public sealed class TransferReceiveRow
     public string FacNum { get; init; } = string.Empty;
     public string Type { get; init; } = string.Empty;
     public string Radionuclids { get; init; } = string.Empty;
+    public string PackType { get; init; } = string.Empty;
     public string PackNumber { get; init; } = string.Empty;
     public string ProviderOrRecieverOkpo { get; init; } = string.Empty;
     public string Activity { get; init; } = string.Empty;
+    public string Mass { get; init; } = string.Empty;
     public string CreatorOkpo { get; init; } = string.Empty;
     public string CreationDate { get; init; } = string.Empty;
     public int? Quantity { get; init; }
@@ -34,14 +36,14 @@ public sealed class TransferReceiveRow
 }
 
 /// <summary>
-/// Сценарий сверки приёма-передачи (формы 1.1 / 1.3) и ожидания.
+/// Сценарий сверки приёма-передачи (формы 1.1 / 1.2 / 1.3) и ожидания.
 /// Closest: null = не проверять; пустой словарь = ожидаем отсутствие карт; иначе частичное сравнение.
 /// </summary>
 public sealed class TransferReceiveTestCase
 {
     public required string Name { get; init; }
 
-    /// <summary>Номер формы сценария («1.1» или «1.3»).</summary>
+    /// <summary>Номер формы сценария («1.1», «1.2» или «1.3»).</summary>
     public string FormNum { get; init; } = "1.1";
 
     public TransferReceiveFormParams Params { get; init; } = new();

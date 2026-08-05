@@ -50,8 +50,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 ? FieldSimilarity.Exact
                 : FieldSimilarity.Mismatch(0),
             TransferReceiveField.Activity => SimilarityActivity(sourceNorm.Activity, candidateNorm.Activity),
+            TransferReceiveField.Mass => SimilarityMass(sourceNorm.Mass, candidateNorm.Mass),
             TransferReceiveField.CreatorOkpo => SimilarityOkpo(sourceNorm.CreatorOkpo, candidateNorm.CreatorOkpo),
             TransferReceiveField.CreationDate => SimilarityCreationDate(source.CreationDate, candidate.CreationDate),
+            TransferReceiveField.PackType => SimilarityType(source.PackType, candidate.PackType),
             TransferReceiveField.PackNumber => SimilarityPackNumber(source.PackNumber, candidate.PackNumber),
             TransferReceiveField.ProviderOrRecieverOkpo => SimilarityProviderOkpo(
                 candidateNorm.ProviderOrRecieverOkpo, sourceNorm.OrgOkpo, NormalizeNumber(sourceOrgOkpo)),
@@ -382,6 +384,53 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         return FieldSimilarity.Mismatch(Math.Max(0, 0.25 - rel));
     }
 
+    /// <summary>
+    /// Масса (кг): как активность (±10% Exact, порядок ×10 Near), плюс ×1000 (кг↔т) — Near.
+    /// </summary>
+    private static FieldSimilarity SimilarityMass(string left, string right)
+    {
+        if (!TryParseActivity(left, out var la) || !TryParseActivity(right, out var ra))
+        {
+            return string.Equals(NormalizeNumber(left), NormalizeNumber(right), StringComparison.Ordinal)
+                ? FieldSimilarity.Exact
+                : SimilarityByEditDistance(LightNormalizeId(left), LightNormalizeId(right));
+        }
+
+        var scale = Math.Max(Math.Abs(la), Math.Abs(ra));
+        if (scale <= double.Epsilon)
+        {
+            return FieldSimilarity.Exact;
+        }
+
+        var rel = Math.Abs(la - ra) / scale;
+        if (rel <= 0.10)
+        {
+            return FieldSimilarity.Exact;
+        }
+
+        var ratio = Math.Max(Math.Abs(la), 1e-300) / Math.Max(Math.Abs(ra), 1e-300);
+        var log10 = Math.Abs(Math.Log10(ratio));
+
+        // Ошибка на порядок (×10) — как у активности.
+        if (log10 is >= 0.85 and <= 1.15)
+        {
+            return FieldSimilarity.Near(0.62);
+        }
+
+        // Путаница кг и тонн (ровно ×1000).
+        if (log10 is >= 2.85 and <= 3.15)
+        {
+            return FieldSimilarity.Near(0.68);
+        }
+
+        if (rel <= 0.35)
+        {
+            return FieldSimilarity.Near(0.7 - rel);
+        }
+
+        return FieldSimilarity.Mismatch(Math.Max(0, 0.25 - rel));
+    }
+
     private static FieldSimilarity SimilarityOkpo(string leftNorm, string rightNorm)
     {
         if (leftNorm.Length == 0 && rightNorm.Length == 0)
@@ -639,9 +688,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             TransferReceiveField.Type => 3.0,
             TransferReceiveField.Radionuclids => 4.5,
             TransferReceiveField.Activity => 2.5,
+            TransferReceiveField.Mass => 2.5,
             TransferReceiveField.CreatorOkpo => 4.0,
             TransferReceiveField.CreationDate => 3.0,
             TransferReceiveField.ProviderOrRecieverOkpo => 4.0,
+            // Тип УКТ на 1.2 важнее обычных полей, но слабее паспорта/зав.№.
+            TransferReceiveField.PackType => 6.5,
             TransferReceiveField.PackNumber => 3.5,
             TransferReceiveField.Quantity => 2.0,
             TransferReceiveField.AggregateState => 3.0,

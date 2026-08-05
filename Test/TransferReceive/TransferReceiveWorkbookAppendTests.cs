@@ -50,8 +50,8 @@ public sealed class TransferReceiveWorkbookAppendTests
         sheet.Cells[1, 1].Value = "Непарная";
         sheet.Cells[2, 1].Value = "поля";
 
-        // TransferReceive: ClosestStartCol = 20
-        const int closestStartCol = 20;
+        // TransferReceive Form11: ClosestStartCol = 21
+        const int closestStartCol = 21;
         var rowA = TransferReceiveTestAccess.GetNextDataRowForTests(sheet);
         Assert.Equal(3, rowA);
         sheet.Cells[rowA, 1].Value = "94015";

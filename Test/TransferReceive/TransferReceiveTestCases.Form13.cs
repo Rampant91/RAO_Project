@@ -13,13 +13,13 @@ internal static partial class TransferReceiveTestCases
         yield return F13_A01_NoCounterpart_Unpaired();
         yield return F13_Agg01_DifferentAggregateState_Unpaired();
         yield return F13_Agg02_CheckAggregateStateOff_DifferentState_Paired();
-        yield return F13_D01_OneDayDiff_InReport_ClosestRedDate();
+        yield return F13_D01_OneDayDiff_InReport_ClosestNearDate();
         yield return F13_Q01_EmptySerial_AlwaysOneToOne_Paired();
     }
 
     private static IEnumerable<TransferReceiveTestCase> Form13ClosestMatchCases()
     {
-        yield return F13_D01_OneDayDiff_InReport_ClosestRedDate();
+        yield return F13_D01_OneDayDiff_InReport_ClosestNearDate();
     }
 
     private static TransferReceiveRow Form13Transfer(
@@ -87,11 +87,11 @@ internal static partial class TransferReceiveTestCases
     };
 
     /// <summary>
-    /// F13_D01. Дата +1 день → непарная; closest есть, дата красная.
+    /// F13_D01. Дата +1 день → непарная; closest есть, дата Near (жёлтая); в bool-карте Exact=false.
     /// </summary>
-    private static TransferReceiveTestCase F13_D01_OneDayDiff_InReport_ClosestRedDate() => new()
+    private static TransferReceiveTestCase F13_D01_OneDayDiff_InReport_ClosestNearDate() => new()
     {
-        Name = "F13_D01. Дата +1 день — в отчёте; closest с красной датой.",
+        Name = "F13_D01. Дата +1 день — в отчёте; closest с жёлтой датой (Near).",
         FormNum = "1.3",
         Params = DefaultForm13Params(),
         OurOkpo = DefaultOurOkpo,

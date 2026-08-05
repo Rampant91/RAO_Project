@@ -283,7 +283,8 @@
                               CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
                     <MenuItem Header="Проверка операций приёма-передачи"
                               Command="{Binding ExcelExportCheckTransferReceive, Mode=OneWay}"
-                              CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+                              CommandParameter="{Binding SelectedReports, Mode=OneWay}"
+                              IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Command="{Binding ExcelExportIntersections, Mode=OneWay}"
@@ -303,7 +304,8 @@
                           Header="Непарные операции 41 (вся БД)"/>
                 <MenuItem Command="{Binding ExcelExportCheckTransferReceive, Mode=OneWay}"
                           CommandParameter="All"
-                          Header="Проверка операций приёма-передачи (вся БД)"/>
+                          Header="Проверка операций приёма-передачи (вся БД)"
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
                 <MenuItem Header="Проблемные источники по региону"
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
                     <MenuItem Command="{Binding  ExcelExportLostAndExtraUnitsByRegion, Mode=OneWay}"

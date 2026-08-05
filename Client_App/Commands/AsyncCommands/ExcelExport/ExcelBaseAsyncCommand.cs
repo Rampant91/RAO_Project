@@ -15,7 +15,6 @@ using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Microsoft.CodeAnalysis.Operations;
 using Models.Collections;
 using Models.Forms.Form1;
 using Models.Forms.Form2;

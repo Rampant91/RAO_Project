@@ -10,7 +10,7 @@ internal static partial class TransferReceiveTestCases
     private static IEnumerable<TransferReceiveTestCase> ClosestMatchCases()
     {
         yield return H01_PartialFieldMap();
-        yield return D02_OneDayDiff_InReport_ClosestRedDate();
+        yield return D02_OneDayDiff_InReport_ClosestNearDate();
         yield return D03_OutsideSearchWindow_InReport_NoClosest();
         yield return H03_NoCandidates_EmptyClosest();
         yield return H04_EmptySerial_QuantityHighlight_DifferentQty();

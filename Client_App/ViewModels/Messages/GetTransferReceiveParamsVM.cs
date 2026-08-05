@@ -5,12 +5,13 @@ using System.Runtime.CompilerServices;
 namespace Client_App.ViewModels.Messages;
 
 /// <summary>
-/// Параметры сопоставления операций приёма-передачи (формы 1.1 и 1.3).
+/// Параметры сопоставления операций приёма-передачи (формы 1.1, 1.2 и 1.3).
 /// </summary>
 public class GetTransferReceiveParamsVM : INotifyPropertyChanged
 {
     public bool Ok;
     private bool _syncingAll;
+    private bool _syncingAll12;
     private bool _syncingAll13;
 
     #region Form 1.1
@@ -104,6 +105,94 @@ public class GetTransferReceiveParamsVM : INotifyPropertyChanged
     {
         get => _checkPackNumber;
         set => SetField(ref _checkPackNumber, value, ref _syncingAll, UpdateCheckAll);
+    }
+
+    #endregion
+
+    #region Form 1.2
+
+    private bool? _checkAll12 = true;
+    public bool? CheckAll12
+    {
+        get => _checkAll12;
+        set => SetAllValue(ref _checkAll12, value, ref _syncingAll12, ApplyAll12);
+    }
+
+    private bool _checkOperationCode12 = true;
+    public bool CheckOperationCode12
+    {
+        get => _checkOperationCode12;
+        set => SetField(ref _checkOperationCode12, value, ref _syncingAll12, UpdateCheckAll12);
+    }
+
+    private bool _checkOperationDate12 = true;
+    public bool CheckOperationDate12
+    {
+        get => _checkOperationDate12;
+        set => SetField(ref _checkOperationDate12, value, ref _syncingAll12, UpdateCheckAll12);
+    }
+
+    private bool _checkPassportNumber12 = true;
+    public bool CheckPassportNumber12
+    {
+        get => _checkPassportNumber12;
+        set => SetField(ref _checkPassportNumber12, value, ref _syncingAll12, UpdateCheckAll12);
+    }
+
+    private bool _checkName12 = true;
+    public bool CheckName12
+    {
+        get => _checkName12;
+        set => SetField(ref _checkName12, value, ref _syncingAll12, UpdateCheckAll12);
+    }
+
+    private bool _checkFactoryNumber12 = true;
+    public bool CheckFactoryNumber12
+    {
+        get => _checkFactoryNumber12;
+        set => SetField(ref _checkFactoryNumber12, value, ref _syncingAll12, UpdateCheckAll12);
+    }
+
+    private bool _checkMass12 = true;
+    public bool CheckMass12
+    {
+        get => _checkMass12;
+        set => SetField(ref _checkMass12, value, ref _syncingAll12, UpdateCheckAll12);
+    }
+
+    private bool _checkCreatorOkpo12 = true;
+    public bool CheckCreatorOkpo12
+    {
+        get => _checkCreatorOkpo12;
+        set => SetField(ref _checkCreatorOkpo12, value, ref _syncingAll12, UpdateCheckAll12);
+    }
+
+    private bool _checkCreationDate12 = true;
+    public bool CheckCreationDate12
+    {
+        get => _checkCreationDate12;
+        set => SetField(ref _checkCreationDate12, value, ref _syncingAll12, UpdateCheckAll12);
+    }
+
+    private bool _checkProviderOrRecieverOkpo12 = true;
+    public bool CheckProviderOrRecieverOkpo12
+    {
+        get => _checkProviderOrRecieverOkpo12;
+        set => SetField(ref _checkProviderOrRecieverOkpo12, value, ref _syncingAll12, UpdateCheckAll12);
+    }
+
+    private bool _checkPackType12 = true;
+    public bool CheckPackType12
+    {
+        get => _checkPackType12;
+        set => SetField(ref _checkPackType12, value, ref _syncingAll12, UpdateCheckAll12);
+    }
+
+    private bool _checkPackNumber12 = true;
+    public bool CheckPackNumber12
+    {
+        get => _checkPackNumber12;
+        set => SetField(ref _checkPackNumber12, value, ref _syncingAll12, UpdateCheckAll12);
     }
 
     #endregion
@@ -255,6 +344,38 @@ public class GetTransferReceiveParamsVM : INotifyPropertyChanged
         _syncingAll = true;
         CheckAll = all ? true : none ? false : null;
         _syncingAll = false;
+    }
+
+    private void ApplyAll12(bool allChecked)
+    {
+        _syncingAll12 = true;
+        CheckOperationCode12 = allChecked;
+        CheckOperationDate12 = allChecked;
+        CheckPassportNumber12 = allChecked;
+        CheckName12 = allChecked;
+        CheckFactoryNumber12 = allChecked;
+        CheckMass12 = allChecked;
+        CheckCreatorOkpo12 = allChecked;
+        CheckCreationDate12 = allChecked;
+        CheckProviderOrRecieverOkpo12 = allChecked;
+        CheckPackType12 = allChecked;
+        CheckPackNumber12 = allChecked;
+        _syncingAll12 = false;
+        UpdateCheckAll12();
+    }
+
+    private void UpdateCheckAll12()
+    {
+        var all = CheckOperationCode12 && CheckOperationDate12 && CheckPassportNumber12 && CheckName12
+                  && CheckFactoryNumber12 && CheckMass12 && CheckCreatorOkpo12 && CheckCreationDate12
+                  && CheckProviderOrRecieverOkpo12 && CheckPackType12 && CheckPackNumber12;
+        var none = !CheckOperationCode12 && !CheckOperationDate12 && !CheckPassportNumber12 && !CheckName12
+                   && !CheckFactoryNumber12 && !CheckMass12 && !CheckCreatorOkpo12 && !CheckCreationDate12
+                   && !CheckProviderOrRecieverOkpo12 && !CheckPackType12 && !CheckPackNumber12;
+
+        _syncingAll12 = true;
+        CheckAll12 = all ? true : none ? false : null;
+        _syncingAll12 = false;
     }
 
     private void ApplyAll13(bool allChecked)

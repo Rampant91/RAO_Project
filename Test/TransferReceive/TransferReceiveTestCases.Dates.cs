@@ -10,7 +10,7 @@ internal static partial class TransferReceiveTestCases
     private static IEnumerable<TransferReceiveTestCase> DateCases()
     {
         yield return D01_SameDate_Paired();
-        yield return D02_OneDayDiff_InReport_ClosestRedDate();
+        yield return D02_OneDayDiff_InReport_ClosestNearDate();
         yield return D03_OutsideSearchWindow_InReport_NoClosest();
     }
 
@@ -26,9 +26,9 @@ internal static partial class TransferReceiveTestCases
 
     /// <summary>
     /// D02. Отличие 1 день (внутри ±15) → не пара, в отчёте;
-    /// closest есть, дата красная (false).
+    /// closest есть, дата Near (жёлтая); в bool-карте Exact=false.
     /// </summary>
-    private static TransferReceiveTestCase D02_OneDayDiff_InReport_ClosestRedDate() => new()
+    private static TransferReceiveTestCase D02_OneDayDiff_InReport_ClosestNearDate() => new()
     {
         Name = "D02. Дата +1 день — в отчёте; closest с жёлтой датой (Near, не Exact).",
         OurOkpo = DefaultOurOkpo,
