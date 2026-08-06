@@ -268,6 +268,9 @@
     <Compile Update="Views\Messages\GetPairingCode41Params.axaml.cs">
       <DependentUpon>GetPairingCode41Params.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Messages\GetTransferReceiveParams.axaml.cs">
+      <DependentUpon>GetTransferReceiveParams.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Messages\AskDatePeriodMessageWIndow.axaml.cs">
       <DependentUpon>AskDatePeriodMessageWindow.axaml</DependentUpon>
     </Compile>

@@ -269,6 +269,10 @@
                                 <MenuItem Header="Непарные операции 41 (формы 1.1–1.6)"
                                           Command="{Binding MainWindowVM.ExcelExportCheckPairingOfCode41, Mode=OneWay}"
                                           CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+                                <MenuItem Header="Проверка операций приёма-передачи"
+                                          Command="{Binding MainWindowVM.ExcelExportCheckTransferReceive, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReports, Mode=OneWay}"
+                                          IsVisible="{Binding MainWindowVM.AppLaunchedAtNorao, Mode=OneWay}"/>
                             </MenuItem>
                             <MenuItem Header="Проверить все отчёты организации"
 									  Command="{Binding MainWindowVM.ExcelExportCheckAllForms, Mode=OneWay}"

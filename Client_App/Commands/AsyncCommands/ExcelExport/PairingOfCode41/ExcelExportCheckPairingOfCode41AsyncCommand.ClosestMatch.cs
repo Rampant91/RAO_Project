@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Client_App.Resources;
 using Client_App.Resources.CustomComparers.SnkComparers;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41;
@@ -10,11 +11,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     private Dictionary<int, ClosestMatchHighlight> _form11ClosestMatchHighlights = new();
     private Dictionary<int, ClosestMatchHighlight> _form15ClosestMatchHighlights = new();
-    private Dictionary<int, Dictionary<Pairing12To16Field, bool>> _form12ClosestMatchHighlights = new();
-    private Dictionary<int, Dictionary<Pairing13To16Field, bool>> _form13ClosestMatchHighlights = new();
-    private Dictionary<int, Dictionary<Pairing14To16Field, bool>> _form14ClosestMatchHighlights = new();
+    private Dictionary<int, ClosestMatchResult<Pairing12To16Field>> _form12ClosestMatchHighlights = new();
+    private Dictionary<int, ClosestMatchResult<Pairing13To16Field>> _form13ClosestMatchHighlights = new();
+    private Dictionary<int, ClosestMatchResult<Pairing14To16Field>> _form14ClosestMatchHighlights = new();
     private Dictionary<int, Form16ClosestMatchHighlight> _form16ClosestMatchHighlights = new();
-    private Dictionary<int, Dictionary<string, string>> _exportActivitiesByFormId = new();
 
     #endregion
 
@@ -44,9 +44,11 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         {
             var sourceNorm = CreatePairingNorm(source);
             var bestScore = -1;
+            Operation41PairingDto? bestCandidate = null;
 
-            foreach (var candidate in refNorms)
+            for (var c = 0; c < reference.Count; c++)
             {
+                var candidate = refNorms[c];
                 var score = 0;
                 for (var i = 0; i < fieldCount; i++)
                 {
@@ -62,6 +64,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 {
                     bestScore = score;
                     Array.Copy(scratchFlags, bestFlags, fieldCount);
+                    bestCandidate = reference[c];
                     if (bestScore == fieldCount)
                     {
                         break;
@@ -69,7 +72,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 }
             }
 
-            if (bestScore < 0)
+            if (bestScore < 0 || bestCandidate is null)
             {
                 continue;
             }
@@ -80,7 +83,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 map[fields[i]] = bestFlags[i];
             }
 
-            result[source.Id] = new ClosestMatchHighlight(map);
+            result[source.Id] = new ClosestMatchHighlight(bestCandidate, map);
         }
 
         return result;
@@ -89,12 +92,17 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     private static bool FieldMatches11To15(PairingNorm left, PairingNorm right, Pairing11To15Field field) =>
         field switch
         {
+            Pairing11To15Field.OperationCode => left.OpCode == right.OpCode,
             Pairing11To15Field.OperationDate => left.OpDate == right.OpDate,
             Pairing11To15Field.PassportNumber => left.PasNum == right.PasNum,
             Pairing11To15Field.Type => left.Type == right.Type,
             Pairing11To15Field.Radionuclids => left.Radionuclids == right.Radionuclids,
             Pairing11To15Field.FactoryNumber => left.FacNum == right.FacNum,
             Pairing11To15Field.Activity => NumericTolerance(left.Activity, right.Activity),
+            // При пустых серийных qty сводится суммарно: построчное равенство для непарных
+            // вводит в заблуждение (все поля зелёные при остатке по партии).
+            // Построчное равенство qty: и при пустых серийных (парность партии — сумма в ключе,
+            // а подсветка closest показывает, совпало ли число у этой пары строк).
             Pairing11To15Field.Quantity => left.Quantity == right.Quantity,
             Pairing11To15Field.CreationDate => left.CreationDate == right.CreationDate,
             Pairing11To15Field.DocumentVid => left.DocumentVid == right.DocumentVid,
@@ -110,7 +118,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     private static List<Pairing11To15Field> GetEnabledFields(Pairing11To15Params options)
     {
-        var fields = new List<Pairing11To15Field>(16);
+        var fields = new List<Pairing11To15Field>(17);
+        if (options.CheckOperationCode) fields.Add(Pairing11To15Field.OperationCode);
         if (options.CheckOperationDate) fields.Add(Pairing11To15Field.OperationDate);
         if (options.CheckPassportNumber) fields.Add(Pairing11To15Field.PassportNumber);
         if (options.CheckType) fields.Add(Pairing11To15Field.Type);
@@ -130,13 +139,23 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         return fields;
     }
 
-    public sealed class ClosestMatchHighlight(IReadOnlyDictionary<Pairing11To15Field, bool> fieldMatches)
+    public sealed class ClosestMatchHighlight
     {
-        public IReadOnlyDictionary<Pairing11To15Field, bool> FieldMatches { get; } = fieldMatches;
+        internal ClosestMatchHighlight(
+            Operation41PairingDto candidate,
+            IReadOnlyDictionary<Pairing11To15Field, bool> fieldMatches)
+        {
+            Candidate = candidate;
+            FieldMatches = fieldMatches;
+        }
+
+        internal Operation41PairingDto Candidate { get; }
+        public IReadOnlyDictionary<Pairing11To15Field, bool> FieldMatches { get; }
     }
 
     public enum Pairing11To15Field
     {
+        OperationCode,
         OperationDate,
         PassportNumber,
         Type,
@@ -159,26 +178,29 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     #region Closest 1.2–1.4 ↔ 1.6
 
-    private static Dictionary<int, Dictionary<Pairing12To16Field, bool>> BuildClosestMatchHighlights12To16(
+    private static Dictionary<int, ClosestMatchResult<Pairing12To16Field>> BuildClosestMatchHighlights12To16(
         List<Operation41PairingDto> unpaired, List<Operation41PairingDto> reference, Pairing12To16Params options) =>
         BuildClosest(unpaired, reference, GetEnabledFields12To16(options), FieldMatches12To16);
 
-    private static Dictionary<int, Dictionary<Pairing13To16Field, bool>> BuildClosestMatchHighlights13To16(
+    private static Dictionary<int, ClosestMatchResult<Pairing13To16Field>> BuildClosestMatchHighlights13To16(
         List<Operation41PairingDto> unpaired, List<Operation41PairingDto> reference, Pairing13To16Params options) =>
-        BuildClosest(unpaired, reference, GetEnabledFields13To16(options), FieldMatches13To16);
+        BuildClosest(unpaired, reference, GetEnabledFields13To16(options), FieldMatches13To16,
+            static (source, candidate) => RaoCodeHelper.AggregateStateMatchesCodeRao(source.AggregateState, candidate.CodeRao));
 
-    private static Dictionary<int, Dictionary<Pairing14To16Field, bool>> BuildClosestMatchHighlights14To16(
+    private static Dictionary<int, ClosestMatchResult<Pairing14To16Field>> BuildClosestMatchHighlights14To16(
         List<Operation41PairingDto> unpaired, List<Operation41PairingDto> reference, Pairing14To16Params options) =>
-        BuildClosest(unpaired, reference, GetEnabledFields14To16(options), FieldMatches14To16);
+        BuildClosest(unpaired, reference, GetEnabledFields14To16(options), FieldMatches14To16,
+            static (source, candidate) => RaoCodeHelper.AggregateStateMatchesCodeRao(source.AggregateState, candidate.CodeRao));
 
-    private static Dictionary<int, Dictionary<TField, bool>> BuildClosest<TField>(
+    private static Dictionary<int, ClosestMatchResult<TField>> BuildClosest<TField>(
         List<Operation41PairingDto> unpaired,
         List<Operation41PairingDto> reference,
         List<TField> fields,
-        Func<PairingNorm, PairingNorm, TField, bool> isMatch)
+        Func<PairingNorm, PairingNorm, TField, bool> isMatch,
+        Func<Operation41PairingDto, Operation41PairingDto, bool?>? computeAggregateStateMatch = null)
         where TField : struct, Enum
     {
-        var result = new Dictionary<int, Dictionary<TField, bool>>();
+        var result = new Dictionary<int, ClosestMatchResult<TField>>();
         if (unpaired.Count == 0 || reference.Count == 0 || fields.Count == 0)
         {
             return result;
@@ -193,9 +215,11 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         {
             var rowNorm = CreatePairingNorm(row);
             var bestScore = -1;
+            Operation41PairingDto? bestCandidate = null;
 
-            foreach (var candidate in refNorms)
+            for (var c = 0; c < reference.Count; c++)
             {
+                var candidate = refNorms[c];
                 var score = 0;
                 for (var i = 0; i < fieldCount; i++)
                 {
@@ -211,6 +235,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 {
                     bestScore = score;
                     Array.Copy(scratchFlags, bestFlags, fieldCount);
+                    bestCandidate = reference[c];
                     if (bestScore == fieldCount)
                     {
                         break;
@@ -218,7 +243,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 }
             }
 
-            if (bestScore < 0)
+            if (bestScore < 0 || bestCandidate is null)
             {
                 continue;
             }
@@ -229,7 +254,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 map[fields[i]] = bestFlags[i];
             }
 
-            result[row.Id] = map;
+            var aggregateStateMatch = computeAggregateStateMatch?.Invoke(row, bestCandidate);
+            result[row.Id] = new ClosestMatchResult<TField>(bestCandidate, map, aggregateStateMatch);
         }
 
         return result;
@@ -248,6 +274,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         Pairing12To16Field.PackName => left.PackName == right.PackName,
         Pairing12To16Field.PackType => left.PackType == right.PackType,
         Pairing12To16Field.PackNumber => left.PackNumber == right.PackNumber,
+        Pairing12To16Field.CodeRao => left.CodeRao == right.CodeRao,
         _ => false
     };
 
@@ -266,6 +293,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         Pairing13To16Field.PackName => left.PackName == right.PackName,
         Pairing13To16Field.PackType => left.PackType == right.PackType,
         Pairing13To16Field.PackNumber => left.PackNumber == right.PackNumber,
+        Pairing13To16Field.CodeRao => left.CodeRao == right.CodeRao,
         _ => false
     };
 
@@ -286,6 +314,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         Pairing14To16Field.PackName => left.PackName == right.PackName,
         Pairing14To16Field.PackType => left.PackType == right.PackType,
         Pairing14To16Field.PackNumber => left.PackNumber == right.PackNumber,
+        Pairing14To16Field.CodeRao => left.CodeRao == right.CodeRao,
         _ => false
     };
 
@@ -303,6 +332,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         if (o.CheckPackName) l.Add(Pairing12To16Field.PackName);
         if (o.CheckPackType) l.Add(Pairing12To16Field.PackType);
         if (o.CheckPackNumber) l.Add(Pairing12To16Field.PackNumber);
+        if (o.CheckCodeRao) l.Add(Pairing12To16Field.CodeRao);
         return l;
     }
 
@@ -322,6 +352,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         if (o.CheckPackName) l.Add(Pairing13To16Field.PackName);
         if (o.CheckPackType) l.Add(Pairing13To16Field.PackType);
         if (o.CheckPackNumber) l.Add(Pairing13To16Field.PackNumber);
+        if (o.CheckCodeRao) l.Add(Pairing13To16Field.CodeRao);
         return l;
     }
 
@@ -343,6 +374,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         if (o.CheckPackName) l.Add(Pairing14To16Field.PackName);
         if (o.CheckPackType) l.Add(Pairing14To16Field.PackType);
         if (o.CheckPackNumber) l.Add(Pairing14To16Field.PackNumber);
+        if (o.CheckCodeRao) l.Add(Pairing14To16Field.CodeRao);
         return l;
     }
 
@@ -379,9 +411,9 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         foreach (var form16 in unpaired)
         {
             var form16Norm = CreatePairingNorm(form16);
-            var (score12, map12) = FindBestRvMatch(form16Norm, norms12, fields12, FieldMatches12To16);
-            var (score13, map13) = FindBestRvMatch(form16Norm, norms13, fields13, FieldMatches13To16);
-            var (score14, map14) = FindBestRvMatch(form16Norm, norms14, fields14, FieldMatches14To16);
+            var (score12, map12, cand12) = FindBestRvMatch(form16Norm, form12, norms12, fields12, FieldMatches12To16);
+            var (score13, map13, cand13) = FindBestRvMatch(form16Norm, form13, norms13, fields13, FieldMatches13To16);
+            var (score14, map14, cand14) = FindBestRvMatch(form16Norm, form14, norms14, fields14, FieldMatches14To16);
 
             var bestScore = Math.Max(score12, Math.Max(score13, score14));
             if (bestScore < 0)
@@ -389,29 +421,32 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 continue;
             }
 
-            if (bestScore == score12 && map12 is not null)
+            if (bestScore == score12 && map12 is not null && cand12 is not null)
             {
-                result[form16.Id] = new Form16ClosestMatchHighlight(Form16MatchProfile.Form12, map12, null, null);
+                result[form16.Id] = new Form16ClosestMatchHighlight(Form16MatchProfile.Form12, cand12, map12, null, null);
                 continue;
             }
 
-            if (bestScore == score13 && map13 is not null)
+            if (bestScore == score13 && map13 is not null && cand13 is not null)
             {
-                result[form16.Id] = new Form16ClosestMatchHighlight(Form16MatchProfile.Form13, null, map13, null);
+                var aggregateStateMatch = RaoCodeHelper.AggregateStateMatchesCodeRao(cand13.AggregateState, form16.CodeRao);
+                result[form16.Id] = new Form16ClosestMatchHighlight(Form16MatchProfile.Form13, cand13, null, map13, null, aggregateStateMatch);
                 continue;
             }
 
-            if (map14 is not null)
+            if (map14 is not null && cand14 is not null)
             {
-                result[form16.Id] = new Form16ClosestMatchHighlight(Form16MatchProfile.Form14, null, null, map14);
+                var aggregateStateMatch = RaoCodeHelper.AggregateStateMatchesCodeRao(cand14.AggregateState, form16.CodeRao);
+                result[form16.Id] = new Form16ClosestMatchHighlight(Form16MatchProfile.Form14, cand14, null, null, map14, aggregateStateMatch);
             }
         }
 
         return result;
     }
 
-    private static (int score, Dictionary<TField, bool>? map) FindBestRvMatch<TField>(
+    private static (int score, Dictionary<TField, bool>? map, Operation41PairingDto? candidate) FindBestRvMatch<TField>(
         PairingNorm form16,
+        List<Operation41PairingDto> rvRows,
         PairingNorm[] rvPool,
         List<TField> fields,
         Func<PairingNorm, PairingNorm, TField, bool> isMatch)
@@ -419,16 +454,18 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     {
         if (rvPool.Length == 0 || fields.Count == 0)
         {
-            return (-1, null);
+            return (-1, null, null);
         }
 
         var fieldCount = fields.Count;
         var bestFlags = new bool[fieldCount];
         var scratchFlags = new bool[fieldCount];
         var bestScore = -1;
+        Operation41PairingDto? bestCandidate = null;
 
-        foreach (var candidate in rvPool)
+        for (var c = 0; c < rvPool.Length; c++)
         {
+            var candidate = rvPool[c];
             var score = 0;
             for (var i = 0; i < fieldCount; i++)
             {
@@ -445,6 +482,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             {
                 bestScore = score;
                 Array.Copy(scratchFlags, bestFlags, fieldCount);
+                bestCandidate = rvRows[c];
                 if (bestScore == fieldCount)
                 {
                     break;
@@ -454,7 +492,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
         if (bestScore < 0)
         {
-            return (-1, null);
+            return (-1, null, null);
         }
 
         var map = new Dictionary<TField, bool>(fieldCount);
@@ -463,7 +501,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             map[fields[i]] = bestFlags[i];
         }
 
-        return (bestScore, map);
+        return (bestScore, map, bestCandidate);
     }
 
     #endregion
@@ -477,21 +515,60 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         Form14
     }
 
-    public sealed class Form16ClosestMatchHighlight(
-        Form16MatchProfile profile,
-        IReadOnlyDictionary<Pairing12To16Field, bool>? matches12,
-        IReadOnlyDictionary<Pairing13To16Field, bool>? matches13,
-        IReadOnlyDictionary<Pairing14To16Field, bool>? matches14)
+    public sealed class Form16ClosestMatchHighlight
     {
-        public Form16MatchProfile Profile { get; } = profile;
-        public IReadOnlyDictionary<Pairing12To16Field, bool>? Matches12 { get; } = matches12;
-        public IReadOnlyDictionary<Pairing13To16Field, bool>? Matches13 { get; } = matches13;
-        public IReadOnlyDictionary<Pairing14To16Field, bool>? Matches14 { get; } = matches14;
+        internal Form16ClosestMatchHighlight(
+            Form16MatchProfile profile,
+            Operation41PairingDto candidate,
+            IReadOnlyDictionary<Pairing12To16Field, bool>? matches12,
+            IReadOnlyDictionary<Pairing13To16Field, bool>? matches13,
+            IReadOnlyDictionary<Pairing14To16Field, bool>? matches14,
+            bool? aggregateStateMatchesCodeRao = null)
+        {
+            Profile = profile;
+            Candidate = candidate;
+            Matches12 = matches12;
+            Matches13 = matches13;
+            Matches14 = matches14;
+            AggregateStateMatchesCodeRao = aggregateStateMatchesCodeRao;
+        }
+
+        public Form16MatchProfile Profile { get; }
+        internal Operation41PairingDto Candidate { get; }
+        public IReadOnlyDictionary<Pairing12To16Field, bool>? Matches12 { get; }
+        public IReadOnlyDictionary<Pairing13To16Field, bool>? Matches13 { get; }
+        public IReadOnlyDictionary<Pairing14To16Field, bool>? Matches14 { get; }
+
+        /// <summary>Заполняется для профилей 1.3/1.4: AggregateState кандидата vs 1-я цифра CodeRao 1.6.</summary>
+        public bool? AggregateStateMatchesCodeRao { get; }
     }
 
-    public enum Pairing12To16Field { OperationDate, Mass, BetaGammaActivity, AlphaActivity, ActivityMeasurementDate, DocumentVid, DocumentNumber, DocumentDate, PackName, PackType, PackNumber }
-    public enum Pairing13To16Field { OperationDate, MainRadionuclids, TritiumActivity, BetaGammaActivity, AlphaActivity, TransuraniumActivity, ActivityMeasurementDate, DocumentVid, DocumentNumber, DocumentDate, PackName, PackType, PackNumber }
-    public enum Pairing14To16Field { OperationDate, Volume, Mass, MainRadionuclids, TritiumActivity, BetaGammaActivity, AlphaActivity, TransuraniumActivity, ActivityMeasurementDate, DocumentVid, DocumentNumber, DocumentDate, PackName, PackType, PackNumber }
+    /// <summary>
+    /// Closest-match результат в стиле TransferReceive: лучший кандидат + карта совпадений по полям.
+    /// </summary>
+    public sealed class ClosestMatchResult<TField>
+        where TField : struct, Enum
+    {
+        internal ClosestMatchResult(
+            Operation41PairingDto candidate,
+            IReadOnlyDictionary<TField, bool> fieldMatches,
+            bool? aggregateStateMatchesCodeRao = null)
+        {
+            Candidate = candidate;
+            FieldMatches = fieldMatches;
+            AggregateStateMatchesCodeRao = aggregateStateMatchesCodeRao;
+        }
+
+        internal Operation41PairingDto Candidate { get; }
+        public IReadOnlyDictionary<TField, bool> FieldMatches { get; }
+
+        /// <summary>Заполняется для 1.3/1.4↔1.6: AggregateState стороны 1.3/1.4 vs 1-я цифра CodeRao кандидата.</summary>
+        public bool? AggregateStateMatchesCodeRao { get; }
+    }
+
+    public enum Pairing12To16Field { OperationDate, Mass, BetaGammaActivity, AlphaActivity, ActivityMeasurementDate, DocumentVid, DocumentNumber, DocumentDate, PackName, PackType, PackNumber, CodeRao }
+    public enum Pairing13To16Field { OperationDate, MainRadionuclids, TritiumActivity, BetaGammaActivity, AlphaActivity, TransuraniumActivity, ActivityMeasurementDate, DocumentVid, DocumentNumber, DocumentDate, PackName, PackType, PackNumber, CodeRao }
+    public enum Pairing14To16Field { OperationDate, Volume, Mass, MainRadionuclids, TritiumActivity, BetaGammaActivity, AlphaActivity, TransuraniumActivity, ActivityMeasurementDate, DocumentVid, DocumentNumber, DocumentDate, PackName, PackType, PackNumber, CodeRao }
 
     #endregion
 
@@ -502,6 +579,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     /// </summary>
     private sealed class PairingNorm
     {
+        public required string OpCode { get; init; }
         public required string OpDate { get; init; }
         public required string PasNum { get; init; }
         public required string Type { get; init; }
@@ -517,6 +595,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         public required string PackType { get; init; }
         public required string PackNumber { get; init; }
         public required string MainRadionuclids { get; init; }
+        public required string CodeRao { get; init; }
         public required string ActivityMeasurementDate { get; init; }
         public required int Quantity { get; init; }
         public required NumericNorm Activity { get; init; }
@@ -555,6 +634,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     private static PairingNorm CreatePairingNorm(Operation41PairingDto row) => new()
     {
+        OpCode = NormalizeNumber(row.OpCode),
         OpDate = NormalizeDate(row.OpDate),
         PasNum = NormalizeSerialNumber(row.PasNum),
         Type = NormalizeNumber(row.Type),
@@ -570,6 +650,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         PackType = NormalizeNumber(row.PackType),
         PackNumber = NormalizeNumber(row.PackNumber),
         MainRadionuclids = NormalizeRads(row.MainRadionuclids),
+        CodeRao = NormalizeNumber(row.CodeRao),
         ActivityMeasurementDate = NormalizeDate(row.ActivityMeasurementDate),
         Quantity = GetQuantityForComparison(row, true),
         Activity = new NumericNorm(row.Activity),

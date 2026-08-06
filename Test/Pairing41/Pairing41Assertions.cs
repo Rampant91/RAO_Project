@@ -36,6 +36,58 @@ internal static class Pairing41Assertions
         AssertPartialFieldMap(testCase.Name, "Form13", testCase.ExpectedClosest13, actual.Closest13);
         AssertPartialFieldMap(testCase.Name, "Form14", testCase.ExpectedClosest14, actual.Closest14);
         AssertForm16Closest(testCase.Name, testCase.ExpectedClosest16, actual.Closest16);
+        AssertAggregateStateMatch(testCase.Name, "Form13", testCase.ExpectedAggregateStateMatch13, actual.Closest13AggregateStateMatch);
+        AssertAggregateStateMatch(testCase.Name, "Form14", testCase.ExpectedAggregateStateMatch14, actual.Closest14AggregateStateMatch);
+        AssertCandidateIds(testCase.Name, "Form11", testCase.ExpectedClosestCandidate11, actual.Closest11CandidateIds);
+        AssertCandidateIds(testCase.Name, "Form15", testCase.ExpectedClosestCandidate15, actual.Closest15CandidateIds);
+        AssertCandidateIds(testCase.Name, "Form12", testCase.ExpectedClosestCandidate12, actual.Closest12CandidateIds);
+        AssertCandidateIds(testCase.Name, "Form13", testCase.ExpectedClosestCandidate13, actual.Closest13CandidateIds);
+        AssertCandidateIds(testCase.Name, "Form14", testCase.ExpectedClosestCandidate14, actual.Closest14CandidateIds);
+        AssertCandidateIds(testCase.Name, "Form16", testCase.ExpectedClosestCandidate16, actual.Closest16CandidateIds);
+    }
+
+    private static void AssertCandidateIds(
+        string caseName,
+        string formLabel,
+        IReadOnlyDictionary<int, int>? expected,
+        IReadOnlyDictionary<int, int> actual)
+    {
+        if (expected is null)
+        {
+            return;
+        }
+
+        foreach (var (unpairedId, expectedCandidateId) in expected)
+        {
+            Assert.True(
+                actual.TryGetValue(unpairedId, out var actualCandidateId),
+                $"{caseName}: {formLabel} Id={unpairedId} — нет кандидата closest");
+            Assert.True(
+                actualCandidateId == expectedCandidateId,
+                $"{caseName}: {formLabel} Id={unpairedId} closest CandidateId: expected={expectedCandidateId}, actual={actualCandidateId}");
+        }
+    }
+
+    private static void AssertAggregateStateMatch(
+        string caseName,
+        string formLabel,
+        IReadOnlyDictionary<int, bool>? expected,
+        IReadOnlyDictionary<int, bool?> actual)
+    {
+        if (expected is null)
+        {
+            return;
+        }
+
+        foreach (var (id, expectedMatch) in expected)
+        {
+            Assert.True(
+                actual.TryGetValue(id, out var actualMatch),
+                $"{caseName}: {formLabel} Id={id} — нет AggregateStateMatchesCodeRao в closest-результате");
+            Assert.True(
+                actualMatch == expectedMatch,
+                $"{caseName}: {formLabel} Id={id} AggregateStateMatchesCodeRao: expected={expectedMatch}, actual={actualMatch}");
+        }
     }
 
     public static void AssertCaseIsInternallyConsistent(Pairing41TestCase testCase)
@@ -60,6 +112,14 @@ internal static class Pairing41Assertions
         AssertClosestExpectationIds(testCase.Name, "Form13", testCase.ExpectedClosest13?.Keys, testCase.ExpectedUnpaired13);
         AssertClosestExpectationIds(testCase.Name, "Form14", testCase.ExpectedClosest14?.Keys, testCase.ExpectedUnpaired14);
         AssertClosestExpectationIds(testCase.Name, "Form16", testCase.ExpectedClosest16?.Keys, testCase.ExpectedUnpaired16);
+        AssertClosestExpectationIds(testCase.Name, "Form13", testCase.ExpectedAggregateStateMatch13?.Keys, testCase.ExpectedUnpaired13);
+        AssertClosestExpectationIds(testCase.Name, "Form14", testCase.ExpectedAggregateStateMatch14?.Keys, testCase.ExpectedUnpaired14);
+        AssertClosestExpectationIds(testCase.Name, "Form11", testCase.ExpectedClosestCandidate11?.Keys, testCase.ExpectedUnpaired11);
+        AssertClosestExpectationIds(testCase.Name, "Form15", testCase.ExpectedClosestCandidate15?.Keys, testCase.ExpectedUnpaired15);
+        AssertClosestExpectationIds(testCase.Name, "Form12", testCase.ExpectedClosestCandidate12?.Keys, testCase.ExpectedUnpaired12);
+        AssertClosestExpectationIds(testCase.Name, "Form13", testCase.ExpectedClosestCandidate13?.Keys, testCase.ExpectedUnpaired13);
+        AssertClosestExpectationIds(testCase.Name, "Form14", testCase.ExpectedClosestCandidate14?.Keys, testCase.ExpectedUnpaired14);
+        AssertClosestExpectationIds(testCase.Name, "Form16", testCase.ExpectedClosestCandidate16?.Keys, testCase.ExpectedUnpaired16);
     }
 
     private static void AssertPartialFieldMap<TField>(

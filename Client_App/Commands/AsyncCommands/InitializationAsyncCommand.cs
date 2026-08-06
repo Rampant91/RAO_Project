@@ -230,33 +230,60 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
     #region ProcessDataBaseBackup
 
+    /// <summary>Отсрочка первого напоминания о резервной копии (дни).</summary>
+    private const int FirstBackupRemindDays = 7;
+
+    /// <summary>Интервал повторных напоминаний о резервной копии (дни).</summary>
+    private const int RegularBackupRemindDays = 30;
+
     /// <summary>
-    /// Создание резервной копии БД раз в месяц.
+    /// Создание резервной копии БД: первый раз — через неделю после установки/сброса настроек, далее — раз в месяц.
     /// </summary>
     private static async Task ProcessDataBaseBackup()
     {
         //Settings.Default.LastDbBackupDate = DateTime.MinValue;    //Сброс даты для тестирования
+        //Settings.Default.IsFirstAppRun = true;
         //Settings.Default.Save();
 
-        if (Settings.Default.IsFirstAppRun)
+        if (Settings.Default.AppStartupParameters != string.Empty)
+        {
+            return;
+        }
+
+        var lastBackupDate = Settings.Default.LastDbBackupDate;
+        var isUnsetBackupDate = lastBackupDate == default || lastBackupDate == DateTime.MinValue;
+
+        // Первый запуск или нет даты бэкапа: стартуем отсчёт до первого напоминания (через неделю).
+        if (isUnsetBackupDate)
         {
             Settings.Default.LastDbBackupDate = DateTime.Now;
-            Settings.Default.IsFirstAppRun = false;
+            Settings.Default.IsFirstAppRun = true;
             Settings.Default.Save();
             return;
         }
 
-        if ((DateTime.Now - Settings.Default.LastDbBackupDate).TotalDays < 30
-            || Settings.Default.AppStartupParameters != string.Empty)
+        // IsFirstAppRun: ещё не показывали диалог — ждём неделю; после первого раза — месяц.
+        var remindAfterDays = Settings.Default.IsFirstAppRun
+            ? FirstBackupRemindDays
+            : RegularBackupRemindDays;
+
+        if ((DateTime.Now - lastBackupDate).TotalDays < remindAfterDays)
         {
             return;
         }
 
         #region MessageInputCategoryNums
 
-        var lastBackupTime = Settings.Default.LastDbBackupDate == DateTime.MinValue
+        var isFirstPrompt = Settings.Default.IsFirstAppRun;
+        var lastBackupTime = isFirstPrompt
             ? string.Empty
-            : $" ({Settings.Default.LastDbBackupDate})";
+            : $" ({lastBackupDate})";
+        var contentMessage = isFirstPrompt
+            ? $"Рекомендуется создать резервную копию базы данных." +
+              $"{Environment.NewLine}Хотите выполнить резервное копирование?"
+            : $"Последняя резервная копия базы данных создавалась более месяца назад{lastBackupTime}." +
+              $"{Environment.NewLine}Хотите выполнить резервное копирование?";
+
         var res = Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxInputParams
             {
@@ -268,8 +295,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 ],
                 CanResize = true,
                 ContentTitle = "Резервное копирование",
-                ContentMessage = $"Последняя резервная копия базы данных создавалась более месяца назад{lastBackupTime}." +
-                                 $"{Environment.NewLine}Хотите выполнить резервное копирование?",
+                ContentMessage = contentMessage,
                 MinWidth = 450,
                 MinHeight = 150,
                 SizeToContent = SizeToContent.Width,
@@ -301,8 +327,6 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                               $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
                     ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
                 }
-                Settings.Default.LastDbBackupDate = DateTime.Now;
-                Settings.Default.Save();
                 break;
             }
             case "Выбрать папку и сохранить":
@@ -329,11 +353,14 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                         ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
                     }
                 }
-                Settings.Default.LastDbBackupDate = DateTime.Now;
-                Settings.Default.Save();
                 break;
             }
         }
+
+        // После первого показа — дальше раз в месяц (в т.ч. при «Не сохранять»).
+        Settings.Default.LastDbBackupDate = DateTime.Now;
+        Settings.Default.IsFirstAppRun = false;
+        Settings.Default.Save();
     }
 
     #endregion

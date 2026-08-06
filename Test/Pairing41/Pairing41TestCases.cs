@@ -14,7 +14,7 @@ namespace Test.Pairing41;
 /// <item><b>B</b> — 1.2 ↔ 1.6 (ИОУ);</item>
 /// <item><b>C</b> — 1.3 ↔ 1.6 (ОРИ-изделия);</item>
 /// <item><b>D</b> — 1.4 ↔ 1.6 (ОРИ-прочие);</item>
-/// <item><b>F</b> — сторона 1.6 (приоритет 12→13→14, симметрия);</item>
+/// <item><b>F</b> — сторона 1.6 (общий пул 1.6, приоритет 12→13→14, симметрия);</item>
 /// <item><b>P</b> — опции диалога (Check* = false снимает поле из ключа);</item>
 /// <item><b>H</b> — карты closest-match для непарных.</item>
 /// </list>
@@ -28,7 +28,9 @@ namespace Test.Pairing41;
 /// Типичные даты хелперов: <see cref="Form11OpDate"/> (1.1/1.5),
 /// <see cref="Form12OpDate"/> (1.2), <see cref="Form13OpDate"/> (1.3),
 /// <see cref="Form14OpDate"/> (1.4). Id строк вымышленные (1 / 101, 2 / 202, …).
-/// Код РАО в ключ парности не входит.
+/// Код РАО сравнивается при включённом CheckCodeRao (по умолчанию — true у всех
+/// хелперов Row12/Row13/Row14/Row16From12/Row16From13/Row16From14 он пустой,
+/// поэтому существующие сценарии остаются парными, пока явно не задан другой).
 /// Для 1.1↔1.5 пустые паспорт+зав.№ и заглушки («б.н.», «без номера», «-»)
 /// идут в ветку суммирования количества.
 /// </para>
@@ -77,10 +79,12 @@ internal static partial class Pairing41TestCases
         string opDate = Form11OpDate,
         string creationDate = "2020-01-01",
         string documentNumber = "DOC-1",
-        string packNumber = "УКТ-1") =>
+        string packNumber = "УКТ-1",
+        string opCode = "41") =>
         new()
         {
             Id = id,
+            OpCode = opCode,
             OpDate = opDate,
             PasNum = pasNum,
             FacNum = facNum,
@@ -118,7 +122,8 @@ internal static partial class Pairing41TestCases
         string documentNumber = "DOC-12",
         string documentDate = Form12OpDate,
         string packNumber = "УКТ-12",
-        string? activityMeasurementDate = null) =>
+        string? activityMeasurementDate = null,
+        string codeRao = "") =>
         new()
         {
             Id = id,
@@ -132,7 +137,8 @@ internal static partial class Pairing41TestCases
             DocumentDate = documentDate,
             PackName = "Упаковка",
             PackType = "ТипУКТ",
-            PackNumber = packNumber
+            PackNumber = packNumber,
+            CodeRao = codeRao
         };
 
     private static Pairing41Row Row16From12(
@@ -144,7 +150,8 @@ internal static partial class Pairing41TestCases
         string documentNumber = "DOC-12",
         string documentDate = Form12OpDate,
         string packNumber = "УКТ-12",
-        string? activityMeasurementDate = null) =>
+        string? activityMeasurementDate = null,
+        string codeRao = "") =>
         new()
         {
             Id = id,
@@ -161,7 +168,8 @@ internal static partial class Pairing41TestCases
             PackName = "Упаковка",
             PackType = "ТипУКТ",
             PackNumber = packNumber,
-            MainRadionuclids = "уран-238; торий-234; протактиний-234м; уран-234"
+            MainRadionuclids = "уран-238; торий-234; протактиний-234м; уран-234",
+            CodeRao = codeRao
         };
 
     /// <summary>Строка 1.3 после расчёта активностей по типу нуклида (как LoadForm13).</summary>
@@ -177,7 +185,9 @@ internal static partial class Pairing41TestCases
         string creationDate = Form13CreationDate,
         string documentNumber = "DOC-13",
         string documentDate = Form13OpDate,
-        string packNumber = "УКТ-13") =>
+        string packNumber = "УКТ-13",
+        string codeRao = "",
+        byte? aggregateState = null) =>
         new()
         {
             Id = id,
@@ -196,7 +206,9 @@ internal static partial class Pairing41TestCases
             DocumentDate = documentDate,
             PackName = "Упаковка",
             PackType = "ТипУКТ",
-            PackNumber = packNumber
+            PackNumber = packNumber,
+            CodeRao = codeRao,
+            AggregateState = aggregateState
         };
 
     private static Pairing41Row Row16From13(
@@ -210,7 +222,8 @@ internal static partial class Pairing41TestCases
         string activityMeasurementDate = Form13CreationDate,
         string documentNumber = "DOC-13",
         string documentDate = Form13OpDate,
-        string packNumber = "УКТ-13") =>
+        string packNumber = "УКТ-13",
+        string codeRao = "") =>
         new()
         {
             Id = id,
@@ -226,7 +239,8 @@ internal static partial class Pairing41TestCases
             DocumentDate = documentDate,
             PackName = "Упаковка",
             PackType = "ТипУКТ",
-            PackNumber = packNumber
+            PackNumber = packNumber,
+            CodeRao = codeRao
         };
 
     /// <summary>Строка 1.4 после ToMassTon и расчёта активностей (как LoadForm14).</summary>
@@ -242,7 +256,10 @@ internal static partial class Pairing41TestCases
         string opDate = Form14OpDate,
         string activityMeasurementDate = "2024-03-15",
         string documentNumber = "DOC-14",
-        string packNumber = "УКТ-14") =>
+        string documentDate = Form14OpDate,
+        string packNumber = "УКТ-14",
+        string codeRao = "",
+        byte? aggregateState = null) =>
         new()
         {
             Id = id,
@@ -258,10 +275,12 @@ internal static partial class Pairing41TestCases
             ActivityMeasurementDate = activityMeasurementDate,
             DocumentVid = 1,
             DocumentNumber = documentNumber,
-            DocumentDate = Form14OpDate,
+            DocumentDate = documentDate,
             PackName = "Упаковка",
             PackType = "ТипУКТ",
-            PackNumber = packNumber
+            PackNumber = packNumber,
+            CodeRao = codeRao,
+            AggregateState = aggregateState
         };
 
     private static Pairing41Row Row16From14(
@@ -276,7 +295,8 @@ internal static partial class Pairing41TestCases
         string opDate = Form14OpDate,
         string activityMeasurementDate = "2024-03-15",
         string documentNumber = "DOC-14",
-        string packNumber = "УКТ-14") =>
+        string packNumber = "УКТ-14",
+        string codeRao = "") =>
         new()
         {
             Id = id,
@@ -294,6 +314,7 @@ internal static partial class Pairing41TestCases
             DocumentDate = Form14OpDate,
             PackName = "Упаковка",
             PackType = "ТипУКТ",
-            PackNumber = packNumber
+            PackNumber = packNumber,
+            CodeRao = codeRao
         };
 }

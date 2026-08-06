@@ -24,6 +24,13 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
     private const string OperationCode = "41";
 
     /// <summary>
+    /// Частая ошибка на форме 1.5: вместо 41 указывают код получения 14.
+    /// Такие строки загружаются как кандидаты для пары к 1.1, но не ищут себе пару
+    /// и не попадают в непарные на листе 1.5.
+    /// </summary>
+    private const string Form15ReceiveMistypeOpCode = "14";
+
+    /// <summary>
     /// Ограничение Firebird для списка IN (...); берём запас ниже лимита 1500.
     /// </summary>
     private const int FirebirdInListMaxCount = 1000;
@@ -133,7 +140,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
                 dialog.Vm.CheckTransporterOkpo,
                 dialog.Vm.CheckPackName,
                 dialog.Vm.CheckPackType,
-                dialog.Vm.CheckPackNumber),
+                dialog.Vm.CheckPackNumber,
+                dialog.Vm.CheckOperationCode),
             new Pairing12To16Params(
                 dialog.Vm.CheckOperationDate12To16,
                 dialog.Vm.CheckMass12To16,
@@ -145,7 +153,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
                 dialog.Vm.CheckDocumentDate12To16,
                 dialog.Vm.CheckPackName12To16,
                 dialog.Vm.CheckPackType12To16,
-                dialog.Vm.CheckPackNumber12To16),
+                dialog.Vm.CheckPackNumber12To16,
+                dialog.Vm.CheckCodeRao12To16),
             new Pairing13To16Params(
                 dialog.Vm.CheckOperationDate13To16,
                 dialog.Vm.CheckMainRadionuclids13To16,
@@ -159,7 +168,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
                 dialog.Vm.CheckDocumentDate13To16,
                 dialog.Vm.CheckPackName13To16,
                 dialog.Vm.CheckPackType13To16,
-                dialog.Vm.CheckPackNumber13To16),
+                dialog.Vm.CheckPackNumber13To16,
+                dialog.Vm.CheckCodeRao13To16),
             new Pairing14To16Params(
                 dialog.Vm.CheckOperationDate14To16,
                 dialog.Vm.CheckVolume14To16,
@@ -175,7 +185,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
                 dialog.Vm.CheckDocumentDate14To16,
                 dialog.Vm.CheckPackName14To16,
                 dialog.Vm.CheckPackType14To16,
-                dialog.Vm.CheckPackNumber14To16));
+                dialog.Vm.CheckPackNumber14To16,
+                dialog.Vm.CheckCodeRao14To16));
     }
 
     public sealed record PairingParamsSet(
@@ -200,7 +211,9 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         bool CheckTransporterOkpo = true,
         bool CheckPackName = true,
         bool CheckPackType = true,
-        bool CheckPackNumber = true);
+        bool CheckPackNumber = true,
+        /// <summary>Код операции (на 1.5 часто ошибочно 14 вместо 41).</summary>
+        bool CheckOperationCode = true);
 
     public sealed record Pairing12To16Params(
         bool CheckOperationDate = true,
@@ -213,7 +226,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         bool CheckDocumentDate = true,
         bool CheckPackName = true,
         bool CheckPackType = true,
-        bool CheckPackNumber = true);
+        bool CheckPackNumber = true,
+        bool CheckCodeRao = true);
 
     public sealed record Pairing13To16Params(
         bool CheckOperationDate = true,
@@ -228,7 +242,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         bool CheckDocumentDate = true,
         bool CheckPackName = true,
         bool CheckPackType = true,
-        bool CheckPackNumber = true);
+        bool CheckPackNumber = true,
+        bool CheckCodeRao = true);
 
     public sealed record Pairing14To16Params(
         bool CheckOperationDate = true,
@@ -245,7 +260,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
         bool CheckDocumentDate = true,
         bool CheckPackName = true,
         bool CheckPackType = true,
-        bool CheckPackNumber = true);
+        bool CheckPackNumber = true,
+        bool CheckCodeRao = true);
 
     #endregion
 

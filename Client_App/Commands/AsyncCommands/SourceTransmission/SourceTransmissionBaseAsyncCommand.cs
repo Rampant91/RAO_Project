@@ -9,6 +9,7 @@ using Models.Forms.Form1;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -199,7 +200,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .Select(x => x["code"])
                     .ToArray();
 
-                var codeRao = GetCodeRao(form13, nuclidsArray, nuclidTypeArray);
+                var codeRao = RaoCodeHelper.ComputeCodeRaoFromForm13(form13.Radionuclids_DB, form13.AggregateState_DB);
                 var activitiesDictionary = GetActivities(form13, nuclidTypeArray);
 
                 var newForm16 = new Form16
@@ -286,7 +287,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     ? $"{massDoubleValue / 1000:0.######################################################e+00}"
                     : "";
 
-                var codeRao = GetCodeRao(form14, nuclidsArray, nuclidTypeArray);
+                var codeRao = RaoCodeHelper.ComputeCodeRaoFromForm14(form14.Radionuclids_DB, form14.AggregateState_DB);
                 var activitiesDictionary = GetActivities(form14, nuclidTypeArray);
 
                 var newForm16 = new Form16
@@ -525,7 +526,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     .Select(x => x["code"])
                     .ToArray();
 
-                var codeRao = GetCodeRao(form13, nuclidsArray, nuclidTypeArray);
+                var codeRao = RaoCodeHelper.ComputeCodeRaoFromForm13(form13.Radionuclids_DB, form13.AggregateState_DB);
                 var activitiesDictionary = GetActivities(form13, nuclidTypeArray);
 
                 var newForm16 = new Form16
@@ -606,7 +607,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                     ? $"{massDoubleValue / 1000:0.######################################################e+00}"
                     : "";
 
-                var codeRao = GetCodeRao(form14, nuclidsArray, nuclidTypeArray);
+                var codeRao = RaoCodeHelper.ComputeCodeRaoFromForm14(form14.Radionuclids_DB, form14.AggregateState_DB);
                 var activitiesDictionary = GetActivities(form14, nuclidTypeArray);
 
                 var newForm16 = new Form16
@@ -838,127 +839,6 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
             { "transuranium", transuraniumActivity }
         };
     }
-
-    #endregion
-
-    #region GetCodeRao
-
-    private static string GetCodeRao(Form1 form, IEnumerable<string> nuclidsArray, string[] nuclidTypeArray)
-    {
-        var thirdSymbolCodeRao = GetThirdSymbolCodeRao(nuclidTypeArray);
-        var fifthSymbolCodeRao = GetFifthSymbolCodeRao(nuclidsArray);
-        var ninthTenthSymbols = "__";
-        var agrState = "_";
-        switch (form)
-        {
-            case Form13 form13:
-                {
-                    agrState = form13.AggregateState_DB != null
-                        ? form13.AggregateState_DB.ToString()![..1]
-                        : "";
-                    ninthTenthSymbols = "84";
-                    break;
-                }
-            case Form14 form14:
-                {
-                    agrState = form14.AggregateState_DB != null
-                        ? form14.AggregateState_DB.ToString()![..1]
-                        : "";
-                    break;
-                }
-        }
-        return $"{agrState}_{thirdSymbolCodeRao}1{fifthSymbolCodeRao}_00{ninthTenthSymbols}_";
-    }
-
-    #region GetThirdSymbolCodeRao
-
-    private static string GetThirdSymbolCodeRao(string[] nuclidTypeArray)
-    {
-        var thirdSymbolCodeRao = "0";
-        if (nuclidTypeArray.Contains("а")
-            && (nuclidTypeArray.Contains("б") || nuclidTypeArray.Contains("т"))
-            && nuclidTypeArray.Contains("у"))
-        {
-            thirdSymbolCodeRao = "6";
-        }
-        else if (nuclidTypeArray.Contains("а")
-                 && (nuclidTypeArray.Contains("б") || nuclidTypeArray.Contains("т"))
-                 && !nuclidTypeArray.Contains("у"))
-        {
-            thirdSymbolCodeRao = "5";
-        }
-        else if (!nuclidTypeArray.Contains("а")
-                 && (nuclidTypeArray.Contains("б") || nuclidTypeArray.Contains("т"))
-                 && !nuclidTypeArray.Contains("у"))
-        {
-            thirdSymbolCodeRao = "4";
-        }
-        else if (nuclidTypeArray.Contains("а")
-                 && !nuclidTypeArray.Contains("б") && !nuclidTypeArray.Contains("т")
-                 && nuclidTypeArray.Contains("у"))
-        {
-            thirdSymbolCodeRao = "3";
-        }
-        else if (nuclidTypeArray.Contains("а")
-                 && !nuclidTypeArray.Contains("б") && !nuclidTypeArray.Contains("т")
-                 && !nuclidTypeArray.Contains("у"))
-        {
-            thirdSymbolCodeRao = "2";
-        }
-        else if (!nuclidTypeArray.Contains("а")
-                 && !nuclidTypeArray.Contains("б") && !nuclidTypeArray.Contains("т")
-                 && nuclidTypeArray.Contains("у"))
-        {
-            thirdSymbolCodeRao = "1";
-        }
-        return thirdSymbolCodeRao;
-    }
-
-    #endregion
-
-    #region GetFifthSymbolCodeRao
-
-    private static string GetFifthSymbolCodeRao(IEnumerable<string> nuclidsArray)
-    {
-        double maxPeriod = 0;
-        foreach (var nuclidName in nuclidsArray)
-        {
-            var nuclidDictionary = R.FirstOrDefault(x => x["name"] == nuclidName);
-            if (nuclidDictionary == null) continue;
-
-            var unit = nuclidDictionary["periodUnit"];
-            var periodValue = nuclidDictionary["periodValue"].Replace('.', ',');
-            if (!double.TryParse(periodValue,
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                    new CultureInfo("ru-RU", useUserOverride: false),
-                    out var halfLife
-                )) continue;
-            switch (unit)
-            {
-                case "лет":
-                    break;
-                case "сут":
-                    halfLife /= 365;
-                    break;
-                case "час":
-                    halfLife /= 8760;   //365*24
-                    break;
-                case "мин":
-                    halfLife /= 525_600;   //365*24*60
-                    break;
-                default: continue;
-            }
-            if (halfLife > maxPeriod)
-            {
-                maxPeriod = halfLife;
-            }
-        }
-        return maxPeriod > 31
-            ? "1"
-            : "2";
-    }
-
-    #endregion
 
     #endregion
 

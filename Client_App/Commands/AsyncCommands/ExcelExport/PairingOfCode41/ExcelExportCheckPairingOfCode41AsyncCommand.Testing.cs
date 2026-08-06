@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
 using Client_App.Resources.CustomComparers.SnkComparers;
+using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41;
 
@@ -29,6 +30,74 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             NumericWithTolerance(left, right);
 
         public static string ToMassTonForTests(string? massKg) => ToMassTon(massKg);
+
+        /// <summary>Следующая строка данных на листе (для проверки дописывания в режиме «вся БД»).</summary>
+        public static int GetNextDataRowForTests(ExcelWorksheet sheet) => GetNextDataRow(sheet);
+
+        public static void CreatePairingLegendSheetForTests(ExcelPackage excelPackage) =>
+            CreatePairingLegendSheet(excelPackage);
+
+        public static IReadOnlyList<string> Form16DataHeadersForTests => Form16DataHeaders;
+
+        public static IReadOnlyList<string> Form12DataHeadersForTests => Form12DataHeaders;
+
+        public static IReadOnlyList<string> Form13DataHeadersForTests => Form13DataHeaders;
+
+        public static IReadOnlyList<string> Form14DataHeadersForTests => Form14DataHeaders;
+
+        public static IReadOnlyList<string> Form1115DataHeadersForTests => Form1115DataHeaders;
+
+        public static int InfoColCountForTests => InfoColCount;
+
+        public static int Layout16SourceColCountForTests => Layout16.SourceColCount;
+
+        public static int Layout12SourceColCountForTests => Layout12.SourceColCount;
+
+        public static int Layout13SourceColCountForTests => Layout13.SourceColCount;
+
+        public static int Layout14SourceColCountForTests => Layout14.SourceColCount;
+
+        public static int Layout1115SourceColCountForTests => Layout1115.SourceColCount;
+
+        public static int? GetForm16Form12FieldOffsetForTests(Pairing12To16Field field) =>
+            GetForm16Form12FieldOffset(field);
+
+        public static int? GetForm16Form13FieldOffsetForTests(Pairing13To16Field field) =>
+            GetForm16Form13FieldOffset(field);
+
+        public static int? GetForm16Form14FieldOffsetForTests(Pairing14To16Field field) =>
+            GetForm16Form14FieldOffset(field);
+
+        public static int? GetForm12FieldOffsetForTests(Pairing12To16Field field) =>
+            GetForm12FieldOffset(field);
+
+        public static int? GetForm13FieldOffsetForTests(Pairing13To16Field field) =>
+            GetForm13FieldOffset(field);
+
+        public static int? GetForm14FieldOffsetForTests(Pairing14To16Field field) =>
+            GetForm14FieldOffset(field);
+
+        public static int? GetForm1115FieldOffsetForTests(Pairing11To15Field field) =>
+            GetForm1115FieldOffset(field);
+
+        /// <summary>
+        /// Id непарных 1.1 → (RepsId кандидата 1.5, OrgRegNo кандидата).
+        /// Для проверки, что closest не «перепрыгивает» на другую организацию.
+        /// </summary>
+        public static IReadOnlyDictionary<int, (int CandidateRepsId, string CandidateOrgRegNo)> GetClosest11CandidateOrgKeys(
+            IEnumerable<Pairing41Row> form11,
+            IEnumerable<Pairing41Row> form15,
+            Pairing11To15Params? options = null)
+        {
+            options ??= new Pairing11To15Params();
+            var source = ToDtoList(form11);
+            var reference = ToDtoList(form15);
+            var unpaired = GetUnpairedOperations11To15(source, reference, options);
+            var closest = BuildClosestMatchHighlights(unpaired, reference, options);
+            return closest.ToDictionary(
+                kv => kv.Key,
+                kv => (kv.Value.Candidate.RepsId, kv.Value.Candidate.OrgRegNo ?? string.Empty));
+        }
 
         public static IReadOnlyList<int> GetUnpaired11To15Ids(
             IEnumerable<Pairing41Row> source,
@@ -123,22 +192,45 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                     testCase.Params13To16,
                     testCase.Params14To16));
 
-            var closest11 = BuildClosestMatchHighlights(unpaired.Form11, form15, testCase.Params11To15)
+            var closest11Raw = BuildClosestMatchHighlights(unpaired.Form11, form15, testCase.Params11To15);
+            var closest11 = closest11Raw
                 .ToDictionary(kv => kv.Key, kv => (IReadOnlyDictionary<Pairing11To15Field, bool>)kv.Value.FieldMatches);
-            var closest15 = BuildClosestMatchHighlights(unpaired.Form15, form11, testCase.Params11To15)
+            var closest11Candidates = closest11Raw.ToDictionary(kv => kv.Key, kv => kv.Value.Candidate.Id);
+
+            var closest15Raw = BuildClosestMatchHighlights(unpaired.Form15, form11, testCase.Params11To15);
+            var closest15 = closest15Raw
                 .ToDictionary(kv => kv.Key, kv => (IReadOnlyDictionary<Pairing11To15Field, bool>)kv.Value.FieldMatches);
-            var closest12 = BuildClosestMatchHighlights12To16(unpaired.Form12, form16, testCase.Params12To16)
-                .ToDictionary(kv => kv.Key, kv => (IReadOnlyDictionary<Pairing12To16Field, bool>)kv.Value);
-            var closest13 = BuildClosestMatchHighlights13To16(unpaired.Form13, form16, testCase.Params13To16)
-                .ToDictionary(kv => kv.Key, kv => (IReadOnlyDictionary<Pairing13To16Field, bool>)kv.Value);
-            var closest14 = BuildClosestMatchHighlights14To16(unpaired.Form14, form16, testCase.Params14To16)
-                .ToDictionary(kv => kv.Key, kv => (IReadOnlyDictionary<Pairing14To16Field, bool>)kv.Value);
+            var closest15Candidates = closest15Raw.ToDictionary(kv => kv.Key, kv => kv.Value.Candidate.Id);
+
+            var closest12Raw = BuildClosestMatchHighlights12To16(unpaired.Form12, form16, testCase.Params12To16);
+            var closest12 = closest12Raw
+                .ToDictionary(kv => kv.Key, kv => (IReadOnlyDictionary<Pairing12To16Field, bool>)kv.Value.FieldMatches);
+            var closest12Candidates = closest12Raw.ToDictionary(kv => kv.Key, kv => kv.Value.Candidate.Id);
+
+            var closest13Raw = BuildClosestMatchHighlights13To16(unpaired.Form13, form16, testCase.Params13To16);
+            var closest13 = closest13Raw
+                .ToDictionary(kv => kv.Key, kv => (IReadOnlyDictionary<Pairing13To16Field, bool>)kv.Value.FieldMatches);
+            var closest13AggregateStateMatch = closest13Raw
+                .ToDictionary(kv => kv.Key, kv => kv.Value.AggregateStateMatchesCodeRao);
+            var closest13Candidates = closest13Raw.ToDictionary(kv => kv.Key, kv => kv.Value.Candidate.Id);
+
+            var closest14Raw = BuildClosestMatchHighlights14To16(unpaired.Form14, form16, testCase.Params14To16);
+            var closest14 = closest14Raw
+                .ToDictionary(kv => kv.Key, kv => (IReadOnlyDictionary<Pairing14To16Field, bool>)kv.Value.FieldMatches);
+            var closest14AggregateStateMatch = closest14Raw
+                .ToDictionary(kv => kv.Key, kv => kv.Value.AggregateStateMatchesCodeRao);
+            var closest14Candidates = closest14Raw.ToDictionary(kv => kv.Key, kv => kv.Value.Candidate.Id);
+
             var closest16 = BuildClosestMatchHighlights16(
                 unpaired.Form16, form12, form13, form14,
                 testCase.Params12To16, testCase.Params13To16, testCase.Params14To16);
+            var closest16Candidates = closest16.ToDictionary(kv => kv.Key, kv => kv.Value.Candidate.Id);
 
             return new Pairing41ClosestMatchResult(
-                closest11, closest15, closest12, closest13, closest14, closest16);
+                closest11, closest15, closest12, closest13, closest14, closest16,
+                closest13AggregateStateMatch, closest14AggregateStateMatch,
+                closest11Candidates, closest15Candidates, closest12Candidates,
+                closest13Candidates, closest14Candidates, closest16Candidates);
         }
 
         private static List<Operation41PairingDto> ToDtoList(IEnumerable<Pairing41Row> rows) =>
@@ -173,7 +265,11 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             Mass = row.Mass,
             Volume = row.Volume,
             ActivityMeasurementDate = row.ActivityMeasurementDate,
-            Quantity = row.Quantity
+            Quantity = row.Quantity,
+            FormNum = row.FormNum,
+            CodeRao = row.CodeRao,
+            AggregateState = row.AggregateState,
+            OrgRegNo = row.OrgRegNo
         };
     }
 

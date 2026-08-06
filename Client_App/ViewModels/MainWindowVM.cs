@@ -24,6 +24,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using ExcelExportCheckPairingOfCode41AsyncCommand = Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
+using ExcelExportCheckTransferReceiveAsyncCommand = Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
 
 namespace Client_App.ViewModels;
 
@@ -352,6 +353,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ConvertExcelToRaodb { get; set; }               //  Дополнительно -> Конвертер из Excel в .RAODB
     public ICommand ExcelExportCheckAllForms { get; set; }          //  Проверить все формы у организации
     public ICommand ExcelExportCheckPairingOfCode41 { get; set; }   //  Непарные операции 41 (org / вся БД, формы 1.1–1.6)
+    public ICommand ExcelExportCheckTransferReceive { get; set; }   //  Проверка операций приёма-передачи (org / вся БД, формы 1.1–1.3)
     public ICommand DeleteReports { get; set; }                     //  Удалить выбранную организацию (1.0, 2.0, 4.0)
 
     /// <summary>
@@ -514,6 +516,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         DeleteReports = new DeleteReportsAsyncCommand(this);
         ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand(this);
         ExcelExportCheckPairingOfCode41 = new ExcelExportCheckPairingOfCode41AsyncCommand(this);
+        ExcelExportCheckTransferReceive = new ExcelExportCheckTransferReceiveAsyncCommand(this);
         ImportExcel = new ImportExcelAsyncCommand();
         ImportJson = new ImportJsonAsyncCommand();
         ImportRaodb = new ImportRaodbAsyncCommand();

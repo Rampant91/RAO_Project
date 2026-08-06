@@ -6,12 +6,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.Resources;
 using Client_App.Resources.CustomComparers.SnkComparers;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.Comparers.FormContent;
 using Models.DBRealization;
-using Models.Forms.Form1;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41;
 
@@ -180,7 +180,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         bool includeSerial,
         bool includeQuantity)
     {
-        var parts = new List<string>(16);
+        var parts = new List<string>(17);
+        if (options.CheckOperationCode) parts.Add(NormalizeNumber(row.OpCode));
         if (options.CheckOperationDate) parts.Add(NormalizeDate(row.OpDate));
         if (includeSerial && options.CheckPassportNumber) parts.Add(NormalizeSerialNumber(row.PasNum));
         if (options.CheckType) parts.Add(NormalizeNumber(row.Type));
@@ -252,7 +253,64 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     #region Match 1.2–1.4 ↔ 1.6 / сторона 1.6
 
-    /// <summary>Непарные 1.2→1.6 (pre-norm, бакеты по дате операции).</summary>
+    /// <summary>
+    /// Непарные 1.2 / 1.3 / 1.4 / 1.6 с <b>общим</b> пулом 1.6: одна строка 1.6 закрывает
+    /// не больше одной строки РВ. Приоритет захвата: сначала 1.2, затем 1.3, затем 1.4.
+    /// </summary>
+    private static (
+        List<Operation41PairingDto> Unpaired12,
+        List<Operation41PairingDto> Unpaired13,
+        List<Operation41PairingDto> Unpaired14,
+        List<Operation41PairingDto> Unpaired16)
+        GetUnpairedForms12To16Shared(
+            List<Operation41PairingDto> form12,
+            List<Operation41PairingDto> form13,
+            List<Operation41PairingDto> form14,
+            List<Operation41PairingDto> form16,
+            Pairing12To16Params pairing12To16Params,
+            Pairing13To16Params pairing13To16Params,
+            Pairing14To16Params pairing14To16Params)
+    {
+        var form16Norms = CreatePairingNorms(form16);
+        var used16 = new bool[form16Norms.Length];
+
+        var unpaired12 = GetUnpairedByNormMatch(
+            form12,
+            form16,
+            (rv, rao) => Matches12To16Norm(rv, rao, pairing12To16Params),
+            bucketByOpDate: pairing12To16Params.CheckOperationDate,
+            sharedReferenceUsed: used16,
+            precomputedRefNorms: form16Norms);
+
+        var unpaired13 = GetUnpairedByNormMatch(
+            form13,
+            form16,
+            (rv, rao) => Matches13To16Norm(rv, rao, pairing13To16Params),
+            bucketByOpDate: pairing13To16Params.CheckOperationDate,
+            sharedReferenceUsed: used16,
+            precomputedRefNorms: form16Norms);
+
+        var unpaired14 = GetUnpairedByNormMatch(
+            form14,
+            form16,
+            (rv, rao) => Matches14To16Norm(rv, rao, pairing14To16Params),
+            bucketByOpDate: pairing14To16Params.CheckOperationDate,
+            sharedReferenceUsed: used16,
+            precomputedRefNorms: form16Norms);
+
+        var unpaired16 = new List<Operation41PairingDto>();
+        for (var i = 0; i < form16.Count; i++)
+        {
+            if (!used16[i])
+            {
+                unpaired16.Add(form16[i]);
+            }
+        }
+
+        return (unpaired12, unpaired13, unpaired14, unpaired16);
+    }
+
+    /// <summary>Непарные 1.2→1.6 без учёта 1.3/1.4 (только для узких unit-тестов).</summary>
     private static List<Operation41PairingDto> GetUnpairedOperations12To16(
         List<Operation41PairingDto> source, List<Operation41PairingDto> reference, Pairing12To16Params options) =>
         GetUnpairedByNormMatch(
@@ -277,6 +335,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             (rv, rao) => Matches14To16Norm(rv, rao, options),
             bucketByOpDate: options.CheckOperationDate);
 
+    /// <summary>Непарные 1.6 — тот же общий claim, что и у РВ→1.6 (приоритет 12→13→14).</summary>
     private static List<Operation41PairingDto> GetUnpairedForm16(
         List<Operation41PairingDto> form16Operations,
         List<Operation41PairingDto> form12Operations,
@@ -284,60 +343,29 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         List<Operation41PairingDto> form14Operations,
         Pairing12To16Params pairing12To16Params,
         Pairing13To16Params pairing13To16Params,
-        Pairing14To16Params pairing14To16Params)
-    {
-        if (form16Operations.Count == 0)
-        {
-            return [];
-        }
-
-        var norms12 = CreatePairingNorms(form12Operations);
-        var norms13 = CreatePairingNorms(form13Operations);
-        var norms14 = CreatePairingNorms(form14Operations);
-        var used12 = new bool[norms12.Length];
-        var used13 = new bool[norms13.Length];
-        var used14 = new bool[norms14.Length];
-        var buckets12 = BuildOpDateBuckets(norms12, pairing12To16Params.CheckOperationDate);
-        var buckets13 = BuildOpDateBuckets(norms13, pairing13To16Params.CheckOperationDate);
-        var buckets14 = BuildOpDateBuckets(norms14, pairing14To16Params.CheckOperationDate);
-
-        var unpaired = new List<Operation41PairingDto>();
-        foreach (var form16 in form16Operations)
-        {
-            var form16Norm = CreatePairingNorm(form16);
-            if (TryClaimMatch(form16Norm, norms12, used12, buckets12, pairing12To16Params.CheckOperationDate,
-                    (rv, rao) => Matches12To16Norm(rv, rao, pairing12To16Params)))
-            {
-                continue;
-            }
-
-            if (TryClaimMatch(form16Norm, norms13, used13, buckets13, pairing13To16Params.CheckOperationDate,
-                    (rv, rao) => Matches13To16Norm(rv, rao, pairing13To16Params)))
-            {
-                continue;
-            }
-
-            if (TryClaimMatch(form16Norm, norms14, used14, buckets14, pairing14To16Params.CheckOperationDate,
-                    (rv, rao) => Matches14To16Norm(rv, rao, pairing14To16Params)))
-            {
-                continue;
-            }
-
-            unpaired.Add(form16);
-        }
-
-        return unpaired;
-    }
+        Pairing14To16Params pairing14To16Params) =>
+        GetUnpairedForms12To16Shared(
+                form12Operations,
+                form13Operations,
+                form14Operations,
+                form16Operations,
+                pairing12To16Params,
+                pairing13To16Params,
+                pairing14To16Params)
+            .Unpaired16;
 
     /// <summary>
     /// Жадное сопоставление с пренормализацией, без RemoveAt и с бакетами по дате операции (если дата в ключе).
     /// <paramref name="isMatch"/>: (сторона source/RV, сторона reference/РАО) — как Matches*To16(rv, rao).
+    /// <paramref name="sharedReferenceUsed"/> — общий used по пулу reference (одна 1.6 не закрывает две строки РВ).
     /// </summary>
     private static List<Operation41PairingDto> GetUnpairedByNormMatch(
         List<Operation41PairingDto> source,
         List<Operation41PairingDto> reference,
         Func<PairingNorm, PairingNorm, bool> isMatch,
-        bool bucketByOpDate)
+        bool bucketByOpDate,
+        bool[]? sharedReferenceUsed = null,
+        PairingNorm[]? precomputedRefNorms = null)
     {
         if (source.Count == 0)
         {
@@ -349,8 +377,18 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             return [.. source];
         }
 
-        var refNorms = CreatePairingNorms(reference);
-        var used = new bool[refNorms.Length];
+        var refNorms = precomputedRefNorms ?? CreatePairingNorms(reference);
+        if (refNorms.Length != reference.Count)
+        {
+            throw new ArgumentException("precomputedRefNorms length must match reference.", nameof(precomputedRefNorms));
+        }
+
+        var used = sharedReferenceUsed ?? new bool[refNorms.Length];
+        if (used.Length != refNorms.Length)
+        {
+            throw new ArgumentException("sharedReferenceUsed length must match reference norms.", nameof(sharedReferenceUsed));
+        }
+
         var buckets = BuildOpDateBuckets(refNorms, bucketByOpDate);
         var unpaired = new List<Operation41PairingDto>();
 
@@ -367,37 +405,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     }
 
     /// <summary>
-    /// Form16 → RV: isMatch(rvNorm, form16Norm). Помечает первого подходящего RV.
-    /// </summary>
-    private static bool TryClaimMatch(
-        PairingNorm form16Norm,
-        PairingNorm[] rvNorms,
-        bool[] used,
-        Dictionary<string, List<int>>? buckets,
-        bool bucketByOpDate,
-        Func<PairingNorm, PairingNorm, bool> isMatchRvToRao)
-    {
-        foreach (var i in CandidateIndices(form16Norm.OpDate, rvNorms.Length, buckets, bucketByOpDate))
-        {
-            if (used[i])
-            {
-                continue;
-            }
-
-            if (!isMatchRvToRao(rvNorms[i], form16Norm))
-            {
-                continue;
-            }
-
-            used[i] = true;
-            return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// RV → РАО: isMatch(sourceNorm, refNorm).
+    /// RV → РАО: isMatch(sourceNorm, refNorm). Помечает первого подходящего reference (в т.ч. в общем used 1.6).
     /// </summary>
     private static bool TryClaimMatchAsSource(
         PairingNorm sourceNorm,
@@ -494,7 +502,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         && (!options.CheckDocumentDate || rv.DocumentDate == rao.DocumentDate)
         && (!options.CheckPackName || rv.PackName == rao.PackName)
         && (!options.CheckPackType || rv.PackType == rao.PackType)
-        && (!options.CheckPackNumber || rv.PackNumber == rao.PackNumber);
+        && (!options.CheckPackNumber || rv.PackNumber == rao.PackNumber)
+        && (!options.CheckCodeRao || rv.CodeRao == rao.CodeRao);
 
     private static bool Matches13To16Norm(PairingNorm rv, PairingNorm rao, Pairing13To16Params options) =>
         (!options.CheckOperationDate || rv.OpDate == rao.OpDate)
@@ -509,7 +518,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         && (!options.CheckDocumentDate || rv.DocumentDate == rao.DocumentDate)
         && (!options.CheckPackName || rv.PackName == rao.PackName)
         && (!options.CheckPackType || rv.PackType == rao.PackType)
-        && (!options.CheckPackNumber || rv.PackNumber == rao.PackNumber);
+        && (!options.CheckPackNumber || rv.PackNumber == rao.PackNumber)
+        && (!options.CheckCodeRao || rv.CodeRao == rao.CodeRao);
 
     private static bool Matches14To16Norm(PairingNorm rv, PairingNorm rao, Pairing14To16Params options) =>
         (!options.CheckOperationDate || rv.OpDate == rao.OpDate)
@@ -526,7 +536,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         && (!options.CheckDocumentDate || rv.DocumentDate == rao.DocumentDate)
         && (!options.CheckPackName || rv.PackName == rao.PackName)
         && (!options.CheckPackType || rv.PackType == rao.PackType)
-        && (!options.CheckPackNumber || rv.PackNumber == rao.PackNumber);
+        && (!options.CheckPackNumber || rv.PackNumber == rao.PackNumber)
+        && (!options.CheckCodeRao || rv.CodeRao == rao.CodeRao);
 
     #endregion
 
@@ -550,7 +561,9 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         };
 
         return operations
-            .Where(form => string.Equals(form.OpCode.Trim(), OperationCode, StringComparison.Ordinal))
+            .Where(form => formNum == "1.5"
+                ? IsForm15PairingCandidateOpCode(form.OpCode)
+                : string.Equals(form.OpCode.Trim(), OperationCode, StringComparison.Ordinal))
             // Стабильный порядок для жадного matching (org и whole-DB bulk).
             .OrderBy(form => form.Id)
             .ToList();
@@ -598,7 +611,11 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 PackType = options == null || options.CheckPackType ? form.PackType_DB : string.Empty,
                 PackNumber = options == null || options.CheckPackNumber ? form.PackNumber_DB : string.Empty,
                 Activity = options == null || options.CheckActivity ? form.Activity_DB : string.Empty,
-                Quantity = options == null || options.CheckQuantity ? form.Quantity_DB : null
+                Quantity = options == null || options.CheckQuantity ? form.Quantity_DB : null,
+                FormNum = "1.1",
+                NumberInOrder = form.NumberInOrder_DB,
+                StartPeriod = form.Report!.StartPeriod_DB ?? string.Empty,
+                EndPeriod = form.Report.EndPeriod_DB ?? string.Empty
             })
             .ToListAsync(cancellationToken);
     }
@@ -624,7 +641,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 DocumentDate = form.DocumentDate_DB,
                 PackName = form.PackName_DB,
                 PackType = form.PackType_DB,
-                PackNumber = form.PackNumber_DB
+                PackNumber = form.PackNumber_DB,
+                form.NumberInOrder_DB,
+                StartPeriod = form.Report!.StartPeriod_DB,
+                EndPeriod = form.Report.EndPeriod_DB
             })
             .ToListAsync(cancellationToken);
 
@@ -647,7 +667,12 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 DocumentDate = row.DocumentDate,
                 PackName = row.PackName,
                 PackType = row.PackType,
-                PackNumber = row.PackNumber
+                PackNumber = row.PackNumber,
+                FormNum = "1.2",
+                CodeRao = RaoCodeHelper.Form12CodeRao,
+                NumberInOrder = row.NumberInOrder_DB,
+                StartPeriod = row.StartPeriod ?? string.Empty,
+                EndPeriod = row.EndPeriod ?? string.Empty
             };
         }).ToList();
     }
@@ -675,7 +700,11 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 DocumentDate = form.DocumentDate_DB,
                 PackName = form.PackName_DB,
                 PackType = form.PackType_DB,
-                PackNumber = form.PackNumber_DB
+                PackNumber = form.PackNumber_DB,
+                form.AggregateState_DB,
+                form.NumberInOrder_DB,
+                StartPeriod = form.Report!.StartPeriod_DB,
+                EndPeriod = form.Report.EndPeriod_DB
             })
             .ToListAsync(cancellationToken);
 
@@ -702,7 +731,13 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 DocumentDate = row.DocumentDate,
                 PackName = row.PackName,
                 PackType = row.PackType,
-                PackNumber = row.PackNumber
+                PackNumber = row.PackNumber,
+                FormNum = "1.3",
+                AggregateState = row.AggregateState_DB,
+                CodeRao = RaoCodeHelper.ComputeCodeRaoFromForm13(row.Radionuclids, row.AggregateState_DB),
+                NumberInOrder = row.NumberInOrder_DB,
+                StartPeriod = row.StartPeriod ?? string.Empty,
+                EndPeriod = row.EndPeriod ?? string.Empty
             };
         }).ToList();
     }
@@ -732,7 +767,11 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 DocumentDate = form.DocumentDate_DB,
                 PackName = form.PackName_DB,
                 PackType = form.PackType_DB,
-                PackNumber = form.PackNumber_DB
+                PackNumber = form.PackNumber_DB,
+                form.AggregateState_DB,
+                form.NumberInOrder_DB,
+                StartPeriod = form.Report!.StartPeriod_DB,
+                EndPeriod = form.Report.EndPeriod_DB
             })
             .ToListAsync(cancellationToken);
 
@@ -760,7 +799,13 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 DocumentDate = row.DocumentDate,
                 PackName = row.PackName,
                 PackType = row.PackType,
-                PackNumber = row.PackNumber
+                PackNumber = row.PackNumber,
+                FormNum = "1.4",
+                AggregateState = row.AggregateState_DB,
+                CodeRao = RaoCodeHelper.ComputeCodeRaoFromForm14(row.Radionuclids, row.AggregateState_DB),
+                NumberInOrder = row.NumberInOrder_DB,
+                StartPeriod = row.StartPeriod ?? string.Empty,
+                EndPeriod = row.EndPeriod ?? string.Empty
             };
         }).ToList();
     }
@@ -769,11 +814,14 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         DBModel db, int? repsId, CancellationToken cancellationToken, Pairing11To15Params? options = null)
     {
         var effectiveRepsId = repsId ?? 0;
+        // Код 41 (штатный перевод) и код 14 (частая ошибка «получение» вместо перевода).
+        // OpCode всегда читаем — нужен и для ключа, и чтобы отсечь 14 из обратной сверки.
         return ScopedReports(db, repsId)
             .SelectMany(reps => reps.Report_Collection
                 .Where(rep => rep.FormNum_DB == "1.5")
                 .SelectMany(rep => rep.Rows15))
-            .Where(form => form.OperationCode_DB == OperationCode)
+            .Where(form => form.OperationCode_DB == OperationCode
+                           || form.OperationCode_DB == Form15ReceiveMistypeOpCode)
             .Select(form => new Operation41PairingDto
             {
                 Id = form.Id,
@@ -795,7 +843,11 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 PackType = options == null || options.CheckPackType ? form.PackType_DB : string.Empty,
                 PackNumber = options == null || options.CheckPackNumber ? form.PackNumber_DB : string.Empty,
                 Activity = options == null || options.CheckActivity ? form.Activity_DB : string.Empty,
-                Quantity = options == null || options.CheckQuantity ? form.Quantity_DB : null
+                Quantity = options == null || options.CheckQuantity ? form.Quantity_DB : null,
+                FormNum = "1.5",
+                NumberInOrder = form.NumberInOrder_DB,
+                StartPeriod = form.Report!.StartPeriod_DB ?? string.Empty,
+                EndPeriod = form.Report.EndPeriod_DB ?? string.Empty
             })
             .ToListAsync(cancellationToken);
     }
@@ -829,7 +881,12 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 DocumentDate = form.DocumentDate_DB,
                 PackName = form.PackName_DB,
                 PackType = form.PackType_DB,
-                PackNumber = form.PackNumber_DB
+                PackNumber = form.PackNumber_DB,
+                CodeRao = form.CodeRAO_DB,
+                FormNum = "1.6",
+                NumberInOrder = form.NumberInOrder_DB,
+                StartPeriod = form.Report!.StartPeriod_DB ?? string.Empty,
+                EndPeriod = form.Report.EndPeriod_DB ?? string.Empty
             })
             .ToListAsync(cancellationToken);
     }
@@ -854,24 +911,44 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         DBModel db,
         PairingParamsSet pairingParams,
         CancellationToken cancellationToken,
-        Action<string>? reportProgress = null)
+        ProgressReporter? progress = null)
     {
         var p11 = pairingParams.Pairing11To15;
+        const int stages = 8;
+        var stage = 0;
 
-        reportProgress?.Invoke("загрузка формы 1.1");
+        void ReportForm(string formLabel, int rowCount)
+        {
+            stage++;
+            progress?.ReportNow(stage, stages,
+                $"загрузка формы {formLabel}: {rowCount} строк ({stage} из {stages})");
+        }
+
+        progress?.ReportNow(0, stages, "загрузка формы 1.1…");
         var form11 = await LoadOperation41ListAsync(db, null, "1.1", cancellationToken, p11);
-        reportProgress?.Invoke("загрузка формы 1.2");
-        var form12 = await LoadOperation41ListAsync(db, null, "1.2", cancellationToken);
-        reportProgress?.Invoke("загрузка формы 1.3");
-        var form13 = await LoadOperation41ListAsync(db, null, "1.3", cancellationToken);
-        reportProgress?.Invoke("загрузка формы 1.4");
-        var form14 = await LoadOperation41ListAsync(db, null, "1.4", cancellationToken);
-        reportProgress?.Invoke("загрузка формы 1.5");
-        var form15 = await LoadOperation41ListAsync(db, null, "1.5", cancellationToken, p11);
-        reportProgress?.Invoke("загрузка формы 1.6");
-        var form16 = await LoadOperation41ListAsync(db, null, "1.6", cancellationToken);
+        ReportForm("1.1", form11.Count);
 
-        reportProgress?.Invoke("привязка отчётов к организациям");
+        progress?.Status("загрузка формы 1.2…");
+        var form12 = await LoadOperation41ListAsync(db, null, "1.2", cancellationToken);
+        ReportForm("1.2", form12.Count);
+
+        progress?.Status("загрузка формы 1.3…");
+        var form13 = await LoadOperation41ListAsync(db, null, "1.3", cancellationToken);
+        ReportForm("1.3", form13.Count);
+
+        progress?.Status("загрузка формы 1.4…");
+        var form14 = await LoadOperation41ListAsync(db, null, "1.4", cancellationToken);
+        ReportForm("1.4", form14.Count);
+
+        progress?.Status("загрузка формы 1.5…");
+        var form15 = await LoadOperation41ListAsync(db, null, "1.5", cancellationToken, p11);
+        ReportForm("1.5", form15.Count);
+
+        progress?.Status("загрузка формы 1.6…");
+        var form16 = await LoadOperation41ListAsync(db, null, "1.6", cancellationToken);
+        ReportForm("1.6", form16.Count);
+
+        progress?.ReportNow(stage, stages, "привязка отчётов к организациям…");
         var reportIds = form11
             .Concat(form12)
             .Concat(form13)
@@ -890,8 +967,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         StampRepsIds(form14, reportToReps);
         StampRepsIds(form15, reportToReps);
         StampRepsIds(form16, reportToReps);
+        stage++;
+        progress?.ReportNow(stage, stages, $"привязка отчётов: {reportToReps.Count} отчётов ({stage} из {stages})");
 
-        reportProgress?.Invoke("группировка по организациям");
+        progress?.Status("группировка по организациям…");
         var byOrg = new Dictionary<int, OrgOperation41Lists>();
         AddFormToOrgGroups(byOrg, form11, static (org, rows) => org.Form11 = rows);
         AddFormToOrgGroups(byOrg, form12, static (org, rows) => org.Form12 = rows);
@@ -899,6 +978,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         AddFormToOrgGroups(byOrg, form14, static (org, rows) => org.Form14 = rows);
         AddFormToOrgGroups(byOrg, form15, static (org, rows) => org.Form15 = rows);
         AddFormToOrgGroups(byOrg, form16, static (org, rows) => org.Form16 = rows);
+        stage++;
+        progress?.ReportNow(stage, stages, $"группировка: {byOrg.Count} организаций ({stage} из {stages})");
         return byOrg;
     }
 
@@ -971,176 +1052,23 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     #endregion
 
-    #region Build reports for Excel export
+    #region Organization info for export
 
-    private static async Task<Reports> BuildReportsForExportAsync(
-        DBModel db,
-        Reports masterReports,
-        List<Operation41PairingDto> unpairedOperations,
-        string formNum,
-        CancellationToken cancellationToken)
+    /// <summary>
+    /// Реквизиты организации (Рег.№/ОКПО/наименование) — константны для всех строк org,
+    /// заполняются после загрузки из уже материализованного <see cref="Reports"/> (RegNoRep и т.п. не транслируются в SQL).
+    /// </summary>
+    private static void StampOrganizationInfo(IEnumerable<Operation41PairingDto> ops, Reports org)
     {
-        var result = new Reports { Master = masterReports.Master };
-
-        if (unpairedOperations.Count == 0)
+        var regNo = org.Master_DB.RegNoRep.Value ?? string.Empty;
+        var okpo = org.Master_DB.OkpoRep.Value ?? string.Empty;
+        var shortName = org.Master_DB.ShortJurLicoRep.Value ?? string.Empty;
+        foreach (var op in ops)
         {
-            return result;
+            op.OrgRegNo = regNo;
+            op.OrgOkpo = okpo;
+            op.OrgShortName = shortName;
         }
-
-        var formIds = unpairedOperations.Select(operation => operation.Id).Distinct().ToList();
-        var reportIds = unpairedOperations
-            .Where(operation => operation.ReportId != 0)
-            .Select(operation => operation.ReportId)
-            .Distinct()
-            .ToList();
-
-        if (reportIds.Count == 0)
-        {
-            return result;
-        }
-
-        var reports = await LoadReportsByIdsAsync(db, reportIds, cancellationToken);
-
-        switch (formNum)
-        {
-            case "1.1":
-            {
-                var forms = await LoadForm11ByIdsAsync(db, formIds, cancellationToken);
-                AttachFormsToReports(reports, forms, report => report.Rows11, (report, form) => report.Rows11.Add(form));
-                break;
-            }
-            case "1.2":
-            {
-                var forms = await LoadForm12ByIdsAsync(db, formIds, cancellationToken);
-                AttachFormsToReports(reports, forms, report => report.Rows12, (report, form) => report.Rows12.Add(form));
-                break;
-            }
-            case "1.3":
-            {
-                var forms = await LoadForm13ByIdsAsync(db, formIds, cancellationToken);
-                AttachFormsToReports(reports, forms, report => report.Rows13, (report, form) => report.Rows13.Add(form));
-                break;
-            }
-            case "1.4":
-            {
-                var forms = await LoadForm14ByIdsAsync(db, formIds, cancellationToken);
-                AttachFormsToReports(reports, forms, report => report.Rows14, (report, form) => report.Rows14.Add(form));
-                break;
-            }
-            case "1.5":
-            {
-                var forms = await LoadForm15ByIdsAsync(db, formIds, cancellationToken);
-                AttachFormsToReports(reports, forms, report => report.Rows15, (report, form) => report.Rows15.Add(form));
-                break;
-            }
-            case "1.6":
-            {
-                var forms = await LoadForm16ByIdsAsync(db, formIds, cancellationToken);
-                AttachFormsToReports(reports, forms, report => report.Rows16, (report, form) => report.Rows16.Add(form));
-                break;
-            }
-            default:
-                throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null);
-        }
-
-        foreach (var report in OrderReportsForExport(reports))
-        {
-            if (ReportHasUnpairedRows(report, formNum))
-            {
-                result.Report_Collection.Add(report);
-            }
-        }
-
-        return result;
-    }
-
-    private static void AttachFormsToReports<TForm>(
-        List<Report> reports,
-        List<TForm> forms,
-        Func<Report, ICollection<TForm>> getRows,
-        Action<Report, TForm> addRow)
-        where TForm : Form1
-    {
-        var formsByReportId = forms
-            .GroupBy(form => form.ReportId ?? 0)
-            .ToDictionary(
-                group => group.Key,
-                group => group.OrderBy(form => form.NumberInOrder_DB).ToList());
-
-        foreach (var report in OrderReportsForExport(reports))
-        {
-            if (!formsByReportId.TryGetValue(report.Id, out var rowList) || rowList.Count == 0)
-            {
-                continue;
-            }
-
-            getRows(report).Clear();
-            foreach (var form in rowList)
-            {
-                addRow(report, form);
-            }
-        }
-    }
-
-    private static async Task<List<Report>> LoadReportsByIdsAsync(
-        DBModel db,
-        IReadOnlyList<int> reportIds,
-        CancellationToken cancellationToken)
-    {
-        var reports = new List<Report>();
-        foreach (var idChunk in ChunkIds(reportIds))
-        {
-            var batch = await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .Where(rep => idChunk.Contains(rep.Id))
-                .ToListAsync(cancellationToken);
-            reports.AddRange(batch);
-        }
-
-        return reports;
-    }
-
-    private static async Task<List<Form11>> LoadForm11ByIdsAsync(
-        DBModel db, IReadOnlyList<int> formIds, CancellationToken cancellationToken) =>
-        await LoadFormsByIdsAsync(db.form_11, formIds, cancellationToken);
-
-    private static async Task<List<Form12>> LoadForm12ByIdsAsync(
-        DBModel db, IReadOnlyList<int> formIds, CancellationToken cancellationToken) =>
-        await LoadFormsByIdsAsync(db.form_12, formIds, cancellationToken);
-
-    private static async Task<List<Form13>> LoadForm13ByIdsAsync(
-        DBModel db, IReadOnlyList<int> formIds, CancellationToken cancellationToken) =>
-        await LoadFormsByIdsAsync(db.form_13, formIds, cancellationToken);
-
-    private static async Task<List<Form14>> LoadForm14ByIdsAsync(
-        DBModel db, IReadOnlyList<int> formIds, CancellationToken cancellationToken) =>
-        await LoadFormsByIdsAsync(db.form_14, formIds, cancellationToken);
-
-    private static async Task<List<Form15>> LoadForm15ByIdsAsync(
-        DBModel db, IReadOnlyList<int> formIds, CancellationToken cancellationToken) =>
-        await LoadFormsByIdsAsync(db.form_15, formIds, cancellationToken);
-
-    private static async Task<List<Form16>> LoadForm16ByIdsAsync(
-        DBModel db, IReadOnlyList<int> formIds, CancellationToken cancellationToken) =>
-        await LoadFormsByIdsAsync(db.form_16, formIds, cancellationToken);
-
-    private static async Task<List<TForm>> LoadFormsByIdsAsync<TForm>(
-        DbSet<TForm> dbSet,
-        IReadOnlyList<int> formIds,
-        CancellationToken cancellationToken)
-        where TForm : Form1
-    {
-        var forms = new List<TForm>();
-        foreach (var idChunk in ChunkIds(formIds))
-        {
-            var batch = await dbSet
-                .AsNoTracking()
-                .Where(form => idChunk.Contains(form.Id))
-                .ToListAsync(cancellationToken);
-            forms.AddRange(batch);
-        }
-
-        return forms;
     }
 
     private static IEnumerable<List<int>> ChunkIds(IReadOnlyList<int> ids)
@@ -1150,23 +1078,6 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             yield return ids.Skip(offset).Take(FirebirdInListMaxCount).ToList();
         }
     }
-
-    private static bool ReportHasUnpairedRows(Report report, string formNum) =>
-        formNum switch
-        {
-            "1.1" => report.Rows11.Count > 0,
-            "1.2" => report.Rows12.Count > 0,
-            "1.3" => report.Rows13.Count > 0,
-            "1.4" => report.Rows14.Count > 0,
-            "1.5" => report.Rows15.Count > 0,
-            "1.6" => report.Rows16.Count > 0,
-            _ => false
-        };
-
-    private static IEnumerable<Report> OrderReportsForExport(List<Report> reports) =>
-        reports
-            .OrderBy(rep => DateOnly.TryParse(rep.StartPeriod_DB, out var startDate) ? startDate : DateOnly.MaxValue)
-            .ThenBy(rep => DateOnly.TryParse(rep.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue);
 
     #endregion
 
@@ -1323,32 +1234,12 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         return result;
     }
 
-    private static Dictionary<string, string> ActivitiesFromDto(Operation41PairingDto dto) => new()
-    {
-        ["tritium"] = string.IsNullOrEmpty(dto.TritiumActivity) ? "-" : dto.TritiumActivity,
-        ["beta"] = string.IsNullOrEmpty(dto.BetaGammaActivity) ? "-" : dto.BetaGammaActivity,
-        ["alpha"] = string.IsNullOrEmpty(dto.AlphaActivity) ? "-" : dto.AlphaActivity,
-        ["transuranium"] = string.IsNullOrEmpty(dto.TransuraniumActivity) ? "-" : dto.TransuraniumActivity
-    };
-
-    private void SetExportActivitiesCache(IEnumerable<Operation41PairingDto> form13, IEnumerable<Operation41PairingDto> form14)
-    {
-        _exportActivitiesByFormId = form13.Concat(form14)
-            .GroupBy(dto => dto.Id)
-            .ToDictionary(group => group.Key, group => ActivitiesFromDto(group.First()));
-    }
-
-    private Dictionary<string, string> ResolveActivitiesForExport(int formId, string? radionuclids, string? activityRaw) =>
-        _exportActivitiesByFormId.TryGetValue(formId, out var cached)
-            ? cached
-            : GetActivitiesForExport(radionuclids, activityRaw);
-
     #endregion
 
     #region DTO
 
     /// <summary>Узкий DTO операции 41 для сопоставления (не полная строка формы).</summary>
-    private sealed class Operation41PairingDto
+    internal sealed class Operation41PairingDto
     {
         public int Id { get; init; }
         public int RepsId { get; set; }
@@ -1378,6 +1269,17 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         public string Volume { get; init; } = string.Empty;
         public string ActivityMeasurementDate { get; init; } = string.Empty;
         public int? Quantity { get; init; }
+        public string FormNum { get; init; } = string.Empty;
+        public string CodeRao { get; init; } = string.Empty;
+        public byte? AggregateState { get; init; }
+
+        /// <summary>Заполняются при загрузке (период отчёта) / после загрузки (реквизиты организации) для вывода в Excel.</summary>
+        public string OrgRegNo { get; set; } = string.Empty;
+        public string OrgOkpo { get; set; } = string.Empty;
+        public string OrgShortName { get; set; } = string.Empty;
+        public string StartPeriod { get; set; } = string.Empty;
+        public string EndPeriod { get; set; } = string.Empty;
+        public int? NumberInOrder { get; init; }
     }
 
     #endregion

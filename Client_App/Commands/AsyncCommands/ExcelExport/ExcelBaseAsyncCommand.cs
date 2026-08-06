@@ -15,7 +15,6 @@ using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Microsoft.CodeAnalysis.Operations;
 using Models.Collections;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
@@ -219,6 +218,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     {
         if (formNum.Split('.')[0] == "2")
         {
+            if (master.Rows20.Count < 2)
+                throw new InvalidOperationException("В титульной форме 2.0 недостаточно строк организации (ожидаются юрлицо и обособленное подразделение).");
+
             var frmYur = master.Rows20[0];
             var frmObosob = master.Rows20[1];
             
@@ -266,6 +268,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         }
         else if (formNum.Split('.')[0] == "1")
         {
+            if (master.Rows10.Count < 2)
+                throw new InvalidOperationException("В титульной форме 1.0 недостаточно строк организации (ожидаются юрлицо и обособленное подразделение).");
+
             var frmYur = master.Rows10[0];
             var frmObosob = master.Rows10[1];
 
@@ -310,6 +315,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         }
         else if (formNum.Split('.')[0] == "4")
         {
+            if (master.Rows40.Count < 1)
+                throw new InvalidOperationException("В титульной форме 4.0 отсутствует строка организации.");
+
             var form40 = master.Rows40[0];
 
             worksheet.Cells["B8"].Value = form40.CodeSubjectRF_DB;
@@ -339,6 +347,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         }
         else if (formNum.Split('.')[0] == "5")
         {
+            if (master.Rows50.Count < 1)
+                throw new InvalidOperationException("В титульной форме 5.0 отсутствует строка организации.");
+
             var form50 = master.Rows50[0];
 
             if (rep != null)
@@ -636,25 +647,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
                 top.Color.SetColor(255, 0, 0, 0);
             }
-
-            string range = formNum.Split('.')[0] is "1" or "2"
-                ? $"C{start}:L{start}"
-                : $"C{start}";
-            var cellCL = worksheet.Cells[range];
-            cellCL.Merge = true;
-            var btmCL = cellCL.Style.Border.Bottom;
-            var lftCL = cellCL.Style.Border.Left;
-            var rgtCL = cellCL.Style.Border.Right;
-            var topCL = cellCL.Style.Border.Top;
-            btmCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-            btmCL.Color.SetColor(255, 0, 0, 0);
-            lftCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-            lftCL.Color.SetColor(255, 0, 0, 0);
-            rgtCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-            rgtCL.Color.SetColor(255, 0, 0, 0);
-            topCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-            topCL.Color.SetColor(255, 0, 0, 0);
         }
+
+        // DeleteRow в костыле уничтожает merge первой строки шаблона — восстанавливаем для всех строк примечаний.
+        for (var row = start; row < start + rep.Notes.Count; row++)
+            ApplyNotesExplanationRowStyle(worksheet, formNum, row);
 
         var count = start;
         foreach (var note in rep.Notes)
@@ -665,6 +662,39 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
         if (count > start && worksheet.Dimension is not null)
             ApplyExcelDataRowsWrapText(worksheet, start, count - 1, worksheet.Dimension.End.Column);
+    }
+
+    /// <summary>
+    /// Объединяет колонку пояснения примечания (C:L для форм 1.x/2.x) и задаёт границы.
+    /// </summary>
+    private static void ApplyNotesExplanationRowStyle(ExcelWorksheet worksheet, string formNum, int row)
+    {
+        var range = formNum.Split('.')[0] is "1" or "2"
+            ? $"C{row}:L{row}"
+            : $"C{row}";
+        var cellCL = worksheet.Cells[range];
+        try
+        {
+            if (!cellCL.Merge)
+                cellCL.Merge = true;
+        }
+        catch (ArgumentException)
+        {
+            // Диапазон частично пересекается с существующим merge — оставляем как есть.
+        }
+
+        var btmCL = cellCL.Style.Border.Bottom;
+        var lftCL = cellCL.Style.Border.Left;
+        var rgtCL = cellCL.Style.Border.Right;
+        var topCL = cellCL.Style.Border.Top;
+        btmCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+        btmCL.Color.SetColor(255, 0, 0, 0);
+        lftCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+        lftCL.Color.SetColor(255, 0, 0, 0);
+        rgtCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+        rgtCL.Color.SetColor(255, 0, 0, 0);
+        topCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+        topCL.Color.SetColor(255, 0, 0, 0);
     }
 
     #endregion
@@ -1287,8 +1317,14 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         if (cellAddresses.Length == 0)
             return;
 
+        var validAddresses = cellAddresses
+            .Where(address => !string.IsNullOrWhiteSpace(address))
+            .ToArray();
+        if (validAddresses.Length == 0)
+            return;
+
         var rowsToResize = new HashSet<int>();
-        foreach (var address in cellAddresses)
+        foreach (var address in validAddresses)
         {
             var cell = worksheet.Cells[address];
             cell.Style.WrapText = true;
@@ -1299,7 +1335,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
         foreach (var row in rowsToResize)
         {
-            var rowCells = cellAddresses
+            var rowCells = validAddresses
                 .Where(address => worksheet.Cells[address].Start.Row == row)
                 .ToArray();
             var requiredHeight = TryCalculateExcelCellsRowHeight(worksheet, row, rowCells);
@@ -1327,6 +1363,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
         foreach (var address in cellAddresses)
         {
+            if (string.IsNullOrWhiteSpace(address))
+                continue;
+
             var cell = worksheet.Cells[address];
             if (cell.Start.Row != row)
                 continue;
@@ -1400,28 +1439,24 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     /// <summary>
     /// Возвращает эффективную ширину ячейки с учётом объединённых диапазонов.
+    /// EPPlus может оставлять null в MergedCells после DeleteRow/Clear merge — индексер по (row,col)
+    /// безопаснее полного перебора коллекции.
     /// </summary>
     private static double GetEffectiveWrapWidth(ExcelWorksheet worksheet, int row, int col)
     {
-        if (worksheet.MergedCells is not null)
+        // Индексер возвращает адрес merge для ячейки или null (в т.ч. для «дырок» после удаления merge).
+        var mergedAddress = worksheet.MergedCells[row, col];
+        if (!string.IsNullOrEmpty(mergedAddress))
         {
-            foreach (var mergedRange in worksheet.MergedCells)
+            var range = worksheet.Cells[mergedAddress];
+            var totalWidth = 0.0;
+            for (var c = range.Start.Column; c <= range.End.Column; c++)
             {
-                if (mergedRange is null) continue;
-                var range = worksheet.Cells[mergedRange];
-                if (row < range.Start.Row || row > range.End.Row
-                    || col < range.Start.Column || col > range.End.Column)
-                    continue;
-
-                var totalWidth = 0.0;
-                for (var c = range.Start.Column; c <= range.End.Column; c++)
-                {
-                    var width = worksheet.Column(c).Width;
-                    totalWidth += width > 0 ? width : 8;
-                }
-
-                return totalWidth;
+                var width = worksheet.Column(c).Width;
+                totalWidth += width > 0 ? width : 8;
             }
+
+            return totalWidth > 0 ? totalWidth : 8;
         }
 
         var columnWidth = worksheet.Column(col).Width;

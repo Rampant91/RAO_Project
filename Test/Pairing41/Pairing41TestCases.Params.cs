@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
+using Client_App.Resources;
 using static Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
 
 namespace Test.Pairing41;
@@ -15,6 +16,9 @@ internal static partial class Pairing41TestCases
         yield return P04_IgnoreVolume14_MismatchBecomesPaired();
         yield return P05_OnlyDocumentNumber12_OtherDiffsIgnored();
         yield return P06_IgnoreMass_SymmetricBothSidesPaired();
+        yield return P07_IgnoreCodeRao12_MismatchBecomesPaired();
+        yield return P08_IgnoreCodeRao13_MismatchBecomesPaired();
+        yield return P09_IgnoreCodeRao14_MismatchBecomesPaired();
     }
 
     /// <summary>P01. Как A02 по типу, но CheckType выключен → пара находится.</summary>
@@ -92,6 +96,39 @@ internal static partial class Pairing41TestCases
         Form12 = [Row12(2, massTon: "1")],
         Form16 = [Row16From12(202, massTon: "1.5")],
         ExpectedUnpaired12 = [],
+        ExpectedUnpaired16 = []
+    };
+
+    /// <summary>P07. Разный код РАО при выключенном CheckCodeRao — всё равно парные.</summary>
+    private static Pairing41TestCase P07_IgnoreCodeRao12_MismatchBecomesPaired() => new()
+    {
+        Name = "P07. Выключен Код РАО — расхождение кода не мешает паре 1.2↔1.6.",
+        Params12To16 = new Pairing12To16Params(CheckCodeRao: false),
+        Form12 = [Row12(2, codeRao: RaoCodeHelper.Form12CodeRao)],
+        Form16 = [Row16From12(202, codeRao: "99999999999")],
+        ExpectedUnpaired12 = [],
+        ExpectedUnpaired16 = []
+    };
+
+    /// <summary>P08. Разный код РАО 1.3↔1.6 при выключенном CheckCodeRao13.</summary>
+    private static Pairing41TestCase P08_IgnoreCodeRao13_MismatchBecomesPaired() => new()
+    {
+        Name = "P08. Выключен Код РАО — расхождение кода не мешает паре 1.3↔1.6.",
+        Params13To16 = new Pairing13To16Params(CheckCodeRao: false),
+        Form13 = [Row13(3, codeRao: "11111111111")],
+        Form16 = [Row16From13(303, codeRao: "99999999999")],
+        ExpectedUnpaired13 = [],
+        ExpectedUnpaired16 = []
+    };
+
+    /// <summary>P09. Разный код РАО 1.4↔1.6 при выключенном CheckCodeRao14.</summary>
+    private static Pairing41TestCase P09_IgnoreCodeRao14_MismatchBecomesPaired() => new()
+    {
+        Name = "P09. Выключен Код РАО — расхождение кода не мешает паре 1.4↔1.6.",
+        Params14To16 = new Pairing14To16Params(CheckCodeRao: false),
+        Form14 = [Row14(4, codeRao: "11111111111")],
+        Form16 = [Row16From14(404, codeRao: "99999999999")],
+        ExpectedUnpaired14 = [],
         ExpectedUnpaired16 = []
     };
 }
