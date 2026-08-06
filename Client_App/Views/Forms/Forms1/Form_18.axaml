@@ -789,7 +789,7 @@
 									<Grid ColumnDefinitions="*,Auto">
 										<AutoCompleteBox Grid.Column="0"
                                                          Height="26"
-                                                         Items="{Binding  VM.OKSM, ElementName=1.8}"
+                                                         Items="{Binding  VM.OksmItems, ElementName=1.8}"
                                                          Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
@@ -803,7 +803,7 @@
                                                                    Margin="0,0,10,0"
                                                                    FontWeight="Bold"/>
 														<TextBlock Grid.Column="1"
-                                                                   Text="{Binding Description}"
+                                                                   Text="{Binding Country}"
                                                                    Foreground="Gray"
                                                                    TextWrapping="Wrap"
                                                                    MaxWidth="500"/>

@@ -8,11 +8,13 @@ using Client_App.Commands.AsyncCommands.SwitchReport;
 using Client_App.Commands.SyncCommands;
 using Client_App.ViewModels.Controls;
 using Client_App.ViewModels.Forms.Forms1.Items;
+using Client_App.ViewModels.Forms.Forms1.Providers.AutoCompleteProviders;
 using Models.Attributes;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -63,18 +65,24 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    #region SpravochnikOKSM
-    /// <summary>
-    /// Справочник ОКСМ (Общероссийский классификатор стран мира)
-    /// </summary>
-    public ObservableCollection<BaseItem<string, string>> OKSM =>
-        new(Spravochniki.Spravochniks.OKSM.Select(oksm =>
-            new BaseItem<string, string>()
-            {
-                Code = oksm.Key,
-                Description = oksm.Value,
-                DescriptionPrintMode = true,
-            }).AsEnumerable());
+    #region OksmProvider
+
+    private OksmProvider _oksmProvider = new OksmProvider();
+    public OksmProvider OksmProvider
+    {
+        get
+        {
+            return _oksmProvider;
+        }
+    }
+
+    public ObservableCollection<OksmItem> OksmItems
+    {
+        get
+        {
+            return _oksmProvider.TypedItemsCollection;
+        }
+    }
     #endregion
 
     #region Report

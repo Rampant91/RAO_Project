@@ -801,7 +801,7 @@
 									<Grid ColumnDefinitions="*,Auto">
 										<AutoCompleteBox Grid.Column="0"
                                                          Height="26"
-                                                         Items="{Binding  VM.OKSM, ElementName=1.4}"
+                                                         Items="{Binding  VM.OksmItems, ElementName=1.4}"
                                                          Text="{Binding Owner.Value, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
@@ -815,7 +815,7 @@
                                                                    Margin="0,0,10,0"
                                                                    FontWeight="Bold"/>
 														<TextBlock Grid.Column="1"
-                                                                   Text="{Binding Description}"
+                                                                   Text="{Binding Country}"
                                                                    Foreground="Gray"
                                                                    TextWrapping="Wrap"
                                                                    MaxWidth="500"/>
@@ -934,7 +934,7 @@
 									<Grid ColumnDefinitions="*,Auto">
 										<AutoCompleteBox Grid.Column="0"
                                                          Height="26"
-                                                         Items="{Binding  VM.OKSM, ElementName=1.4}"
+                                                         Items="{Binding  VM.OksmItems, ElementName=1.4}"
                                                          Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
@@ -948,7 +948,7 @@
                                                                    Margin="0,0,10,0"
                                                                    FontWeight="Bold"/>
 														<TextBlock Grid.Column="1"
-                                                                   Text="{Binding Description}"
+                                                                   Text="{Binding Country}"
                                                                    Foreground="Gray"
                                                                    TextWrapping="Wrap"
                                                                    MaxWidth="500"/>
@@ -977,7 +977,7 @@
 									<Grid ColumnDefinitions="*,Auto">
 										<AutoCompleteBox Grid.Column="0"
                                                          Height="26"
-                                                         Items="{Binding  VM.OKSM, ElementName=1.4}"
+                                                         Items="{Binding  VM.OksmItems, ElementName=1.4}"
                                                          Text="{Binding TransporterOKPO.Value, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
@@ -991,7 +991,7 @@
                                                                    Margin="0,0,10,0"
                                                                    FontWeight="Bold"/>
 														<TextBlock Grid.Column="1"
-                                                                   Text="{Binding Description}"
+                                                                   Text="{Binding Country}"
                                                                    Foreground="Gray"
                                                                    TextWrapping="Wrap"
                                                                    MaxWidth="500"/>

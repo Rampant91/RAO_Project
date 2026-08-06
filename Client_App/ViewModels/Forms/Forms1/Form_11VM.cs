@@ -5,12 +5,13 @@ using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.ViewModels.Forms.Forms1.Items;
 using Client_App.ViewModels.Forms.Forms1.Providers;
+using Client_App.ViewModels.Forms.Forms1.Providers.AutoCompleteProviders;
+using CommunityToolkit.Mvvm.Input;
 using Models.Collections;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using CommunityToolkit.Mvvm.Input;
 using System.Windows.Input;
 
 namespace Client_App.ViewModels.Forms.Forms1;
