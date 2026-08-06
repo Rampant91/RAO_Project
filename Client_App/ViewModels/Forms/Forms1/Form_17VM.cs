@@ -4,7 +4,7 @@ using Client_App.ViewModels.Controls;
 using Client_App.ViewModels.Forms.Forms1.Items;
 using Client_App.ViewModels.Forms.Forms1.Items;
 using Client_App.ViewModels.Forms.Forms1.Providers;
-using Client_App.ViewModels.Forms.Forms1.Providers;
+using Client_App.ViewModels.Forms.Forms1.Providers.AutoCompleteProviders;
 using CommunityToolkit.Mvvm.Input;
 using DynamicData;
 using Models.Collections;
@@ -48,6 +48,25 @@ public class Form_17VM : BaseFormVM
             PackagePassportPanelControlVM.SelectPassport(form17.PassportNumber_DB, form17.PackType_DB);
         }
     }
+
+    #region UktProvider
+
+    private UktProvider _uktProvider = new UktProvider();
+    public UktProvider UktProvider 
+    {
+        get
+        {
+            return _uktProvider;
+        }
+    } 
+
+    public ObservableCollection<UktItem> UktItems { 
+        get
+        {
+            return _uktProvider.TypedItemsCollection;
+        }
+    }
+    #endregion
 
     #region OpCodes
 

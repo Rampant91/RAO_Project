@@ -1,4 +1,5 @@
-﻿<Window x:Class="Client_App.Views.Forms.Forms1.Form_17"
+﻿
+<Window x:Class="Client_App.Views.Forms.Forms1.Form_17"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:appControls="clr-namespace:Client_App.Controls"
@@ -597,39 +598,145 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn Width="89">
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="4" />
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form17">
-                                    <TextBox Text="{Binding PackName.Value, Mode=TwoWay}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+						<DataGridTemplateColumn Width="89">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="4" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form17">
+									<Grid ColumnDefinitions="*,Auto">
+										<AutoCompleteBox x:Name="OperationCodeAutoComplete"
+                                                         Grid.Column="0"
+                                                         Height="26"
+														 
+														 Items="{Binding VM.UktProvider.TypedItemsCollection, ElementName=1.7}"
+                                                         Text="{Binding PackName.Value, Mode=TwoWay}"
+                                                         HorizontalAlignment="Stretch"
+                                                         MinimumPrefixLength="0"
+                                                         IsTextCompletionEnabled="False">
+											
+											<interactivity:Interaction.Behaviors>
+												<inputBehaviors:AutoCompleteBoxProviderBehavior
+													 Provider="{Binding VM.UktProvider, ElementName=1.7}">
+												</inputBehaviors:AutoCompleteBoxProviderBehavior>
+											</interactivity:Interaction.Behaviors>
 
-                        <DataGridTemplateColumn Width="72">
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="5" />
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form17">
-                                    <TextBox Text="{Binding PackType.Value, Mode=TwoWay}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
+											<AutoCompleteBox.ItemTemplate>
+												<DataTemplate x:DataType="items:UktItem">
+													<Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto, Auto">
+														<TextBlock Grid.Column="0"
+                                                                   Margin="5,0,5,0"
+                                                                   Text="{Binding Name}"
+                                                                   Foreground="Gray"
+                                                                   TextWrapping="Wrap"
+                                                                   MaxWidth="500"/>
+														<TextBlock Grid.Column="1"
+                                                                   Margin="5,0,5,0"
+                                                                   Text="{Binding Type}"
+                                                                   FontWeight="Bold"/>
+														<TextBlock Grid.Column="2"
+																   IsVisible="{Binding IsNotNullMass}"
+                                                                   Margin="5,0,0,0"
+                                                                   Text="m - "/>
+														<TextBlock Grid.Column="3"
+																   Width="35"
+																   IsVisible="{Binding IsNotNullMass}"
+                                                                   Margin="0,0,5,0"
+                                                                   Text="{Binding Mass}"/>
+														<TextBlock Grid.Column="4"
+																   IsVisible="{Binding IsNotNullVolume}"
+                                                                   Margin="5,0,0,0"
+                                                                   Text="V - "/>
+														<TextBlock Grid.Column="5"
+																   Width="35"
+																   IsVisible="{Binding IsNotNullVolume}"
+                                                                   Margin="0,0,5,0"
+                                                                   Text="{Binding Volume}"/>
+													</Grid>
+												</DataTemplate>
+											</AutoCompleteBox.ItemTemplate>
+										</AutoCompleteBox>
+										<appControls:DropDownButton Grid.Column="1" />
+									</Grid>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<DataGridTemplateColumn Width="72">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="5" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form17">
+									<Grid ColumnDefinitions="*,Auto">
+										<AutoCompleteBox x:Name="OperationCodeAutoComplete"
+                                                         Grid.Column="0"
+                                                         Height="26"
+														 
+														 Items="{Binding VM.UktProvider.TypedItemsCollection, ElementName=1.7}"
+                                                         Text="{Binding PackType.Value, Mode=TwoWay}"
+                                                         HorizontalAlignment="Stretch"
+                                                         MinimumPrefixLength="0"
+                                                         IsTextCompletionEnabled="False">
+
+											<interactivity:Interaction.Behaviors>
+												<inputBehaviors:AutoCompleteBoxProviderBehavior
+													 Provider="{Binding VM.UktProvider, ElementName=1.7}">
+												</inputBehaviors:AutoCompleteBoxProviderBehavior>
+											</interactivity:Interaction.Behaviors>
+
+											<AutoCompleteBox.ItemTemplate>
+												<DataTemplate x:DataType="items:UktItem">
+													<Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto, Auto">
+														<TextBlock Grid.Column="0"
+                                                                   Margin="5,0,5,0"
+                                                                   Text="{Binding Name}"
+                                                                   Foreground="Gray"
+                                                                   TextWrapping="Wrap"
+                                                                   MaxWidth="500"/>
+														<TextBlock Grid.Column="1"
+                                                                   Margin="5,0,5,0"
+                                                                   Text="{Binding Type}"
+                                                                   FontWeight="Bold"/>
+														<TextBlock Grid.Column="2"
+																   IsVisible="{Binding IsNotNullMass}"
+                                                                   Margin="5,0,0,0"
+                                                                   Text="m - "/>
+														<TextBlock Grid.Column="3"
+																   Width="35"
+																   IsVisible="{Binding IsNotNullMass}"
+                                                                   Margin="0,0,5,0"
+                                                                   Text="{Binding Mass}"/>
+														<TextBlock Grid.Column="4"
+																   IsVisible="{Binding IsNotNullVolume}"
+                                                                   Margin="5,0,0,0"
+                                                                   Text="V - "/>
+														<TextBlock Grid.Column="5"
+																   Width="35"
+																   IsVisible="{Binding IsNotNullVolume}"
+                                                                   Margin="0,0,5,0"
+                                                                   Text="{Binding Volume}"/>
+													</Grid>
+												</DataTemplate>
+											</AutoCompleteBox.ItemTemplate>
+										</AutoCompleteBox>
+										<appControls:DropDownButton Grid.Column="1" />
+									</Grid>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 
                         <DataGridTemplateColumn Width="67">
                             <DataGridTemplateColumn.HeaderTemplate>
