@@ -16,7 +16,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     {
         Form11 = 11,
         Form12 = 12,
-        Form13 = 13
+        Form13 = 13,
+        Form14 = 14
     }
 
     /// <summary>Вариант колонок Excel для формы.</summary>
@@ -29,7 +30,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Form12,
 
         /// <summary>1.3: тип, радионуклиды, агрегатное состояние, активность.</summary>
-        Form13
+        Form13,
+
+        /// <summary>1.4: наименование, вид, объём, дата изм. активности, масса, агр. состояние.</summary>
+        Form14
     }
 
     /// <summary>Описание реализованной формы: лист Excel, номер, стиль колонок.</summary>
@@ -39,7 +43,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         string SheetName,
         TransferReceiveSheetLayout Layout)
     {
-        public bool UsesAggregateStateColumn => Layout == TransferReceiveSheetLayout.Form13;
+        public bool UsesAggregateStateColumn =>
+            Layout is TransferReceiveSheetLayout.Form13 or TransferReceiveSheetLayout.Form14;
     }
 
     /// <summary>
@@ -50,7 +55,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     [
         new(TransferReceiveFormId.Form11, "1.1", "Форма 1.1", TransferReceiveSheetLayout.Form11),
         new(TransferReceiveFormId.Form12, "1.2", "Форма 1.2", TransferReceiveSheetLayout.Form12),
-        new(TransferReceiveFormId.Form13, "1.3", "Форма 1.3", TransferReceiveSheetLayout.Form13)
+        new(TransferReceiveFormId.Form13, "1.3", "Форма 1.3", TransferReceiveSheetLayout.Form13),
+        new(TransferReceiveFormId.Form14, "1.4", "Форма 1.4", TransferReceiveSheetLayout.Form14)
     ];
 
     public static TransferReceiveFormDescriptor GetFormDescriptor(TransferReceiveFormId id) =>
@@ -62,53 +68,63 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         bool CheckOperationCode = true,
         bool CheckOperationDate = true,
         bool CheckPassportNumber = true,
-        /// <summary>Для 1.1/1.3 — тип; для 1.2 — наименование (NameIOU).</summary>
+        /// <summary>Для 1.1/1.3 — тип; для 1.2/1.4 — наименование.</summary>
         bool CheckType = true,
         bool CheckRadionuclids = true,
         bool CheckFactoryNumber = true,
         bool CheckQuantity = true,
         bool CheckActivity = true,
-        /// <summary>Масса обеднённого урана, кг (форма 1.2).</summary>
+        /// <summary>Масса, кг (1.2 — обедн. U; 1.4 — общая масса).</summary>
         bool CheckMass = false,
         bool CheckCreatorOkpo = true,
         bool CheckCreationDate = true,
         bool CheckProviderOrRecieverOkpo = true,
         bool CheckPackNumber = true,
-        /// <summary>Тип УКТ (форма 1.2; на 1.1/1.3 не сравнивается).</summary>
+        /// <summary>Тип УКТ (форма 1.2; на остальных не сравнивается).</summary>
         bool CheckPackType = false,
-        bool CheckAggregateState = false);
+        bool CheckAggregateState = false,
+        /// <summary>Вид (Sort), форма 1.4.</summary>
+        bool CheckSort = false,
+        /// <summary>Объём, куб. м (форма 1.4).</summary>
+        bool CheckVolume = false,
+        /// <summary>Дата измерения активности (форма 1.4).</summary>
+        bool CheckActivityMeasurementDate = false);
 
     /// <summary>
-    /// Набор параметров диалога по реализованным формам (порядок: 1.1, 1.2, 1.3).
+    /// Набор параметров диалога по реализованным формам (порядок: 1.1 → 1.2 → 1.3 → 1.4).
     /// </summary>
     public sealed class TransferReceiveParamsSet
     {
         public TransferReceiveParamsSet(
             TransferReceiveFormParams form11,
             TransferReceiveFormParams form12,
-            TransferReceiveFormParams form13)
+            TransferReceiveFormParams form13,
+            TransferReceiveFormParams? form14 = null)
         {
             Form11 = form11;
             Form12 = form12;
             Form13 = form13;
+            Form14 = form14 ?? DisabledFormParams();
         }
 
-        /// <summary>Фабрика с явным порядком форм 1.1 → 1.2 → 1.3.</summary>
+        /// <summary>Фабрика с явным порядком форм 1.1 → 1.2 → 1.3 → 1.4.</summary>
         public static TransferReceiveParamsSet Create(
             TransferReceiveFormParams form11,
             TransferReceiveFormParams form12,
-            TransferReceiveFormParams form13) =>
-            new(form11, form12, form13);
+            TransferReceiveFormParams form13,
+            TransferReceiveFormParams form14) =>
+            new(form11, form12, form13, form14);
 
-        /// <summary>Обратная совместимость: слот 1.2 выключен.</summary>
+        /// <summary>Обратная совместимость: слоты 1.2 и 1.4 выключены.</summary>
         public static TransferReceiveParamsSet Form11And13(
             TransferReceiveFormParams form11,
             TransferReceiveFormParams form13) =>
-            new(form11, DisabledFormParams(), form13);
+            new(form11, DisabledFormParams(), form13, DisabledFormParams());
 
         public TransferReceiveFormParams Form11 { get; }
         public TransferReceiveFormParams Form12 { get; }
         public TransferReceiveFormParams Form13 { get; }
+        public TransferReceiveFormParams Form14 { get; }
 
         public TransferReceiveFormParams GetParams(TransferReceiveFormId id) =>
             id switch
@@ -116,6 +132,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 TransferReceiveFormId.Form11 => Form11,
                 TransferReceiveFormId.Form12 => Form12,
                 TransferReceiveFormId.Form13 => Form13,
+                TransferReceiveFormId.Form14 => Form14,
                 _ => throw new ArgumentOutOfRangeException(nameof(id), id, "Нет слота параметров для формы.")
             };
 
@@ -147,7 +164,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             CheckProviderOrRecieverOkpo: false,
             CheckPackNumber: false,
             CheckPackType: false,
-            CheckAggregateState: false);
+            CheckAggregateState: false,
+            CheckSort: false,
+            CheckVolume: false,
+            CheckActivityMeasurementDate: false);
 
     /// <summary>
     /// Параметры формы 1.2 по умолчанию: без количества/радионуклидов/активности/агрегатного состояния;
@@ -170,6 +190,23 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         new(CheckQuantity: false, CheckAggregateState: true);
 
     /// <summary>
+    /// Параметры формы 1.4 по умолчанию: без количества/зав.№/изготовителя;
+    /// наименование (CheckType), вид, объём, дата изм. активности, масса, агр. состояние.
+    /// </summary>
+    public static TransferReceiveFormParams DefaultForm14Params() =>
+        new(
+            CheckFactoryNumber: false,
+            CheckQuantity: false,
+            CheckCreatorOkpo: false,
+            CheckCreationDate: false,
+            CheckPackType: false,
+            CheckMass: true,
+            CheckAggregateState: true,
+            CheckSort: true,
+            CheckVolume: true,
+            CheckActivityMeasurementDate: true);
+
+    /// <summary>
     /// Форма участвует в выгрузке, если выбрано хотя бы одно поле.
     /// «Выбрать все параметры» = false → форма не загружается и не пишется в Excel.
     /// </summary>
@@ -188,7 +225,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         || options.CheckProviderOrRecieverOkpo
         || options.CheckPackNumber
         || options.CheckPackType
-        || options.CheckAggregateState;
+        || options.CheckAggregateState
+        || options.CheckSort
+        || options.CheckVolume
+        || options.CheckActivityMeasurementDate;
 
     #endregion
 }

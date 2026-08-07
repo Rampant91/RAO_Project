@@ -24,10 +24,13 @@ public sealed class TransferReceiveRow
     public string ProviderOrRecieverOkpo { get; init; } = string.Empty;
     public string Activity { get; init; } = string.Empty;
     public string Mass { get; init; } = string.Empty;
+    public string Volume { get; init; } = string.Empty;
+    public string ActivityMeasurementDate { get; init; } = string.Empty;
     public string CreatorOkpo { get; init; } = string.Empty;
     public string CreationDate { get; init; } = string.Empty;
     public int? Quantity { get; init; }
     public byte? AggregateState { get; init; }
+    public byte? Sort { get; init; }
 
     /// <summary>
     /// Если null — выводится из кода операции (21/22/… = transfer).
@@ -36,14 +39,14 @@ public sealed class TransferReceiveRow
 }
 
 /// <summary>
-/// Сценарий сверки приёма-передачи (формы 1.1 / 1.2 / 1.3) и ожидания.
+/// Сценарий сверки приёма-передачи (формы 1.1–1.4) и ожидания.
 /// Closest: null = не проверять; пустой словарь = ожидаем отсутствие карт; иначе частичное сравнение.
 /// </summary>
 public sealed class TransferReceiveTestCase
 {
     public required string Name { get; init; }
 
-    /// <summary>Номер формы сценария («1.1», «1.2» или «1.3»).</summary>
+    /// <summary>Номер формы сценария («1.1»…«1.4»).</summary>
     public string FormNum { get; init; } = "1.1";
 
     public TransferReceiveFormParams Params { get; init; } = new();

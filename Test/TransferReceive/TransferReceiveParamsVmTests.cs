@@ -152,5 +152,40 @@ public class TransferReceiveParamsVmTests
         Assert.True(set.Form13.CheckAggregateState);
         Assert.False(set.Form13.CheckType);
         Assert.False(set.Form13.CheckQuantity);
+        Assert.True(set.Form14.CheckSort);
+        Assert.True(set.Form14.CheckVolume);
+        Assert.True(set.Form14.CheckActivityMeasurementDate);
+        Assert.True(set.Form14.CheckMass);
+        Assert.False(set.Form14.CheckFactoryNumber);
+        Assert.False(set.Form14.CheckQuantity);
+    }
+
+    [Fact]
+    public void CheckAll14_DefaultsToTrue_AndUncheckingOneField_MakesIndeterminate()
+    {
+        var vm = new GetTransferReceiveParamsVM();
+        Assert.True(vm.CheckAll14);
+        Assert.True(vm.CheckSort14);
+        Assert.True(vm.CheckVolume14);
+
+        vm.CheckName14 = false;
+        Assert.Null(vm.CheckAll14);
+    }
+
+    [Fact]
+    public void DefaultForm14Params_IsEnabled_AndDisablesFactoryCreatorQuantity()
+    {
+        var p = ExcelExportCheckTransferReceiveAsyncCommand.DefaultForm14Params();
+        Assert.True(ExcelExportCheckTransferReceiveAsyncCommand.IsFormCheckEnabled(p));
+        Assert.False(p.CheckQuantity);
+        Assert.False(p.CheckFactoryNumber);
+        Assert.False(p.CheckCreatorOkpo);
+        Assert.False(p.CheckCreationDate);
+        Assert.True(p.CheckSort);
+        Assert.True(p.CheckVolume);
+        Assert.True(p.CheckActivityMeasurementDate);
+        Assert.True(p.CheckMass);
+        Assert.True(p.CheckAggregateState);
+        Assert.True(p.CheckType);
     }
 }

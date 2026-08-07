@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace Client_App.ViewModels.Messages;
 
 /// <summary>
-/// Параметры сопоставления операций приёма-передачи (формы 1.1, 1.2 и 1.3).
+/// Параметры сопоставления операций приёма-передачи (формы 1.1–1.4).
 /// </summary>
 public class GetTransferReceiveParamsVM : INotifyPropertyChanged
 {
@@ -13,6 +13,7 @@ public class GetTransferReceiveParamsVM : INotifyPropertyChanged
     private bool _syncingAll;
     private bool _syncingAll12;
     private bool _syncingAll13;
+    private bool _syncingAll14;
 
     #region Form 1.1
 
@@ -292,6 +293,108 @@ public class GetTransferReceiveParamsVM : INotifyPropertyChanged
 
     #endregion
 
+    #region Form 1.4
+
+    private bool? _checkAll14 = true;
+    public bool? CheckAll14
+    {
+        get => _checkAll14;
+        set => SetAllValue(ref _checkAll14, value, ref _syncingAll14, ApplyAll14);
+    }
+
+    private bool _checkOperationCode14 = true;
+    public bool CheckOperationCode14
+    {
+        get => _checkOperationCode14;
+        set => SetField(ref _checkOperationCode14, value, ref _syncingAll14, UpdateCheckAll14);
+    }
+
+    private bool _checkOperationDate14 = true;
+    public bool CheckOperationDate14
+    {
+        get => _checkOperationDate14;
+        set => SetField(ref _checkOperationDate14, value, ref _syncingAll14, UpdateCheckAll14);
+    }
+
+    private bool _checkPassportNumber14 = true;
+    public bool CheckPassportNumber14
+    {
+        get => _checkPassportNumber14;
+        set => SetField(ref _checkPassportNumber14, value, ref _syncingAll14, UpdateCheckAll14);
+    }
+
+    private bool _checkName14 = true;
+    public bool CheckName14
+    {
+        get => _checkName14;
+        set => SetField(ref _checkName14, value, ref _syncingAll14, UpdateCheckAll14);
+    }
+
+    private bool _checkSort14 = true;
+    public bool CheckSort14
+    {
+        get => _checkSort14;
+        set => SetField(ref _checkSort14, value, ref _syncingAll14, UpdateCheckAll14);
+    }
+
+    private bool _checkRadionuclids14 = true;
+    public bool CheckRadionuclids14
+    {
+        get => _checkRadionuclids14;
+        set => SetField(ref _checkRadionuclids14, value, ref _syncingAll14, UpdateCheckAll14);
+    }
+
+    private bool _checkActivity14 = true;
+    public bool CheckActivity14
+    {
+        get => _checkActivity14;
+        set => SetField(ref _checkActivity14, value, ref _syncingAll14, UpdateCheckAll14);
+    }
+
+    private bool _checkActivityMeasurementDate14 = true;
+    public bool CheckActivityMeasurementDate14
+    {
+        get => _checkActivityMeasurementDate14;
+        set => SetField(ref _checkActivityMeasurementDate14, value, ref _syncingAll14, UpdateCheckAll14);
+    }
+
+    private bool _checkVolume14 = true;
+    public bool CheckVolume14
+    {
+        get => _checkVolume14;
+        set => SetField(ref _checkVolume14, value, ref _syncingAll14, UpdateCheckAll14);
+    }
+
+    private bool _checkMass14 = true;
+    public bool CheckMass14
+    {
+        get => _checkMass14;
+        set => SetField(ref _checkMass14, value, ref _syncingAll14, UpdateCheckAll14);
+    }
+
+    private bool _checkAggregateState14 = true;
+    public bool CheckAggregateState14
+    {
+        get => _checkAggregateState14;
+        set => SetField(ref _checkAggregateState14, value, ref _syncingAll14, UpdateCheckAll14);
+    }
+
+    private bool _checkProviderOrRecieverOkpo14 = true;
+    public bool CheckProviderOrRecieverOkpo14
+    {
+        get => _checkProviderOrRecieverOkpo14;
+        set => SetField(ref _checkProviderOrRecieverOkpo14, value, ref _syncingAll14, UpdateCheckAll14);
+    }
+
+    private bool _checkPackNumber14 = true;
+    public bool CheckPackNumber14
+    {
+        get => _checkPackNumber14;
+        set => SetField(ref _checkPackNumber14, value, ref _syncingAll14, UpdateCheckAll14);
+    }
+
+    #endregion
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void SetField(ref bool field, bool value, ref bool syncFlag, Action updateAll, [CallerMemberName] string prop = "")
@@ -409,6 +512,42 @@ public class GetTransferReceiveParamsVM : INotifyPropertyChanged
         _syncingAll13 = true;
         CheckAll13 = all ? true : none ? false : null;
         _syncingAll13 = false;
+    }
+
+    private void ApplyAll14(bool allChecked)
+    {
+        _syncingAll14 = true;
+        CheckOperationCode14 = allChecked;
+        CheckOperationDate14 = allChecked;
+        CheckPassportNumber14 = allChecked;
+        CheckName14 = allChecked;
+        CheckSort14 = allChecked;
+        CheckRadionuclids14 = allChecked;
+        CheckActivity14 = allChecked;
+        CheckActivityMeasurementDate14 = allChecked;
+        CheckVolume14 = allChecked;
+        CheckMass14 = allChecked;
+        CheckAggregateState14 = allChecked;
+        CheckProviderOrRecieverOkpo14 = allChecked;
+        CheckPackNumber14 = allChecked;
+        _syncingAll14 = false;
+        UpdateCheckAll14();
+    }
+
+    private void UpdateCheckAll14()
+    {
+        var all = CheckOperationCode14 && CheckOperationDate14 && CheckPassportNumber14 && CheckName14
+                  && CheckSort14 && CheckRadionuclids14 && CheckActivity14 && CheckActivityMeasurementDate14
+                  && CheckVolume14 && CheckMass14 && CheckAggregateState14
+                  && CheckProviderOrRecieverOkpo14 && CheckPackNumber14;
+        var none = !CheckOperationCode14 && !CheckOperationDate14 && !CheckPassportNumber14 && !CheckName14
+                   && !CheckSort14 && !CheckRadionuclids14 && !CheckActivity14 && !CheckActivityMeasurementDate14
+                   && !CheckVolume14 && !CheckMass14 && !CheckAggregateState14
+                   && !CheckProviderOrRecieverOkpo14 && !CheckPackNumber14;
+
+        _syncingAll14 = true;
+        CheckAll14 = all ? true : none ? false : null;
+        _syncingAll14 = false;
     }
 
     private void OnPropertyChanged([CallerMemberName] string prop = "") =>

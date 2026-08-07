@@ -26,10 +26,15 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
     /// <summary>
     /// Число колонок блока полей (левый/правый). Зависит от формы:
-    /// 1.1/1.3 — 18, 1.2 — 17 (тип УКТ только на 1.2, где участвует в сверке).
+    /// 1.1/1.3 — 18, 1.2 — 17, 1.4 — 19.
     /// </summary>
     private static int SourceColCountFor(TransferReceiveSheetLayout layout) =>
-        layout == TransferReceiveSheetLayout.Form12 ? 17 : 18;
+        layout switch
+        {
+            TransferReceiveSheetLayout.Form12 => 17,
+            TransferReceiveSheetLayout.Form14 => 19,
+            _ => 18
+        };
 
     private static int SeparatorColFor(TransferReceiveSheetLayout layout) =>
         SourceColCountFor(layout) + 1;
@@ -157,13 +162,14 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Title("Проверка операций приёма-передачи — как читать отчёт");
         Blank();
 
-        Section("Структура листов «Форма 1.1», «Форма 1.2» и «Форма 1.3»");
+        Section("Структура листов «Форма 1.1»–«Форма 1.4»");
         Body("Слева — непарная операция выбранной организации. Справа после тёмной разделительной колонки — наиболее похожая операция у контрагента (жёлтый заголовок «Ближайшее совпадение у контрагента»).");
         Bullet("Голубой заголовок слева — исходная (непарная) операция.");
         Bullet("Жёлтый заголовок справа — наиболее похожая операция у контрагента.");
         Bullet("Если в параметрах у формы сняты все поля («Выбрать все» = выкл.) — форма не загружается, не сопоставляется и не заполняется в Excel.");
         Bullet("Форма 1.2: наименование изделия, тип УКТ, масса обеднённого урана (кг); количество всегда считается равным 1.");
         Bullet("Форма 1.3: количество всегда считается равным 1.");
+        Bullet("Форма 1.4: наименование, вид, объём, дата измерения активности, масса (кг), агрегатное состояние; без зав.№ и изготовителя; количество = 1.");
         Blank();
 
         Section("Что такое «ближайшее совпадение»");
@@ -197,14 +203,14 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Blank();
 
         Section("Параметры сравнения");
-        Body("Перед выгрузкой выбираются поля сопоставления отдельно для форм 1.1, 1.2 и 1.3.");
-        Bullet("Активность (1.1/1.3): допуск ±10% для пары и зелёной подсветки; отличие примерно на порядок обычно жёлтое.");
-        Bullet("Масса (1.2): тот же допуск ±10%; путаница кг и тонн (ровно в 1000 раз) — жёлтый.");
-        Bullet("Дата операции: для пары нужна одна и та же дата. Окно ±15 дней только ограничивает поиск похожих строк; отличие в несколько дней справа — жёлтый.");
+        Body("Перед выгрузкой выбираются поля сопоставления отдельно для форм 1.1, 1.2, 1.3 и 1.4.");
+        Bullet("Активность (1.1/1.3/1.4): допуск ±10% для пары и зелёной подсветки; отличие примерно на порядок обычно жёлтое.");
+        Bullet("Масса (1.2/1.4) и объём (1.4): тот же допуск ±10%; путаница кг и тонн (ровно в 1000 раз) — жёлтый.");
+        Bullet("Дата операции и дата измерения активности (1.4): для пары нужна одна и та же дата. Окно ±15 дней только ограничивает поиск похожих строк; отличие в несколько дней справа — жёлтый.");
         Bullet("Код операции: для пары нужны соответствующие коды приёма и передачи (например, 21 и 31). Непарный код из того же набора справа — жёлтый.");
-        Bullet("Радионуклиды (1.1/1.3): порядок в списке не важен; если нуклида нет у одной из сторон — красный.");
+        Bullet("Радионуклиды (1.1/1.3/1.4): порядок в списке не важен; если нуклида нет у одной из сторон — красный.");
         Bullet("Тип УКТ (1.2): сравнивается как обычное текстовое поле, но сильнее влияет на «Схожесть, %», чем большинство других полей.");
-        Bullet("Агрегатное состояние (форма 1.3): значения 1, 2 или 3 должны совпасть.");
+        Bullet("Агрегатное состояние (1.3/1.4) и вид (1.4): значения должны совпасть.");
         Blank();
 
         Section("Краткий порядок работы");
@@ -241,6 +247,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         else if (formNum == "1.3")
         {
             SetupForm13Headers();
+        }
+        else if (formNum == "1.4")
+        {
+            SetupForm14Headers();
         }
         else
         {
@@ -432,6 +442,11 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         SetupSharedFormHeaders(TransferReceiveSheetLayout.Form13);
     }
 
+    private void SetupForm14Headers()
+    {
+        SetupSharedFormHeaders(TransferReceiveSheetLayout.Form14);
+    }
+
     private void SetupSharedFormHeaders(TransferReceiveSheetLayout layout)
     {
         var sheet = Worksheet;
@@ -544,6 +559,21 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 130, // ОКПО пост/пол.
                 100  // номер УКТ
             ],
+            TransferReceiveSheetLayout.Form14 =>
+            [
+                70, 90, 210, 110, 110, 50, 50, 110,
+                140, // паспорт
+                140, // наименование
+                60,  // вид
+                130, // радионуклиды
+                120, // активность
+                120, // дата изм. акт.
+                100, // объём
+                100, // масса
+                90,  // агр. состояние
+                130, // ОКПО пост/пол.
+                100  // номер УКТ
+            ],
             _ => // Form11
             [
                 70, 90, 210, 110, 110, 50, 50, 110,
@@ -617,6 +647,28 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 "Суммарная активность",
                 "Код ОКПО изготовителя",
                 "Дата выпуска",
+                "Агрегатное состояние",
+                "ОКПО поставщика или получателя",
+                "Номер УКТ"
+            ],
+            TransferReceiveSheetLayout.Form14 =>
+            [
+                "Рег.№",
+                "ОКПО",
+                "Сокращенное наименование",
+                "Дата начала периода",
+                "Дата конца периода",
+                "№ п/п",
+                "Код",
+                "Дата",
+                "Номер паспорта (сертификата)",
+                "Наименование",
+                "Вид",
+                "Радионуклиды",
+                "Активность, Бк",
+                "Дата измерения активности",
+                "Объём, куб. м",
+                "Масса, кг",
                 "Агрегатное состояние",
                 "ОКПО поставщика или получателя",
                 "Номер УКТ"
@@ -720,6 +772,20 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
             Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.PackNumber);
         }
+        else if (layout == TransferReceiveSheetLayout.Form14)
+        {
+            // Форма 1.4: наименование → вид → рад. → акт. → дата изм. → объём → масса → агр. → ОКПО → УКТ.
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Type);
+            Worksheet.Cells[CurrentRow, c++].Value = op.Sort is null ? "-" : op.Sort;
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Activity);
+            WriteDate(c++, op.ActivityMeasurementDate);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Volume);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Mass);
+            Worksheet.Cells[CurrentRow, c++].Value = op.AggregateState is null ? "-" : op.AggregateState;
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
+            Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.PackNumber);
+        }
         else
         {
             // Форма 1.1: … зав.№ → кол-во → акт. → изг. → дата вып. → пост/пол. → номер УКТ.
@@ -807,6 +873,23 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 TransferReceiveField.AggregateState => 15,
                 TransferReceiveField.ProviderOrRecieverOkpo => 16,
                 TransferReceiveField.PackNumber => 17,
+                _ => null
+            },
+            TransferReceiveSheetLayout.Form14 => field switch
+            {
+                TransferReceiveField.OperationCode => 6,
+                TransferReceiveField.OperationDate => 7,
+                TransferReceiveField.PassportNumber => 8,
+                TransferReceiveField.Type => 9,
+                TransferReceiveField.Sort => 10,
+                TransferReceiveField.Radionuclids => 11,
+                TransferReceiveField.Activity => 12,
+                TransferReceiveField.ActivityMeasurementDate => 13,
+                TransferReceiveField.Volume => 14,
+                TransferReceiveField.Mass => 15,
+                TransferReceiveField.AggregateState => 16,
+                TransferReceiveField.ProviderOrRecieverOkpo => 17,
+                TransferReceiveField.PackNumber => 18,
                 _ => null
             },
             _ => field switch

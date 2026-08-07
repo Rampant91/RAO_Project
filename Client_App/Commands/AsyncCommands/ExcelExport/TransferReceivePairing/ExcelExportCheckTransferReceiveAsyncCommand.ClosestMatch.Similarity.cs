@@ -49,8 +49,20 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             TransferReceiveField.AggregateState => sourceNorm.AggregateState == candidateNorm.AggregateState
                 ? FieldSimilarity.Exact
                 : FieldSimilarity.Mismatch(0),
+            TransferReceiveField.Sort => sourceNorm.Sort == candidateNorm.Sort
+                ? FieldSimilarity.Exact
+                : FieldSimilarity.Mismatch(0),
             TransferReceiveField.Activity => SimilarityActivity(sourceNorm.Activity, candidateNorm.Activity),
+            TransferReceiveField.ActivityMeasurementDate => DatesEqualExact(
+                    source.ActivityMeasurementDate, candidate.ActivityMeasurementDate)
+                || string.Equals(
+                    sourceNorm.ActivityMeasurementDate,
+                    candidateNorm.ActivityMeasurementDate,
+                    StringComparison.Ordinal)
+                ? FieldSimilarity.Exact
+                : SimilarityCreationDate(source.ActivityMeasurementDate, candidate.ActivityMeasurementDate),
             TransferReceiveField.Mass => SimilarityMass(sourceNorm.Mass, candidateNorm.Mass),
+            TransferReceiveField.Volume => SimilarityMass(sourceNorm.Volume, candidateNorm.Volume),
             TransferReceiveField.CreatorOkpo => SimilarityOkpo(sourceNorm.CreatorOkpo, candidateNorm.CreatorOkpo),
             TransferReceiveField.CreationDate => SimilarityCreationDate(source.CreationDate, candidate.CreationDate),
             TransferReceiveField.PackType => SimilarityType(source.PackType, candidate.PackType),
@@ -688,7 +700,9 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             TransferReceiveField.Type => 3.0,
             TransferReceiveField.Radionuclids => 4.5,
             TransferReceiveField.Activity => 2.5,
+            TransferReceiveField.ActivityMeasurementDate => 2.5,
             TransferReceiveField.Mass => 2.5,
+            TransferReceiveField.Volume => 2.5,
             TransferReceiveField.CreatorOkpo => 4.0,
             TransferReceiveField.CreationDate => 3.0,
             TransferReceiveField.ProviderOrRecieverOkpo => 4.0,
@@ -697,6 +711,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             TransferReceiveField.PackNumber => 3.5,
             TransferReceiveField.Quantity => 2.0,
             TransferReceiveField.AggregateState => 3.0,
+            TransferReceiveField.Sort => 3.0,
             _ => 1.0
         };
     }

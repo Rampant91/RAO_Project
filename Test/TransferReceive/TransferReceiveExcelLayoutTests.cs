@@ -119,6 +119,25 @@ public sealed class TransferReceiveExcelLayoutTests
                 TransferReceiveField.FactoryNumber, TransferReceiveSheetLayout.Form13)! <
             TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
                 TransferReceiveField.Activity, TransferReceiveSheetLayout.Form13)!);
+
+        // 1.4: наименование → вид → … → объём → масса → агр. → ОКПО → УКТ.
+        Assert.Equal(19, TransferReceiveTestAccess.SourceColCountForLayoutForTests(TransferReceiveSheetLayout.Form14));
+        Assert.Equal(9, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.Type, TransferReceiveSheetLayout.Form14));
+        Assert.Equal(10, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.Sort, TransferReceiveSheetLayout.Form14));
+        Assert.Equal(13, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.ActivityMeasurementDate, TransferReceiveSheetLayout.Form14));
+        Assert.Equal(14, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.Volume, TransferReceiveSheetLayout.Form14));
+        Assert.Equal(15, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.Mass, TransferReceiveSheetLayout.Form14));
+        Assert.Equal(16, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.AggregateState, TransferReceiveSheetLayout.Form14));
+        Assert.Equal(18, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.PackNumber, TransferReceiveSheetLayout.Form14));
+        Assert.Null(TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.FactoryNumber, TransferReceiveSheetLayout.Form14));
     }
 
     [Fact]

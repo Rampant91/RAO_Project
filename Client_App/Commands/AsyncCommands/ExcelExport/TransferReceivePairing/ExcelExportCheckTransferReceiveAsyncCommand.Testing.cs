@@ -19,6 +19,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
         public static TransferReceiveFormParams DefaultForm12ParamsForTests() => DefaultForm12Params();
 
+        public static TransferReceiveFormParams DefaultForm14ParamsForTests() => DefaultForm14Params();
+
         public static TransferReceiveParamsSet MapParamsFromDialogVmForTests(
             Client_App.ViewModels.Messages.GetTransferReceiveParamsVM vm) =>
             MapParamsFromDialogVm(vm);
@@ -366,8 +368,9 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 ? fallbackOrgOkpo ?? string.Empty
                 : row.OrgOkpo;
             var isTransfer = row.IsTransfer ?? IsTransferCodeForm11(row.OpCode);
-            var isForm12 = formNum == "1.2";
-            var isForm13 = formNum == "1.3" || row.AggregateState is not null;
+            var forceQtyOne = formNum is "1.2" or "1.3" or "1.4"
+                              || row.AggregateState is not null
+                              || row.Sort is not null;
 
             return new TransferReceiveDto
             {
@@ -386,9 +389,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo,
                 Activity = row.Activity,
                 Mass = row.Mass,
+                Volume = row.Volume,
+                ActivityMeasurementDate = row.ActivityMeasurementDate,
+                Sort = row.Sort,
                 CreatorOkpo = row.CreatorOkpo,
                 CreationDate = row.CreationDate,
-                Quantity = isForm12 || isForm13 ? 1 : row.Quantity,
+                Quantity = forceQtyOne ? 1 : row.Quantity,
                 AggregateState = row.AggregateState,
                 IsTransfer = isTransfer
             };
