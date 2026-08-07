@@ -453,11 +453,11 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
             // Сужение SQL по кол.19 только если ОКПО участвует в сверке — иначе сломаем пары/closest.
             IReadOnlyList<string>? providerOkpoVariants = null;
-            string? ourOkpoNormFilter = null;
+            string? ourOkpoFilter = null;
             if (pairingParams.GetParams(descriptor.Id).CheckProviderOrRecieverOkpo)
             {
                 providerOkpoVariants = BuildOurOkpoSqlMatchVariants(ourOkpo);
-                ourOkpoNormFilter = NormalizeNumber(ourOkpo);
+                ourOkpoFilter = ourOkpo;
             }
 
             counterpartOpsByForm[descriptor.Id] = await LoadFormOpsForRepsIdsAsync(
@@ -468,7 +468,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 cancellationToken,
                 loadProgress,
                 providerOkpoVariants,
-                ourOkpoNormFilter);
+                ourOkpoFilter);
         }
 
         var counterpartSummary = string.Join(", ",
@@ -501,7 +501,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Action<int, string>? reportProgress = null)
     {
         _currentParams = pairingParams;
-        var ourOkpoNorm = NormalizeNumber(ourOkpo);
         var enabledForms = pairingParams.EnabledForms;
         var unpairedByForm = new Dictionary<TransferReceiveFormId, List<TransferReceiveDto>>();
         _closestByForm = new Dictionary<TransferReceiveFormId, Dictionary<int, ClosestMatchResult>>();
@@ -530,7 +529,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var matchProgress = new ProgressReporter(reportProgress, matchMin, matchMax);
             matchProgress.Status($"сопоставление формы {descriptor.FormNum}: 0 из {ourOps.Count} операций");
             var (unpaired, opsByOrgOkpo) = AnalyzeFormForOrganization(
-                ourOps, counterpartOps, ourOkpoNorm, formOptions, repsIdsByOkpo, matchProgress);
+                ourOps, counterpartOps, ourOkpo, formOptions, repsIdsByOkpo, matchProgress);
             unpairedByForm[descriptor.Id] = unpaired;
 
             reportProgress?.Invoke(matchMax,
@@ -563,7 +562,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<TransferReceiveFormId, SharedFormSearchIndexes>? sharedIndexes = null)
     {
         _currentParams = pairingParams;
-        var ourOkpoNorm = NormalizeNumber(ourOkpo);
         var enabledForms = pairingParams.EnabledForms;
         var unpairedByForm = new Dictionary<TransferReceiveFormId, List<TransferReceiveDto>>();
         _closestByForm = new Dictionary<TransferReceiveFormId, Dictionary<int, ClosestMatchResult>>();
@@ -597,7 +595,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var matchProgress = new ProgressReporter(reportProgress, matchMin, matchMax);
             matchProgress.Status($"сопоставление формы {descriptor.FormNum}: 0 из {ourOps.Count} операций");
             var unpaired = ComputeUnpairedOperations(
-                ourOps, sharedPool, ourOkpoNorm, formOptions, matchProgress, formIndexes?.Pairing);
+                ourOps, sharedPool, ourOkpo, formOptions, matchProgress, formIndexes?.Pairing);
             unpairedByForm[descriptor.Id] = unpaired;
 
             reportProgress?.Invoke(matchMax,
@@ -656,13 +654,13 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         AnalyzeFormForOrganization(
             List<TransferReceiveDto> ourOps,
             List<TransferReceiveDto> counterpartOps,
-            string ourOkpoNorm,
+            string ourOkpoRaw,
             TransferReceiveFormParams options,
             IReadOnlyDictionary<string, List<int>>? repsIdsByNormOkpo = null,
             ProgressReporter? progress = null)
     {
         var opsByOrgOkpo = BuildOpsPoolByOrgOkpo(ourOps, counterpartOps, repsIdsByNormOkpo);
-        var unpaired = ComputeUnpairedOperations(ourOps, opsByOrgOkpo, ourOkpoNorm, options, progress);
+        var unpaired = ComputeUnpairedOperations(ourOps, opsByOrgOkpo, ourOkpoRaw, options, progress);
         return (unpaired, opsByOrgOkpo);
     }
 
@@ -671,11 +669,11 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         AnalyzeForm11ForOrganization(
             List<TransferReceiveDto> ourOps,
             List<TransferReceiveDto> counterpartOps,
-            string ourOkpoNorm,
+            string ourOkpoRaw,
             TransferReceiveFormParams options,
             IReadOnlyDictionary<string, List<int>>? repsIdsByNormOkpo = null,
             ProgressReporter? progress = null) =>
-        AnalyzeFormForOrganization(ourOps, counterpartOps, ourOkpoNorm, options, repsIdsByNormOkpo, progress);
+        AnalyzeFormForOrganization(ourOps, counterpartOps, ourOkpoRaw, options, repsIdsByNormOkpo, progress);
 
     /// <summary>
     /// Пул операций по нормализованному ОКПО.
@@ -722,9 +720,18 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             }
         }
 
-        foreach (var group in allOps.GroupBy(op => NormalizeNumber(op.OrgOkpo), StringComparer.Ordinal))
+        foreach (var op in allOps)
         {
-            IndexUnder(group.Key, group.OrderBy(op => op.Id).ToList());
+            foreach (var key in OkpoIndexKeys(op.OrgOkpo))
+            {
+                if (!result.TryGetValue(key, out var list))
+                {
+                    list = [];
+                    result[key] = list;
+                }
+
+                list.Add(op);
+            }
         }
 
         if (repsIdsByNormOkpo is not null)
@@ -741,9 +748,22 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             }
         }
 
-        foreach (var list in result.Values)
+        foreach (var key in result.Keys.ToList())
         {
+            var list = result[key];
             list.Sort((left, right) => left.Id.CompareTo(right.Id));
+            // Один op может попасть под ключ и через титул, и через алиас.
+            var deduped = new List<TransferReceiveDto>(list.Count);
+            var seen = new HashSet<int>();
+            foreach (var op in list)
+            {
+                if (seen.Add(op.Id))
+                {
+                    deduped.Add(op);
+                }
+            }
+
+            result[key] = deduped;
         }
 
         return result;
@@ -752,7 +772,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     private static List<TransferReceiveDto> ComputeUnpairedOperations(
         List<TransferReceiveDto> ourOps,
         IReadOnlyDictionary<string, List<TransferReceiveDto>> opsByOrgOkpo,
-        string ourOkpoNorm,
+        string ourOkpoRaw,
         TransferReceiveFormParams options,
         ProgressReporter? progress = null,
         PairingCandidateIndex? prebuiltIndex = null)
@@ -761,6 +781,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var pairedOurIds = new HashSet<int>();
         var total = ourOps.Count;
         var processed = 0;
+        var ourOkpoNorm = NormalizeNumber(ourOkpoRaw);
 
         void OnSourceDone()
         {
@@ -772,13 +793,14 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var ourReceives = ourOps.Where(op => !op.IsTransfer).OrderBy(op => op.Id).ToList();
         var index = prebuiltIndex ?? PairingCandidateIndex.Build(opsByOrgOkpo, options);
 
-        MatchSide(ourTransfers, isSourceTransfer: true, index, usedCandidateIds, pairedOurIds, ourOkpoNorm, options, OnSourceDone);
+        MatchSide(ourTransfers, isSourceTransfer: true, index, usedCandidateIds, pairedOurIds, ourOkpoRaw, ourOkpoNorm, options, OnSourceDone);
         MatchSide(
             ourReceives.Where(op => !pairedOurIds.Contains(op.Id)).ToList(),
             isSourceTransfer: false,
             index,
             usedCandidateIds,
             pairedOurIds,
+            ourOkpoRaw,
             ourOkpoNorm,
             options,
             OnSourceDone);
@@ -797,10 +819,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     private static List<TransferReceiveDto> ComputeUnpairedForm11(
         List<TransferReceiveDto> ourOps,
         IReadOnlyDictionary<string, List<TransferReceiveDto>> opsByOrgOkpo,
-        string ourOkpoNorm,
+        string ourOkpoRaw,
         TransferReceiveFormParams options,
         ProgressReporter? progress = null) =>
-        ComputeUnpairedOperations(ourOps, opsByOrgOkpo, ourOkpoNorm, options, progress);
+        ComputeUnpairedOperations(ourOps, opsByOrgOkpo, ourOkpoRaw, options, progress);
 
     private static void MatchSide(
         List<TransferReceiveDto> sources,
@@ -808,6 +830,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         PairingCandidateIndex index,
         HashSet<int> usedCandidateIds,
         HashSet<int> pairedOurIds,
+        string ourOkpoRaw,
         string ourOkpoNorm,
         TransferReceiveFormParams options,
         Action? onSourceDone = null)
@@ -815,8 +838,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var withSerial = sources.Where(op => !SerialNumbersAreEmpty(op)).ToList();
         var withoutSerial = sources.Where(SerialNumbersAreEmpty).ToList();
 
-        MatchWithSerial(withSerial, isSourceTransfer, index, usedCandidateIds, pairedOurIds, ourOkpoNorm, options, onSourceDone);
-        MatchWithoutSerial(withoutSerial, isSourceTransfer, index, usedCandidateIds, pairedOurIds, ourOkpoNorm, options, onSourceDone);
+        MatchWithSerial(withSerial, isSourceTransfer, index, usedCandidateIds, pairedOurIds, ourOkpoRaw, ourOkpoNorm, options, onSourceDone);
+        MatchWithoutSerial(withoutSerial, isSourceTransfer, index, usedCandidateIds, pairedOurIds, ourOkpoRaw, ourOkpoNorm, options, onSourceDone);
     }
 
     private static void MatchWithSerial(
@@ -825,6 +848,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         PairingCandidateIndex index,
         HashSet<int> usedCandidateIds,
         HashSet<int> pairedOurIds,
+        string ourOkpoRaw,
         string ourOkpoNorm,
         TransferReceiveFormParams options,
         Action? onSourceDone = null)
@@ -837,7 +861,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 continue;
             }
 
-            var sourceOrgOkpoNorm = NormalizeNumber(source.OrgOkpo);
             var sourceKey = BuildPairingKey(
                 source, options, includeSerial: true, includeQuantity: options.CheckQuantity);
             var candidates = index.LookupWithSerial(source, isSourceTransfer, sourceKey, options);
@@ -853,11 +876,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                         source,
                         candidate,
                         options,
-                        ourOkpoNorm,
+                        ourOkpoRaw,
                         includeSerial: true,
                         precomputedSourceKey: sourceKey,
-                        precomputedCandidateKey: candidateKey,
-                        precomputedSourceOrgOkpoNorm: sourceOrgOkpoNorm))
+                        precomputedCandidateKey: candidateKey))
                 {
                     continue;
                 }
@@ -886,6 +908,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         PairingCandidateIndex index,
         HashSet<int> usedCandidateIds,
         HashSet<int> pairedOurIds,
+        string ourOkpoRaw,
         string ourOkpoNorm,
         TransferReceiveFormParams options,
         Action? onSourceDone = null)
@@ -912,7 +935,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             }
 
             var remainingSourceQty = options.CheckQuantity ? GetQuantityForComparison(source) : 1;
-            var sourceOrgOkpoNorm = NormalizeNumber(source.OrgOkpo);
             var sourceKey = BuildPairingKey(
                 source, options, includeSerial: false, includeQuantity: false);
             var candidates = index.LookupWithoutSerial(source, isSourceTransfer, sourceKey, options);
@@ -940,11 +962,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                         source,
                         state.Row,
                         options,
-                        ourOkpoNorm,
+                        ourOkpoRaw,
                         includeSerial: false,
                         precomputedSourceKey: sourceKey,
-                        precomputedCandidateKey: candidateKey,
-                        precomputedSourceOrgOkpoNorm: sourceOrgOkpoNorm))
+                        precomputedCandidateKey: candidateKey))
                 {
                     continue;
                 }
@@ -1056,17 +1077,20 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             bool isSourceTransfer,
             out DirectionBucket bucket)
         {
-            var counterpartOkpo = NormalizeNumber(source.ProviderOrRecieverOkpo);
-            if (counterpartOkpo.Length == 0
-                || !_byOkpo.TryGetValue(counterpartOkpo, out var pools))
+            foreach (var key in OkpoIndexKeys(source.ProviderOrRecieverOkpo))
             {
-                bucket = DirectionBucket.Empty;
-                return false;
+                if (!_byOkpo.TryGetValue(key, out var pools))
+                {
+                    continue;
+                }
+
+                // Передача ищет приём у контрагента и наоборот.
+                bucket = isSourceTransfer ? pools.Receives : pools.Transfers;
+                return true;
             }
 
-            // Передача ищет приём у контрагента и наоборот.
-            bucket = isSourceTransfer ? pools.Receives : pools.Transfers;
-            return true;
+            bucket = DirectionBucket.Empty;
+            return false;
         }
 
         private sealed class OkpoDirectionBuckets(DirectionBucket transfers, DirectionBucket receives)

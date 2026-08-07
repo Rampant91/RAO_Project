@@ -316,17 +316,23 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
         public bool TryGetCandidates(TransferReceiveDto source, out CandidateSet set)
         {
-            var counterpartOkpo = NormalizeNumber(source.ProviderOrRecieverOkpo);
-            if (counterpartOkpo.Length == 0
-                || !_byOkpo.TryGetValue(counterpartOkpo, out var pools))
+            foreach (var key in OkpoIndexKeys(source.ProviderOrRecieverOkpo))
             {
-                set = CandidateSet.Empty;
-                return false;
+                if (!_byOkpo.TryGetValue(key, out var pools))
+                {
+                    continue;
+                }
+
+                // Передача ищет приём у контрагента и наоборот.
+                set = source.IsTransfer ? pools.Receives : pools.Transfers;
+                if (set.All.Count > 0)
+                {
+                    return true;
+                }
             }
 
-            // Передача ищет приём у контрагента и наоборот.
-            set = source.IsTransfer ? pools.Receives : pools.Transfers;
-            return set.All.Count > 0;
+            set = CandidateSet.Empty;
+            return false;
         }
 
         private sealed class OkpoDirectionSets(CandidateSet transfers, CandidateSet receives)

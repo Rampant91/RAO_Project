@@ -34,6 +34,116 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         return LookalikeCharMapper.ReplaceRuEnLookalikes(normalized, includeExtendedSnkSet: true);
     }
 
+    /// <summary>
+    /// Формат «8 цифр_5 цифр» (напр. 01234567_12345).
+    /// </summary>
+    private static readonly Regex OkpoEightUnderscoreFiveRegex =
+        new(@"^(\d{8})_(\d{5})$", RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+    private static bool TryParseOkpoEightUnderscoreFive(string? raw, out string head8, out string tail5)
+    {
+        head8 = string.Empty;
+        tail5 = string.Empty;
+        if (string.IsNullOrWhiteSpace(raw))
+        {
+            return false;
+        }
+
+        var match = OkpoEightUnderscoreFiveRegex.Match(raw.Trim());
+        if (!match.Success)
+        {
+            return false;
+        }
+
+        head8 = match.Groups[1].Value;
+        tail5 = match.Groups[2].Value;
+        return true;
+    }
+
+    private static bool TryParseOkpoPlainEight(string? raw, out string eight)
+    {
+        eight = string.Empty;
+        if (string.IsNullOrWhiteSpace(raw))
+        {
+            return false;
+        }
+
+        var trimmed = raw.Trim();
+        if (trimmed.Length != 8)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < 8; i++)
+        {
+            if (!char.IsDigit(trimmed[i]))
+            {
+                return false;
+            }
+        }
+
+        eight = trimmed;
+        return true;
+    }
+
+    /// <summary>
+    /// Совпадение ОКПО: точное (после NormalizeNumber) или «8 цифр» ↔ голова формата 8_5.
+    /// </summary>
+    private static bool OkpoReferencesMatch(string? claimedRaw, string? targetRaw)
+    {
+        var claimedNorm = NormalizeNumber(claimedRaw);
+        var targetNorm = NormalizeNumber(targetRaw);
+        if (claimedNorm.Length > 0 && claimedNorm == targetNorm)
+        {
+            return true;
+        }
+
+        return OkpoIsEightPrefixOfExtended(claimedRaw, targetRaw)
+               || OkpoIsEightPrefixOfExtended(targetRaw, claimedRaw);
+    }
+
+    /// <summary>
+    /// true, если left — ровно 8 цифр, а right — формат 8_5 с той же головой
+    /// (контрагент указал только первые 8 цифр полного ОКПО).
+    /// </summary>
+    private static bool OkpoIsEightPrefixOfExtended(string? eightRaw, string? extendedRaw) =>
+        TryParseOkpoPlainEight(eightRaw, out var eight)
+        && TryParseOkpoEightUnderscoreFive(extendedRaw, out var head8, out _)
+        && eight == head8;
+
+    /// <summary>
+    /// Ключи для индекса/поиска пула по ОКПО: полная нормализация + голова 8_5 (сырая и norm).
+    /// </summary>
+    private static IEnumerable<string> OkpoIndexKeys(string? okpoRaw)
+    {
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+
+        var norm = NormalizeNumber(okpoRaw);
+        if (norm.Length > 0 && seen.Add(norm))
+        {
+            yield return norm;
+        }
+
+        if (TryParseOkpoPlainEight(okpoRaw, out var eight) && seen.Add(eight))
+        {
+            yield return eight;
+        }
+
+        if (TryParseOkpoEightUnderscoreFive(okpoRaw, out var head8, out _))
+        {
+            if (seen.Add(head8))
+            {
+                yield return head8;
+            }
+
+            var headNorm = NormalizeNumber(head8);
+            if (headNorm.Length > 0 && seen.Add(headNorm))
+            {
+                yield return headNorm;
+            }
+        }
+    }
+
     private static string NormalizeRads(string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -189,11 +299,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         TransferReceiveDto source,
         TransferReceiveDto candidate,
         TransferReceiveFormParams options,
-        string ourOkpoNorm,
+        string ourOkpoRaw,
         bool includeSerial,
         string? precomputedSourceKey = null,
-        string? precomputedCandidateKey = null,
-        string? precomputedSourceOrgOkpoNorm = null)
+        string? precomputedCandidateKey = null)
     {
         if (options.CheckOperationCode && !OpCodesArePaired(source.OpCode, candidate.OpCode))
         {
@@ -232,11 +341,9 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
         if (options.CheckProviderOrRecieverOkpo)
         {
-            var sourceOrgOkpo = precomputedSourceOrgOkpoNorm ?? NormalizeNumber(source.OrgOkpo);
-            var candidateProvider = NormalizeNumber(candidate.ProviderOrRecieverOkpo);
-            var candidatePointsToUs = candidateProvider == ourOkpoNorm
-                                      || candidateProvider == sourceOrgOkpo;
-            if (!candidatePointsToUs)
+            // Кол.19 контрагента должна указывать на нас: полное совпадение или 8 ↔ голова 8_5.
+            if (!OkpoReferencesMatch(candidate.ProviderOrRecieverOkpo, ourOkpoRaw)
+                && !OkpoReferencesMatch(candidate.ProviderOrRecieverOkpo, source.OrgOkpo))
             {
                 return false;
             }
@@ -295,8 +402,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     /// Если задан — в SQL оставляем только строки, где кол.19 ∈ variants
     /// (org-режим при включённом CheckProviderOrRecieverOkpo). Не использовать при выключенной проверке ОКПО.
     /// </param>
-    /// <param name="ourOkpoNormFilter">
-    /// Доп. отсев в памяти по <see cref="NormalizeNumber"/> после SQL (ведущие нули / мусор в кол.19).
+    /// <param name="ourOkpoFilter">
+    /// Доп. отсев в памяти: кол.19 указывает на наш ОКПО (полное совпадение или 8 ↔ голова 8_5).
     /// </param>
     private static Task<List<TransferReceiveDto>> LoadFormOpsForRepsIdsAsync(
         TransferReceiveFormId formId,
@@ -306,22 +413,22 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
         IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoNormFilter = null,
+        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "контрагентов") =>
         formId switch
         {
             TransferReceiveFormId.Form11 => LoadForm11TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoNormFilter,
+                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
                 chunkSize, progressEntityLabel),
             TransferReceiveFormId.Form12 => LoadForm12TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoNormFilter,
+                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
                 chunkSize, progressEntityLabel),
             TransferReceiveFormId.Form13 => LoadForm13TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoNormFilter,
+                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
                 chunkSize, progressEntityLabel),
             TransferReceiveFormId.Form14 => LoadForm14TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoNormFilter,
+                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
                 chunkSize, progressEntityLabel),
             _ => throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет загрузчика для формы.")
         };
@@ -761,7 +868,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     /// <summary>
     /// Сырые варианты нашего ОКПО для SQL IN: как в титуле, нормализованный, с ведущими нулями.
     /// Не покрывает lookalike-буквы — для ОКПО обычно цифры; пары после NormalizeNumber всё равно
-    /// дополнительно отсекаются <c>ourOkpoNormFilter</c> в памяти.
+    /// дополнительно отсекаются <c>ourOkpoFilter</c> в памяти.
     /// </summary>
     private static List<string> BuildOurOkpoSqlMatchVariants(string ourOkpoRaw)
     {
@@ -776,22 +883,32 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             result.Add(value.Trim());
         }
 
-        Add(ourOkpoRaw);
-        var norm = NormalizeNumber(ourOkpoRaw);
-        Add(norm);
-        if (norm.Length is > 0 and <= 12)
+        void AddWithLeadingZeroPads(string? value)
         {
-            for (var pad = 1; pad <= 4; pad++)
+            Add(value);
+            var norm = NormalizeNumber(value);
+            Add(norm);
+            if (norm.Length is > 0 and <= 12)
             {
-                result.Add(norm.PadLeft(norm.Length + pad, '0'));
+                for (var pad = 1; pad <= 4; pad++)
+                {
+                    result.Add(norm.PadLeft(norm.Length + pad, '0'));
+                }
             }
+        }
+
+        AddWithLeadingZeroPads(ourOkpoRaw);
+        // Контрагент может указать только первые 8 цифр формата 8_5.
+        if (TryParseOkpoEightUnderscoreFive(ourOkpoRaw, out var head8, out _))
+        {
+            AddWithLeadingZeroPads(head8);
         }
 
         return result.ToList();
     }
 
-    private static bool CounterpartProviderPointsToUs(string? providerRaw, string ourOkpoNorm) =>
-        ourOkpoNorm.Length > 0 && NormalizeNumber(providerRaw) == ourOkpoNorm;
+    private static bool CounterpartProviderPointsToUs(string? providerRaw, string? ourOkpoRaw) =>
+        !string.IsNullOrWhiteSpace(ourOkpoRaw) && OkpoReferencesMatch(providerRaw, ourOkpoRaw);
 
     /// <summary>
     /// Один запрос: все операции приёма/передачи формы 1.1 по БД (RepsId из навигации).
@@ -1138,28 +1255,25 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         return byNorm;
     }
 
-    /// <summary>Нормализованный ОКПО титула → RepsId (без SQL).</summary>
+    /// <summary>ОКПО титула → RepsId (без SQL); 8_5 также под головой из 8 цифр.</summary>
     private static Dictionary<string, List<int>> SeedOkpoAliasMapFromTitles(
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitles)
     {
         var byNorm = new Dictionary<string, List<int>>(StringComparer.Ordinal);
         foreach (var (repsId, title) in orgTitles)
         {
-            var norm = NormalizeNumber(title.Okpo);
-            if (norm.Length == 0)
+            foreach (var key in OkpoIndexKeys(title.Okpo))
             {
-                continue;
-            }
+                if (!byNorm.TryGetValue(key, out var list))
+                {
+                    list = [];
+                    byNorm[key] = list;
+                }
 
-            if (!byNorm.TryGetValue(norm, out var list))
-            {
-                list = [];
-                byNorm[norm] = list;
-            }
-
-            if (!list.Contains(repsId))
-            {
-                list.Add(repsId);
+                if (!list.Contains(repsId))
+                {
+                    list.Add(repsId);
+                }
             }
         }
 
@@ -1243,7 +1357,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
         IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoNormFilter = null,
+        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "контрагентов")
     {
@@ -1314,8 +1428,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                     continue;
                 }
 
-                if (ourOkpoNormFilter is { Length: > 0 }
-                    && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoNormFilter))
+                if (ourOkpoFilter is { Length: > 0 }
+                    && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
                 {
                     continue;
                 }
@@ -1429,7 +1543,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
         IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoNormFilter = null,
+        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "1.2 контрагентов")
     {
@@ -1499,8 +1613,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                     continue;
                 }
 
-                if (ourOkpoNormFilter is { Length: > 0 }
-                    && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoNormFilter))
+                if (ourOkpoFilter is { Length: > 0 }
+                    && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
                 {
                     continue;
                 }
@@ -1616,7 +1730,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
         IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoNormFilter = null,
+        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "1.3 контрагентов")
     {
@@ -1687,8 +1801,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                     continue;
                 }
 
-                if (ourOkpoNormFilter is { Length: > 0 }
-                    && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoNormFilter))
+                if (ourOkpoFilter is { Length: > 0 }
+                    && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
                 {
                     continue;
                 }
@@ -1788,7 +1902,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
         IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoNormFilter = null,
+        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "1.4 контрагентов")
     {
@@ -1860,8 +1974,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                     continue;
                 }
 
-                if (ourOkpoNormFilter is { Length: > 0 }
-                    && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoNormFilter))
+                if (ourOkpoFilter is { Length: > 0 }
+                    && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
                 {
                     continue;
                 }

@@ -68,7 +68,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             TransferReceiveField.PackType => SimilarityType(source.PackType, candidate.PackType),
             TransferReceiveField.PackNumber => SimilarityPackNumber(source.PackNumber, candidate.PackNumber),
             TransferReceiveField.ProviderOrRecieverOkpo => SimilarityProviderOkpo(
-                candidateNorm.ProviderOrRecieverOkpo, sourceNorm.OrgOkpo, NormalizeNumber(sourceOrgOkpo)),
+                candidate.ProviderOrRecieverOkpo, source.OrgOkpo, sourceOrgOkpo),
             _ => FieldSimilarity.Mismatch(0)
         };
 
@@ -464,18 +464,32 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     }
 
     private static FieldSimilarity SimilarityProviderOkpo(
-        string candidateProviderNorm,
-        string sourceOrgNorm,
-        string sourceOrgOkpoNorm)
+        string? candidateProviderRaw,
+        string? sourceOrgRaw,
+        string? sourceOrgOkpoRaw)
     {
-        if (candidateProviderNorm.Length == 0)
+        if (string.IsNullOrWhiteSpace(candidateProviderRaw) || candidateProviderRaw == "-")
         {
             return FieldSimilarity.Mismatch(0.15);
         }
 
-        if (candidateProviderNorm == sourceOrgNorm || candidateProviderNorm == sourceOrgOkpoNorm)
+        var candidateProviderNorm = NormalizeNumber(candidateProviderRaw);
+        var sourceOrgNorm = NormalizeNumber(sourceOrgRaw);
+        var sourceOrgOkpoNorm = NormalizeNumber(sourceOrgOkpoRaw);
+
+        if (candidateProviderNorm.Length > 0
+            && (candidateProviderNorm == sourceOrgNorm || candidateProviderNorm == sourceOrgOkpoNorm))
         {
             return FieldSimilarity.Exact;
+        }
+
+        // Контрагент указал только первые 8 цифр формата 8_5 — почти полное совпадение.
+        if (OkpoIsEightPrefixOfExtended(candidateProviderRaw, sourceOrgRaw)
+            || OkpoIsEightPrefixOfExtended(candidateProviderRaw, sourceOrgOkpoRaw)
+            || OkpoIsEightPrefixOfExtended(sourceOrgRaw, candidateProviderRaw)
+            || OkpoIsEightPrefixOfExtended(sourceOrgOkpoRaw, candidateProviderRaw))
+        {
+            return FieldSimilarity.Near(0.99);
         }
 
         var best = Math.Max(

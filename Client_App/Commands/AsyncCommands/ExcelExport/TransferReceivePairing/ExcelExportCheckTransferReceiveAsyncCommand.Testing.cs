@@ -28,8 +28,23 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         public static IReadOnlyList<string> BuildOurOkpoSqlMatchVariantsForTests(string ourOkpoRaw) =>
             BuildOurOkpoSqlMatchVariants(ourOkpoRaw);
 
-        public static bool CounterpartProviderPointsToUsForTests(string? providerRaw, string ourOkpoNorm) =>
-            CounterpartProviderPointsToUs(providerRaw, ourOkpoNorm);
+        public static bool CounterpartProviderPointsToUsForTests(string? providerRaw, string? ourOkpoRaw) =>
+            CounterpartProviderPointsToUs(providerRaw, ourOkpoRaw);
+
+        public static bool OkpoReferencesMatchForTests(string? claimedRaw, string? targetRaw) =>
+            OkpoReferencesMatch(claimedRaw, targetRaw);
+
+        public static FieldMatchLevel SimilarityProviderOkpoLevelForTests(
+            string? candidateProviderRaw,
+            string? sourceOrgRaw,
+            string? sourceOrgOkpoRaw) =>
+            SimilarityProviderOkpo(candidateProviderRaw, sourceOrgRaw, sourceOrgOkpoRaw).Level;
+
+        public static double SimilarityProviderOkpoScoreForTests(
+            string? candidateProviderRaw,
+            string? sourceOrgRaw,
+            string? sourceOrgOkpoRaw) =>
+            SimilarityProviderOkpo(candidateProviderRaw, sourceOrgRaw, sourceOrgOkpoRaw).Score;
 
         /// <summary>Сид ОКПО→RepsId из титулов (как в whole-DB до SQL-хвоста).</summary>
         public static IReadOnlyDictionary<string, IReadOnlyList<int>> SeedOkpoAliasMapFromTitlesForTests(
@@ -186,13 +201,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
         public static TransferReceiveScenarioResult RunScenario(TransferReceiveTestCase testCase)
         {
-            var ourOkpoNorm = NormalizeNumber(testCase.OurOkpo);
             var ourOps = ToDtoList(testCase.OurOps, fallbackOrgOkpo: testCase.OurOkpo, testCase.FormNum);
             var counterpartOps = ToDtoList(testCase.CounterpartOps, fallbackOrgOkpo: null, testCase.FormNum);
             var aliases = ToAliasMap(testCase.OkpoAliases);
 
             var (unpaired, _) = AnalyzeFormForOrganization(
-                ourOps, counterpartOps, ourOkpoNorm, testCase.Params, aliases);
+                ourOps, counterpartOps, testCase.OurOkpo, testCase.Params, aliases);
 
             return new TransferReceiveScenarioResult(
                 unpaired.Select(row => row.Id).OrderBy(id => id).ToList());
@@ -203,7 +217,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         /// </summary>
         public static TransferReceiveScenarioResult RunScenarioWithSharedFullPool(TransferReceiveTestCase testCase)
         {
-            var ourOkpoNorm = NormalizeNumber(testCase.OurOkpo);
             var ourOps = ToDtoList(testCase.OurOps, fallbackOrgOkpo: testCase.OurOkpo, testCase.FormNum);
             var counterpartOps = ToDtoList(testCase.CounterpartOps, fallbackOrgOkpo: null, testCase.FormNum);
             var aliases = ToAliasMap(testCase.OkpoAliases);
@@ -215,7 +228,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var sharedPool = BuildOpsPoolByOrgOkpo([], allOps, aliases);
             var indexes = SharedFormSearchIndexes.Build(sharedPool, testCase.Params);
             var unpaired = ComputeUnpairedOperations(
-                ourOps, sharedPool, ourOkpoNorm, testCase.Params, prebuiltIndex: indexes.Pairing);
+                ourOps, sharedPool, testCase.OurOkpo, testCase.Params, prebuiltIndex: indexes.Pairing);
 
             return new TransferReceiveScenarioResult(
                 unpaired.Select(row => row.Id).OrderBy(id => id).ToList());
@@ -227,7 +240,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         public static TransferReceiveClosestMatchResult RunClosestMatchesWithSharedIndexes(
             TransferReceiveTestCase testCase)
         {
-            var ourOkpoNorm = NormalizeNumber(testCase.OurOkpo);
             var ourOps = ToDtoList(testCase.OurOps, fallbackOrgOkpo: testCase.OurOkpo, testCase.FormNum);
             var counterpartOps = ToDtoList(testCase.CounterpartOps, fallbackOrgOkpo: null, testCase.FormNum);
             var aliases = ToAliasMap(testCase.OkpoAliases);
@@ -239,7 +251,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var sharedPool = BuildOpsPoolByOrgOkpo([], allOps, aliases);
             var indexes = SharedFormSearchIndexes.Build(sharedPool, testCase.Params);
             var unpaired = ComputeUnpairedOperations(
-                ourOps, sharedPool, ourOkpoNorm, testCase.Params, prebuiltIndex: indexes.Pairing);
+                ourOps, sharedPool, testCase.OurOkpo, testCase.Params, prebuiltIndex: indexes.Pairing);
             var built = BuildClosestMatchResults(
                 unpaired, sharedPool, testCase.Params,
                 prebuiltCandidateIndex: indexes.Closest,
@@ -259,13 +271,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
         public static TransferReceiveClosestMatchResult RunClosestMatches(TransferReceiveTestCase testCase)
         {
-            var ourOkpoNorm = NormalizeNumber(testCase.OurOkpo);
             var ourOps = ToDtoList(testCase.OurOps, fallbackOrgOkpo: testCase.OurOkpo, testCase.FormNum);
             var counterpartOps = ToDtoList(testCase.CounterpartOps, fallbackOrgOkpo: null, testCase.FormNum);
             var aliases = ToAliasMap(testCase.OkpoAliases);
 
             var (unpaired, opsByOrgOkpo) = AnalyzeFormForOrganization(
-                ourOps, counterpartOps, ourOkpoNorm, testCase.Params, aliases);
+                ourOps, counterpartOps, testCase.OurOkpo, testCase.Params, aliases);
 
             var built = BuildClosestMatchResults(unpaired, opsByOrgOkpo, testCase.Params);
             var exact = built.ToDictionary(
@@ -307,7 +318,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             IReadOnlyList<TransferReceiveRow> counterpartOps13,
             TransferReceiveParamsSet pairingParams)
         {
-            var ourOkpoNorm = NormalizeNumber(ourOkpo);
             var unpaired11 = new List<int>();
             var unpaired12 = new List<int>();
             var unpaired13 = new List<int>();
@@ -317,7 +327,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 var our = ToDtoList(ourOps11, ourOkpo, "1.1");
                 var counterpart = ToDtoList(counterpartOps11, null, "1.1");
                 var (unpaired, _) = AnalyzeFormForOrganization(
-                    our, counterpart, ourOkpoNorm, pairingParams.Form11, null);
+                    our, counterpart, ourOkpo, pairingParams.Form11, null);
                 unpaired11 = unpaired.Select(op => op.Id).OrderBy(id => id).ToList();
             }
 
@@ -326,7 +336,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 var our = ToDtoList(ourOps12, ourOkpo, "1.2");
                 var counterpart = ToDtoList(counterpartOps12, null, "1.2");
                 var (unpaired, _) = AnalyzeFormForOrganization(
-                    our, counterpart, ourOkpoNorm, pairingParams.Form12, null);
+                    our, counterpart, ourOkpo, pairingParams.Form12, null);
                 unpaired12 = unpaired.Select(op => op.Id).OrderBy(id => id).ToList();
             }
 
@@ -335,7 +345,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 var our = ToDtoList(ourOps13, ourOkpo, "1.3");
                 var counterpart = ToDtoList(counterpartOps13, null, "1.3");
                 var (unpaired, _) = AnalyzeFormForOrganization(
-                    our, counterpart, ourOkpoNorm, pairingParams.Form13, null);
+                    our, counterpart, ourOkpo, pairingParams.Form13, null);
                 unpaired13 = unpaired.Select(op => op.Id).OrderBy(id => id).ToList();
             }
 
