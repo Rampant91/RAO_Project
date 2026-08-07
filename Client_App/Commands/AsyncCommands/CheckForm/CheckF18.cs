@@ -1,4 +1,4 @@
-﻿using Models.CheckForm;
+using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Models.Helpers;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -75,8 +76,7 @@ public abstract class CheckF18 : CheckBase
             currentFormLine++;
 
             while (currentFormLine < formsList.Count 
-                && (string.IsNullOrWhiteSpace(formsList[currentFormLine].IndividualNumberZHRO_DB) 
-                   || formsList[currentFormLine].IndividualNumberZHRO_DB.Trim() == "-"))
+                && DashStringHelper.IsNullOrWhiteSpaceOrDash(formsList[currentFormLine].IndividualNumberZHRO_DB))
             {
                 packLines.Add(currentFormLine);
                 currentFormLine++;
@@ -163,14 +163,14 @@ public abstract class CheckF18 : CheckBase
         for (var i = 0; i < forms.Count; i++)
         {
             var currentForm = forms[i];
-            if (currentForm.OperationCode_DB is null or "" or "-" 
+            if (DashStringHelper.IsNullOrEmptyOrDash(currentForm.OperationCode_DB) 
                 || duplicatesGroupsSet.Any(set => set.Contains(i + 1))) continue;
 
             var hasDuplicate = false;
             for (var j = i + 1; j < forms.Count; j++)
             {
                 var formToCompare = forms[j];
-                if (formToCompare.OperationCode_DB is null or "" or "-" 
+                if (DashStringHelper.IsNullOrEmptyOrDash(formToCompare.OperationCode_DB) 
                     || duplicatesGroupsSet.Any(set => set.Contains(j + 1))) continue;
                 
                 var isDuplicate = !string.IsNullOrWhiteSpace(currentForm.OperationCode_DB)
@@ -705,7 +705,7 @@ public abstract class CheckF18 : CheckBase
         {
             var radionuclids = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
             var rad = radionuclids.ToLower().Replace('\n', ' ').Replace('e', 'е').Replace('a', 'а').Trim();
-            if (string.IsNullOrWhiteSpace(rad) || rad == "-") continue;
+            if (DashStringHelper.IsNullOrWhiteSpaceOrDash(rad)) continue;
             if (rad.Replace(" ", "").Replace(',', ';').Split(';').Length != 1)
             {
                 //отсебятина, навеяно формированием паспорта, которое считает, что в каждой строчке есть только один нуклид
@@ -745,7 +745,7 @@ public abstract class CheckF18 : CheckBase
         foreach (var line in lines)
         {
             var specificActivity = ConvertStringToExponential(forms[line].SpecificActivity_DB);
-            if (string.IsNullOrWhiteSpace(specificActivity) || specificActivity == "-") continue;
+            if (DashStringHelper.IsNullOrWhiteSpaceOrDash(specificActivity)) continue;
             if (!TryParseFloatExtended(specificActivity, out var specificActivityReal) || specificActivityReal <= 0)
             {
                 result.Add(new CheckError
@@ -1022,7 +1022,7 @@ public abstract class CheckF18 : CheckBase
             "01", "10", "11", "12", "13", "18", "51", "52", "55", "68", "97", "98"
         };
         if (!applicableOperationCodes.Contains(opCode)) return result;
-        var valid = transporterOkpo is "-";
+        var valid = DashStringHelper.IsDash(transporterOkpo);
         if (!valid)
         {
             result.Add(new CheckError
@@ -1096,7 +1096,7 @@ public abstract class CheckF18 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Для выбранного кода операции указывается код ОКПО перевозчика, либо «Минобороны» без кавычек.",
-                IsCritical = transporterOkpo is not "-"
+                IsCritical = !DashStringHelper.IsDash(transporterOkpo)
             });
         }
         return result;
@@ -1354,8 +1354,7 @@ public abstract class CheckF18 : CheckBase
 
         var codeRaoDBs = lines
             .Select(line => ReplaceNullAndTrim(forms[line].CodeRAO_DB))
-            .Where(codeRaoDB => !string.IsNullOrWhiteSpace(codeRaoDB) 
-                                && codeRaoDB != "-")
+            .Where(codeRaoDB => !DashStringHelper.IsNullOrWhiteSpaceOrDash(codeRaoDB))
             .ToList();
 
         #endregion
@@ -1378,7 +1377,7 @@ public abstract class CheckF18 : CheckBase
             const byte graphNumber = 18;
             var noteExists = CheckNotePresence(notes, line, graphNumber);
             var codeRao = ReplaceNullAndTrim(forms[line].CodeRAO_DB);
-            if (codeRao is "" or "-") continue;
+            if (DashStringHelper.IsNullOrEmptyOrDash(codeRao)) continue;
 
             var massVolumeAndActivityExist = true;
             if (!(nuclidsExistT || nuclidsExistA || nuclidsExistB || nuclidsExistU))
@@ -1419,8 +1418,8 @@ public abstract class CheckF18 : CheckBase
             }
             if (!massVolumeAndActivityExist) continue;
 
-            if (forms[line].RefineOrSortRAOCode_DB is ("" or "-") &&
-                forms[lines[0]].RefineOrSortRAOCode_DB is not ("" or "-"))
+            if (DashStringHelper.IsNullOrEmptyOrDash(forms[line].RefineOrSortRAOCode_DB) &&
+                !DashStringHelper.IsNullOrEmptyOrDash(forms[lines[0]].RefineOrSortRAOCode_DB))
             {
                 result.Add(new CheckError
                 {
@@ -2048,7 +2047,7 @@ public abstract class CheckF18 : CheckBase
         foreach (var line in lines)
         {
             var statusRaoDB = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
-            if (string.IsNullOrWhiteSpace(statusRaoDB) || statusRaoDB.Trim() == "-") continue;
+            if (DashStringHelper.IsNullOrWhiteSpaceOrDash(statusRaoDB)) continue;
             var valid = repOkpoList.Contains(statusRaoDB);
             if (!valid)
             {
@@ -2080,7 +2079,7 @@ public abstract class CheckF18 : CheckBase
         foreach (var line in lines)
         {
             var statusRao = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
-            if (statusRao is "" or "-") continue;
+            if (DashStringHelper.IsNullOrEmptyOrDash(statusRao)) continue;
             var valid = repOkpoList.Contains(statusRao);
             if (!valid)
             {
@@ -2115,7 +2114,7 @@ public abstract class CheckF18 : CheckBase
         foreach (var line in lines)
         {
             var statusRao = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
-            if (statusRao is "" or "-") continue;
+            if (DashStringHelper.IsNullOrEmptyOrDash(statusRao)) continue;
             var valid = repOKPOList.Contains(statusRao);
             if (!valid)
             {
@@ -2151,7 +2150,7 @@ public abstract class CheckF18 : CheckBase
         foreach (var line in lines)
         {
             var statusRao = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
-            if (statusRao is "" or "-") continue;
+            if (DashStringHelper.IsNullOrEmptyOrDash(statusRao)) continue;
             var valid = repOkpoList.Contains(statusRao);
             if (!valid)
             {
@@ -2183,7 +2182,7 @@ public abstract class CheckF18 : CheckBase
         foreach (var line in lines)
         {
             var statusRao = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
-            if (statusRao is "" or "-") continue;
+            if (DashStringHelper.IsNullOrEmptyOrDash(statusRao)) continue;
             var valid = OkpoRegex.IsMatch(statusRao) || applicableRaoStatuses.Contains(statusRao);
             if (!valid)
             {
@@ -2215,7 +2214,7 @@ public abstract class CheckF18 : CheckBase
         foreach (var line in lines)
         {
             var statusRao = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
-            if (statusRao is "" or "-") continue;
+            if (DashStringHelper.IsNullOrEmptyOrDash(statusRao)) continue;
             var valid = OkpoRegex.IsMatch(statusRao) || applicableRaoStatuses.Contains(statusRao);
             if (!valid)
             {
@@ -2250,7 +2249,7 @@ public abstract class CheckF18 : CheckBase
         foreach (var line in lines)
         {
             var statusRao = ReplaceNullAndTrim(forms[line].StatusRAO_DB);
-            if (statusRao is "" or "-") continue;
+            if (DashStringHelper.IsNullOrEmptyOrDash(statusRao)) continue;
             var valid = OkpoRegex.IsMatch(statusRao) || applicableRaoStatuses.Contains(statusRao);
             if (!valid)
             {
@@ -2440,7 +2439,7 @@ public abstract class CheckF18 : CheckBase
                  "72","73","74",
             "99","-"
         };
-        if (!applicableRefineOrSortRaoCode.Contains(refineOrSortRaoCode))
+        if (!DashStringHelper.IsOneOf(refineOrSortRaoCode, applicableRefineOrSortRaoCode))
         {
             result.Add(new CheckError
             {
@@ -2473,7 +2472,7 @@ public abstract class CheckF18 : CheckBase
             "42","51","52","63","64","68","97","98"
         };
         if (!applicableOperationCodes.Contains(opCode)) return result;
-        if (refineOrSortRaoCode != "-")
+        if (!DashStringHelper.IsDash(refineOrSortRaoCode))
         {
             result.Add(new CheckError
             {
@@ -2496,7 +2495,7 @@ public abstract class CheckF18 : CheckBase
     {
         List<CheckError> result = new();
         var subsidy = ReplaceNullAndTrim(forms[line].Subsidy_DB);
-        if (subsidy is "" or "-") return result;
+        if (DashStringHelper.IsNullOrEmptyOrDash(subsidy)) return result;
         var valid = TryParseFloatExtended(subsidy, out var valueReal)
                     && valueReal is >= 0 and <= 100;
         if (!valid)
@@ -2521,7 +2520,7 @@ public abstract class CheckF18 : CheckBase
     {
         List<CheckError> result = new();
         var fcpNum = ReplaceNullAndTrim(forms[line].FcpNumber_DB);
-        var valid = fcpNum is "" or "-" || TryParseFloatExtended(fcpNum, out _);
+        var valid = DashStringHelper.IsNullOrEmptyOrDash(fcpNum) || TryParseFloatExtended(fcpNum, out _);
         if (!valid)
         {
             result.Add(new CheckError

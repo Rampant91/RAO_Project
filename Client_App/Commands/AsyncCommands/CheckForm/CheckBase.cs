@@ -8,6 +8,7 @@ using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
+using Models.Helpers;
 using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
@@ -709,21 +710,19 @@ public abstract class CheckBase : BaseAsyncCommand
     #region StringRemoveSpecials
 
     protected static string StringRemoveSpecials(string? str) =>
-        (str ?? string.Empty)
+        DashStringHelper.RemoveDashes(str)
         .Replace("\\", "")
         .Replace("(", "")
         .Replace(")", "")
         .Replace("/", "")
         .Replace(".", "")
         .Replace(",", "")
-        .Replace("-", "")
         .Replace("_", "")
         .Replace(" ", "")
         .Replace("`", "")
         .Replace("'", "")
         .Replace("\"", "")
-        .Replace("ё", "е")
-        .Replace("—", "");
+        .Replace("ё", "е");
 
     #endregion
 

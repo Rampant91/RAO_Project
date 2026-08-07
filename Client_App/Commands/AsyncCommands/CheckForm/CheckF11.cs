@@ -1,4 +1,4 @@
-﻿using Models.CheckForm;
+using Models.CheckForm;
 using Models.Collections;
 using Models.Comparers.FormContent;
 using Models.Forms;
@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Models.Helpers;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -820,7 +821,7 @@ public abstract partial class CheckF11 : CheckBase
     {
         List<CheckError> result = new();
         var opDate = ReplaceNullAndTrim(forms[line].OperationDate_DB);
-        if (string.IsNullOrWhiteSpace(opDate) || opDate is "-")
+        if (DashStringHelper.IsNullOrWhiteSpaceOrDash(opDate))
         {
             result.Add(new CheckError
             {
@@ -1089,7 +1090,7 @@ public abstract partial class CheckF11 : CheckBase
     {
         List<CheckError> result = new();
         var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
-        if (string.IsNullOrWhiteSpace(rads) || rads == "-") return result;
+        if (DashStringHelper.IsNullOrWhiteSpaceOrDash(rads)) return result;
         var radsSet = rads
             .ToLower()
             .Replace(',', ';')
@@ -1166,7 +1167,7 @@ public abstract partial class CheckF11 : CheckBase
     {
         List<CheckError> result = new();
         var factoryNum = ReplaceNullAndTrim(forms[line].FactoryNumber_DB);
-        if (factoryNum is "-") return result;
+        if (DashStringHelper.IsDash(factoryNum)) return result;
         var quantity = forms[line].Quantity_DB ?? 0; ;
 
         if (string.IsNullOrWhiteSpace(factoryNum))
@@ -1425,7 +1426,7 @@ public abstract partial class CheckF11 : CheckBase
         List<CheckError> result = new();
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
         if (!TryParseDoubleExtended(activity, out var activityReal)
-            || activity is "" or "-")
+            || DashStringHelper.IsNullOrEmptyOrDash(activity))
         {
             result.Add(new CheckError
             {
@@ -1571,7 +1572,7 @@ public abstract partial class CheckF11 : CheckBase
     {
         List<CheckError> result = new();
         var creationDate = ReplaceNullAndTrim(forms[line].CreationDate_DB);
-        if (string.IsNullOrWhiteSpace(creationDate) || creationDate is "-")
+        if (DashStringHelper.IsNullOrWhiteSpaceOrDash(creationDate))
         {
             result.Add(new CheckError
             {
@@ -2212,7 +2213,7 @@ public abstract partial class CheckF11 : CheckBase
     {
         List<CheckError> result = new();
         var docDate = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
-        if (docDate is "" or "-")
+        if (DashStringHelper.IsNullOrEmptyOrDash(docDate))
         {
             result.Add(new CheckError
             {
@@ -2591,7 +2592,7 @@ public abstract partial class CheckF11 : CheckBase
         var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         if (!applicableOperationCodes.Contains(opCode)) return result;
         var transporterOkpo = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
-        var valid = transporterOkpo is "-";
+        var valid = DashStringHelper.IsDash(transporterOkpo);
         if (!valid)
         {
             result.Add(new CheckError
@@ -2639,7 +2640,7 @@ public abstract partial class CheckF11 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика.",
-                IsCritical = !(dashesOperationCodes.Contains(operationCode) && transporterOkpo is "-")
+                IsCritical = !(dashesOperationCodes.Contains(operationCode) && DashStringHelper.IsDash(transporterOkpo))
             });
         }
         return result;
@@ -2668,7 +2669,7 @@ public abstract partial class CheckF11 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек.",
-                IsCritical = transporterOkpo is not "-"
+                IsCritical = !DashStringHelper.IsDash(transporterOkpo)
             });
         }
         return result;

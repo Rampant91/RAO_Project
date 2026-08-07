@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Models.Helpers;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -158,7 +159,7 @@ public class CheckF211 : CheckBase
         foreach (Form211 row in rep.Rows211)
         {
             if (string.IsNullOrWhiteSpace(row.PlotCode_DB) || row.PlotCode_DB.Trim().Length < 1) continue;
-            bool filled = !(string.IsNullOrWhiteSpace(row.SpecificActivityOfPlot_DB) || row.SpecificActivityOfPlot_DB.Trim() == "-");
+            bool filled = !DashStringHelper.IsNullOrWhiteSpaceOrDash(row.SpecificActivityOfPlot_DB);
             bool symbolisvalid = row.PlotCode_DB.Trim().ElementAt(0) is '1';
             if (filled && !symbolisvalid)
             {
@@ -182,8 +183,8 @@ public class CheckF211 : CheckBase
         foreach (Form211 row in rep.Rows211)
         {
             if (string.IsNullOrWhiteSpace(row.PlotCode_DB) || row.PlotCode_DB.Trim().Length < 1) continue;
-            bool filled8 = !(string.IsNullOrWhiteSpace(row.SpecificActivityOfLiquidPart_DB) || row.SpecificActivityOfLiquidPart_DB.Trim() == "-");
-            bool filled9 = !(string.IsNullOrWhiteSpace(row.SpecificActivityOfDensePart_DB) || row.SpecificActivityOfDensePart_DB.Trim() == "-");
+            bool filled8 = !DashStringHelper.IsNullOrWhiteSpaceOrDash(row.SpecificActivityOfLiquidPart_DB);
+            bool filled9 = !DashStringHelper.IsNullOrWhiteSpaceOrDash(row.SpecificActivityOfDensePart_DB);
             bool symbolisvalid = row.PlotCode_DB.Trim().ElementAt(0) is '2';
             if ((filled8 || filled9) && !symbolisvalid)
             {

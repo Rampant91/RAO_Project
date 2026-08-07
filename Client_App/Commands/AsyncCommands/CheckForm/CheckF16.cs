@@ -1,4 +1,4 @@
-﻿using Models.CheckForm;
+using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using Models.Helpers;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -612,7 +613,7 @@ public abstract class CheckF16 : CheckBase
         var applicableOperationCodes = new[] { "49", "59" };
         var graph22ValidValues = new[] { "-", "52", "72", "74" };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = graph22ValidValues.Contains(refineOrSortRaoCode);
+        var valid = DashStringHelper.IsOneOf(refineOrSortRaoCode, graph22ValidValues);
         if (!valid)
         {
             result.Add(new CheckError
@@ -1617,7 +1618,7 @@ public abstract class CheckF16 : CheckBase
                                 }
                             }
                         };
-                        if (!validRecycles[codeRao7RecycleMethod].Contains(forms[line].RefineOrSortRAOCode_DB))
+                        if (!DashStringHelper.IsOneOf(forms[line].RefineOrSortRAOCode_DB, validRecycles[codeRao7RecycleMethod]))
                         {
                             result.Add(new CheckError
                             {
@@ -2156,7 +2157,7 @@ public abstract class CheckF16 : CheckBase
         }
         else if (raoTypes2.Contains(typeRao))
         {
-            if (!quantityOziiiExists && quantityOziii != "-")
+            if (!quantityOziiiExists && !DashStringHelper.IsDash(quantityOziii))
             {
                 result.Add(new CheckError
                 {
@@ -2169,7 +2170,7 @@ public abstract class CheckF16 : CheckBase
                 });
             }
         }
-        else if (quantityOziii != "-" || quantityOziiiExists)
+        else if (!DashStringHelper.IsDash(quantityOziii) || quantityOziiiExists)
         {
             var msg = stateRao is "2" 
                 ? " (справочное сообщение о возможной ошибке)" 
@@ -2216,7 +2217,7 @@ public abstract class CheckF16 : CheckBase
             .Split(';')
             .Select(x => x.Trim())
             .ToHashSet();
-        if (radsSet.Count == 1 && string.Equals(radsSet.First(), "-"))
+        if (radsSet.Count == 1 && DashStringHelper.IsDash(radsSet.First()))
         {
             if (codeRao.Substring(2, 1) != "0")
             {
@@ -2932,7 +2933,7 @@ public abstract class CheckF16 : CheckBase
         };
         if (!applicableOperationCodes.Contains(opCode)) return result;
         var transporterOKPO = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
-        var valid = transporterOKPO is "-";
+        var valid = DashStringHelper.IsDash(transporterOKPO);
         if (!valid)
         {
             result.Add(new CheckError
@@ -2978,7 +2979,7 @@ public abstract class CheckF16 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOKPO,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"прим.\" без кавычек.",
-                IsCritical = !(dashesOperationCodes.Contains(operationCode) && transporterOKPO is "-")
+                IsCritical = !(dashesOperationCodes.Contains(operationCode) && DashStringHelper.IsDash(transporterOKPO))
             });
         }
         else if (transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase) && !noteExists)
@@ -3022,7 +3023,7 @@ public abstract class CheckF16 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOKPO,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек, либо \"прим.\" без кавычек.",
-                IsCritical = transporterOKPO is not "-"
+                IsCritical = !DashStringHelper.IsDash(transporterOKPO)
             });
         }
         else if (transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase) && !noteExists)
@@ -3055,7 +3056,7 @@ public abstract class CheckF16 : CheckBase
         const byte graphNumber = 19;
         var noteExists = CheckNotePresence(notes, line, graphNumber);
         var valid = OkpoRegex.IsMatch(transporterOKPO)
-                    || transporterOKPO.Equals("-", StringComparison.CurrentCultureIgnoreCase)
+                    || DashStringHelper.IsDash(transporterOKPO)
                     || transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {
@@ -3146,7 +3147,7 @@ public abstract class CheckF16 : CheckBase
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var refineOrSortRaoCode = ReplaceNullAndTrim(forms[line].RefineOrSortRAOCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = refineOrSortRaoCode == "-";
+        var valid = DashStringHelper.IsDash(refineOrSortRaoCode);
         if (!valid)
         {
             result.Add(new CheckError
@@ -3211,7 +3212,7 @@ public abstract class CheckF16 : CheckBase
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var refineOrSortRaoCode = ReplaceNullAndTrim(forms[line].RefineOrSortRAOCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = applicableValues.Contains(refineOrSortRaoCode);
+        var valid = DashStringHelper.IsOneOf(refineOrSortRaoCode, applicableValues);
         if (!valid)
         {
             result.Add(new CheckError
@@ -3239,7 +3240,7 @@ public abstract class CheckF16 : CheckBase
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var refineOrSortRaoCode = ReplaceNullAndTrim(forms[line].RefineOrSortRAOCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = applicableRefineCodes.Contains(refineOrSortRaoCode);
+        var valid = DashStringHelper.IsOneOf(refineOrSortRaoCode, applicableRefineCodes);
         if (!valid)
         {
             result.Add(new CheckError
@@ -3383,7 +3384,7 @@ public abstract class CheckF16 : CheckBase
         }
         else
         {
-            if (packName.ToLower().Trim() == "без упаковки" && packNum != "-")
+            if (packName.ToLower().Trim() == "без упаковки" && !DashStringHelper.IsDash(packNum))
             {
                 result.Add(new CheckError
                 {
@@ -3406,7 +3407,7 @@ public abstract class CheckF16 : CheckBase
     {
         List<CheckError> result = new();
         var subsidy = ReplaceNullAndTrim(forms[line].Subsidy_DB);
-        if (subsidy is "" or "-") return result;
+        if (DashStringHelper.IsNullOrEmptyOrDash(subsidy)) return result;
         var valid = float.TryParse(subsidy, out var subsidyFloatValue)
                     && subsidyFloatValue is >= 0 and <= 100;
         if (!valid)
@@ -3431,7 +3432,7 @@ public abstract class CheckF16 : CheckBase
     {
         List<CheckError> result = new();
         var fcpNum = ReplaceNullAndTrim(forms[line].FcpNumber_DB);
-        var valid = fcpNum is "" or "-"
+        var valid = DashStringHelper.IsNullOrEmptyOrDash(fcpNum)
                     || TryParseFloatExtended(fcpNum, out _);
         if (!valid)
         {
