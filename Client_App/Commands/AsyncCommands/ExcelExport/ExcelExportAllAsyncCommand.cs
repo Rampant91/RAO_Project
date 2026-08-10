@@ -25,6 +25,8 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// </summary>
 public class ExcelExportAllAsyncCommand(MainWindowVM mainWindowVM) : ExcelExportBaseAllAsyncCommand
 {
+    private HashSet<string> Form1SplitFormNums = [];
+
     public override bool CanExecute(object? parameter) => true;
 
     public override async Task AsyncExecute(object? parameter)
@@ -70,8 +72,13 @@ public class ExcelExportAllAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
         progressBarVM.SetProgressBar(15, "Загрузка списка отчётов");
         var repsList = await GetReportsList(db, cts);
 
+        progressBarVM.SetProgressBar(16, "Определение форм для разбиения");
+        Form1SplitFormNums = IsSelectedOrg
+            ? []
+            : await GetForm1FormsNeedingSplit(db, repsList, selectedReportsId: null, cts.Token);
+
         progressBarVM.SetProgressBar(17, "Создание страниц и заполнение заголовков");
-        var formNums = await CreateWorksheetsAndFillHeaders(excelPackage, repsList);
+        var formNums = await CreateWorksheetsAndFillHeaders(excelPackage, repsList, Form1SplitFormNums);
 
         progressBarVM.SetProgressBar(20, "Загрузка форм");
         await GetFullReportForeachReps(db, repsList, formNums, progressBarVM, excelPackage, cts);
@@ -176,8 +183,10 @@ public class ExcelExportAllAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
     /// </summary>
     /// <param name="excelPackage">Excel пакет.</param>
     /// <param name="repsList">Список организаций вместе с их отчётами.</param>
+    /// <param name="formsNeedingSplit">Формы 1.x, для которых нужны пары листов по периодам.</param>
     /// <returns>HashSet номеров форм отчётности.</returns>
-    private Task<HashSet<string>> CreateWorksheetsAndFillHeaders(ExcelPackage excelPackage, List<Reports> repsList)
+    private Task<HashSet<string>> CreateWorksheetsAndFillHeaders(
+        ExcelPackage excelPackage, List<Reports> repsList, HashSet<string> formsNeedingSplit)
     {
         HashSet<string> formNums = [];
         foreach (var rep in repsList
@@ -190,9 +199,22 @@ public class ExcelExportAllAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
         }
         foreach (var formNum in formNums)
         {
-            Worksheet = excelPackage.Workbook.Worksheets.Add($"Отчеты {formNum}");
-            WorksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {formNum}");
-            FillHeaders(formNum);
+            if (formsNeedingSplit.Contains(formNum))
+            {
+                foreach (var mode in new[] { Form1DateSplitMode.Through2023, Form1DateSplitMode.From2024 })
+                {
+                    var suffix = Form1SplitSheetSuffix(mode);
+                    Worksheet = excelPackage.Workbook.Worksheets.Add($"Отчеты {formNum}{suffix}");
+                    WorksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {formNum}{suffix}");
+                    FillHeaders(formNum);
+                }
+            }
+            else
+            {
+                Worksheet = excelPackage.Workbook.Worksheets.Add($"Отчеты {formNum}");
+                WorksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {formNum}");
+                FillHeaders(formNum);
+            }
         }
         return Task.FromResult(formNums);
     }
@@ -212,13 +234,51 @@ public class ExcelExportAllAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
         foreach (var formNum in formNums)
         {
             CurrentReports = repsWithRows;
-            Worksheet = excelPackage.Workbook.Worksheets[$"Отчеты {formNum}"];
-            WorksheetPrim = excelPackage.Workbook.Worksheets[$"Примечания {formNum}"];
-            CurrentRow = Worksheet.Dimension.End.Row + 1;
-            CurrentPrimRow = WorksheetPrim.Dimension.End.Row + 1;
-            FillExportForms(formNum);
+            if (Form1SplitFormNums.Contains(formNum))
+            {
+                foreach (var mode in new[] { Form1DateSplitMode.Through2023, Form1DateSplitMode.From2024 })
+                {
+                    var suffix = Form1SplitSheetSuffix(mode);
+                    CurrentForm1DateSplit = mode;
+                    Worksheet = excelPackage.Workbook.Worksheets[$"Отчеты {formNum}{suffix}"];
+                    WorksheetPrim = excelPackage.Workbook.Worksheets[$"Примечания {formNum}{suffix}"];
+                    CurrentRow = Worksheet.Dimension.End.Row + 1;
+                    CurrentPrimRow = WorksheetPrim.Dimension.End.Row + 1;
+                    FillExportForms(formNum);
+                }
+                CurrentForm1DateSplit = Form1DateSplitMode.None;
+            }
+            else
+            {
+                Worksheet = excelPackage.Workbook.Worksheets[$"Отчеты {formNum}"];
+                WorksheetPrim = excelPackage.Workbook.Worksheets[$"Примечания {formNum}"];
+                CurrentRow = Worksheet.Dimension.End.Row + 1;
+                CurrentPrimRow = WorksheetPrim.Dimension.End.Row + 1;
+                FillExportForms(formNum);
+            }
         }
         return Task.CompletedTask;
+    }
+
+    #endregion
+
+    #region GetForm1FormsNeedingSplit
+
+    private async Task<HashSet<string>> GetForm1FormsNeedingSplit(
+        DBModel db, List<Reports> repsList, int? selectedReportsId, CancellationToken ct)
+    {
+        HashSet<string> formNums = [];
+        foreach (var rep in repsList.SelectMany(reps => reps.Report_Collection))
+            formNums.Add(rep.FormNum_DB);
+
+        HashSet<string> result = [];
+        foreach (var formNum in formNums.Where(IsForm1Number))
+        {
+            var rowCount = await CountForm1RowsAsync(db, formNum, selectedReportsId, ct);
+            if (rowCount > Form1SheetRowSplitThreshold)
+                result.Add(formNum);
+        }
+        return result;
     }
 
     #endregion
@@ -286,81 +346,51 @@ public class ExcelExportAllAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
     #region GetFullReportForeachReps
 
     /// <summary>
-    /// Для каждой организации в коллекции загружает из БД все отчёты вместе со строчками и заполняет .xlsx файл.
+    /// Для каждой организации в коллекции загружает из БД отчёты со строчками нужной формы и заполняет .xlsx файл.
     /// </summary>
-    /// <param name="dbReadOnly">Модель временной БД.</param>
-    /// <param name="repsList">Список организаций.</param>
-    /// <param name="formNums">HashSet имеющихся номеров отчётов.</param>
-    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
-    /// <param name="excelPackage">Пакет Excel.</param>
-    /// <param name="cts">Токен.</param>
     private async Task GetFullReportForeachReps(DBModel dbReadOnly, List<Reports> repsList, HashSet<string> formNums, 
         AnyTaskProgressBarVM progressBarVM, ExcelPackage excelPackage, CancellationTokenSource cts)
     {
-        double progressBarDoubleValue = progressBarVM.ValueBar;
+        const int progressStart = 20;
+        const int progressEnd = 95;
+
+        var totalReports = repsList.Sum(r => r.Report_Collection.Count(rep => formNums.Contains(rep.FormNum_DB)));
+        var loadedReports = 0;
+
         foreach (var reps in repsList.OrderBy(x => x.Master_DB.RegNoRep.Value))
         {
+            var ordered = reps.Report_Collection
+                .OrderBy(x => x.FormNum_DB)
+                .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate)
+                    ? stDate
+                    : DateOnly.MaxValue)
+                .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate)
+                    ? endDate
+                    : DateOnly.MaxValue)
+                .ToList();
             var repsWithRows = new Reports { Master = reps.Master };
-            foreach (var rep in reps.Report_Collection
-                         .OrderBy(x => x.FormNum_DB)
-                         .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) 
-                             ? stDate 
-                             : DateOnly.MaxValue)
-                         .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) 
-                             ? endDate 
-                             : DateOnly.MaxValue))
+            var orgStatus = $"Загрузка отчётов {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}";
+
+            foreach (var stub in ordered.Where(r => formNums.Contains(r.FormNum_DB)))
             {
-                var repWithRows = await GetReportWithRows(rep.Id, dbReadOnly, cts);
-                repsWithRows.Report_Collection.Add(repWithRows);
-                progressBarDoubleValue += (double)75 / (repsList.Count * reps.Report_Collection.Count);
-                progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                    $"Загрузка отчёта {rep.FormNum_DB}_{rep.StartPeriod_DB}_{rep.EndPeriod_DB}",
-                    $"Загрузка отчётов {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}");
+                var formNum = stub.FormNum_DB;
+                progressBarVM.SetProgressBar(
+                    MapLoadProgress(loadedReports, totalReports, progressStart, progressEnd),
+                    $"Загрузка отчёта {formNum} {stub.StartPeriod_DB}–{stub.EndPeriod_DB} ({loadedReports + 1} из {totalReports})",
+                    orgStatus);
+
+                var rep = await GetReportWithRowsForFormAsync(stub.Id, formNum, dbReadOnly, cts.Token);
+                repsWithRows.Report_Collection.Add(rep);
+                loadedReports++;
+
+                progressBarVM.SetProgressBar(
+                    MapLoadProgress(loadedReports, totalReports, progressStart, progressEnd),
+                    $"Загрузка отчёта {formNum} {stub.StartPeriod_DB}–{stub.EndPeriod_DB} ({loadedReports} из {totalReports})",
+                    orgStatus);
             }
+
             await FillExcel(formNums, repsWithRows, excelPackage);
         }
-    }
-
-    #endregion
-
-    #region GetReportWithRows
-
-    /// <summary>
-    /// Получение отчёта вместе со строчками из БД.
-    /// </summary>
-    /// <param name="repId">Id отчёта.</param>
-    /// <param name="dbReadOnly">Модель временной БД.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Отчёт вместе со строчками.</returns>
-    private static async Task<Report> GetReportWithRows(int repId, DBModel dbReadOnly, CancellationTokenSource cts)
-    {
-        return await dbReadOnly.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(rep => rep.Rows11.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows12.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows13.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows14.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows15.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows16.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows17.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows18.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows19.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows21.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows22.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows23.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows24.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows25.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows26.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows27.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows28.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows29.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows210.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows211.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows212.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Notes.OrderBy(note => note.Order))
-                .FirstAsync(rep => rep.Id == repId, cts.Token);
     }
 
     #endregion

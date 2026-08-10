@@ -14,12 +14,14 @@ using Client_App.ViewModels.ProgressBar;
 using Client_App.Views;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using OfficeOpenXml;
+using System.Diagnostics;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -46,9 +48,6 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
         progressBarVM.SetProgressBar(5, "Определение имени файла");
         var fileName = await GetFileName(formNum, forSelectedOrg, selectedReports, cts, progressBar);
 
-        progressBarVM.SetProgressBar(7, "Запрос пути сохранения");
-        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
-
         progressBarVM.SetProgressBar(10, "Создание временной БД", "Выгрузка форм", ExportType);
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         await using var db = new DBModel(tmpDbPath);
@@ -56,20 +55,65 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
         progressBarVM.SetProgressBar(15, "Проверка наличия отчётов");
         await CheckRepsAndRepPresence(db, formNum, forSelectedOrg, selectedReports, progressBar, cts);
 
-        progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath, formNum, progressBar, cts);
+        progressBarVM.SetProgressBar(17, "Запрос пути сохранения");
+        var (chosenPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+        var directory = Path.GetDirectoryName(chosenPath);
+        if (string.IsNullOrEmpty(directory))
+            directory = Environment.CurrentDirectory;
+        var chosenBaseName = Path.GetFileNameWithoutExtension(chosenPath);
 
-        progressBarVM.SetProgressBar(20, "Заполнение заголовков");
-        await FillExcelHeaders(formNum);
+        var needSplit = false;
+        if (!forSelectedOrg && IsForm1Number(formNum))
+        {
+            progressBarVM.SetProgressBar(16, "Подсчёт строк формы");
+            needSplit = await CountForm1RowsAsync(db, formNum, selectedReportsId: null, cts.Token)
+                        > Form1SheetRowSplitThreshold;
+        }
 
         progressBarVM.SetProgressBar(22, "Получение списка организаций");
         var repsList = await GetReportsList(db, forSelectedOrg, selectedReports!, formNum, cts);
 
-        progressBarVM.SetProgressBar(25, "Загрузка форм");
-        await GetReportRowsAndFillExcel(repsList, db, progressBarVM, formNum, cts);
+        if (!needSplit)
+        {
+            progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(chosenPath, formNum, progressBar, cts);
 
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+            progressBarVM.SetProgressBar(20, "Заполнение заголовков");
+            await FillExcelHeaders(formNum);
+
+            progressBarVM.SetProgressBar(25, "Загрузка форм");
+            await GetReportRowsAndFillExcel(repsList, db, progressBarVM, formNum, cts);
+
+            progressBarVM.SetProgressBar(95, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, chosenPath, openTemp, cts, progressBar);
+        }
+        else
+        {
+            var beforeSuffix = Form1SplitFileSuffix(Form1DateSplitMode.Through2023);
+            var afterSuffix = Form1SplitFileSuffix(Form1DateSplitMode.From2024);
+
+            var pathBefore = ResolveUniqueFilePath(
+                Path.Combine(directory, $"{chosenBaseName}{beforeSuffix}.xlsx"),
+                directory);
+            var pathAfter = ResolveUniqueFilePath(
+                Path.Combine(directory, $"{chosenBaseName}{afterSuffix}.xlsx"),
+                directory);
+
+            progressBarVM.SetProgressBar(18, "Инициализация Excel пакетов");
+            using var excelPackageBefore = await InitializeExcelPackage(pathBefore, formNum, progressBar, cts);
+            await FillExcelHeaders(formNum);
+
+            using var excelPackageAfter = await InitializeExcelPackage(pathAfter, formNum, progressBar, cts);
+            await FillExcelHeaders(formNum);
+
+            progressBarVM.SetProgressBar(25, "Загрузка форм");
+            await GetReportRowsAndFillExcelSplit(
+                repsList, db, progressBarVM, formNum, excelPackageBefore, excelPackageAfter, cts);
+
+            progressBarVM.SetProgressBar(95, "Сохранение");
+            await SaveSplitExcelPackagesAndOpen(
+                excelPackageBefore, pathBefore, excelPackageAfter, pathAfter, openTemp, cts, progressBar);
+        }
 
         progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
@@ -263,48 +307,6 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
 
     #endregion
 
-    #region GetReportWithRows
-
-    /// <summary>
-    /// Получение отчёта вместе со строчками из БД.
-    /// </summary>
-    /// <param name="repId">Id отчёта.</param>
-    /// <param name="dbReadOnly">Модель временной БД.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Отчёт вместе со строчками.</returns>
-    private static async Task<Report> GetReportWithRows(int repId, DBModel dbReadOnly, CancellationTokenSource cts)
-    {
-        return await dbReadOnly.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(rep => rep.Rows11.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows12.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows13.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows14.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows15.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows16.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows17.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows18.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows19.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows21.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows22.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows23.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows24.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows25.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows26.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows27.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows28.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows29.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows210.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows211.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows212.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Notes.OrderBy(note => note.Order))
-                .FirstAsync(rep => rep.Id == repId, cts.Token);
-    }
-
-    #endregion
-
     #region GetReportsList
 
     /// <summary>
@@ -326,19 +328,20 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
         }
         else
         {
-            repsList.AddRange(
-                await db.ReportsCollectionDbSet
-                    .AsNoTracking()
-                    .AsSplitQuery()
-                    .AsQueryable()
-                    .Include(x => x.DBObservable)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                    .Include(reports => reports.Report_Collection)
-                    .Where(reps => reps.DBObservable != null 
-                                && reps.Report_Collection
-                                    .Any(rep => rep.FormNum_DB == formNum))
-                    .ToListAsync(cts.Token));
+            IQueryable<Reports> query = db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Where(reps => reps.DBObservable != null
+                               && reps.Report_Collection.Any(rep => rep.FormNum_DB == formNum));
+
+            query = IsForm1Number(formNum)
+                ? query.Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                : query.Include(x => x.Master_DB).ThenInclude(x => x.Rows20);
+
+            query = query.Include(reports => reports.Report_Collection
+                .Where(rep => rep.FormNum_DB == formNum));
+
+            repsList.AddRange(await query.ToListAsync(cts.Token));
         }
         return repsList;
     }
@@ -350,34 +353,214 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
     /// <summary>
     /// Загрузка из БД строчек форм отчётности для всех организаций из списка.
     /// </summary>
-    /// <param name="repsList">Список организаций.</param>
-    /// <param name="db">Модель БД.</param>
-    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
-    /// <param name="formNum">Номер формы отчётности.</param>
-    /// <param name="cts">Токен.</param>
-    private async Task GetReportRowsAndFillExcel(List<Reports> repsList, DBModel db, AnyTaskProgressBarVM progressBarVM, string formNum,
+    private async Task GetReportRowsAndFillExcel(
+        List<Reports> repsList,
+        DBModel db,
+        AnyTaskProgressBarVM progressBarVM,
+        string formNum,
         CancellationTokenSource cts)
     {
-        double progressBarDoubleValue = progressBarVM.ValueBar;
+        const int progressStart = 25;
+        const int progressEnd = 95;
+        var totalReports = repsList.Sum(r => r.Report_Collection.Count(x => x.FormNum_DB == formNum));
+        var loadedReports = 0;
+
         foreach (var reps in repsList.OrderBy(x => x.Master_DB.RegNoRep.Value))
         {
+            var orderedReps = reps.Report_Collection
+                .Where(x => x.FormNum_DB == formNum)
+                .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+                .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
+                .ToList();
             var repsWithRows = new Reports { Master = reps.Master };
-            foreach (var rep in reps.Report_Collection
-                         .Where(x => x.FormNum_DB == formNum)
-                         .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
-                         .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue))
+            var orgStatus = $"Загрузка отчётов {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}";
+
+            for (var i = 0; i < orderedReps.Count; i++)
             {
-                var repWithRows = await GetReportWithRows(rep.Id, db, cts);
-                repsWithRows.Report_Collection.Add(repWithRows);
-                progressBarDoubleValue += (double)70 / (repsList.Count * reps.Report_Collection.Count);
-                progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                    $"Загрузка отчёта {rep.FormNum_DB}_{rep.StartPeriod_DB}_{rep.EndPeriod_DB}",
-                    $"Загрузка отчётов {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}");
+                var stub = orderedReps[i];
+                progressBarVM.SetProgressBar(
+                    MapLoadProgress(loadedReports, totalReports, progressStart, progressEnd),
+                    $"Загрузка отчёта {formNum} {stub.StartPeriod_DB}–{stub.EndPeriod_DB} ({loadedReports + 1} из {totalReports})",
+                    orgStatus);
+
+                var rep = await GetReportWithRowsForFormAsync(stub.Id, formNum, db, cts.Token);
+                repsWithRows.Report_Collection.Add(rep);
+                loadedReports++;
+
+                progressBarVM.SetProgressBar(
+                    MapLoadProgress(loadedReports, totalReports, progressStart, progressEnd),
+                    $"Загрузка отчёта {formNum} {stub.StartPeriod_DB}–{stub.EndPeriod_DB} ({loadedReports} из {totalReports})",
+                    orgStatus);
             }
+
             CurrentReports = repsWithRows;
             CurrentRow = Worksheet.Dimension.End.Row + 1;
             CurrentPrimRow = WorksheetPrim.Dimension.End.Row + 1;
             FillExportForms(formNum);
+        }
+    }
+
+    /// <summary>
+    /// Одна загрузка из БД и заполнение двух Excel-пакетов (до 2023 / с 2024).
+    /// </summary>
+    private async Task GetReportRowsAndFillExcelSplit(
+        List<Reports> repsList,
+        DBModel db,
+        AnyTaskProgressBarVM progressBarVM,
+        string formNum,
+        ExcelPackage packageBefore,
+        ExcelPackage packageAfter,
+        CancellationTokenSource cts)
+    {
+        var wsBefore = packageBefore.Workbook.Worksheets[$"Отчеты {formNum}"];
+        var primBefore = packageBefore.Workbook.Worksheets[$"Примечания {formNum}"];
+        var wsAfter = packageAfter.Workbook.Worksheets[$"Отчеты {formNum}"];
+        var primAfter = packageAfter.Workbook.Worksheets[$"Примечания {formNum}"];
+
+        const int progressStart = 25;
+        const int progressEnd = 95;
+        var totalReports = repsList.Sum(r => r.Report_Collection.Count(x => x.FormNum_DB == formNum));
+        var loadedReports = 0;
+
+        foreach (var reps in repsList.OrderBy(x => x.Master_DB.RegNoRep.Value))
+        {
+            var orderedReps = reps.Report_Collection
+                .Where(x => x.FormNum_DB == formNum)
+                .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+                .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
+                .ToList();
+            var repsWithRows = new Reports { Master = reps.Master };
+            var orgStatus = $"Загрузка отчётов {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}";
+
+            for (var i = 0; i < orderedReps.Count; i++)
+            {
+                var stub = orderedReps[i];
+                progressBarVM.SetProgressBar(
+                    MapLoadProgress(loadedReports, totalReports, progressStart, progressEnd),
+                    $"Загрузка отчёта {formNum} {stub.StartPeriod_DB}–{stub.EndPeriod_DB} ({loadedReports + 1} из {totalReports})",
+                    orgStatus);
+
+                var rep = await GetReportWithRowsForFormAsync(stub.Id, formNum, db, cts.Token);
+                repsWithRows.Report_Collection.Add(rep);
+                loadedReports++;
+
+                progressBarVM.SetProgressBar(
+                    MapLoadProgress(loadedReports, totalReports, progressStart, progressEnd),
+                    $"Загрузка отчёта {formNum} {stub.StartPeriod_DB}–{stub.EndPeriod_DB} ({loadedReports} из {totalReports})",
+                    orgStatus);
+            }
+
+            CurrentReports = repsWithRows;
+
+            CurrentForm1DateSplit = Form1DateSplitMode.Through2023;
+            Worksheet = wsBefore;
+            WorksheetPrim = primBefore;
+            CurrentRow = Worksheet.Dimension.End.Row + 1;
+            CurrentPrimRow = WorksheetPrim.Dimension.End.Row + 1;
+            FillExportForms(formNum);
+
+            CurrentForm1DateSplit = Form1DateSplitMode.From2024;
+            Worksheet = wsAfter;
+            WorksheetPrim = primAfter;
+            CurrentRow = Worksheet.Dimension.End.Row + 1;
+            CurrentPrimRow = WorksheetPrim.Dimension.End.Row + 1;
+            FillExportForms(formNum);
+        }
+
+        CurrentForm1DateSplit = Form1DateSplitMode.None;
+    }
+
+    #endregion
+
+    #region SaveSplitExcelPackagesAndOpen
+
+    private static async Task SaveSplitExcelPackagesAndOpen(
+        ExcelPackage packageBefore,
+        string pathBefore,
+        ExcelPackage packageAfter,
+        string pathAfter,
+        bool openTemp,
+        CancellationTokenSource cts,
+        AnyTaskProgressBar progressBar)
+    {
+        try
+        {
+            await packageBefore.SaveAsync(cancellationToken: cts.Token);
+            await packageAfter.SaveAsync(cancellationToken: cts.Token);
+        }
+        catch (ObjectDisposedException)
+        {
+            return;
+        }
+        catch (Exception)
+        {
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в .xlsx",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "Не удалось сохранить файлы по указанным путям:" +
+                                     $"{Environment.NewLine}{pathBefore}" +
+                                     $"{Environment.NewLine}{pathAfter}",
+                    MinWidth = 400,
+                    MinHeight = 175,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+            return;
+        }
+
+        if (openTemp)
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = pathBefore,
+                UseShellExecute = true
+            });
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = pathAfter,
+                UseShellExecute = true
+            });
+            return;
+        }
+
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            {
+                ButtonDefinitions =
+                [
+                    new ButtonDefinition { Name = "Ок" },
+                    new ButtonDefinition { Name = "Открыть выгрузку" }
+                ],
+                ContentTitle = "Выгрузка в .xlsx",
+                ContentHeader = "Уведомление",
+                ContentMessage = "Выгрузка сохранена в два файла:" +
+                                 $"{Environment.NewLine}{pathBefore}" +
+                                 $"{Environment.NewLine}{pathAfter}",
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
+            })
+            .ShowDialog(Desktop.MainWindow));
+
+        if (answer is "Открыть выгрузку")
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = pathBefore,
+                UseShellExecute = true
+            });
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = pathAfter,
+                UseShellExecute = true
+            });
         }
     }
 
