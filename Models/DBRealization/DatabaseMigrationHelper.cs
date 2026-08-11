@@ -15,13 +15,17 @@ public static class DatabaseMigrationHelper
     public static void Migrate(DatabaseFacade database)
     {
         RepairBrokenDataModel42History(database);
+#pragma warning disable RS0030
         database.Migrate();
+#pragma warning restore RS0030
     }
 
     public static async Task MigrateAsync(DatabaseFacade database, CancellationToken cancellationToken = default)
     {
         await RepairBrokenDataModel42HistoryAsync(database, cancellationToken).ConfigureAwait(false);
+#pragma warning disable RS0030
         await database.MigrateAsync(cancellationToken).ConfigureAwait(false);
+#pragma warning restore RS0030
     }
 
     public static void RepairBrokenDataModel42History(DatabaseFacade database)

@@ -1,0 +1,25 @@
+---
+description: Правила миграции БД — запрет прямого Database.Migrate/MigrateAsync
+globs: "**/*.cs"
+alwaysApply: false
+---
+
+# Миграции БД: используй обёртку
+
+НИКОГДА не вызывай `db.Database.Migrate()` или `db.Database.MigrateAsync()` напрямую.
+
+Используй методы из `DataContext`:
+
+```csharp
+// ❌ ЗАПРЕЩЕНО
+await db.Database.MigrateAsync(ct);
+db.Database.Migrate();
+
+// ✅ ПРАВИЛЬНО
+await db.MigrateDatabaseAsync(ct);
+db.MigrateDatabase();
+```
+
+Единственное исключение — `DatabaseMigrationHelper.cs`, который и является обёрткой.
+
+Причина: обёртка выполняет silent-repair таблицы `__EFMigrationsHistory` перед миграцией, исправляя повреждённые записи из ранее выпущенных версий. Прямой вызов `Migrate` пропускает этот шаг и может сломать БД пользователя.
