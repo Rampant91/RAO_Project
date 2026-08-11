@@ -724,6 +724,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             foreach (var key in item.Reports_Collection)
             {
                 var it = (Reports)key;
+                if (it.Master_DB is null) continue;
                 if (it.Master_DB.FormNum_DB == "") continue;
 
                 if (it.Master_DB.FormNum_DB == "1.0"

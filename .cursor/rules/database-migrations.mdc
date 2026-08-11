@@ -8,8 +8,6 @@ alwaysApply: false
 
 НИКОГДА не вызывай `db.Database.Migrate()` или `db.Database.MigrateAsync()` напрямую.
 
-Используй методы из `DataContext`:
-
 ```csharp
 // ❌ ЗАПРЕЩЕНО
 await db.Database.MigrateAsync(ct);
@@ -20,6 +18,6 @@ await db.MigrateDatabaseAsync(ct);
 db.MigrateDatabase();
 ```
 
-Единственное исключение — `DatabaseMigrationHelper.cs`, который и является обёрткой.
+Единственное место с прямым `Migrate*` — `DatabaseMigrationHelper.cs`.
 
-Причина: обёртка выполняет silent-repair таблицы `__EFMigrationsHistory` перед миграцией, исправляя повреждённые записи из ранее выпущенных версий. Прямой вызов `Migrate` пропускает этот шаг и может сломать БД пользователя.
+Подробности бага, матрица repair и куда дописывать новые кейсы — в XML-comments у `DatabaseMigrationHelper`. Новый silent-repair добавляй в `RepairMigrationHistory` / `RepairMigrationHistoryAsync` до вызова `database.Migrate*`.

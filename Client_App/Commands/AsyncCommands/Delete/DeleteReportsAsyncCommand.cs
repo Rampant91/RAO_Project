@@ -120,6 +120,7 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
             foreach (var key in item.Reports_Collection)
             {
                 var it = (Reports)key;
+                if (it.Master_DB is null) continue;
                 if (it.Master_DB.FormNum_DB == "") continue;
                 if (it.Master_DB.Rows10.Count == 0)
                 {

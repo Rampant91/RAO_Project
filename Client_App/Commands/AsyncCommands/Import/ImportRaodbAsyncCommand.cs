@@ -418,11 +418,28 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
         await db.MigrateDatabaseAsync();
         await db.LoadTablesAsync();
-        await InitializationAsyncCommand.ProcessDataBaseFillEmpty(db);
 
-        return db.DBObservableDbSet.Local.First().Reports_Collection.ToList().Count != 0
-            ? db.DBObservableDbSet.Local.First().Reports_Collection.ToList()
-            : await db.ReportsCollectionDbSet.ToListAsync();
+        var fromObservable = db.DBObservableDbSet.Local.FirstOrDefault()?.Reports_Collection?.ToList()
+                             ?? [];
+        List<Reports> reports;
+        if (fromObservable.Count > 0 && fromObservable.All(x => x.Master_DB != null))
+        {
+            reports = fromObservable;
+        }
+        else
+        {
+            // Fallback: AsNoTracking — иначе уже отслеженные Reports без Master не получат Include
+            reports = await db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+                .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                .Include(x => x.Master_DB).ThenInclude(x => x.Rows40)
+                .Include(x => x.Master_DB).ThenInclude(x => x.Rows50)
+                .ToListAsync();
+        }
+
+        await InitializationAsyncCommand.ProcessDataBaseFillEmpty(db);
+        return reports;
     }
 
     #endregion
