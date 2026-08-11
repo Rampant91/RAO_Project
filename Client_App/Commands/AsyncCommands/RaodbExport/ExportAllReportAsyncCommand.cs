@@ -205,7 +205,7 @@ public partial class ExportAllReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
                     fullPathTmp = InsertIndexInFilePath(fullPathTmp);
                     var db = new DBModel(fullPathTmp);
-                    await db.Database.MigrateAsync(cancellationToken: parallelCts);
+                    await db.MigrateDatabaseAsync(parallelCts);
                     await db.ReportCollectionDbSet.AddAsync(repFull, parallelCts);
                     if (!db.DBObservableDbSet.Any())
                     {

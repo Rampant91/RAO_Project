@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Models.DBRealization.Migrations.DataModel
 {
+    [DbContext(typeof(DBModel))]
+    [Migration("20260213092206_DataModel_42")]
     public partial class DataModel_42 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

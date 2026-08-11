@@ -416,7 +416,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
         #endregion
 
-        await db.Database.MigrateAsync();
+        await db.MigrateDatabaseAsync();
         await db.LoadTablesAsync();
         await InitializationAsyncCommand.ProcessDataBaseFillEmpty(db);
 

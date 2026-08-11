@@ -517,7 +517,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
                 #endregion
 
-                await dbm.Database.MigrateAsync();
+                await dbm.MigrateDatabaseAsync();
 
                 return;
             }
@@ -563,7 +563,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     File.Delete(fileInfo.FullName);
                 }
                 
-                await dbm.Database.MigrateAsync();
+                await dbm.MigrateDatabaseAsync();
 
                 #region MessageFailedToReadFile
 
@@ -648,7 +648,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
         try
         {
-            await dbm.Database.MigrateAsync();
+            await dbm.MigrateDatabaseAsync();
         }
         catch (FirebirdSql.Data.FirebirdClient.FbException fbEx)
         {

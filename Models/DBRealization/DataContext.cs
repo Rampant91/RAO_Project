@@ -2,6 +2,7 @@
 using System.Linq;
 using System;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Models.Collections;
 using Models.Forms;
@@ -35,6 +36,15 @@ public class DataContext : DbContext
             Path = path;
         }
     }
+
+    #endregion
+
+    #region Migrate
+
+    public void MigrateDatabase() => DatabaseMigrationHelper.Migrate(Database);
+
+    public Task MigrateDatabaseAsync(CancellationToken cancellationToken = default) =>
+        DatabaseMigrationHelper.MigrateAsync(Database, cancellationToken);
 
     #endregion
 

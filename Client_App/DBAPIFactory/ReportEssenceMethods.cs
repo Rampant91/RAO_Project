@@ -41,7 +41,7 @@ public static partial class EssenceMethods
         {
             if (!CheckType(obj) || (obj as Report).Id != 0) return null;
             using var db = new DBModel(StaticConfiguration.DBPath);
-            db.Database.Migrate();
+            db.MigrateDatabase();
             db.ReportCollectionDbSet.Add(obj as Report);
             db.SaveChanges();
             return obj;
@@ -54,7 +54,7 @@ public static partial class EssenceMethods
         {
             if (!CheckType(typeof(T))) return null;
             using var db = new DBModel(StaticConfiguration.DBPath);
-            db.Database.Migrate();
+            db.MigrateDatabase();
             return db.ReportCollectionDbSet
                 .AsNoTracking()
                 .Where(x => x.Id == id)
@@ -115,7 +115,7 @@ public static partial class EssenceMethods
         {
             if (!CheckType(obj)) return false;
             using var db = new DBModel(StaticConfiguration.DBPath);
-            db.Database.Migrate();
+            db.MigrateDatabase();
             var _rep = obj as Report;
             db.ReportCollectionDbSet.Update(_rep);
             db.SaveChanges();
@@ -129,7 +129,7 @@ public static partial class EssenceMethods
         {
             if (!CheckType(typeof(T))) return false;
             using var db = new DBModel(StaticConfiguration.DBPath);
-            db.Database.Migrate();
+            db.MigrateDatabase();
             var rep = db.ReportCollectionDbSet.FirstOrDefault(x => x.Id == id);
             db.ReportCollectionDbSet.Remove(rep);
             db.SaveChanges();
@@ -146,7 +146,7 @@ public static partial class EssenceMethods
         {
             if (!CheckType(obj) || (obj as Report).Id != 0) return null;
             await using var db = new DBModel(StaticConfiguration.DBPath);
-            await db.Database.MigrateAsync(ReportsStorage.cancellationToken);
+            await db.MigrateDatabaseAsync(ReportsStorage.cancellationToken);
             await db.ReportCollectionDbSet.AddAsync(obj as Report, ReportsStorage.cancellationToken);
             await db.SaveChangesAsync(ReportsStorage.cancellationToken);
             return obj;
@@ -162,7 +162,7 @@ public static partial class EssenceMethods
             var tmp = new object() as T;
             try
             {
-                await db.Database.MigrateAsync(ReportsStorage.cancellationToken);
+                await db.MigrateDatabaseAsync(ReportsStorage.cancellationToken);
                 tmp = await db.ReportCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
@@ -220,7 +220,7 @@ public static partial class EssenceMethods
             List<T?> tmp = new();
             try
             {
-                await db.Database.MigrateAsync(ReportsStorage.cancellationToken);
+                await db.MigrateDatabaseAsync(ReportsStorage.cancellationToken);
                 switch (param)
                 {
                     #region 1
@@ -703,7 +703,7 @@ public static partial class EssenceMethods
         {
             if (!CheckType(obj)) return false;
             await using var db = new DBModel(StaticConfiguration.DBPath);
-            await db.Database.MigrateAsync(ReportsStorage.cancellationToken);
+            await db.MigrateDatabaseAsync(ReportsStorage.cancellationToken);
             var _rep = obj as Report;
             db.ReportCollectionDbSet.Update(_rep);
             await db.SaveChangesAsync(ReportsStorage.cancellationToken);
@@ -718,7 +718,7 @@ public static partial class EssenceMethods
         {
             if (!CheckType(typeof(T))) return false;
             await using var db = new DBModel(StaticConfiguration.DBPath);
-            await db.Database.MigrateAsync(ReportsStorage.cancellationToken);
+            await db.MigrateDatabaseAsync(ReportsStorage.cancellationToken);
             var rep = await db.ReportCollectionDbSet
                 .Where(x => x.Id == id)
                 .FirstOrDefaultAsync(ReportsStorage.cancellationToken);

@@ -298,7 +298,7 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #endregion
 
-        await tempDb.Database.MigrateAsync(cancellationToken: cts.Token);
+        await tempDb.MigrateDatabaseAsync(cts.Token);
 
         #region Progress = 60
 

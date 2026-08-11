@@ -12,8 +12,8 @@ using Models.DBRealization;
 namespace Models.DBRealization.Migrations.DataModel
 {
     [DbContext(typeof(DBModel))]
-    [Migration("20260617074927_DataModel_42")]
-    partial class DataModel_42
+    [Migration("20260811103700_RemoveCorrectionNumFromForms2")]
+    partial class RemoveCorrectionNumFromForms2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

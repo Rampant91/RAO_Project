@@ -330,7 +330,7 @@ public class ConvertExcelToRaodbAsyncCommand : BaseAsyncCommand
         // Создаём временную БД
         var tmpDbPath = Path.Combine(BaseVM.TmpDirectory, $"{Guid.NewGuid()}.RAODB");
         await using var tempDb = new DBModel(tmpDbPath);
-        await tempDb.Database.MigrateAsync(cancellationToken: cts.Token);
+        await tempDb.MigrateDatabaseAsync(cts.Token);
 
         await tempDb.ReportsCollectionDbSet.AddAsync(orgWithExpForm, cts.Token);
         if (!tempDb.DBObservableDbSet.Any())
