@@ -201,7 +201,7 @@ public class ExcelExportAllAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
         {
             if (formsNeedingSplit.Contains(formNum))
             {
-                foreach (var mode in new[] { Form1DateSplitMode.Through2023, Form1DateSplitMode.From2024 })
+                foreach (var mode in new[] { Form1DateSplitMode.Period22_24, Form1DateSplitMode.Period25_27 })
                 {
                     var suffix = Form1SplitSheetSuffix(mode);
                     Worksheet = excelPackage.Workbook.Worksheets.Add($"Отчеты {formNum}{suffix}");
@@ -236,7 +236,7 @@ public class ExcelExportAllAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
             CurrentReports = repsWithRows;
             if (Form1SplitFormNums.Contains(formNum))
             {
-                foreach (var mode in new[] { Form1DateSplitMode.Through2023, Form1DateSplitMode.From2024 })
+                foreach (var mode in new[] { Form1DateSplitMode.Period22_24, Form1DateSplitMode.Period25_27 })
                 {
                     var suffix = Form1SplitSheetSuffix(mode);
                     CurrentForm1DateSplit = mode;

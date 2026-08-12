@@ -89,8 +89,8 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
         }
         else
         {
-            var beforeSuffix = Form1SplitFileSuffix(Form1DateSplitMode.Through2023);
-            var afterSuffix = Form1SplitFileSuffix(Form1DateSplitMode.From2024);
+            var beforeSuffix = Form1SplitFileSuffix(Form1DateSplitMode.Period22_24);
+            var afterSuffix = Form1SplitFileSuffix(Form1DateSplitMode.Period25_27);
 
             var pathBefore = ResolveUniqueFilePath(
                 Path.Combine(directory, $"{chosenBaseName}{beforeSuffix}.xlsx"),
@@ -452,14 +452,14 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
 
             CurrentReports = repsWithRows;
 
-            CurrentForm1DateSplit = Form1DateSplitMode.Through2023;
+            CurrentForm1DateSplit = Form1DateSplitMode.Period22_24;
             Worksheet = wsBefore;
             WorksheetPrim = primBefore;
             CurrentRow = Worksheet.Dimension.End.Row + 1;
             CurrentPrimRow = WorksheetPrim.Dimension.End.Row + 1;
             FillExportForms(formNum);
 
-            CurrentForm1DateSplit = Form1DateSplitMode.From2024;
+            CurrentForm1DateSplit = Form1DateSplitMode.Period25_27;
             Worksheet = wsAfter;
             WorksheetPrim = primAfter;
             CurrentRow = Worksheet.Dimension.End.Row + 1;

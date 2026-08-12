@@ -18,9 +18,10 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 {
     private protected const int Form1SheetRowSplitThreshold = 500_000;
 
-    private protected static readonly DateOnly Form1SplitCutoffInclusive = new(2023, 12, 31);
+    /// <summary>Конец периода ≤ этой даты → бакет _22-24.</summary>
+    private protected static readonly DateOnly Form1SplitCutoffInclusive = new(2024, 12, 31);
 
-    private protected enum Form1DateSplitMode { None, Through2023, From2024 }
+    private protected enum Form1DateSplitMode { None, Period22_24, Period25_27 }
 
     private protected Form1DateSplitMode CurrentForm1DateSplit = Form1DateSplitMode.None;
 
@@ -37,24 +38,28 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 
     private protected static string Form1SplitFileSuffix(Form1DateSplitMode mode) => mode switch
     {
-        Form1DateSplitMode.Through2023 => "_до2023",
-        Form1DateSplitMode.From2024 => "_с2024",
+        Form1DateSplitMode.Period22_24 => "_22-24",
+        Form1DateSplitMode.Period25_27 => "_25-27",
         _ => ""
     };
 
     private protected static string Form1SplitSheetSuffix(Form1DateSplitMode mode) => mode switch
     {
-        Form1DateSplitMode.Through2023 => "_до2023",
-        Form1DateSplitMode.From2024 => "_с2024",
+        Form1DateSplitMode.Period22_24 => "_22-24",
+        Form1DateSplitMode.Period25_27 => "_25-27",
         _ => ""
     };
 
-    private protected bool PassesForm1OperationDateSplit(string? operationDate)
+    /// <summary>
+    /// Фильтр отчёта по дате окончания периода при разбиении Form 1.
+    /// Пустая/неразбираемая дата → бакет _22-24.
+    /// </summary>
+    private protected bool PassesForm1EndPeriodSplit(string? endPeriod)
     {
         if (CurrentForm1DateSplit == Form1DateSplitMode.None) return true;
-        if (!DateOnly.TryParse(operationDate, out var d))
-            return CurrentForm1DateSplit == Form1DateSplitMode.Through2023;
-        return CurrentForm1DateSplit == Form1DateSplitMode.Through2023
+        if (!DateOnly.TryParse(endPeriod, out var d))
+            return CurrentForm1DateSplit == Form1DateSplitMode.Period22_24;
+        return CurrentForm1DateSplit == Form1DateSplitMode.Period22_24
             ? d <= Form1SplitCutoffInclusive
             : d > Form1SplitCutoffInclusive;
     }
@@ -397,7 +402,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm11Data()
     {
         var repList = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null)
+            .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -405,7 +410,6 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
         {
             var forms = rep.Rows11
                 .OrderBy(x => x.NumberInOrder_DB)
-                .Where(x => PassesForm1OperationDateSplit(x.OperationDate_DB))
                 .ToList();
             if (forms.Count == 0)
                 continue;
@@ -482,7 +486,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm12Data()
     {
         var repList = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.2") && x.Rows12 != null)
+            .Where(x => x.FormNum_DB.Equals("1.2") && x.Rows12 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -490,7 +494,6 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
         {
             var forms = rep.Rows12
                 .OrderBy(x => x.NumberInOrder_DB)
-                .Where(x => PassesForm1OperationDateSplit(x.OperationDate_DB))
                 .ToList();
             if (forms.Count == 0)
                 continue;
@@ -565,7 +568,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm13Data()
     {
         var repList = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.3") && x.Rows13 != null)
+            .Where(x => x.FormNum_DB.Equals("1.3") && x.Rows13 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -573,7 +576,6 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
         {
             var forms = rep.Rows13
                 .OrderBy(x => x.NumberInOrder_DB)
-                .Where(x => PassesForm1OperationDateSplit(x.OperationDate_DB))
                 .ToList();
             if (forms.Count == 0)
                 continue;
@@ -649,7 +651,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm14Data()
     {
         var repList = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.4") && x.Rows14 != null)
+            .Where(x => x.FormNum_DB.Equals("1.4") && x.Rows14 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -657,7 +659,6 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
         {
             var repSort = rep.Rows14
                 .OrderBy(x => x.NumberInOrder_DB)
-                .Where(x => PassesForm1OperationDateSplit(x.OperationDate_DB))
                 .ToList();
             if (repSort.Count == 0)
                 continue;
@@ -734,7 +735,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm15Data()
     {
         var repList = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.5") && x.Rows15 != null)
+            .Where(x => x.FormNum_DB.Equals("1.5") && x.Rows15 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -742,7 +743,6 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
         {
             var forms = rep.Rows15
                 .OrderBy(x => x.NumberInOrder_DB)
-                .Where(x => PassesForm1OperationDateSplit(x.OperationDate_DB))
                 .ToList();
             if (forms.Count == 0)
                 continue;
@@ -823,7 +823,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm16Data()
     {
         var repList = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.6") && x.Rows16 != null)
+            .Where(x => x.FormNum_DB.Equals("1.6") && x.Rows16 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -831,7 +831,6 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
         {
             var forms = rep.Rows16
                 .OrderBy(x => x.NumberInOrder_DB)
-                .Where(x => PassesForm1OperationDateSplit(x.OperationDate_DB))
                 .ToList();
             if (forms.Count == 0)
                 continue;
@@ -915,7 +914,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm17Data()
     {
         var repList = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.7") && x.Rows17 != null)
+            .Where(x => x.FormNum_DB.Equals("1.7") && x.Rows17 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -923,7 +922,6 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
         {
             var forms = rep.Rows17
                 .OrderBy(x => x.NumberInOrder_DB)
-                .Where(x => PassesForm1OperationDateSplit(x.OperationDate_DB))
                 .ToList();
             if (forms.Count == 0)
                 continue;
@@ -1012,7 +1010,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm18Data()
     {
         var form = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.8") && x.Rows18 != null)
+            .Where(x => x.FormNum_DB.Equals("1.8") && x.Rows18 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -1020,7 +1018,6 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
         {
             var forms = rep.Rows18
                 .OrderBy(x => x.NumberInOrder_DB)
-                .Where(x => PassesForm1OperationDateSplit(x.OperationDate_DB))
                 .ToList();
             if (forms.Count == 0)
                 continue;
@@ -1105,7 +1102,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm19Data()
     {
         var repList = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.9") && x.Rows19 != null)
+            .Where(x => x.FormNum_DB.Equals("1.9") && x.Rows19 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -1113,7 +1110,6 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
         {
             var forms = rep.Rows19
                 .OrderBy(x => x.NumberInOrder_DB)
-                .Where(x => PassesForm1OperationDateSplit(x.OperationDate_DB))
                 .ToList();
             if (forms.Count == 0)
                 continue;
