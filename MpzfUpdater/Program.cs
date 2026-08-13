@@ -108,9 +108,13 @@ internal static class Program
         DeleteLegacyRootUpdaterFiles(appDir);
 
         var state = LoadState(metaDir);
-        state.PreviousReleaseId = state.InstalledReleaseId;
+        state.PreviousReleaseId = string.IsNullOrWhiteSpace(state.InstalledReleaseId)
+            ? "pre-update"
+            : state.InstalledReleaseId;
         state.PreviousMajorVersion = state.InstalledMajorVersion;
-        state.PreviousDisplayName = state.InstalledDisplayName;
+        state.PreviousDisplayName = string.IsNullOrWhiteSpace(state.InstalledDisplayName)
+            ? (string.IsNullOrWhiteSpace(state.InstalledReleaseId) ? "локальная установка до обновления" : state.InstalledDisplayName)
+            : state.InstalledDisplayName;
         state.InstalledReleaseId = pending.ReleaseId ?? string.Empty;
         state.InstalledMajorVersion = pending.MajorVersion ?? string.Empty;
         state.InstalledDisplayName = pending.DisplayName ?? pending.ReleaseId ?? string.Empty;

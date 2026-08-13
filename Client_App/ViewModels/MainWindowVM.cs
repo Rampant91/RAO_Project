@@ -71,6 +71,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 Settings.Default.Save();
 
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(CanRollbackPreviousRelease));
             }
         }
     }

@@ -44,13 +44,14 @@ public class LocalUpdateStateStore
 
     public bool HasPreviousBackup()
     {
-        var state = Load();
-        if (string.IsNullOrWhiteSpace(state.PreviousReleaseId))
+        try
+        {
+            return Directory.Exists(NetworkUpdatePaths.PreviousDirectory)
+                   && Directory.EnumerateFileSystemEntries(NetworkUpdatePaths.PreviousDirectory).Any();
+        }
+        catch
         {
             return false;
         }
-
-        return Directory.Exists(NetworkUpdatePaths.PreviousDirectory)
-               && Directory.EnumerateFileSystemEntries(NetworkUpdatePaths.PreviousDirectory).Any();
     }
 }
