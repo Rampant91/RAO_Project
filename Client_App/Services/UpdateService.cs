@@ -210,19 +210,21 @@ public class UpdateService
 
     MarkUpdateCheckCompleted();
 
+    // Пустой state + локальные файлы уже = latest → зафиксировать версию без диалога
+    var localState = _stateStore.LoadAndBootstrapIfMatchesRelease(release, _networkRoot);
+
     var skippedReleaseId = _prefsStore.GetSkippedReleaseId();
     if (!string.IsNullOrWhiteSpace(skippedReleaseId)
         && string.Equals(skippedReleaseId, release.ReleaseId, StringComparison.OrdinalIgnoreCase))
     {
       if (isManual)
       {
-        await ShowNetworkUpToDateDialog(release, _stateStore.Load()).ConfigureAwait(false);
+        await ShowNetworkUpToDateDialog(release, localState).ConfigureAwait(false);
       }
 
       return;
     }
 
-    var localState = _stateStore.Load();
     if (!_networkChecker.IsUpdateAvailable(release, localState))
     {
       if (isManual)

@@ -63,7 +63,10 @@ public class NetworkUpdateChecker
 
     public bool IsUpdateAvailable(NetworkReleaseInfo remote, LocalUpdateState local)
     {
-        if (string.IsNullOrWhiteSpace(local.InstalledReleaseId))
+        // Нет учёта версии (или старый служебный id) — предлагаем обновление,
+        // если bootstrap не зафиксировал совпадение с latest.
+        if (string.IsNullOrWhiteSpace(local.InstalledReleaseId)
+            || NetworkUpdateLabels.IsLegacyPlaceholder(local.InstalledReleaseId))
         {
             return true;
         }

@@ -113,13 +113,25 @@ internal static class Program
         DeleteLegacyRootUpdaterFiles(appDir);
 
         var state = LoadState(metaDir);
-        state.PreviousReleaseId = string.IsNullOrWhiteSpace(state.InstalledReleaseId)
-            ? "pre-update"
-            : state.InstalledReleaseId;
-        state.PreviousMajorVersion = state.InstalledMajorVersion;
-        state.PreviousDisplayName = string.IsNullOrWhiteSpace(state.InstalledDisplayName)
-            ? (string.IsNullOrWhiteSpace(state.InstalledReleaseId) ? "локальная установка до обновления" : state.InstalledDisplayName)
-            : state.InstalledDisplayName;
+        // Пустой PreviousReleaseId = «до первого учёта версий»; в UI показываем DisplayName.
+        state.PreviousReleaseId = state.InstalledReleaseId ?? string.Empty;
+        state.PreviousMajorVersion = state.InstalledMajorVersion ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(state.InstalledReleaseId)
+            || string.Equals(state.InstalledReleaseId.Trim(), "pre-update", StringComparison.OrdinalIgnoreCase))
+        {
+            state.PreviousReleaseId = string.Empty;
+            state.PreviousMajorVersion = string.Empty;
+            state.PreviousDisplayName = string.IsNullOrWhiteSpace(state.InstalledDisplayName)
+                ? "локальная установка до обновления"
+                : state.InstalledDisplayName;
+        }
+        else
+        {
+            state.PreviousDisplayName = string.IsNullOrWhiteSpace(state.InstalledDisplayName)
+                ? state.InstalledReleaseId
+                : state.InstalledDisplayName;
+        }
+
         state.InstalledReleaseId = pending.ReleaseId ?? string.Empty;
         state.InstalledMajorVersion = pending.MajorVersion ?? string.Empty;
         state.InstalledDisplayName = pending.DisplayName ?? pending.ReleaseId ?? string.Empty;
