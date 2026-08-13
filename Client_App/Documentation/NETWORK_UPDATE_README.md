@@ -74,8 +74,14 @@ data\
 
 ## Выкладка (Publish)
 
-1. Publish **Client_App** — создаёт `data\Updater\` с `MpzfUpdater.*`.
-2. Скопировать содержимое `data` из решения **в** папку `data` (не удаляя `data\Updater\`).
+1. Publish **Client_App** через профиль VS (`win-x64` / `win-x86` / `Astra_Linux_1.7-1.8` / `Astra_Linux_1.6`).
+2. Автоматически копируются:
+   - репозиторная `data\` (Spravochniki, Excel, …) без чужих платформ REDDB и без `Updater`;
+   - `data\REDDB\{win-x64|win-x32|linux-x64}` под RID профиля  
+     (для `Astra_Linux_1.6` источник — `linux-x64_astra_1.6`, в дистрибутиве всё равно `linux-x64`);
+   - `data\Updater\` с актуальным `MpzfUpdater.*`.
+
+Ручное копирование `data` после publish больше не нужно.
 
 ## Откат
 
