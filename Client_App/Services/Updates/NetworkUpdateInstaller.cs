@@ -17,7 +17,9 @@ public class NetworkUpdateInstaller
     private static readonly string[] CopySkipDirectoryNames =
     [
         NetworkUpdatePaths.UpdateFolderName,
-        ".git"
+        ".git",
+        "Logs",
+        "logs"
     ];
 
     private readonly LocalUpdateStateStore _stateStore = new();
@@ -172,6 +174,8 @@ public class NetworkUpdateInstaller
                 continue;
             }
 
+            // В staging кладём config из дистрибутива; локальный файл при применении
+            // сохранит MpzfUpdater (не перезапишет существующий Client_App*.config).
             File.Copy(file, Path.Combine(destDir, fileName), overwrite: true);
         }
 

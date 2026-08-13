@@ -51,6 +51,12 @@ Y:\АЧ 2021\Программа\Исходные\1.3.0\11_test5\win-x64\Client_A
 
 Автообновление рассчитано только на **локальную** копию.
 
+При обновлении / откате **не затираются**:
+- `.mpzf-update\`
+- `Logs\` / `logs\` рядом с exe
+- существующий `Client_App.dll.config` / `Client_App.exe.config` (при обновлении оставляется локальный; при откате возвращается из `previous`)
+- данные в `\RAO\` (логи, БД и т.д.)
+
 ## Локально у пользователя
 
 ```
@@ -58,7 +64,8 @@ data\
   Updater\          ← MpzfUpdater.exe
   …
 .mpzf-update\
-  state.json
+  state.json      ← какая версия установлена / previous
+  prefs.json      ← LastUpdateCheck, пропуски (на эту копию)
   previous\
   staging\
 ```

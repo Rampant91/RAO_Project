@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Client_App.Properties;
 using Client_App.Services.Updates;
 using CommunityToolkit.Mvvm.Input;
 using Models.DTO;
@@ -123,8 +122,7 @@ public class NetworkUpdateNotificationVM : INotifyPropertyChanged
     {
         try
         {
-            Settings.Default.SkippedReleaseId = Release.ReleaseId;
-            Settings.Default.Save();
+            new LocalUpdatePrefsStore().SetSkippedReleaseId(Release.ReleaseId);
         }
         catch
         {

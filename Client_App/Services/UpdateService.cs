@@ -4,7 +4,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using Client_App.Properties;
 using Client_App.Services.Updates;
 using Client_App.Views.Messages;
 using MessageBox.Avalonia.DTO;
@@ -20,6 +19,7 @@ public class UpdateService
     private readonly UpdateChecker _websiteChecker = new();
     private readonly NetworkUpdateChecker _networkChecker = new();
     private readonly LocalUpdateStateStore _stateStore = new();
+    private readonly LocalUpdatePrefsStore _prefsStore = new();
     private readonly NetworkUpdateInstaller _installer = new();
     private string _networkRoot = string.Empty;
 
@@ -210,7 +210,7 @@ public class UpdateService
 
     MarkUpdateCheckCompleted();
 
-    var skippedReleaseId = GetSkippedReleaseId();
+    var skippedReleaseId = _prefsStore.GetSkippedReleaseId();
     if (!string.IsNullOrWhiteSpace(skippedReleaseId)
         && string.Equals(skippedReleaseId, release.ReleaseId, StringComparison.OrdinalIgnoreCase))
     {
@@ -264,23 +264,19 @@ public class UpdateService
     await _installer.PrepareAndApplyUpdateAsync(release, _networkRoot).ConfigureAwait(false);
   }
 
-  private static bool ShouldCheckForUpdates()
+  private bool ShouldCheckForUpdates()
   {
 #if DEBUG
-    Settings.Default.LastUpdateCheck = DateTime.MinValue;
-    Settings.Default.SkippedVersion = "";
-    Settings.Default.SkippedReleaseId = "";
-    Settings.Default.Save();
+    _prefsStore.ResetCheckThrottleForDebug();
 #endif
 
-    var lastCheck = Settings.Default.LastUpdateCheck;
+    var lastCheck = _prefsStore.GetLastUpdateCheck();
     return (DateTime.Now - lastCheck).TotalDays >= 1;
   }
 
-  private static void MarkUpdateCheckCompleted()
+  private void MarkUpdateCheckCompleted()
   {
-    Settings.Default.LastUpdateCheck = DateTime.Now;
-    Settings.Default.Save();
+    _prefsStore.MarkUpdateCheckCompleted();
   }
 
   private static async Task ShowUpdateNotificationDialog(UpdateInfo updateInfo)
@@ -369,17 +365,8 @@ public class UpdateService
   private static Window? GetMainWindow() =>
     (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.MainWindow;
 
-  private static Version? GetSkippedWebsiteVersion()
-  {
-    var skipped = Settings.Default.SkippedVersion;
-    return Version.TryParse(skipped, out var version) ? version : null;
-  }
-
-  private static string? GetSkippedReleaseId()
-  {
-    var skipped = Settings.Default.SkippedReleaseId?.Trim();
-    return string.IsNullOrWhiteSpace(skipped) ? null : skipped;
-  }
+  private Version? GetSkippedWebsiteVersion() =>
+    _prefsStore.GetSkippedWebsiteVersion();
 
   public Task ForceCheckUpdatesAsync(bool isNoraoMode) =>
     ManualCheckAndNotifyAsync(isNoraoMode);

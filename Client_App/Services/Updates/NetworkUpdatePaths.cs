@@ -13,6 +13,7 @@ public static class NetworkUpdatePaths
 {
     public const string UpdateFolderName = ".mpzf-update";
     public const string StateFileName = "state.json";
+    public const string PrefsFileName = "prefs.json";
     public const string StagingFolderName = "staging";
     public const string PreviousFolderName = "previous";
     public const string PendingFileName = "pending.json";
@@ -43,6 +44,8 @@ public static class NetworkUpdatePaths
     public static string UpdateMetaDirectory => Path.Combine(AppDirectory, UpdateFolderName);
 
     public static string StateFilePath => Path.Combine(UpdateMetaDirectory, StateFileName);
+
+    public static string PrefsFilePath => Path.Combine(UpdateMetaDirectory, PrefsFileName);
 
     public static string StagingDirectory => Path.Combine(UpdateMetaDirectory, StagingFolderName);
 

@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Linq;
 using System.Text.Json;
 using System.Threading;
 
@@ -17,10 +16,15 @@ internal static class Program
     private const string PendingFileName = "pending.json";
     private const string RestartArgsFileName = "restart-args.json";
 
-    private static readonly string[] SkipNames =
+    /// <summary>
+    /// Папки, которые не удаляем / не затираем из дистрибутива / не тащим в previous.
+    /// </summary>
+    private static readonly string[] SkipDirectoryNames =
     [
         UpdateFolderName,
-        ".git"
+        ".git",
+        "Logs",
+        "logs"
     ];
 
     private static int Main(string[] args)
@@ -103,7 +107,8 @@ internal static class Program
         Directory.CreateDirectory(previous);
         CopyAppFiles(appDir, previous);
 
-        CopyDirectory(staging, appDir);
+        // Новая версия поверх, но локальный Client_App*.config и Logs не затираем
+        CopyDirectory(staging, appDir, preserveLocalAppConfig: true);
         Directory.Delete(staging, recursive: true);
         DeleteLegacyRootUpdaterFiles(appDir);
 
@@ -139,12 +144,12 @@ internal static class Program
         CopyAppFiles(appDir, swap);
 
         DeleteAppFiles(appDir);
-        CopyDirectory(previous, appDir);
+        CopyDirectory(previous, appDir, preserveLocalAppConfig: false);
         DeleteLegacyRootUpdaterFiles(appDir);
 
         Directory.Delete(previous, recursive: true);
         Directory.CreateDirectory(previous);
-        CopyDirectory(swap, previous);
+        CopyDirectory(swap, previous, preserveLocalAppConfig: false);
         Directory.Delete(swap, recursive: true);
 
         var state = LoadState(metaDir);
@@ -157,9 +162,6 @@ internal static class Program
         SaveState(metaDir, state);
     }
 
-    /// <summary>
-    /// Удаляет MpzfUpdater из корня (устаревшая раскладка).
-    /// </summary>
     private static void DeleteLegacyRootUpdaterFiles(string appDir)
     {
         foreach (var file in Directory.GetFiles(appDir, "MpzfUpdater*"))
@@ -175,6 +177,16 @@ internal static class Program
             }
         }
     }
+
+    private static bool ShouldSkipDirectory(string name) =>
+        SkipDirectoryNames.Any(s => string.Equals(s, name, StringComparison.OrdinalIgnoreCase));
+
+    /// <summary>
+    /// Локальный config рядом с exe (ручные правки пользователя).
+    /// </summary>
+    private static bool IsLocalAppConfigFile(string fileName) =>
+        string.Equals(fileName, "Client_App.dll.config", StringComparison.OrdinalIgnoreCase)
+        || string.Equals(fileName, "Client_App.exe.config", StringComparison.OrdinalIgnoreCase);
 
     private static void CopyAppFiles(string appDir, string destDir)
     {
@@ -193,12 +205,12 @@ internal static class Program
         foreach (var dir in Directory.GetDirectories(appDir))
         {
             var name = Path.GetFileName(dir);
-            if (SkipNames.Any(s => string.Equals(s, name, StringComparison.OrdinalIgnoreCase)))
+            if (ShouldSkipDirectory(name))
             {
                 continue;
             }
 
-            CopyDirectory(dir, Path.Combine(destDir, name));
+            CopyDirectory(dir, Path.Combine(destDir, name), preserveLocalAppConfig: false);
         }
     }
 
@@ -207,6 +219,8 @@ internal static class Program
         foreach (var file in Directory.GetFiles(appDir))
         {
             var name = Path.GetFileName(file);
+            // Config восстановится из previous; пока удаляем, чтобы откат был полным по файлам приложения.
+            // Logs не трогаем (их нет в корне как файлов обычно).
             if (name.StartsWith("MpzfUpdater", StringComparison.OrdinalIgnoreCase))
             {
                 File.SetAttributes(file, FileAttributes.Normal);
@@ -221,7 +235,7 @@ internal static class Program
         foreach (var dir in Directory.GetDirectories(appDir))
         {
             var name = Path.GetFileName(dir);
-            if (SkipNames.Any(s => string.Equals(s, name, StringComparison.OrdinalIgnoreCase)))
+            if (ShouldSkipDirectory(name))
             {
                 continue;
             }
@@ -230,24 +244,30 @@ internal static class Program
         }
     }
 
-    private static void CopyDirectory(string sourceDir, string destDir)
+    private static void CopyDirectory(string sourceDir, string destDir, bool preserveLocalAppConfig)
     {
         Directory.CreateDirectory(destDir);
         foreach (var file in Directory.GetFiles(sourceDir))
         {
-            var dest = Path.Combine(destDir, Path.GetFileName(file));
+            var name = Path.GetFileName(file);
+            var dest = Path.Combine(destDir, name);
+            if (preserveLocalAppConfig && IsLocalAppConfigFile(name) && File.Exists(dest))
+            {
+                continue;
+            }
+
             File.Copy(file, dest, overwrite: true);
         }
 
         foreach (var dir in Directory.GetDirectories(sourceDir))
         {
             var name = Path.GetFileName(dir);
-            if (SkipNames.Any(s => string.Equals(s, name, StringComparison.OrdinalIgnoreCase)))
+            if (ShouldSkipDirectory(name))
             {
                 continue;
             }
 
-            CopyDirectory(dir, Path.Combine(destDir, name));
+            CopyDirectory(dir, Path.Combine(destDir, name), preserveLocalAppConfig);
         }
     }
 
