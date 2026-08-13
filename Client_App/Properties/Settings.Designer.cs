@@ -140,5 +140,29 @@ namespace Client_App.Properties {
                 this["LastUpdateCheck"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string NetworkUpdateRootPath {
+            get {
+                return ((string)(this["NetworkUpdateRootPath"]));
+            }
+            set {
+                this["NetworkUpdateRootPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SkippedReleaseId {
+            get {
+                return ((string)(this["SkippedReleaseId"]));
+            }
+            set {
+                this["SkippedReleaseId"] = value;
+            }
+        }
     }
 }

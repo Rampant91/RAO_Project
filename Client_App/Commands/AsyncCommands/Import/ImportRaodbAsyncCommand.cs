@@ -419,23 +419,34 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         await db.MigrateDatabaseAsync();
         await db.LoadTablesAsync();
 
-        var fromObservable = db.DBObservableDbSet.Local.FirstOrDefault()?.Reports_Collection?.ToList()
-                             ?? [];
-        List<Reports> reports;
-        if (fromObservable.Count > 0 && fromObservable.All(x => x.Master_DB != null))
+        // Источник — таблица Reports, не DBObservable:
+        // в старых выгрузках DBObservableId часто null — организации не в Reports_Collection корня,
+        // но Master и отчёты в БД есть. Local после LoadTables сохраняет Report_Collection (fixup).
+        var reports = db.ReportsCollectionDbSet.Local.ToList();
+        if (reports.Count == 0)
         {
-            reports = fromObservable;
-        }
-        else
-        {
-            // Fallback: AsNoTracking — иначе уже отслеженные Reports без Master не получат Include
             reports = await db.ReportsCollectionDbSet
-                .AsNoTracking()
                 .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
                 .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
                 .Include(x => x.Master_DB).ThenInclude(x => x.Rows40)
                 .Include(x => x.Master_DB).ThenInclude(x => x.Rows50)
+                .Include(x => x.Report_Collection)
                 .ToListAsync();
+        }
+        else
+        {
+            foreach (var reps in reports)
+            {
+                if (reps.Master_DB is null)
+                {
+                    await db.Entry(reps).Reference(x => x.Master_DB).LoadAsync();
+                }
+
+                if (reps.Report_Collection.Count == 0)
+                {
+                    await db.Entry(reps).Collection(x => x.Report_Collection).LoadAsync();
+                }
+            }
         }
 
         await InitializationAsyncCommand.ProcessDataBaseFillEmpty(db);

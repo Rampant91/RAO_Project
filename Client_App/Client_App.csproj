@@ -60,7 +60,43 @@
   <ItemGroup>
     <ProjectReference Include="..\Spravochniki\Spravochniki.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
+    <ProjectReference Include="..\MpzfUpdater\MpzfUpdater.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <Private>false</Private>
+    </ProjectReference>
   </ItemGroup>
+  <Target Name="_CollectMpzfUpdaterFiles">
+    <PropertyGroup>
+      <_MpzfUpdaterOutDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\MpzfUpdater\bin\$(Configuration)\net9.0\'))</_MpzfUpdaterOutDir>
+    </PropertyGroup>
+    <ItemGroup Condition="Exists('$(_MpzfUpdaterOutDir)')">
+      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterOutDir)MpzfUpdater.exe" />
+      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterOutDir)MpzfUpdater.dll" />
+      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterOutDir)MpzfUpdater.deps.json" />
+      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterOutDir)MpzfUpdater.runtimeconfig.json" />
+      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterOutDir)MpzfUpdater.pdb" Condition="Exists('$(_MpzfUpdaterOutDir)MpzfUpdater.pdb')" />
+    </ItemGroup>
+  </Target>
+  <Target Name="CopyMpzfUpdaterToOutput" AfterTargets="Build" DependsOnTargets="_CollectMpzfUpdaterFiles">
+    <MakeDir Directories="$(TargetDir)data\Updater" />
+    <Copy
+      SourceFiles="@(_MpzfUpdaterFiles)"
+      DestinationFolder="$(TargetDir)data\Updater"
+      SkipUnchangedFiles="true"
+      Condition="'@(_MpzfUpdaterFiles)' != ''" />
+  </Target>
+  <Target Name="CopyMpzfUpdaterToPublish" AfterTargets="Publish" DependsOnTargets="_CollectMpzfUpdaterFiles">
+    <PropertyGroup>
+      <_MpzfUpdaterPublishDir Condition="'$(PublishDir)' != ''">$(PublishDir)</_MpzfUpdaterPublishDir>
+      <_MpzfUpdaterPublishDir Condition="'$(_MpzfUpdaterPublishDir)' == '' and '$(PublishUrl)' != ''">$(PublishUrl)</_MpzfUpdaterPublishDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(_MpzfUpdaterPublishDir)data\Updater" Condition="'$(_MpzfUpdaterPublishDir)' != ''" />
+    <Copy
+      SourceFiles="@(_MpzfUpdaterFiles)"
+      DestinationFolder="$(_MpzfUpdaterPublishDir)data\Updater"
+      SkipUnchangedFiles="true"
+      Condition="'$(_MpzfUpdaterPublishDir)' != '' and '@(_MpzfUpdaterFiles)' != ''" />
+  </Target>
   <ItemGroup>
     <Resource Include="Assets\Radiation_sign.ico" />
   </ItemGroup>

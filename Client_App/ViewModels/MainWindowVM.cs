@@ -82,6 +82,12 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         private set => SetProperty(ref _developerModeEverEnabled, value);
     }
 
+    /// <summary>
+    /// Доступен откат на previous (только режим отдела и есть бэкап).
+    /// </summary>
+    public bool CanRollbackPreviousRelease =>
+        AppLaunchedAtNorao && _updateService.CanRollback();
+
     #endregion
 
     #region Current_Db
@@ -488,6 +494,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand MaxGraphsLength { get; set; }                           //  Excel -> Максимальное число символов в каждой колонке
     public ICommand OpenCalculator { get; set; }                            //  Открыть калькулятор пересчёта активности
     public ICommand CheckForUpdates { get; set; }                           //  Сервис -> Проверить обновления
+    public ICommand RollbackPreviousRelease { get; set; }                   //  Сервис -> Откат (отдел)
     public ICommand OpenFile { get; set; }                                  //  Открыть файл
     public ICommand OpenFolder { get; set; }                                //  Открыть папку
     public ICommand SaveReports { get; set; }                               //  Сохраняет текущую базу, используется только для сохранения комментария формы
@@ -508,6 +515,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     {
         _updateService = new UpdateService();
         CheckForUpdates = new CheckForUpdatesAsyncCommand(_updateService, () => AppLaunchedAtNorao);
+        RollbackPreviousRelease = new RollbackPreviousReleaseAsyncCommand(_updateService);
 
         AddReports = new AddReportsAsyncCommand();
         ChangeForm = new ChangeFormAsyncCommand();
@@ -545,12 +553,10 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
         OnPropertyChanged(nameof(AppLaunchedAtNorao));
         OnPropertyChanged(nameof(DeveloperModeEverEnabled));
+        OnPropertyChanged(nameof(CanRollbackPreviousRelease));
 
-        if (!AppLaunchedAtNorao)
-        {
-            // Блокируем конструктор до завершения проверки обновлений
-            _updateService.CheckAndNotifyAsync(AppLaunchedAtNorao).Wait();
-        }
+        // Блокируем конструктор до завершения проверки (сайт или сетевая шара для отдела)
+        _updateService.CheckAndNotifyAsync(AppLaunchedAtNorao).Wait();
     }
 
     #endregion

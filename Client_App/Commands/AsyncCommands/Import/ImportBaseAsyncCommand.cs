@@ -1116,6 +1116,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             await Dispatcher.UIThread.InvokeAsync(() =>
                 new SkippedIdenticalReportsMessageWindow(importedReports, skippedReports, formGroup)
                     .ShowDialog(Desktop.MainWindow));
+
             anyShown = true;
         }
 

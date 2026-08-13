@@ -359,6 +359,9 @@
                           Header="Список изменений"/>
                 <MenuItem Command="{Binding CheckForUpdates, Mode=OneWay}"
                           Header="Проверить обновления"/>
+                <MenuItem Command="{Binding RollbackPreviousRelease, Mode=OneWay}"
+                          Header="Откатиться на предыдущую версию"
+                          IsVisible="{Binding CanRollbackPreviousRelease, Mode=OneWay}"/>
                     
             </MenuItem> 
 
