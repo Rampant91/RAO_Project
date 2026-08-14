@@ -1421,6 +1421,9 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<bool>("CodeRAOout_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
 
+                    b.Property<short>("CorrectionNumber_DB")
+                        .HasColumnType("SMALLINT");
+
                     b.Property<string>("FormNum_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1540,6 +1543,9 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("AvgGammaRaysDosePower_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<short>("CorrectionNumber_DB")
+                        .HasColumnType("SMALLINT");
+
                     b.Property<string>("FcpNumber_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1592,6 +1598,9 @@ namespace Models.DBRealization.Migrations.DataModel
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<short>("CorrectionNumber_DB")
+                        .HasColumnType("SMALLINT");
 
                     b.Property<string>("FormNum_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1646,6 +1655,9 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("Activity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<short>("CorrectionNumber_DB")
+                        .HasColumnType("SMALLINT");
+
                     b.Property<string>("FormNum_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1695,6 +1707,9 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<bool>("CodeRAO_Hidden_Priv")
                         .HasColumnType("BOOLEAN");
+
+                    b.Property<short>("CorrectionNumber_DB")
+                        .HasColumnType("SMALLINT");
 
                     b.Property<string>("FcpNumber_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1833,6 +1848,9 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("CodeRAO_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<short>("CorrectionNumber_DB")
+                        .HasColumnType("SMALLINT");
+
                     b.Property<string>("DocumentDate_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -1894,6 +1912,9 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("CodeOYAT_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<short>("CorrectionNumber_DB")
+                        .HasColumnType("SMALLINT");
 
                     b.Property<string>("FcpNumber_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -1978,6 +1999,9 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("CodeOYAT_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<short>("CorrectionNumber_DB")
+                        .HasColumnType("SMALLINT");
+
                     b.Property<string>("FcpNumber_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -2025,6 +2049,9 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("ControlledAreaName_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<short>("CorrectionNumber_DB")
+                        .HasColumnType("SMALLINT");
+
                     b.Property<string>("DistanceToWasteSource_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -2069,6 +2096,9 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("AllowedWasteValue_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<short>("CorrectionNumber_DB")
+                        .HasColumnType("SMALLINT");
+
                     b.Property<string>("FactedWasteValue_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -2109,6 +2139,9 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Property<string>("AllowedWasteRemovalVolume_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
+
+                    b.Property<short>("CorrectionNumber_DB")
+                        .HasColumnType("SMALLINT");
 
                     b.Property<string>("FormNum_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
@@ -2154,6 +2187,9 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("AllowedActivity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
+                    b.Property<short>("CorrectionNumber_DB")
+                        .HasColumnType("SMALLINT");
+
                     b.Property<string>("FactedActivity_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
@@ -2180,465 +2216,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.HasIndex("ReportId");
 
                     b.ToTable("form_29", (string)null);
-                });
-
-            modelBuilder.Entity("Models.Forms.Form3.ContainerInfo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<double?>("DepletedUraniumMass_DB")
-                        .HasColumnType("DOUBLE PRECISION");
-
-                    b.Property<int>("Form32Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("FormNum_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("IdNum_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("Name_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<int>("NumberInOrder_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("NumberOfFields_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("ReleaseYear_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Type_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Form32Id");
-
-                    b.HasIndex("ReportId");
-
-                    b.ToTable("form_32_table_2");
-                });
-
-            modelBuilder.Entity("Models.Forms.Form3.ExportedZriInfo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ActivityOnRealeseDate_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("Category_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<DateOnly?>("CertificateExpirationDate_DB")
-                        .HasColumnType("DATE");
-
-                    b.Property<string>("CertificateNum_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("FactoryNum_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<int>("Form32Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("FormNum_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("ManufacturerOksm_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("NuclearMaterials_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<int>("NumberInOrder_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("NumberOfFields_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("PassportNum_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("RadionuclidComposition_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<DateOnly?>("ReleaseDate_DB")
-                        .HasColumnType("DATE");
-
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Type_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Form32Id");
-
-                    b.HasIndex("ReportId");
-
-                    b.ToTable("form_32_table_1");
-                });
-
-            modelBuilder.Entity("Models.Forms.Form3.ExportedZriOziiiInfo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("Count_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Form31Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("FormNum_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<int>("NumberInOrder_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("NumberOfFields_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("RadionuclidComposition_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double?>("TotalActivity_DB")
-                        .HasColumnType("DOUBLE PRECISION");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Form31Id");
-
-                    b.HasIndex("ReportId");
-
-                    b.ToTable("form_31_table");
-                });
-
-            modelBuilder.Entity("Models.Forms.Form3.Form30", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Email_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("Fax_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("FormNum_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("GradeFIO_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("Inn_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("JurLicoAddress_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("JurLicoFactAddress_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("JurLico_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("Kpp_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<int>("NumberInOrder_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("NumberOfFields_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Okfs_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("Okogu_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("Okopf_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("Okpo_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("Oktmo_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("Okved_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("OrganUprav_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("RegNo_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("ShortJurLico_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("SubjectRF_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("Telephone_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReportId");
-
-                    b.ToTable("form_30", (string)null);
-                });
-
-            modelBuilder.Entity("Models.Forms.Form3.Form31", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ApplicationScope_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<DateOnly?>("ContractDate_DB")
-                        .HasColumnType("DATE");
-
-                    b.Property<string>("ContractNum_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<DateOnly?>("ExpectedDecisionTimeframe_DB")
-                        .HasColumnType("DATE");
-
-                    b.Property<string>("FinalUserEmail_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("FinalUserJurLicoAddress_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("FinalUserName_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("FinalUserTelephone_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("FinalUserWorkplaceAddress_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("FormNum_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("LicenseNum_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("ManufacturerOksm_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<int>("NumberInOrder_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("NumberOfFields_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("RecipientJurLicoAddress_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("RecipientName_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("RecipientWorkplaceAddress_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateOnly?>("ValidityPeriod_DB")
-                        .HasColumnType("DATE");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReportId")
-                        .IsUnique();
-
-                    b.ToTable("form_31", (string)null);
-                });
-
-            modelBuilder.Entity("Models.Forms.Form3.Form32", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("AgreementIdNum_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("DeliveryAddress_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<DateOnly?>("DeliveryDay_DB")
-                        .HasColumnType("DATE");
-
-                    b.Property<string>("FormNum_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<bool>("IsRaoRecycling")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("IsRaoStoring")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("IsRaoTransportation")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("IsRvExploitation")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("IsRvProduction")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("IsRvRecycling")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("IsRvStoring")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<bool>("IsRvTransportation")
-                        .HasColumnType("BOOLEAN");
-
-                    b.Property<DateOnly?>("LicenseExpirationDateRao_DB")
-                        .HasColumnType("DATE");
-
-                    b.Property<DateOnly?>("LicenseExpirationDateRv_DB")
-                        .HasColumnType("DATE");
-
-                    b.Property<string>("LicenseNumRao_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("LicenseNumRv_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<int>("NumberInOrder_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("NumberOfFields_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("RadionuclidCompositionZri_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("RecipientName_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<double?>("TotalActivity_DB")
-                        .HasColumnType("DOUBLE PRECISION");
-
-                    b.Property<int?>("TotalCount_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReportId")
-                        .IsUnique();
-
-                    b.ToTable("form_32", (string)null);
-                });
-
-            modelBuilder.Entity("Models.Forms.Form3.Identificator", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Fb:ValueGenerationStrategy", FbValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("Form32Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("FormNum_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
-
-                    b.Property<string>("IdName_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<string>("IdValue_DB")
-                        .HasMaxLength(64)
-                        .HasColumnType("varchar(64)");
-
-                    b.Property<int>("NumberInOrder_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("NumberOfFields_DB")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Form32Id");
-
-                    b.HasIndex("ReportId");
-
-                    b.ToTable("form_32_table_3");
                 });
 
             modelBuilder.Entity("Models.Forms.Form4.Form40", b =>
@@ -3291,7 +2868,7 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("PassportId");
 
-                    b.ToTable("characteristic_package");
+                    b.ToTable("characteristic_package", (string)null);
                 });
 
             modelBuilder.Entity("Models.Passports.PackagePassport", b =>
@@ -3464,7 +3041,7 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasKey("Id");
 
-                    b.ToTable("package_passport");
+                    b.ToTable("package_passport", (string)null);
                 });
 
             modelBuilder.Entity("Models.Passports.Radionuclid", b =>
@@ -3488,7 +3065,7 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.HasIndex("CharacteristicId");
 
-                    b.ToTable("radionuclid");
+                    b.ToTable("radionuclid", (string)null);
                 });
 
             modelBuilder.Entity("Models.StoragePoints.LicenseInfo", b =>
@@ -3854,104 +3431,6 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Navigation("Report");
                 });
 
-            modelBuilder.Entity("Models.Forms.Form3.ContainerInfo", b =>
-                {
-                    b.HasOne("Models.Forms.Form3.Form32", "Form32")
-                        .WithMany("ContainersInfoCollection")
-                        .HasForeignKey("Form32Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Models.Collections.Report", "Report")
-                        .WithMany()
-                        .HasForeignKey("ReportId");
-
-                    b.Navigation("Form32");
-
-                    b.Navigation("Report");
-                });
-
-            modelBuilder.Entity("Models.Forms.Form3.ExportedZriInfo", b =>
-                {
-                    b.HasOne("Models.Forms.Form3.Form32", "Form32")
-                        .WithMany("ExportedZriInfoCollection")
-                        .HasForeignKey("Form32Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Models.Collections.Report", "Report")
-                        .WithMany()
-                        .HasForeignKey("ReportId");
-
-                    b.Navigation("Form32");
-
-                    b.Navigation("Report");
-                });
-
-            modelBuilder.Entity("Models.Forms.Form3.ExportedZriOziiiInfo", b =>
-                {
-                    b.HasOne("Models.Forms.Form3.Form31", "Form31")
-                        .WithMany("ExportedZriOziiiInfoCollection")
-                        .HasForeignKey("Form31Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Models.Collections.Report", "Report")
-                        .WithMany()
-                        .HasForeignKey("ReportId");
-
-                    b.Navigation("Form31");
-
-                    b.Navigation("Report");
-                });
-
-            modelBuilder.Entity("Models.Forms.Form3.Form30", b =>
-                {
-                    b.HasOne("Models.Collections.Report", "Report")
-                        .WithMany("Rows30")
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Report");
-                });
-
-            modelBuilder.Entity("Models.Forms.Form3.Form31", b =>
-                {
-                    b.HasOne("Models.Collections.Report", "Report")
-                        .WithOne("Rows31One")
-                        .HasForeignKey("Models.Forms.Form3.Form31", "ReportId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Report");
-                });
-
-            modelBuilder.Entity("Models.Forms.Form3.Form32", b =>
-                {
-                    b.HasOne("Models.Collections.Report", "Report")
-                        .WithOne("Rows32One")
-                        .HasForeignKey("Models.Forms.Form3.Form32", "ReportId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Report");
-                });
-
-            modelBuilder.Entity("Models.Forms.Form3.Identificator", b =>
-                {
-                    b.HasOne("Models.Forms.Form3.Form32", "Form32")
-                        .WithMany("IdentificatorsCollection")
-                        .HasForeignKey("Form32Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Models.Collections.Report", "Report")
-                        .WithMany()
-                        .HasForeignKey("ReportId");
-
-                    b.Navigation("Form32");
-
-                    b.Navigation("Report");
-                });
-
             modelBuilder.Entity("Models.Forms.Form4.Form40", b =>
                 {
                     b.HasOne("Models.Collections.Report", "Report")
@@ -4146,12 +3625,6 @@ namespace Models.DBRealization.Migrations.DataModel
 
                     b.Navigation("Rows29");
 
-                    b.Navigation("Rows30");
-
-                    b.Navigation("Rows31One");
-
-                    b.Navigation("Rows32One");
-
                     b.Navigation("Rows40");
 
                     b.Navigation("Rows41");
@@ -4176,20 +3649,6 @@ namespace Models.DBRealization.Migrations.DataModel
             modelBuilder.Entity("Models.Collections.Reports", b =>
                 {
                     b.Navigation("Report_Collection");
-                });
-
-            modelBuilder.Entity("Models.Forms.Form3.Form31", b =>
-                {
-                    b.Navigation("ExportedZriOziiiInfoCollection");
-                });
-
-            modelBuilder.Entity("Models.Forms.Form3.Form32", b =>
-                {
-                    b.Navigation("ContainersInfoCollection");
-
-                    b.Navigation("ExportedZriInfoCollection");
-
-                    b.Navigation("IdentificatorsCollection");
                 });
 
             modelBuilder.Entity("Models.Passports.CharacteristicPrimaryPackage", b =>
