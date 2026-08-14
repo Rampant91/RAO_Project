@@ -33,6 +33,16 @@ public sealed class Pairing41ExcelLayoutTests
     }
 
     [Fact]
+    public void SheetLayout_IncludesConfidenceColumnBetweenSeparatorAndClosest()
+    {
+        var source = Pairing41TestAccess.Layout1115SourceColCountForTests;
+        Assert.Equal(source + 1, Pairing41TestAccess.Layout1115ConfidenceColForTests - 1); // separator
+        Assert.Equal(source + 2, Pairing41TestAccess.Layout1115ConfidenceColForTests);
+        Assert.Equal(source + 3, Pairing41TestAccess.Layout1115ClosestStartColForTests);
+        Assert.Equal(source * 2 + 2, Pairing41TestAccess.Layout1115TotalColCountForTests);
+    }
+
+    [Fact]
     public void Form16_Form12Profile_MapsMassAndCodeRao_NotVolumeLikeColumns()
     {
         var info = Pairing41TestAccess.InfoColCountForTests;
@@ -162,5 +172,137 @@ public sealed class Pairing41ExcelLayoutTests
         Assert.Contains("Форма 1.6", text, StringComparison.Ordinal);
         Assert.Contains("белыми", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("№ формы", text, StringComparison.Ordinal);
+        Assert.Contains("Схожесть", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("Жёлтый", text, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Form12To16_Layout_IncludesConfidenceColumnBetweenSeparatorAndClosest()
+    {
+        var source = Pairing41TestAccess.Layout12SourceColCountForTests;
+        Assert.Equal(source + 2, Pairing41TestAccess.Layout12ConfidenceColForTests);
+        Assert.Equal(source + 3, Pairing41TestAccess.Layout12ClosestStartColForTests);
+    }
+
+    [Fact]
+    public void Form13To16_Layout_IncludesConfidenceColumnBetweenSeparatorAndClosest()
+    {
+        var source = Pairing41TestAccess.Layout13SourceColCountForTests;
+        Assert.Equal(source + 2, Pairing41TestAccess.Layout13ConfidenceColForTests);
+        Assert.Equal(source + 3, Pairing41TestAccess.Layout13ClosestStartColForTests);
+    }
+
+    [Fact]
+    public void WriteUnpairedSmokeRow12_WritesMarkersBoldConfidenceAndNearFill()
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        using var package = new ExcelPackage();
+        var sheet = package.Workbook.Worksheets.Add("Форма 1.2");
+        const int dataRow = 3;
+
+        Pairing41TestAccess.WriteUnpairedSmokeRow12ForTests(
+            sheet, dataRow, sourceMarker: "DOC-SRC", closestMarker: "DOC-CLOSEST", confidencePercent: 72);
+
+        var docOffset = Pairing41TestAccess.GetForm12FieldOffsetForTests(Pairing12To16Field.DocumentNumber)!.Value;
+        Assert.Equal("DOC-SRC", sheet.Cells[dataRow, 1 + docOffset].Text);
+        Assert.Equal("DOC-CLOSEST", sheet.Cells[dataRow, Pairing41TestAccess.Layout12ClosestStartColForTests + docOffset].Text);
+        Assert.Equal("72", sheet.Cells[dataRow, Pairing41TestAccess.Layout12ConfidenceColForTests].Text);
+        Assert.True(sheet.Cells[dataRow, Pairing41TestAccess.Layout12ConfidenceColForTests].Style.Font.Bold);
+
+        Pairing41TestAccess.ApplyFieldLevelFill12ForTests(
+            sheet, dataRow, startCol: 1, Pairing12To16Field.Mass, Client_App.Commands.AsyncCommands.ExcelExport.Shared.FieldMatchLevel.Near);
+        var massOffset = Pairing41TestAccess.GetForm12FieldOffsetForTests(Pairing12To16Field.Mass)!.Value;
+        Assert.Equal("FFFFF3A0", sheet.Cells[dataRow, 1 + massOffset].Style.Fill.BackgroundColor.Rgb);
+    }
+
+    [Fact]
+    public void WriteUnpairedSmokeRow13_WritesMarkersBoldConfidenceAndNearFill()
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        using var package = new ExcelPackage();
+        var sheet = package.Workbook.Worksheets.Add("Форма 1.3");
+        const int dataRow = 3;
+
+        Pairing41TestAccess.WriteUnpairedSmokeRow13ForTests(
+            sheet, dataRow, sourceMarker: "DOC-SRC", closestMarker: "DOC-CLOSEST", confidencePercent: 68);
+
+        var docOffset = Pairing41TestAccess.GetForm13FieldOffsetForTests(Pairing13To16Field.DocumentNumber)!.Value;
+        Assert.Equal("DOC-SRC", sheet.Cells[dataRow, 1 + docOffset].Text);
+        Assert.Equal("DOC-CLOSEST", sheet.Cells[dataRow, Pairing41TestAccess.Layout13ClosestStartColForTests + docOffset].Text);
+        Assert.Equal("68", sheet.Cells[dataRow, Pairing41TestAccess.Layout13ConfidenceColForTests].Text);
+        Assert.True(sheet.Cells[dataRow, Pairing41TestAccess.Layout13ConfidenceColForTests].Style.Font.Bold);
+
+        Pairing41TestAccess.ApplyFieldLevelFill13ForTests(
+            sheet, dataRow, startCol: 1, Pairing13To16Field.MainRadionuclids, Client_App.Commands.AsyncCommands.ExcelExport.Shared.FieldMatchLevel.Near);
+        var radsOffset = Pairing41TestAccess.GetForm13FieldOffsetForTests(Pairing13To16Field.MainRadionuclids)!.Value;
+        Assert.Equal("FFFFF3A0", sheet.Cells[dataRow, 1 + radsOffset].Style.Fill.BackgroundColor.Rgb);
+    }
+
+    [Fact]
+    public void WriteUnpairedSmokeRow14_WritesMarkersBoldConfidenceAndNearFill()
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        using var package = new ExcelPackage();
+        var sheet = package.Workbook.Worksheets.Add("Форма 1.4");
+        const int dataRow = 3;
+
+        Pairing41TestAccess.WriteUnpairedSmokeRow14ForTests(
+            sheet, dataRow, sourceMarker: "DOC-SRC", closestMarker: "DOC-CLOSEST", confidencePercent: 55);
+
+        var docOffset = Pairing41TestAccess.GetForm14FieldOffsetForTests(Pairing14To16Field.DocumentNumber)!.Value;
+        Assert.Equal("DOC-SRC", sheet.Cells[dataRow, 1 + docOffset].Text);
+        Assert.Equal("DOC-CLOSEST", sheet.Cells[dataRow, Pairing41TestAccess.Layout14ClosestStartColForTests + docOffset].Text);
+        Assert.Equal("55", sheet.Cells[dataRow, Pairing41TestAccess.Layout14ConfidenceColForTests].Text);
+        Assert.True(sheet.Cells[dataRow, Pairing41TestAccess.Layout14ConfidenceColForTests].Style.Font.Bold);
+
+        Pairing41TestAccess.ApplyFieldLevelFill14ForTests(
+            sheet, dataRow, startCol: 1, Pairing14To16Field.Volume, Client_App.Commands.AsyncCommands.ExcelExport.Shared.FieldMatchLevel.Near);
+        var volumeOffset = Pairing41TestAccess.GetForm14FieldOffsetForTests(Pairing14To16Field.Volume)!.Value;
+        Assert.Equal("FFFFF3A0", sheet.Cells[dataRow, 1 + volumeOffset].Style.Fill.BackgroundColor.Rgb);
+    }
+
+    [Fact]
+    public void WriteUnpairedSmokeRow16_WritesMarkersBoldConfidence()
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        using var package = new ExcelPackage();
+        var sheet = package.Workbook.Worksheets.Add("Форма 1.6");
+        const int dataRow = 3;
+
+        Pairing41TestAccess.WriteUnpairedSmokeRow16ForTests(
+            sheet, dataRow, sourceMarker: "DOC-SRC", closestMarker: "DOC-CLOSEST", confidencePercent: 91);
+
+        var offset = Pairing41TestAccess.Layout16DocumentNumberOffsetForTests;
+        Assert.Equal("DOC-SRC", sheet.Cells[dataRow, 1 + offset].Text);
+        Assert.Equal("DOC-CLOSEST", sheet.Cells[dataRow, Pairing41TestAccess.Layout16ClosestStartColForTests + offset].Text);
+        Assert.Equal("91", sheet.Cells[dataRow, Pairing41TestAccess.Layout16ConfidenceColForTests].Text);
+        Assert.True(sheet.Cells[dataRow, Pairing41TestAccess.Layout16ConfidenceColForTests].Style.Font.Bold);
+    }
+
+    [Fact]
+    public void WriteUnpairedSmokeRow_WritesOpCodesBoldConfidenceAndNearFill()
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        using var package = new ExcelPackage();
+        var sheet = package.Workbook.Worksheets.Add("Форма 1.1");
+        const int dataRow = 3;
+
+        Pairing41TestAccess.WriteUnpairedSmokeRow1115ForTests(
+            sheet, dataRow, sourceOpCode: "41", closestOpCode: "14", confidencePercent: 85);
+
+        var opOffset = Pairing41TestAccess.GetForm1115FieldOffsetForTests(Pairing11To15Field.OperationCode)!.Value;
+        var confCol = Pairing41TestAccess.Layout1115ConfidenceColForTests;
+        var closestStart = Pairing41TestAccess.Layout1115ClosestStartColForTests;
+
+        Assert.Equal("41", sheet.Cells[dataRow, 1 + opOffset].Text);
+        Assert.Equal("14", sheet.Cells[dataRow, closestStart + opOffset].Text);
+        Assert.Equal("85", sheet.Cells[dataRow, confCol].Text);
+        Assert.True(sheet.Cells[dataRow, confCol].Style.Font.Bold);
+
+        Pairing41TestAccess.ApplyFieldLevelFill1115ForTests(
+            sheet, dataRow, startCol: 1, Pairing11To15Field.PassportNumber, Client_App.Commands.AsyncCommands.ExcelExport.Shared.FieldMatchLevel.Near);
+        var pasOffset = Pairing41TestAccess.GetForm1115FieldOffsetForTests(Pairing11To15Field.PassportNumber)!.Value;
+        var nearArgb = sheet.Cells[dataRow, 1 + pasOffset].Style.Fill.BackgroundColor.Rgb;
+        Assert.Equal("FFFFF3A0", nearArgb);
     }
 }

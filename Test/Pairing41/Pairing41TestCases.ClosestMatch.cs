@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Shared;
 using static Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
 
 namespace Test.Pairing41;
@@ -11,10 +12,9 @@ internal static partial class Pairing41TestCases
     {
         yield return H01_Form11_DocumentNumberMismatch_Highlighted();
         yield return H02_Form12_MassMismatch_Highlighted();
-        yield return H03_Form16_Prefers12_WhenScoresEqual();
+        yield return H03_Form16_Chooses13_WhenHigherScore();
         yield return H04_Form16_Chooses13_WhenBetterScore();
         yield return H05_NoReference_NoClosestMap();
-        yield return A10_Form15Code14_UnpairedOn11_NotOn15();
         yield return H06_EmptySerial_ExtraRowOn15_QuantityEqualTrue();
         yield return H07_EmptySerial_PartialQtyRemainder_QuantityByValue();
         yield return H08_EmptySerial_SourceQtyRemainder_QuantityHighlightedFalse();
@@ -53,7 +53,25 @@ internal static partial class Pairing41TestCases
             }
         },
         ExpectedClosestCandidate11 = new Dictionary<int, int> { [1] = 101 },
-        ExpectedClosestCandidate15 = new Dictionary<int, int> { [101] = 1 }
+        ExpectedClosestCandidate15 = new Dictionary<int, int> { [101] = 1 },
+        ExpectedClosest11Levels = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, FieldMatchLevel>>
+        {
+            [1] = new Dictionary<Pairing11To15Field, FieldMatchLevel>
+            {
+                [Pairing11To15Field.PassportNumber] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.DocumentNumber] = FieldMatchLevel.Near,
+                [Pairing11To15Field.Type] = FieldMatchLevel.Exact
+            }
+        },
+        ExpectedClosest15Levels = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, FieldMatchLevel>>
+        {
+            [101] = new Dictionary<Pairing11To15Field, FieldMatchLevel>
+            {
+                [Pairing11To15Field.PassportNumber] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.DocumentNumber] = FieldMatchLevel.Near,
+                [Pairing11To15Field.Type] = FieldMatchLevel.Exact
+            }
+        }
     };
 
     /// <summary>H02. Масса вне допуска; closest на 1.2 и профиль Form12 на 1.6.</summary>
@@ -84,17 +102,29 @@ internal static partial class Pairing41TestCases
                 {
                     [Pairing12To16Field.Mass] = false,
                     [Pairing12To16Field.DocumentNumber] = true
+                },
+                Levels12 = new Dictionary<Pairing12To16Field, FieldMatchLevel>
+                {
+                    [Pairing12To16Field.Mass] = FieldMatchLevel.Near,
+                    [Pairing12To16Field.DocumentNumber] = FieldMatchLevel.Exact
                 }
+            }
+        },
+        ExpectedClosest12Levels = new Dictionary<int, IReadOnlyDictionary<Pairing12To16Field, FieldMatchLevel>>
+        {
+            [2] = new Dictionary<Pairing12To16Field, FieldMatchLevel>
+            {
+                [Pairing12To16Field.Mass] = FieldMatchLevel.Near,
+                [Pairing12To16Field.DocumentNumber] = FieldMatchLevel.Exact,
+                [Pairing12To16Field.PackNumber] = FieldMatchLevel.Exact
             }
         }
     };
 
     /// <summary>
-    /// H03. Равный score 12 и 13 → приоритет профиля Form12.
-    /// Score12: только Mass не совпадает (10 из 11).
-    /// Score13: не совпадают MainRads, AMD, DocumentDate (10 из 13).
+    /// H03. При soft-score выше у 1.3 — closest-профиль Form13 (tie-break Form12 — см. S01).
     /// </summary>
-    private static Pairing41TestCase H03_Form16_Prefers12_WhenScoresEqual()
+    private static Pairing41TestCase H03_Form16_Chooses13_WhenHigherScore()
     {
         const string opDate = "2024-07-01";
         const string doc = "DOC-H";
@@ -103,7 +133,7 @@ internal static partial class Pairing41TestCases
 
         return new Pairing41TestCase
         {
-            Name = "H03. Closest 1.6: при равном score выбирается профиль 1.2.",
+            Name = "H03. Closest 1.6: при soft-score выше у 1.3 — профиль Form13.",
             Form12 =
             [
                 // масса 1 — у 1.6 будет 9 → −1 к score12
@@ -142,7 +172,7 @@ internal static partial class Pairing41TestCases
             ExpectedUnpaired16 = [902],
             ExpectedClosest16 = new Dictionary<int, Pairing41Form16ClosestExpectation>
             {
-                [902] = new() { Profile = Form16MatchProfile.Form12 }
+                [902] = new() { Profile = Form16MatchProfile.Form13 }
             }
         };
     }
@@ -190,6 +220,12 @@ internal static partial class Pairing41TestCases
                         [Pairing13To16Field.MainRadionuclids] = true,
                         [Pairing13To16Field.DocumentNumber] = false,
                         [Pairing13To16Field.PackNumber] = true
+                    },
+                    Levels13 = new Dictionary<Pairing13To16Field, FieldMatchLevel>
+                    {
+                        [Pairing13To16Field.MainRadionuclids] = FieldMatchLevel.Exact,
+                        [Pairing13To16Field.DocumentNumber] = FieldMatchLevel.Mismatch,
+                        [Pairing13To16Field.PackNumber] = FieldMatchLevel.Exact
                     }
                 }
             }
@@ -227,10 +263,17 @@ internal static partial class Pairing41TestCases
             [102] = new Dictionary<Pairing11To15Field, bool>
             {
                 [Pairing11To15Field.Quantity] = true,
-                [Pairing11To15Field.PassportNumber] = true,
-                [Pairing11To15Field.FactoryNumber] = true,
                 [Pairing11To15Field.DocumentNumber] = true,
                 [Pairing11To15Field.Type] = true
+            }
+        },
+        ExpectedClosest15Levels = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, FieldMatchLevel>>
+        {
+            [102] = new Dictionary<Pairing11To15Field, FieldMatchLevel>
+            {
+                [Pairing11To15Field.Quantity] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.DocumentNumber] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.Type] = FieldMatchLevel.Exact
             }
         }
     };
@@ -265,6 +308,21 @@ internal static partial class Pairing41TestCases
                 [Pairing11To15Field.DocumentNumber] = true,
                 [Pairing11To15Field.Type] = true
             }
+        },
+        ExpectedClosest15Levels = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, FieldMatchLevel>>
+        {
+            [102] = new Dictionary<Pairing11To15Field, FieldMatchLevel>
+            {
+                [Pairing11To15Field.Quantity] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.DocumentNumber] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.Type] = FieldMatchLevel.Exact
+            },
+            [103] = new Dictionary<Pairing11To15Field, FieldMatchLevel>
+            {
+                [Pairing11To15Field.Quantity] = FieldMatchLevel.Mismatch,
+                [Pairing11To15Field.DocumentNumber] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.Type] = FieldMatchLevel.Exact
+            }
         }
     };
 
@@ -283,9 +341,17 @@ internal static partial class Pairing41TestCases
             [1] = new Dictionary<Pairing11To15Field, bool>
             {
                 [Pairing11To15Field.Quantity] = false,
-                [Pairing11To15Field.PassportNumber] = true,
                 [Pairing11To15Field.DocumentNumber] = true,
                 [Pairing11To15Field.Type] = true
+            }
+        },
+        ExpectedClosest11Levels = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, FieldMatchLevel>>
+        {
+            [1] = new Dictionary<Pairing11To15Field, FieldMatchLevel>
+            {
+                [Pairing11To15Field.Quantity] = FieldMatchLevel.Mismatch,
+                [Pairing11To15Field.DocumentNumber] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.Type] = FieldMatchLevel.Exact
             }
         }
     };
@@ -308,6 +374,15 @@ internal static partial class Pairing41TestCases
                 [Pairing11To15Field.Quantity] = true,
                 [Pairing11To15Field.DocumentNumber] = false,
                 [Pairing11To15Field.PassportNumber] = true
+            }
+        },
+        ExpectedClosest11Levels = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, FieldMatchLevel>>
+        {
+            [1] = new Dictionary<Pairing11To15Field, FieldMatchLevel>
+            {
+                [Pairing11To15Field.Quantity] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.DocumentNumber] = FieldMatchLevel.Near,
+                [Pairing11To15Field.PassportNumber] = FieldMatchLevel.Exact
             }
         }
     };
@@ -348,7 +423,27 @@ internal static partial class Pairing41TestCases
             }
         },
         ExpectedClosestCandidate11 = new Dictionary<int, int> { [1] = 101 },
-        ExpectedClosestCandidate15 = new Dictionary<int, int> { [101] = 1 }
+        ExpectedClosestCandidate15 = new Dictionary<int, int> { [101] = 1 },
+        ExpectedClosest11Levels = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, FieldMatchLevel>>
+        {
+            [1] = new Dictionary<Pairing11To15Field, FieldMatchLevel>
+            {
+                [Pairing11To15Field.PackNumber] = FieldMatchLevel.Mismatch,
+                [Pairing11To15Field.Quantity] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.Type] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.DocumentNumber] = FieldMatchLevel.Exact
+            }
+        },
+        ExpectedClosest15Levels = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, FieldMatchLevel>>
+        {
+            [101] = new Dictionary<Pairing11To15Field, FieldMatchLevel>
+            {
+                [Pairing11To15Field.PackNumber] = FieldMatchLevel.Mismatch,
+                [Pairing11To15Field.Quantity] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.Type] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.DocumentNumber] = FieldMatchLevel.Exact
+            }
+        }
     };
 
     /// <summary>
@@ -389,6 +484,15 @@ internal static partial class Pairing41TestCases
                 [Pairing11To15Field.DocumentNumber] = false,
                 [Pairing11To15Field.PassportNumber] = true
             }
+        },
+        ExpectedClosest11Levels = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, FieldMatchLevel>>
+        {
+            [1] = new Dictionary<Pairing11To15Field, FieldMatchLevel>
+            {
+                [Pairing11To15Field.Type] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.DocumentNumber] = FieldMatchLevel.Mismatch,
+                [Pairing11To15Field.PassportNumber] = FieldMatchLevel.Exact
+            }
         }
     };
 
@@ -421,6 +525,24 @@ internal static partial class Pairing41TestCases
                 [Pairing11To15Field.DocumentNumber] = false,
                 [Pairing11To15Field.Type] = true,
                 [Pairing11To15Field.PassportNumber] = true
+            }
+        },
+        ExpectedClosest11Levels = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, FieldMatchLevel>>
+        {
+            [1] = new Dictionary<Pairing11To15Field, FieldMatchLevel>
+            {
+                [Pairing11To15Field.DocumentNumber] = FieldMatchLevel.Near,
+                [Pairing11To15Field.Type] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.PassportNumber] = FieldMatchLevel.Exact
+            }
+        },
+        ExpectedClosest15Levels = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, FieldMatchLevel>>
+        {
+            [101] = new Dictionary<Pairing11To15Field, FieldMatchLevel>
+            {
+                [Pairing11To15Field.DocumentNumber] = FieldMatchLevel.Near,
+                [Pairing11To15Field.Type] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.PassportNumber] = FieldMatchLevel.Exact
             }
         }
     };

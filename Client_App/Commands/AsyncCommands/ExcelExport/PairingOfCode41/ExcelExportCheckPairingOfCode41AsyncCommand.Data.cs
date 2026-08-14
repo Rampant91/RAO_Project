@@ -541,355 +541,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     #endregion
 
-    #region Load DTO
-
-    /// <summary>
-    /// Загрузка операций 41 для формы. <paramref name="repsId"/> = null — все организации (bulk whole-DB).
-    /// </summary>
-    private static async Task<List<Operation41PairingDto>> LoadOperation41ListAsync(
-        DBModel db, int? repsId, string formNum, CancellationToken cancellationToken, Pairing11To15Params? pairing11To15Params = null)
-    {
-        var operations = formNum switch
-        {
-            "1.1" => await LoadForm11OperationsAsync(db, repsId, cancellationToken, pairing11To15Params),
-            "1.2" => await LoadForm12OperationsAsync(db, repsId, cancellationToken),
-            "1.3" => await LoadForm13OperationsAsync(db, repsId, cancellationToken),
-            "1.4" => await LoadForm14OperationsAsync(db, repsId, cancellationToken),
-            "1.5" => await LoadForm15OperationsAsync(db, repsId, cancellationToken, pairing11To15Params),
-            "1.6" => await LoadForm16OperationsAsync(db, repsId, cancellationToken),
-            _ => throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null)
-        };
-
-        return operations
-            .Where(form => formNum == "1.5"
-                ? IsForm15PairingCandidateOpCode(form.OpCode)
-                : string.Equals(form.OpCode.Trim(), OperationCode, StringComparison.Ordinal))
-            // Стабильный порядок для жадного matching (org и whole-DB bulk).
-            .OrderBy(form => form.Id)
-            .ToList();
-    }
-
-    private static IQueryable<Reports> ScopedReports(DBModel db, int? repsId)
-    {
-        var query = db.ReportsCollectionDbSet.AsNoTracking();
-        if (repsId is int id)
-        {
-            query = query.Where(reps => reps.Id == id);
-        }
-
-        return query;
-    }
-
-    private static Task<List<Operation41PairingDto>> LoadForm11OperationsAsync(
-        DBModel db, int? repsId, CancellationToken cancellationToken, Pairing11To15Params? options = null)
-    {
-        // Firebird: нельзя проецировать reps.Id внутри вложенного SelectMany (EF → APPLY).
-        var effectiveRepsId = repsId ?? 0;
-        return ScopedReports(db, repsId)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.1")
-                .SelectMany(rep => rep.Rows11))
-            .Where(form => form.OperationCode_DB == OperationCode)
-            .Select(form => new Operation41PairingDto
-            {
-                Id = form.Id,
-                RepsId = effectiveRepsId,
-                ReportId = form.ReportId ?? 0,
-                OpCode = form.OperationCode_DB,
-                OpDate = options == null || options.CheckOperationDate ? form.OperationDate_DB : string.Empty,
-                PasNum = options == null || options.CheckPassportNumber ? form.PassportNumber_DB : string.Empty,
-                FacNum = options == null || options.CheckFactoryNumber ? form.FactoryNumber_DB : string.Empty,
-                Type = options == null || options.CheckType ? form.Type_DB : string.Empty,
-                Radionuclids = options == null || options.CheckRadionuclids ? form.Radionuclids_DB : string.Empty,
-                CreationDate = options == null || options.CheckCreationDate ? form.CreationDate_DB : string.Empty,
-                DocumentVid = options == null || options.CheckDocumentVid ? form.DocumentVid_DB : null,
-                DocumentNumber = options == null || options.CheckDocumentNumber ? form.DocumentNumber_DB : string.Empty,
-                DocumentDate = options == null || options.CheckDocumentDate ? form.DocumentDate_DB : string.Empty,
-                ProviderOrRecieverOkpo = options == null || options.CheckProviderOrRecieverOkpo ? form.ProviderOrRecieverOKPO_DB : string.Empty,
-                TransporterOkpo = options == null || options.CheckTransporterOkpo ? form.TransporterOKPO_DB : string.Empty,
-                PackName = options == null || options.CheckPackName ? form.PackName_DB : string.Empty,
-                PackType = options == null || options.CheckPackType ? form.PackType_DB : string.Empty,
-                PackNumber = options == null || options.CheckPackNumber ? form.PackNumber_DB : string.Empty,
-                Activity = options == null || options.CheckActivity ? form.Activity_DB : string.Empty,
-                Quantity = options == null || options.CheckQuantity ? form.Quantity_DB : null,
-                FormNum = "1.1",
-                NumberInOrder = form.NumberInOrder_DB,
-                StartPeriod = form.Report!.StartPeriod_DB ?? string.Empty,
-                EndPeriod = form.Report.EndPeriod_DB ?? string.Empty
-            })
-            .ToListAsync(cancellationToken);
-    }
-
-    private static async Task<List<Operation41PairingDto>> LoadForm12OperationsAsync(
-        DBModel db, int? repsId, CancellationToken cancellationToken)
-    {
-        var effectiveRepsId = repsId ?? 0;
-        var rows = await ScopedReports(db, repsId)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.2")
-                .SelectMany(rep => rep.Rows12))
-            .Where(form => form.OperationCode_DB == OperationCode)
-            .Select(form => new
-            {
-                form.Id,
-                ReportId = form.ReportId ?? 0,
-                OpCode = form.OperationCode_DB,
-                OpDate = form.OperationDate_DB,
-                Mass = form.Mass_DB,
-                DocumentVid = form.DocumentVid_DB,
-                DocumentNumber = form.DocumentNumber_DB,
-                DocumentDate = form.DocumentDate_DB,
-                PackName = form.PackName_DB,
-                PackType = form.PackType_DB,
-                PackNumber = form.PackNumber_DB,
-                form.NumberInOrder_DB,
-                StartPeriod = form.Report!.StartPeriod_DB,
-                EndPeriod = form.Report.EndPeriod_DB
-            })
-            .ToListAsync(cancellationToken);
-
-        return rows.Select(row =>
-        {
-            var massTon = ToMassTon(row.Mass);
-            return new Operation41PairingDto
-            {
-                Id = row.Id,
-                RepsId = effectiveRepsId,
-                ReportId = row.ReportId,
-                OpCode = row.OpCode,
-                OpDate = row.OpDate,
-                Mass = massTon,
-                BetaGammaActivity = ComputeFromMass(massTon, 25_000_000_000d),
-                AlphaActivity = ComputeFromMass(massTon, 16_100_000_000d),
-                ActivityMeasurementDate = row.OpDate,
-                DocumentVid = row.DocumentVid,
-                DocumentNumber = row.DocumentNumber,
-                DocumentDate = row.DocumentDate,
-                PackName = row.PackName,
-                PackType = row.PackType,
-                PackNumber = row.PackNumber,
-                FormNum = "1.2",
-                CodeRao = RaoCodeHelper.Form12CodeRao,
-                NumberInOrder = row.NumberInOrder_DB,
-                StartPeriod = row.StartPeriod ?? string.Empty,
-                EndPeriod = row.EndPeriod ?? string.Empty
-            };
-        }).ToList();
-    }
-
-    private static async Task<List<Operation41PairingDto>> LoadForm13OperationsAsync(
-        DBModel db, int? repsId, CancellationToken cancellationToken)
-    {
-        var effectiveRepsId = repsId ?? 0;
-        var rows = await ScopedReports(db, repsId)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.3")
-                .SelectMany(rep => rep.Rows13))
-            .Where(form => form.OperationCode_DB == OperationCode)
-            .Select(form => new
-            {
-                form.Id,
-                ReportId = form.ReportId ?? 0,
-                OpCode = form.OperationCode_DB,
-                OpDate = form.OperationDate_DB,
-                Radionuclids = form.Radionuclids_DB,
-                Activity = form.Activity_DB,
-                CreationDate = form.CreationDate_DB,
-                DocumentVid = form.DocumentVid_DB,
-                DocumentNumber = form.DocumentNumber_DB,
-                DocumentDate = form.DocumentDate_DB,
-                PackName = form.PackName_DB,
-                PackType = form.PackType_DB,
-                PackNumber = form.PackNumber_DB,
-                form.AggregateState_DB,
-                form.NumberInOrder_DB,
-                StartPeriod = form.Report!.StartPeriod_DB,
-                EndPeriod = form.Report.EndPeriod_DB
-            })
-            .ToListAsync(cancellationToken);
-
-        return rows.Select(row =>
-        {
-            var activities = GetActivitiesForExport(row.Radionuclids, row.Activity);
-            return new Operation41PairingDto
-            {
-                Id = row.Id,
-                RepsId = effectiveRepsId,
-                ReportId = row.ReportId,
-                OpCode = row.OpCode,
-                OpDate = row.OpDate,
-                Radionuclids = row.Radionuclids,
-                CreationDate = row.CreationDate,
-                MainRadionuclids = row.Radionuclids,
-                TritiumActivity = activities["tritium"],
-                BetaGammaActivity = activities["beta"],
-                AlphaActivity = activities["alpha"],
-                TransuraniumActivity = activities["transuranium"],
-                ActivityMeasurementDate = row.CreationDate,
-                DocumentVid = row.DocumentVid,
-                DocumentNumber = row.DocumentNumber,
-                DocumentDate = row.DocumentDate,
-                PackName = row.PackName,
-                PackType = row.PackType,
-                PackNumber = row.PackNumber,
-                FormNum = "1.3",
-                AggregateState = row.AggregateState_DB,
-                CodeRao = RaoCodeHelper.ComputeCodeRaoFromForm13(row.Radionuclids, row.AggregateState_DB),
-                NumberInOrder = row.NumberInOrder_DB,
-                StartPeriod = row.StartPeriod ?? string.Empty,
-                EndPeriod = row.EndPeriod ?? string.Empty
-            };
-        }).ToList();
-    }
-
-    private static async Task<List<Operation41PairingDto>> LoadForm14OperationsAsync(
-        DBModel db, int? repsId, CancellationToken cancellationToken)
-    {
-        var effectiveRepsId = repsId ?? 0;
-        var rows = await ScopedReports(db, repsId)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.4")
-                .SelectMany(rep => rep.Rows14))
-            .Where(form => form.OperationCode_DB == OperationCode)
-            .Select(form => new
-            {
-                form.Id,
-                ReportId = form.ReportId ?? 0,
-                OpCode = form.OperationCode_DB,
-                OpDate = form.OperationDate_DB,
-                Radionuclids = form.Radionuclids_DB,
-                Activity = form.Activity_DB,
-                Volume = form.Volume_DB,
-                Mass = form.Mass_DB,
-                ActivityMeasurementDate = form.ActivityMeasurementDate_DB,
-                DocumentVid = form.DocumentVid_DB,
-                DocumentNumber = form.DocumentNumber_DB,
-                DocumentDate = form.DocumentDate_DB,
-                PackName = form.PackName_DB,
-                PackType = form.PackType_DB,
-                PackNumber = form.PackNumber_DB,
-                form.AggregateState_DB,
-                form.NumberInOrder_DB,
-                StartPeriod = form.Report!.StartPeriod_DB,
-                EndPeriod = form.Report.EndPeriod_DB
-            })
-            .ToListAsync(cancellationToken);
-
-        return rows.Select(row =>
-        {
-            var activities = GetActivitiesForExport(row.Radionuclids, row.Activity);
-            return new Operation41PairingDto
-            {
-                Id = row.Id,
-                RepsId = effectiveRepsId,
-                ReportId = row.ReportId,
-                OpCode = row.OpCode,
-                OpDate = row.OpDate,
-                Radionuclids = row.Radionuclids,
-                MainRadionuclids = row.Radionuclids,
-                Volume = row.Volume,
-                Mass = ToMassTon(row.Mass),
-                TritiumActivity = activities["tritium"],
-                BetaGammaActivity = activities["beta"],
-                AlphaActivity = activities["alpha"],
-                TransuraniumActivity = activities["transuranium"],
-                ActivityMeasurementDate = row.ActivityMeasurementDate,
-                DocumentVid = row.DocumentVid,
-                DocumentNumber = row.DocumentNumber,
-                DocumentDate = row.DocumentDate,
-                PackName = row.PackName,
-                PackType = row.PackType,
-                PackNumber = row.PackNumber,
-                FormNum = "1.4",
-                AggregateState = row.AggregateState_DB,
-                CodeRao = RaoCodeHelper.ComputeCodeRaoFromForm14(row.Radionuclids, row.AggregateState_DB),
-                NumberInOrder = row.NumberInOrder_DB,
-                StartPeriod = row.StartPeriod ?? string.Empty,
-                EndPeriod = row.EndPeriod ?? string.Empty
-            };
-        }).ToList();
-    }
-
-    private static Task<List<Operation41PairingDto>> LoadForm15OperationsAsync(
-        DBModel db, int? repsId, CancellationToken cancellationToken, Pairing11To15Params? options = null)
-    {
-        var effectiveRepsId = repsId ?? 0;
-        // Код 41 (штатный перевод) и код 14 (частая ошибка «получение» вместо перевода).
-        // OpCode всегда читаем — нужен и для ключа, и чтобы отсечь 14 из обратной сверки.
-        return ScopedReports(db, repsId)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.5")
-                .SelectMany(rep => rep.Rows15))
-            .Where(form => form.OperationCode_DB == OperationCode
-                           || form.OperationCode_DB == Form15ReceiveMistypeOpCode)
-            .Select(form => new Operation41PairingDto
-            {
-                Id = form.Id,
-                RepsId = effectiveRepsId,
-                ReportId = form.ReportId ?? 0,
-                OpCode = form.OperationCode_DB,
-                OpDate = options == null || options.CheckOperationDate ? form.OperationDate_DB : string.Empty,
-                PasNum = options == null || options.CheckPassportNumber ? form.PassportNumber_DB : string.Empty,
-                FacNum = options == null || options.CheckFactoryNumber ? form.FactoryNumber_DB : string.Empty,
-                Type = options == null || options.CheckType ? form.Type_DB : string.Empty,
-                Radionuclids = options == null || options.CheckRadionuclids ? form.Radionuclids_DB : string.Empty,
-                CreationDate = options == null || options.CheckCreationDate ? form.CreationDate_DB : string.Empty,
-                DocumentVid = options == null || options.CheckDocumentVid ? form.DocumentVid_DB : null,
-                DocumentNumber = options == null || options.CheckDocumentNumber ? form.DocumentNumber_DB : string.Empty,
-                DocumentDate = options == null || options.CheckDocumentDate ? form.DocumentDate_DB : string.Empty,
-                ProviderOrRecieverOkpo = options == null || options.CheckProviderOrRecieverOkpo ? form.ProviderOrRecieverOKPO_DB : string.Empty,
-                TransporterOkpo = options == null || options.CheckTransporterOkpo ? form.TransporterOKPO_DB : string.Empty,
-                PackName = options == null || options.CheckPackName ? form.PackName_DB : string.Empty,
-                PackType = options == null || options.CheckPackType ? form.PackType_DB : string.Empty,
-                PackNumber = options == null || options.CheckPackNumber ? form.PackNumber_DB : string.Empty,
-                Activity = options == null || options.CheckActivity ? form.Activity_DB : string.Empty,
-                Quantity = options == null || options.CheckQuantity ? form.Quantity_DB : null,
-                FormNum = "1.5",
-                NumberInOrder = form.NumberInOrder_DB,
-                StartPeriod = form.Report!.StartPeriod_DB ?? string.Empty,
-                EndPeriod = form.Report.EndPeriod_DB ?? string.Empty
-            })
-            .ToListAsync(cancellationToken);
-    }
-
-    private static Task<List<Operation41PairingDto>> LoadForm16OperationsAsync(
-        DBModel db, int? repsId, CancellationToken cancellationToken)
-    {
-        var effectiveRepsId = repsId ?? 0;
-        return ScopedReports(db, repsId)
-            .SelectMany(reps => reps.Report_Collection
-                .Where(rep => rep.FormNum_DB == "1.6")
-                .SelectMany(rep => rep.Rows16))
-            .Where(form => form.OperationCode_DB == OperationCode)
-            .Select(form => new Operation41PairingDto
-            {
-                Id = form.Id,
-                RepsId = effectiveRepsId,
-                ReportId = form.ReportId ?? 0,
-                OpCode = form.OperationCode_DB,
-                OpDate = form.OperationDate_DB,
-                MainRadionuclids = form.MainRadionuclids_DB,
-                Volume = form.Volume_DB,
-                Mass = form.Mass_DB,
-                TritiumActivity = form.TritiumActivity_DB,
-                BetaGammaActivity = form.BetaGammaActivity_DB,
-                AlphaActivity = form.AlphaActivity_DB,
-                TransuraniumActivity = form.TransuraniumActivity_DB,
-                ActivityMeasurementDate = form.ActivityMeasurementDate_DB,
-                DocumentVid = form.DocumentVid_DB,
-                DocumentNumber = form.DocumentNumber_DB,
-                DocumentDate = form.DocumentDate_DB,
-                PackName = form.PackName_DB,
-                PackType = form.PackType_DB,
-                PackNumber = form.PackNumber_DB,
-                CodeRao = form.CodeRAO_DB,
-                FormNum = "1.6",
-                NumberInOrder = form.NumberInOrder_DB,
-                StartPeriod = form.Report!.StartPeriod_DB ?? string.Empty,
-                EndPeriod = form.Report.EndPeriod_DB ?? string.Empty
-            })
-            .ToListAsync(cancellationToken);
-    }
+    #region Bulk load
 
     /// <summary>
     /// Операции 41 одной организации (уже с заполненным <see cref="Operation41PairingDto.RepsId"/>).
@@ -905,7 +557,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     }
 
     /// <summary>
-    /// Bulk: 6 запросов на всю БД + карта ReportId→RepsId (IN пакетами) + GroupBy org.
+    /// Bulk: постраничная загрузка 6 форм (RepsId в DTO) + GroupBy org.
     /// </summary>
     private static async Task<Dictionary<int, OrgOperation41Lists>> LoadAllOperation41GroupedByRepsIdAsync(
         DBModel db,
@@ -914,63 +566,41 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         ProgressReporter? progress = null)
     {
         var p11 = pairingParams.Pairing11To15;
-        const int stages = 8;
-        var stage = 0;
+        const int stages = 7;
+        const int bulkMin = 28;
+        const int bulkMax = 55;
 
-        void ReportForm(string formLabel, int rowCount)
-        {
-            stage++;
-            progress?.ReportNow(stage, stages,
-                $"загрузка формы {formLabel}: {rowCount} строк ({stage} из {stages})");
-        }
+        ProgressReporter? FormProgress(int index) =>
+            progress?.Nest(
+                bulkMin + (bulkMax - bulkMin) * index / stages,
+                bulkMin + (bulkMax - bulkMin) * (index + 1) / stages);
 
-        progress?.ReportNow(0, stages, "загрузка формы 1.1…");
-        var form11 = await LoadOperation41ListAsync(db, null, "1.1", cancellationToken, p11);
-        ReportForm("1.1", form11.Count);
+        var form11Progress = FormProgress(0);
+        var form11 = await LoadOperation41ListAsync(db, null, "1.1", cancellationToken, p11, form11Progress);
+        form11Progress?.ReportNow(1, 1, $"форма 1.1: готово — {form11.Count} строк");
 
-        progress?.Status("загрузка формы 1.2…");
-        var form12 = await LoadOperation41ListAsync(db, null, "1.2", cancellationToken);
-        ReportForm("1.2", form12.Count);
+        var form12Progress = FormProgress(1);
+        var form12 = await LoadOperation41ListAsync(db, null, "1.2", cancellationToken, progress: form12Progress);
+        form12Progress?.ReportNow(1, 1, $"форма 1.2: готово — {form12.Count} строк");
 
-        progress?.Status("загрузка формы 1.3…");
-        var form13 = await LoadOperation41ListAsync(db, null, "1.3", cancellationToken);
-        ReportForm("1.3", form13.Count);
+        var form13Progress = FormProgress(2);
+        var form13 = await LoadOperation41ListAsync(db, null, "1.3", cancellationToken, progress: form13Progress);
+        form13Progress?.ReportNow(1, 1, $"форма 1.3: готово — {form13.Count} строк");
 
-        progress?.Status("загрузка формы 1.4…");
-        var form14 = await LoadOperation41ListAsync(db, null, "1.4", cancellationToken);
-        ReportForm("1.4", form14.Count);
+        var form14Progress = FormProgress(3);
+        var form14 = await LoadOperation41ListAsync(db, null, "1.4", cancellationToken, progress: form14Progress);
+        form14Progress?.ReportNow(1, 1, $"форма 1.4: готово — {form14.Count} строк");
 
-        progress?.Status("загрузка формы 1.5…");
-        var form15 = await LoadOperation41ListAsync(db, null, "1.5", cancellationToken, p11);
-        ReportForm("1.5", form15.Count);
+        var form15Progress = FormProgress(4);
+        var form15 = await LoadOperation41ListAsync(db, null, "1.5", cancellationToken, p11, form15Progress);
+        form15Progress?.ReportNow(1, 1, $"форма 1.5: готово — {form15.Count} строк");
 
-        progress?.Status("загрузка формы 1.6…");
-        var form16 = await LoadOperation41ListAsync(db, null, "1.6", cancellationToken);
-        ReportForm("1.6", form16.Count);
+        var form16Progress = FormProgress(5);
+        var form16 = await LoadOperation41ListAsync(db, null, "1.6", cancellationToken, progress: form16Progress);
+        form16Progress?.ReportNow(1, 1, $"форма 1.6: готово — {form16.Count} строк");
 
-        progress?.ReportNow(stage, stages, "привязка отчётов к организациям…");
-        var reportIds = form11
-            .Concat(form12)
-            .Concat(form13)
-            .Concat(form14)
-            .Concat(form15)
-            .Concat(form16)
-            .Select(row => row.ReportId)
-            .Where(id => id != 0)
-            .Distinct()
-            .ToList();
-
-        var reportToReps = await LoadReportIdToRepsIdMapAsync(db, reportIds, cancellationToken);
-        StampRepsIds(form11, reportToReps);
-        StampRepsIds(form12, reportToReps);
-        StampRepsIds(form13, reportToReps);
-        StampRepsIds(form14, reportToReps);
-        StampRepsIds(form15, reportToReps);
-        StampRepsIds(form16, reportToReps);
-        stage++;
-        progress?.ReportNow(stage, stages, $"привязка отчётов: {reportToReps.Count} отчётов ({stage} из {stages})");
-
-        progress?.Status("группировка по организациям…");
+        var groupProgress = FormProgress(6);
+        groupProgress?.Status("группировка по организациям…");
         var byOrg = new Dictionary<int, OrgOperation41Lists>();
         AddFormToOrgGroups(byOrg, form11, static (org, rows) => org.Form11 = rows);
         AddFormToOrgGroups(byOrg, form12, static (org, rows) => org.Form12 = rows);
@@ -978,22 +608,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         AddFormToOrgGroups(byOrg, form14, static (org, rows) => org.Form14 = rows);
         AddFormToOrgGroups(byOrg, form15, static (org, rows) => org.Form15 = rows);
         AddFormToOrgGroups(byOrg, form16, static (org, rows) => org.Form16 = rows);
-        stage++;
-        progress?.ReportNow(stage, stages, $"группировка: {byOrg.Count} организаций ({stage} из {stages})");
+        groupProgress?.ReportNow(1, 1, $"группировка: {byOrg.Count} организаций");
         return byOrg;
-    }
-
-    private static void StampRepsIds(
-        List<Operation41PairingDto> rows,
-        IReadOnlyDictionary<int, int> reportToReps)
-    {
-        foreach (var row in rows)
-        {
-            if (row.ReportId != 0 && reportToReps.TryGetValue(row.ReportId, out var repsId))
-            {
-                row.RepsId = repsId;
-            }
-        }
     }
 
     private static void AddFormToOrgGroups(
@@ -1017,37 +633,6 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             // GroupBy сохраняет порядок встречи; списки уже отсортированы по Id в LoadOperation41ListAsync.
             assign(orgLists, group.ToList());
         }
-    }
-
-    /// <summary>
-    /// Карта Report.Id → Reports.Id пакетами (лимит Firebird IN ~1500).
-    /// </summary>
-    private static async Task<Dictionary<int, int>> LoadReportIdToRepsIdMapAsync(
-        DBModel db,
-        IReadOnlyList<int> reportIds,
-        CancellationToken cancellationToken)
-    {
-        var map = new Dictionary<int, int>(reportIds.Count);
-        if (reportIds.Count == 0)
-        {
-            return map;
-        }
-
-        foreach (var idChunk in ChunkIds(reportIds))
-        {
-            var batch = await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .Where(rep => idChunk.Contains(rep.Id) && rep.Reports != null)
-                .Select(rep => new { ReportId = rep.Id, RepsId = rep.Reports!.Id })
-                .ToListAsync(cancellationToken);
-
-            foreach (var row in batch)
-            {
-                map[row.ReportId] = row.RepsId;
-            }
-        }
-
-        return map;
     }
 
     #endregion
@@ -1088,6 +673,30 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     /// <summary>name → code из R.xlsx; строится при загрузке справочника.</summary>
     private static Dictionary<string, string> RCodeByName { get; set; } = new(StringComparer.Ordinal);
 
+    /// <summary>Сбрасывает кэш R.xlsx (для unit-тестов).</summary>
+    internal static void ResetRDictionaryCache()
+    {
+        R.Clear();
+        RCodeByName = new Dictionary<string, string>(StringComparer.Ordinal);
+    }
+
+    /// <summary>Загружает справочник из указанного файла (unit-тесты / диагностика).</summary>
+    internal static bool TryLoadRDictionaryFromFile(string filePath, out string errorMessage)
+    {
+        errorMessage = string.Empty;
+        ResetRDictionaryCache();
+
+        if (!File.Exists(filePath))
+        {
+            errorMessage =
+                "Не удалось найти справочник радионуклидов R.xlsx (папка data\\Spravochniki)." +
+                $"{Environment.NewLine}Выгрузка непарных операций 41 прервана.";
+            return false;
+        }
+
+        return TryReadRDictionaryWorkbook(filePath, out errorMessage);
+    }
+
     /// <summary>
     /// Загружает справочник радионуклидов R.xlsx. Возвращает false, если файл не найден или не удалось прочитать.
     /// </summary>
@@ -1113,6 +722,12 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             return false;
         }
 
+        return TryReadRDictionaryWorkbook(filePath, out errorMessage);
+    }
+
+    private static bool TryReadRDictionaryWorkbook(string filePath, out string errorMessage)
+    {
+        errorMessage = string.Empty;
         try
         {
             OfficeOpenXml.ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;

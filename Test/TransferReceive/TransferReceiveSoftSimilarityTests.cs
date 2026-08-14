@@ -1,3 +1,4 @@
+using Client_App.Commands.AsyncCommands.ExcelExport.Shared;
 using Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.Testing;
 using Xunit;
 using static Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
@@ -18,7 +19,7 @@ public sealed class TransferReceiveSoftSimilarityTests
     }
 
     [Fact]
-    public void Passport_BothEmpty_IsNear_EmptyVsFilled_IsMismatch()
+    public void Passport_BothEmpty_IsExact_EmptyVsFilled_IsMismatch()
     {
         var bothEmpty = TransferReceiveTestAccess.SimilarityLevelForTests(
             TransferReceiveField.PassportNumber,
@@ -28,8 +29,18 @@ public sealed class TransferReceiveSoftSimilarityTests
             TransferReceiveField.PassportNumber,
             new TransferReceiveRow { Id = 1, OpCode = "21", PasNum = "-", FacNum = "F-1", IsTransfer = true },
             new TransferReceiveRow { Id = 2, OpCode = "31", PasNum = "P-1", FacNum = "F-1", IsTransfer = false });
-        Assert.Equal(FieldMatchLevel.Near, bothEmpty);
+        Assert.Equal(FieldMatchLevel.Exact, bothEmpty);
         Assert.Equal(FieldMatchLevel.Mismatch, emptyVsFilled);
+    }
+
+    [Fact]
+    public void CreatorOkpo_BothDash_IsExact()
+    {
+        var level = TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.CreatorOkpo,
+            new TransferReceiveRow { Id = 1, OpCode = "21", CreatorOkpo = "-", IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", CreatorOkpo = "-", IsTransfer = false });
+        Assert.Equal(FieldMatchLevel.Exact, level);
     }
 
     [Fact]

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Client_App.Commands.AsyncCommands.ExcelExport.Shared;
 using Xunit;
 using static Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
 

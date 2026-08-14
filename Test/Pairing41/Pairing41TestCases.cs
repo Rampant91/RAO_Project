@@ -16,7 +16,8 @@ namespace Test.Pairing41;
 /// <item><b>D</b> — 1.4 ↔ 1.6 (ОРИ-прочие);</item>
 /// <item><b>F</b> — сторона 1.6 (общий пул 1.6, приоритет 12→13→14, симметрия);</item>
 /// <item><b>P</b> — опции диалога (Check* = false снимает поле из ключа);</item>
-/// <item><b>H</b> — карты closest-match для непарных.</item>
+/// <item><b>H</b> — карты closest-match для непарных;</item>
+/// <item><b>S</b> — soft closest: уровни Near, выбор кандидата, tie-break 1.6.</item>
 /// </list>
 /// </para>
 /// <para>
@@ -61,10 +62,37 @@ internal static partial class Pairing41TestCases
             .Concat(Form16Cases())
             .Concat(ParamsCases())
             .Concat(ClosestMatchCases())
+            .Concat(SoftClosestCases())
             .Select(testCase => new object[] { testCase.Name, testCase });
 
     public static IEnumerable<object[]> ClosestMatchOnly() =>
         ClosestMatchCases()
+            .Concat(SoftClosestCases())
+            .Where(testCase => testCase.ExpectedClosest11 is not null
+                               || testCase.ExpectedClosest15 is not null
+                               || testCase.ExpectedClosest12 is not null
+                               || testCase.ExpectedClosest13 is not null
+                               || testCase.ExpectedClosest14 is not null
+                               || testCase.ExpectedClosest16 is not null
+                               || testCase.ExpectedClosest11Levels is not null
+                               || testCase.ExpectedClosest15Levels is not null
+                               || testCase.ExpectedClosest12Levels is not null
+                               || testCase.ExpectedClosest13Levels is not null
+                               || testCase.ExpectedClosest14Levels is not null
+                               || testCase.ExpectedClosestCandidate11 is not null
+                               || testCase.ExpectedClosestCandidate15 is not null
+                               || testCase.ExpectedClosestCandidate12 is not null
+                               || testCase.ExpectedClosestCandidate13 is not null
+                               || testCase.ExpectedClosestCandidate14 is not null
+                               || testCase.ExpectedClosestCandidate16 is not null
+                               || testCase.ExpectedAggregateStateMatch13 is not null
+                               || testCase.ExpectedAggregateStateMatch14 is not null
+                               || testCase.ExpectedConfidenceMinPercent11 is not null
+                               || testCase.ExpectedConfidenceMinPercent15 is not null
+                               || testCase.ExpectedConfidenceMinPercent12 is not null
+                               || testCase.ExpectedConfidenceMinPercent13 is not null
+                               || testCase.ExpectedConfidenceMinPercent14 is not null
+                               || testCase.ExpectedConfidenceMinPercent16 is not null)
             .Select(testCase => new object[] { testCase.Name, testCase });
 
     /// <summary>Базовая строка 1.1/1.5 с серийными номерами.</summary>

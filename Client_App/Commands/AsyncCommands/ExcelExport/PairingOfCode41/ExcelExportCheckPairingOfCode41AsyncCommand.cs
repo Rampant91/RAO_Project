@@ -35,6 +35,11 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
     /// </summary>
     private const int FirebirdInListMaxCount = 1000;
 
+    /// <summary>
+    /// Размер страницы при whole-DB загрузке ops (keyset по Id). Прогресс — после каждой страницы.
+    /// </summary>
+    private const int WholeDbOpsPageSize = 2000;
+
     private readonly MainWindowVM _mainWindowVM;
 
     public ExcelExportCheckPairingOfCode41AsyncCommand(MainWindowVM mainWindowVM)

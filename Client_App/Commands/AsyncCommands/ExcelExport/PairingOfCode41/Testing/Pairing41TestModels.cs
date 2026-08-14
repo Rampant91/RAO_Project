@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Client_App.Commands.AsyncCommands.ExcelExport.Shared;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
 
@@ -52,6 +53,9 @@ public sealed class Pairing41Form16ClosestExpectation
     public IReadOnlyDictionary<Pairing12To16Field, bool>? Matches12 { get; init; }
     public IReadOnlyDictionary<Pairing13To16Field, bool>? Matches13 { get; init; }
     public IReadOnlyDictionary<Pairing14To16Field, bool>? Matches14 { get; init; }
+    public IReadOnlyDictionary<Pairing12To16Field, FieldMatchLevel>? Levels12 { get; init; }
+    public IReadOnlyDictionary<Pairing13To16Field, FieldMatchLevel>? Levels13 { get; init; }
+    public IReadOnlyDictionary<Pairing14To16Field, FieldMatchLevel>? Levels14 { get; init; }
 }
 
 /// <summary>
@@ -89,6 +93,23 @@ public sealed class Pairing41TestCase
     public IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing13To16Field, bool>>? ExpectedClosest13 { get; init; }
     public IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing14To16Field, bool>>? ExpectedClosest14 { get; init; }
     public IReadOnlyDictionary<int, Pairing41Form16ClosestExpectation>? ExpectedClosest16 { get; init; }
+
+    /// <summary>Ожидаемый уровень полей closest (Exact/Near/Mismatch); частичное сравнение.</summary>
+    public IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing11To15Field, FieldMatchLevel>>? ExpectedClosest11Levels { get; init; }
+
+    public IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing11To15Field, FieldMatchLevel>>? ExpectedClosest15Levels { get; init; }
+    public IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing12To16Field, FieldMatchLevel>>? ExpectedClosest12Levels { get; init; }
+    public IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing13To16Field, FieldMatchLevel>>? ExpectedClosest13Levels { get; init; }
+    public IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing14To16Field, FieldMatchLevel>>? ExpectedClosest14Levels { get; init; }
+
+    /// <summary>Минимальная «Схожесть, %» для непарной строки (частично).</summary>
+    public IReadOnlyDictionary<int, int>? ExpectedConfidenceMinPercent11 { get; init; }
+
+    public IReadOnlyDictionary<int, int>? ExpectedConfidenceMinPercent15 { get; init; }
+    public IReadOnlyDictionary<int, int>? ExpectedConfidenceMinPercent12 { get; init; }
+    public IReadOnlyDictionary<int, int>? ExpectedConfidenceMinPercent13 { get; init; }
+    public IReadOnlyDictionary<int, int>? ExpectedConfidenceMinPercent14 { get; init; }
+    public IReadOnlyDictionary<int, int>? ExpectedConfidenceMinPercent16 { get; init; }
 
     /// <summary>Id непарной → Id ближайшего кандидата (форма 1.5). Null = не проверять.</summary>
     public IReadOnlyDictionary<int, int>? ExpectedClosestCandidate11 { get; init; }
@@ -132,6 +153,16 @@ public sealed record Pairing41ClosestMatchResult(
     IReadOnlyDictionary<int, Form16ClosestMatchHighlight> Closest16,
     IReadOnlyDictionary<int, bool?> Closest13AggregateStateMatch,
     IReadOnlyDictionary<int, bool?> Closest14AggregateStateMatch,
+    IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing11To15Field, FieldMatchLevel>> Closest11Levels,
+    IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing11To15Field, FieldMatchLevel>> Closest15Levels,
+    IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing12To16Field, FieldMatchLevel>> Closest12Levels,
+    IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing13To16Field, FieldMatchLevel>> Closest13Levels,
+    IReadOnlyDictionary<int, IReadOnlyDictionary<Pairing14To16Field, FieldMatchLevel>> Closest14Levels,
+    IReadOnlyDictionary<int, int> Closest11ConfidencePercent,
+    IReadOnlyDictionary<int, int> Closest15ConfidencePercent,
+    IReadOnlyDictionary<int, int> Closest12ConfidencePercent,
+    IReadOnlyDictionary<int, int> Closest13ConfidencePercent,
+    IReadOnlyDictionary<int, int> Closest14ConfidencePercent,
     IReadOnlyDictionary<int, int> Closest11CandidateIds,
     IReadOnlyDictionary<int, int> Closest15CandidateIds,
     IReadOnlyDictionary<int, int> Closest12CandidateIds,

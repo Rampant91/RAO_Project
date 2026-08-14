@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using Client_App.Commands.AsyncCommands.ExcelExport.Shared;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
 
@@ -65,16 +64,84 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var pasIdx = IndexOfField(fields, TransferReceiveField.PassportNumber);
         var facIdx = IndexOfField(fields, TransferReceiveField.FactoryNumber);
         var filterByDate = options.CheckOperationDate;
-        var done = 0;
-        var bag = new ConcurrentDictionary<int, ClosestMatchResult>();
 
-        void ProcessOne(TransferReceiveDto source)
-        {
-            try
+        var matches = WeightedClosestMatchEngine.FindBestMatchesPerSource(
+            unpaired,
+            fields,
+            static source => source.Id,
+            static candidate => candidate.Id,
+            source => norms.TryGetValue(source.Id, out var sourceNorm)
+                ? sourceNorm.OpDateDayNumber
+                : DateOnly.TryParse(source.OpDate, out var parsed) ? parsed.DayNumber : null,
+            source =>
             {
-                if (!candidateIndex.TryGetCandidates(source, out var candidateSet))
+                if (!candidateIndex.TryGetCandidates(source, out var set))
                 {
-                    return;
+                    return ClosestReferenceIndex.CandidateSet<TransferReceiveDto>.Empty;
+                }
+
+                return set;
+            },
+            (source, field, _) => GetFieldWeight(field, source),
+            (source, candidate, field, _) =>
+            {
+                if (!norms.TryGetValue(source.Id, out var sourceNorm))
+                {
+                    sourceNorm = CreateNorm(source);
+                    norms[source.Id] = sourceNorm;
+                }
+
+                if (!norms.TryGetValue(candidate.Id, out var candidateNorm))
+                {
+                    candidateNorm = CreateNorm(candidate);
+                    norms[candidate.Id] = candidateNorm;
+                }
+
+                return FieldSimilarityOf(
+                    source, candidate, sourceNorm, candidateNorm, field, source.OrgOkpo);
+            },
+            (source, candidate) =>
+            {
+                if (!norms.TryGetValue(source.Id, out var sourceNorm))
+                {
+                    sourceNorm = CreateNorm(source);
+                    norms[source.Id] = sourceNorm;
+                }
+
+                if (!norms.TryGetValue(candidate.Id, out var candidateNorm))
+                {
+                    candidateNorm = CreateNorm(candidate);
+                    norms[candidate.Id] = candidateNorm;
+                }
+
+                return OperationDateDayDeltaCached(
+                    sourceNorm, candidateNorm, source.OpDate, candidate.OpDate);
+            },
+            filterByDate,
+            OperationDateToleranceDays,
+            applyBonus: (source, _, levels) =>
+            {
+                if (!SerialNumbersAreEmpty(source)
+                    && pasIdx >= 0
+                    && facIdx >= 0
+                    && levels[pasIdx] == FieldMatchLevel.Exact
+                    && levels[facIdx] == FieldMatchLevel.Exact)
+                {
+                    return (BothIdentifiersExactBonus, BothIdentifiersExactBonus);
+                }
+
+                return (0, 0);
+            },
+            skipCandidate: (source, candidate) =>
+            {
+                if (candidate.Id == source.Id)
+                {
+                    return true;
+                }
+
+                if (!filterByDate)
+                {
+                    return false;
                 }
 
                 if (!norms.TryGetValue(source.Id, out var sourceNorm))
@@ -83,146 +150,36 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                     norms[source.Id] = sourceNorm;
                 }
 
-                var weights = new double[fieldCount];
-                var maxWeightBase = 0.0;
-                for (var i = 0; i < fieldCount; i++)
+                if (!norms.TryGetValue(candidate.Id, out var candidateNorm))
                 {
-                    weights[i] = GetFieldWeight(fields[i], source);
-                    maxWeightBase += weights[i];
+                    candidateNorm = CreateNorm(candidate);
+                    norms[candidate.Id] = candidateNorm;
                 }
 
-                var sourceHasSerials = !SerialNumbersAreEmpty(source);
-                var scratchLevels = new FieldMatchLevel[fieldCount];
-                var bestLevels = new FieldMatchLevel[fieldCount];
-                var bestScore = double.NegativeInfinity;
-                var bestMaxWeight = 0.0;
-                TransferReceiveDto? bestCandidate = null;
-                var bestDateDelta = int.MaxValue;
+                return !DatesWithinToleranceCached(
+                    sourceNorm, candidateNorm, source.OpDate, candidate.OpDate);
+            },
+            onProgress: (done, count) =>
+                progress?.Report(done, count, $"поиск ближайших совпадений: {done} из {count}"));
 
-                void Consider(TransferReceiveDto candidate)
-                {
-                    if (candidate.Id == source.Id)
-                    {
-                        return;
-                    }
-
-                    if (!norms.TryGetValue(candidate.Id, out var candidateNorm))
-                    {
-                        candidateNorm = CreateNorm(candidate);
-                        norms[candidate.Id] = candidateNorm;
-                    }
-
-                    if (filterByDate
-                        && !DatesWithinToleranceCached(sourceNorm, candidateNorm, source.OpDate, candidate.OpDate))
-                    {
-                        return;
-                    }
-
-                    var weighted = 0.0;
-                    var maxWeight = maxWeightBase;
-                    for (var i = 0; i < fieldCount; i++)
-                    {
-                        var field = fields[i];
-                        var weight = weights[i];
-                        var sim = FieldSimilarityOf(
-                            source, candidate, sourceNorm, candidateNorm, field, source.OrgOkpo);
-                        scratchLevels[i] = sim.Level;
-                        weighted += weight * sim.Score;
-                    }
-
-                    if (sourceHasSerials
-                        && pasIdx >= 0
-                        && facIdx >= 0
-                        && scratchLevels[pasIdx] == FieldMatchLevel.Exact
-                        && scratchLevels[facIdx] == FieldMatchLevel.Exact)
-                    {
-                        weighted += BothIdentifiersExactBonus;
-                        maxWeight += BothIdentifiersExactBonus;
-                    }
-
-                    var dateDelta = OperationDateDayDeltaCached(sourceNorm, candidateNorm, source.OpDate, candidate.OpDate);
-                    var better = weighted > bestScore + 1e-9
-                                 || (Math.Abs(weighted - bestScore) <= 1e-9
-                                     && (dateDelta < bestDateDelta
-                                         || (dateDelta == bestDateDelta
-                                             && bestCandidate is not null
-                                             && candidate.Id < bestCandidate.Id)));
-
-                    if (better)
-                    {
-                        bestScore = weighted;
-                        bestMaxWeight = maxWeight;
-                        bestCandidate = candidate;
-                        bestDateDelta = dateDelta;
-                        Array.Copy(scratchLevels, bestLevels, fieldCount);
-                    }
-                }
-
-                if (filterByDate
-                    && sourceNorm.OpDateDayNumber is int sourceDay
-                    && candidateSet.ByDay is not null)
-                {
-                    for (var day = sourceDay - OperationDateToleranceDays;
-                         day <= sourceDay + OperationDateToleranceDays;
-                         day++)
-                    {
-                        if (!candidateSet.ByDay.TryGetValue(day, out var dayList))
-                        {
-                            continue;
-                        }
-
-                        foreach (var candidate in dayList)
-                        {
-                            Consider(candidate);
-                        }
-                    }
-
-                    foreach (var candidate in candidateSet.Undated)
-                    {
-                        Consider(candidate);
-                    }
-                }
-                else
-                {
-                    foreach (var candidate in candidateSet.All)
-                    {
-                        Consider(candidate);
-                    }
-                }
-
-                if (bestCandidate is not null && bestMaxWeight > 0)
-                {
-                    var map = new Dictionary<TransferReceiveField, FieldMatchLevel>(fieldCount);
-                    var exactMap = new Dictionary<TransferReceiveField, bool>(fieldCount);
-                    for (var i = 0; i < fieldCount; i++)
-                    {
-                        map[fields[i]] = bestLevels[i];
-                        exactMap[fields[i]] = bestLevels[i] == FieldMatchLevel.Exact;
-                    }
-
-                    var confidence = (int)Math.Round(100.0 * bestScore / bestMaxWeight);
-                    confidence = Math.Clamp(confidence, 0, 100);
-                    bag[source.Id] = new ClosestMatchResult(
-                        bestCandidate, map, exactMap, confidence, bestScore);
-                }
-            }
-            finally
+        var result = new Dictionary<int, ClosestMatchResult>(matches.Count);
+        foreach (var (id, match) in matches)
+        {
+            var exactMap = new Dictionary<TransferReceiveField, bool>(fieldCount);
+            foreach (var (field, level) in match.FieldLevels)
             {
-                var completed = Interlocked.Increment(ref done);
-                progress?.Report(completed, total, $"поиск ближайших совпадений: {completed} из {total}");
+                exactMap[field] = level == FieldMatchLevel.Exact;
             }
+
+            result[id] = new ClosestMatchResult(
+                match.Candidate,
+                match.FieldLevels,
+                exactMap,
+                match.ConfidencePercent,
+                match.RawScore);
         }
 
-        if (total == 1)
-        {
-            ProcessOne(unpaired[0]);
-        }
-        else
-        {
-            Parallel.ForEach(unpaired, ProcessOne);
-        }
-
-        return new Dictionary<int, ClosestMatchResult>(bag);
+        return result;
     }
 
     private static ConcurrentDictionary<int, TransferReceiveNorm> BuildClosestNormCache(
@@ -307,14 +264,18 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 }
 
                 byOkpo[okpo] = new OkpoDirectionSets(
-                    CandidateSet.Create(transfers, indexByDate),
-                    CandidateSet.Create(receives, indexByDate));
+                    ClosestReferenceIndex.CandidateSet<TransferReceiveDto>.Create(
+                        transfers, static op => op.OpDate, indexByDate),
+                    ClosestReferenceIndex.CandidateSet<TransferReceiveDto>.Create(
+                        receives, static op => op.OpDate, indexByDate));
             }
 
             return new ClosestCandidateIndex(byOkpo);
         }
 
-        public bool TryGetCandidates(TransferReceiveDto source, out CandidateSet set)
+        public bool TryGetCandidates(
+            TransferReceiveDto source,
+            out ClosestReferenceIndex.CandidateSet<TransferReceiveDto> set)
         {
             foreach (var key in OkpoIndexKeys(source.ProviderOrRecieverOkpo))
             {
@@ -331,64 +292,16 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 }
             }
 
-            set = CandidateSet.Empty;
+            set = ClosestReferenceIndex.CandidateSet<TransferReceiveDto>.Empty;
             return false;
         }
 
-        private sealed class OkpoDirectionSets(CandidateSet transfers, CandidateSet receives)
+        private sealed class OkpoDirectionSets(
+            ClosestReferenceIndex.CandidateSet<TransferReceiveDto> transfers,
+            ClosestReferenceIndex.CandidateSet<TransferReceiveDto> receives)
         {
-            public CandidateSet Transfers { get; } = transfers;
-            public CandidateSet Receives { get; } = receives;
-        }
-
-        public sealed class CandidateSet
-        {
-            public static CandidateSet Empty { get; } = new([], null, []);
-
-            public List<TransferReceiveDto> All { get; }
-            public Dictionary<int, List<TransferReceiveDto>>? ByDay { get; }
-            public List<TransferReceiveDto> Undated { get; }
-
-            private CandidateSet(
-                List<TransferReceiveDto> all,
-                Dictionary<int, List<TransferReceiveDto>>? byDay,
-                List<TransferReceiveDto> undated)
-            {
-                All = all;
-                ByDay = byDay;
-                Undated = undated;
-            }
-
-            public static CandidateSet Create(List<TransferReceiveDto> ops, bool indexByDate)
-            {
-                if (!indexByDate || ops.Count == 0)
-                {
-                    return new CandidateSet(ops, null, []);
-                }
-
-                var byDay = new Dictionary<int, List<TransferReceiveDto>>();
-                var undated = new List<TransferReceiveDto>();
-                foreach (var op in ops)
-                {
-                    if (DateOnly.TryParse(op.OpDate, out var date))
-                    {
-                        var day = date.DayNumber;
-                        if (!byDay.TryGetValue(day, out var list))
-                        {
-                            list = [];
-                            byDay[day] = list;
-                        }
-
-                        list.Add(op);
-                    }
-                    else
-                    {
-                        undated.Add(op);
-                    }
-                }
-
-                return new CandidateSet(ops, byDay, undated);
-            }
+            public ClosestReferenceIndex.CandidateSet<TransferReceiveDto> Transfers { get; } = transfers;
+            public ClosestReferenceIndex.CandidateSet<TransferReceiveDto> Receives { get; } = receives;
         }
     }
 

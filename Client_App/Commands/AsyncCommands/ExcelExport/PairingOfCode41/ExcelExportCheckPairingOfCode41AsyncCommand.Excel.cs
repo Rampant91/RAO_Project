@@ -15,6 +15,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     #region Workbook structure
 
     private static readonly Color PairingFieldMatchFill = Color.FromArgb(198, 239, 206);
+    private static readonly Color PairingFieldNearFill = Color.FromArgb(255, 243, 160);
     private static readonly Color PairingFieldMismatchFill = Color.FromArgb(255, 205, 210);
     private static readonly Color PairingLegendTitleFill = Color.FromArgb(33, 78, 128);
     private static readonly Color PairingLegendSectionFill = Color.FromArgb(217, 226, 243);
@@ -40,12 +41,13 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         "№ п/п"
     ];
 
-    /// <summary>Разметка одного листа: сколько колонок в блоке, где разделитель, где начинается второй блок.</summary>
+    /// <summary>Разметка одного листа: сколько колонок в блоке, где разделитель, confidence и второй блок.</summary>
     private readonly record struct SheetLayout(int SourceColCount)
     {
         public int SeparatorCol => SourceColCount + 1;
-        public int ClosestStartCol => SeparatorCol + 1;
-        public int TotalColCount => SourceColCount * 2 + 1;
+        public int ConfidenceCol => SourceColCount + 2;
+        public int ClosestStartCol => SourceColCount + 3;
+        public int TotalColCount => SourceColCount * 2 + 2;
     }
 
     private static readonly SheetLayout Layout1115 = new(InfoColCount + 17);
@@ -296,7 +298,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         Body("«Ближайшее совпадение» — это не найденная пара (иначе строка не попала бы в отчёт), а подсказка: какая операция на парной форме больше всего похожа на непарную строку.");
         Bullet("Программа сравнивает непарную строку со всеми операциями той же организации на парной форме.");
         Bullet("Для каждого кандидата считается, сколько полей совпало — учитываются только поля с галочками в окне параметров перед выгрузкой.");
-        Bullet("В правый блок попадает кандидат с наибольшим числом совпавших полей. Зелёные и красные ячейки показывают, что совпало, а что нет (одинаковая подсветка слева и справа).");
+        Bullet("В правый блок попадает наиболее похожий кандидат (взвешенная оценка по полям). Зелёные, жёлтые и красные ячейки показывают степень совпадения (одинаковая подсветка слева и справа).");
+        Bullet("Колонка «Схожесть, %» — насколько правая строка близка к левой (0–100). Это ориентир, а не точная вероятность.");
         Bullet("На листе 1.6 кандидат ищется среди форм 1.2, 1.3 и 1.4; при равном числе совпадений предпочтение у формы 1.2.");
         Bullet("Если на парной форме нечего сравнивать — правый блок пустой, подсветки нет. Это нормально и не означает ошибку выгрузки.");
         Body("Частый случай — парную строку не ввели: для операции с кодом 41 на соответствующей форме нет записи. Тогда справа окажется не «настоящая» пара, а просто наиболее похожая из уже имеющихся — другая операция, другой источник или другой период. Красные ячейки сравнивают непарную строку с «чужой» записью и могут указывать на ложные расхождения: проблема не в опечатках, а в том, что парной строки нет вовсе.");
@@ -309,11 +312,20 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         ColorRow(
             PairingFieldMatchFill,
             "Зелёный",
-            "Значение совпало с ближайшим совпадением на парной форме (если справа действительно ожидаемая пара).");
+            "Значение совпало с ближайшим совпадением (в т.ч. оба прочерка или пусто, с учётом нормализации и допуска ±10% для активностей/массы/объёма).");
+        ColorRow(
+            PairingFieldNearFill,
+            "Жёлтый",
+            "Небольшое отличие: опечатка в одном знаке, код 41↔14, похожие символы (0/О, 3/З), разные написания номера или типа и т.п.");
         ColorRow(
             PairingFieldMismatchFill,
             "Красный",
-            "Значение не совпало с ближайшим совпадением. Подсказка, где смотреть — но только если справа подходящая строка, а не случайный похожий кандидат.");
+            "Сильное отличие. Подсказка, где смотреть — но только если справа подходящая строка, а не случайный похожий кандидат.");
+        Blank();
+        Section("Схожесть, %");
+        ColorRow(PairingFieldMatchFill, "≥ 80%", "Строки очень похожи.");
+        ColorRow(PairingFieldNearFill, "50–79%", "Средняя похожесть — смотрите жёлтые и красные поля.");
+        ColorRow(PairingFieldMismatchFill, "< 50%", "Слабая похожесть — справа может быть «чужая» строка.");
         Body("Без заливки — сравнение по этому полю не выполнялось. Так бывает в трёх случаях:");
         Bullet("на парной форме у организации нет ни одной операции с кодом 41, с которой можно сравнить строку (для 1.1 парная форма — 1.5; для 1.2, 1.3 и 1.4 — 1.6; для 1.5 — 1.1; для 1.6 — 1.2, 1.3 и 1.4);");
         Bullet("перед выгрузкой в окне параметров вы сняли галочку с этого поля — оно не участвует в сравнении и не подсвечивается;");
@@ -353,7 +365,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
         Section("Пустые паспорт и заводской номер");
         Body("Если паспорт и заводской номер пустые (или стоят заглушки вроде «-», «б.н.», «без номера»), несколько строк могут описывать одну партию: одна строка с количеством N или несколько строк, сумма количеств которых равна N. Такие записи считаются одной партией при совпадении остальных ключевых полей, включая номер упаковки.");
-        Bullet("В подсветке «ближайшего совпадения» количество сравнивается построчно (одинаковые числа — зелёные). Красное количество значит, что у этой пары строк числа разные (например 8 и 5), а не «всегда ошибка» для безсерийных.");
+        Bullet("В подсветке «ближайшего совпадения» количество сравнивается построчно (одинаковые числа — зелёные). Красное количество значит, что у этой пары строк числа разные (например 8 и 5). Одинаковые прочерки и пустые реквизиты (ОКПО, паспорт, зав.№ и т.п.) подсвечиваются зелёным.");
         Blank();
 
         Section("Допуск ±10%");
@@ -508,6 +520,9 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         sheet.Column(layout.SeparatorCol).Width = 2.5;
         sheet.Cells[1, layout.SeparatorCol, 2, layout.SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
 
+        sheet.Cells[1, layout.ConfidenceCol].Value = string.Empty;
+        sheet.Cells[1, layout.ConfidenceCol].Style.Fill.SetBackground(ClosestSectionFill, ExcelFillStyle.Solid);
+
         sheet.Cells[1, layout.ClosestStartCol, 1, layout.TotalColCount].Merge = true;
         sheet.Cells[1, layout.ClosestStartCol].Value = "Ближайшее совпадение";
         sheet.Cells[1, layout.ClosestStartCol].Style.Font.Bold = true;
@@ -518,8 +533,13 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         WriteFieldHeaders(2, layout.ClosestStartCol, dataHeaders);
 
         sheet.Cells[2, layout.SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
+        sheet.Cells[2, layout.ConfidenceCol].Value = "Схожесть, %";
+        sheet.Cells[2, layout.ConfidenceCol].Style.Font.Bold = true;
+        sheet.Cells[2, layout.ConfidenceCol].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        sheet.Cells[2, layout.ConfidenceCol].Style.WrapText = true;
 
         ApplyPairingFieldHeaderStyle(sheet, 1, layout.SourceColCount);
+        ApplyPairingFieldHeaderStyle(sheet, layout.ConfidenceCol, layout.ConfidenceCol);
         ApplyPairingFieldHeaderStyle(sheet, layout.ClosestStartCol, layout.TotalColCount);
 
         sheet.Columns[layout.SeparatorCol].Style.Border.Left.Style = ExcelBorderStyle.Medium;
@@ -587,6 +607,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         }
 
         sheet.Column(layout.SeparatorCol).Width = 2.5;
+        sheet.Column(layout.ConfidenceCol).Width = ExcelWidthFromPixels(70);
     }
 
     private static double ExcelWidthFromPixels(int pixels) =>
@@ -629,7 +650,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     #region Write blocks — 1.1 / 1.5
 
-    private void WriteForm1115Block(Operation41PairingDto op, int startCol, IReadOnlyDictionary<Pairing11To15Field, bool>? fieldMatches)
+    private void WriteForm1115Block(Operation41PairingDto op, int startCol, IReadOnlyDictionary<Pairing11To15Field, Shared.FieldMatchLevel>? fieldLevels)
     {
         var c = WriteInfoBlock(op, startCol);
         void WriteDate(int col, string? value) => Worksheet.Cells[CurrentRow, col].Value = ConvertToExcelDate(value, Worksheet, CurrentRow, col);
@@ -652,16 +673,16 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackType);
         Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.PackNumber);
 
-        if (fieldMatches is null)
+        if (fieldLevels is null)
         {
             return;
         }
 
-        foreach (var (field, matched) in fieldMatches)
+        foreach (var (field, level) in fieldLevels)
         {
             if (GetForm1115FieldOffset(field) is int offset)
             {
-                ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, matched);
+                ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, level);
             }
         }
     }
@@ -707,12 +728,13 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         foreach (var row in OrderForExport(unpaired))
         {
             closestMatches.TryGetValue(row.Id, out var closest);
-            WriteForm1115Block(row, 1, closest?.FieldMatches);
+            WriteForm1115Block(row, 1, closest?.FieldLevels);
             Worksheet.Cells[CurrentRow, layout.SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
 
             if (closest is not null)
             {
-                WriteForm1115Block(closest.Candidate, layout.ClosestStartCol, closest.FieldMatches);
+                WriteConfidenceCell(layout.ConfidenceCol, closest.ConfidencePercent);
+                WriteForm1115Block(closest.Candidate, layout.ClosestStartCol, closest.FieldLevels);
             }
 
             CurrentRow++;
@@ -725,7 +747,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     #region Write blocks — 1.2
 
-    private void WriteForm12Block(Operation41PairingDto op, int startCol, IReadOnlyDictionary<Pairing12To16Field, bool>? fieldMatches)
+    private void WriteForm12Block(Operation41PairingDto op, int startCol, IReadOnlyDictionary<Pairing12To16Field, Shared.FieldMatchLevel>? fieldLevels)
     {
         var c = WriteInfoBlock(op, startCol);
         void WriteDate(int col, string? value) => Worksheet.Cells[CurrentRow, col].Value = ConvertToExcelDate(value, Worksheet, CurrentRow, col);
@@ -743,16 +765,16 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackNumber);
         Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.CodeRao);
 
-        if (fieldMatches is null)
+        if (fieldLevels is null)
         {
             return;
         }
 
-        foreach (var (field, matched) in fieldMatches)
+        foreach (var (field, level) in fieldLevels)
         {
             if (GetForm12FieldOffset(field) is int offset)
             {
-                ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, matched);
+                ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, level);
             }
         }
     }
@@ -790,12 +812,13 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         foreach (var row in OrderForExport(unpaired))
         {
             _form12ClosestMatchHighlights.TryGetValue(row.Id, out var closest);
-            WriteForm12Block(row, 1, closest?.FieldMatches);
+            WriteForm12Block(row, 1, closest?.FieldLevels);
             Worksheet.Cells[CurrentRow, Layout12.SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
 
             if (closest is not null)
             {
-                WriteForm12Block(closest.Candidate, Layout12.ClosestStartCol, closest.FieldMatches);
+                WriteConfidenceCell(Layout12.ConfidenceCol, closest.ConfidencePercent);
+                WriteForm12Block(closest.Candidate, Layout12.ClosestStartCol, closest.FieldLevels);
             }
 
             CurrentRow++;
@@ -808,11 +831,19 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     #region Write blocks — 1.3
 
+    private static Shared.FieldMatchLevel? ToAggregateStateHighlightLevel(bool? matchesCodeRao) =>
+        matchesCodeRao switch
+        {
+            true => Shared.FieldMatchLevel.Exact,
+            false => Shared.FieldMatchLevel.Mismatch,
+            null => null
+        };
+
     private void WriteForm13Block(
         Operation41PairingDto op,
         int startCol,
-        IReadOnlyDictionary<Pairing13To16Field, bool>? fieldMatches,
-        bool? aggregateStateMatch)
+        IReadOnlyDictionary<Pairing13To16Field, Shared.FieldMatchLevel>? fieldLevels,
+        Shared.FieldMatchLevel? aggregateStateLevel)
     {
         var c = WriteInfoBlock(op, startCol);
         void WriteDate(int col, string? value) => Worksheet.Cells[CurrentRow, col].Value = ConvertToExcelDate(value, Worksheet, CurrentRow, col);
@@ -834,21 +865,21 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackNumber);
         Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.CodeRao);
 
-        if (aggregateStateMatch is bool aggMatch)
+        if (aggregateStateLevel is Shared.FieldMatchLevel aggLevel)
         {
-            ApplyPairingComparisonCellFill(CurrentRow, aggregateStateCol, aggMatch);
+            ApplyPairingComparisonCellFill(CurrentRow, aggregateStateCol, aggLevel);
         }
 
-        if (fieldMatches is null)
+        if (fieldLevels is null)
         {
             return;
         }
 
-        foreach (var (field, matched) in fieldMatches)
+        foreach (var (field, level) in fieldLevels)
         {
             if (GetForm13FieldOffset(field) is int offset)
             {
-                ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, matched);
+                ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, level);
             }
         }
     }
@@ -888,12 +919,14 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         foreach (var row in OrderForExport(unpaired))
         {
             _form13ClosestMatchHighlights.TryGetValue(row.Id, out var closest);
-            WriteForm13Block(row, 1, closest?.FieldMatches, closest?.AggregateStateMatchesCodeRao);
+            WriteForm13Block(row, 1, closest?.FieldLevels, ToAggregateStateHighlightLevel(closest?.AggregateStateMatchesCodeRao));
             Worksheet.Cells[CurrentRow, Layout13.SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
 
             if (closest is not null)
             {
-                WriteForm13Block(closest.Candidate, Layout13.ClosestStartCol, closest.FieldMatches, closest.AggregateStateMatchesCodeRao);
+                WriteConfidenceCell(Layout13.ConfidenceCol, closest.ConfidencePercent);
+                WriteForm13Block(closest.Candidate, Layout13.ClosestStartCol, closest.FieldLevels,
+                    ToAggregateStateHighlightLevel(closest.AggregateStateMatchesCodeRao));
             }
 
             CurrentRow++;
@@ -909,8 +942,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     private void WriteForm14Block(
         Operation41PairingDto op,
         int startCol,
-        IReadOnlyDictionary<Pairing14To16Field, bool>? fieldMatches,
-        bool? aggregateStateMatch)
+        IReadOnlyDictionary<Pairing14To16Field, Shared.FieldMatchLevel>? fieldLevels,
+        Shared.FieldMatchLevel? aggregateStateLevel)
     {
         var c = WriteInfoBlock(op, startCol);
         void WriteDate(int col, string? value) => Worksheet.Cells[CurrentRow, col].Value = ConvertToExcelDate(value, Worksheet, CurrentRow, col);
@@ -934,21 +967,21 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackNumber);
         Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.CodeRao);
 
-        if (aggregateStateMatch is bool aggMatch)
+        if (aggregateStateLevel is Shared.FieldMatchLevel aggLevel)
         {
-            ApplyPairingComparisonCellFill(CurrentRow, aggregateStateCol, aggMatch);
+            ApplyPairingComparisonCellFill(CurrentRow, aggregateStateCol, aggLevel);
         }
 
-        if (fieldMatches is null)
+        if (fieldLevels is null)
         {
             return;
         }
 
-        foreach (var (field, matched) in fieldMatches)
+        foreach (var (field, level) in fieldLevels)
         {
             if (GetForm14FieldOffset(field) is int offset)
             {
-                ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, matched);
+                ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, level);
             }
         }
     }
@@ -990,12 +1023,14 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         foreach (var row in OrderForExport(unpaired))
         {
             _form14ClosestMatchHighlights.TryGetValue(row.Id, out var closest);
-            WriteForm14Block(row, 1, closest?.FieldMatches, closest?.AggregateStateMatchesCodeRao);
+            WriteForm14Block(row, 1, closest?.FieldLevels, ToAggregateStateHighlightLevel(closest?.AggregateStateMatchesCodeRao));
             Worksheet.Cells[CurrentRow, Layout14.SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
 
             if (closest is not null)
             {
-                WriteForm14Block(closest.Candidate, Layout14.ClosestStartCol, closest.FieldMatches, closest.AggregateStateMatchesCodeRao);
+                WriteConfidenceCell(Layout14.ConfidenceCol, closest.ConfidencePercent);
+                WriteForm14Block(closest.Candidate, Layout14.ClosestStartCol, closest.FieldLevels,
+                    ToAggregateStateHighlightLevel(closest.AggregateStateMatchesCodeRao));
             }
 
             CurrentRow++;
@@ -1038,34 +1073,34 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
         switch (highlight.Profile)
         {
-            case Form16MatchProfile.Form12 when highlight.Matches12 is not null:
-                foreach (var (field, matched) in highlight.Matches12)
+            case Form16MatchProfile.Form12 when highlight.Levels12 is not null:
+                foreach (var (field, level) in highlight.Levels12)
                 {
                     if (GetForm16Form12FieldOffset(field) is int offset)
                     {
-                        ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, matched);
+                        ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, level);
                     }
                 }
 
                 break;
 
-            case Form16MatchProfile.Form13 when highlight.Matches13 is not null:
-                foreach (var (field, matched) in highlight.Matches13)
+            case Form16MatchProfile.Form13 when highlight.Levels13 is not null:
+                foreach (var (field, level) in highlight.Levels13)
                 {
                     if (GetForm16Form13FieldOffset(field) is int offset)
                     {
-                        ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, matched);
+                        ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, level);
                     }
                 }
 
                 break;
 
-            case Form16MatchProfile.Form14 when highlight.Matches14 is not null:
-                foreach (var (field, matched) in highlight.Matches14)
+            case Form16MatchProfile.Form14 when highlight.Levels14 is not null:
+                foreach (var (field, level) in highlight.Levels14)
                 {
                     if (GetForm16Form14FieldOffset(field) is int offset)
                     {
-                        ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, matched);
+                        ApplyPairingComparisonCellFill(CurrentRow, startCol + offset, level);
                     }
                 }
 
@@ -1073,9 +1108,9 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         }
 
         // Для профилей 1.3/1.4 совпадение агрегатного состояния важнее формального совпадения кода РАО.
-        if (highlight.AggregateStateMatchesCodeRao is bool aggMatch)
+        if (ToAggregateStateHighlightLevel(highlight.AggregateStateMatchesCodeRao) is { } codeRaoLevel)
         {
-            ApplyPairingComparisonCellFill(CurrentRow, codeRaoCol, aggMatch);
+            ApplyPairingComparisonCellFill(CurrentRow, codeRaoCol, codeRaoLevel);
         }
     }
 
@@ -1159,6 +1194,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
             if (highlight is not null)
             {
+                WriteConfidenceCell(Layout16.ConfidenceCol, highlight.ConfidencePercent);
                 WriteForm16Block(highlight.Candidate, Layout16.ClosestStartCol, highlight);
             }
 
@@ -1171,6 +1207,24 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     #endregion
 
     #region Common helpers
+
+    private void WriteConfidenceCell(int confidenceCol, int confidencePercent)
+    {
+        var cell = Worksheet.Cells[CurrentRow, confidenceCol];
+        cell.Value = confidencePercent;
+        cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        cell.Style.Font.Bold = true;
+        cell.Style.Fill.SetBackground(
+            ConfidenceFill(confidencePercent),
+            ExcelFillStyle.Solid);
+    }
+
+    private static Color ConfidenceFill(int percent) =>
+        percent >= 80
+            ? PairingFieldMatchFill
+            : percent >= 50
+                ? PairingFieldNearFill
+                : PairingFieldMismatchFill;
 
     private static readonly CustomReportsComparer OrgRegNoComparer = new();
 
@@ -1186,13 +1240,28 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             .ThenBy(op => op.NumberInOrder)
             .ThenBy(op => op.Id);
 
-    private static void ApplyPairingComparisonCellFill(ExcelWorksheet worksheet, int row, int column, bool matches) =>
+    private static void ApplyPairingComparisonCellFill(ExcelWorksheet worksheet, int row, int column, Shared.FieldMatchLevel level) =>
         worksheet.Cells[row, column].Style.Fill.SetBackground(
-            matches ? PairingFieldMatchFill : PairingFieldMismatchFill,
+            FillForMatchLevel(level),
             ExcelFillStyle.Solid);
+
+    private void ApplyPairingComparisonCellFill(int row, int column, Shared.FieldMatchLevel level) =>
+        ApplyPairingComparisonCellFill(Worksheet, row, column, level);
+
+    private static void ApplyPairingComparisonCellFill(ExcelWorksheet worksheet, int row, int column, bool matches) =>
+        ApplyPairingComparisonCellFill(worksheet, row, column,
+            matches ? Shared.FieldMatchLevel.Exact : Shared.FieldMatchLevel.Mismatch);
 
     private void ApplyPairingComparisonCellFill(int row, int column, bool matches) =>
         ApplyPairingComparisonCellFill(Worksheet, row, column, matches);
+
+    private static Color FillForMatchLevel(Shared.FieldMatchLevel level) =>
+        level switch
+        {
+            Shared.FieldMatchLevel.Exact => PairingFieldMatchFill,
+            Shared.FieldMatchLevel.Near => PairingFieldNearFill,
+            _ => PairingFieldMismatchFill
+        };
 
     #endregion
 }
