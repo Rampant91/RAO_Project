@@ -53,6 +53,10 @@ public class NetworkUpdateInstaller
                 "Текущая установка совпадает с папкой релиза на шаре. Обновление не требуется / невозможно.");
         }
 
+        // Пока основное приложение ещё работает — подтянуть updater с шары
+        // (файл не занят). Дальше в Temp уйдёт уже новая версия.
+        TrySyncUpdaterFromReleaseDirectory(sourceDir);
+
         Directory.CreateDirectory(NetworkUpdatePaths.UpdateMetaDirectory);
         var staging = NetworkUpdatePaths.StagingDirectory;
         if (Directory.Exists(staging))
@@ -93,6 +97,78 @@ public class NetworkUpdateInstaller
         WritePending(new PendingUpdateAction { Mode = "rollback" });
         WriteRestartArgs();
         LaunchUpdaterAndExit();
+    }
+
+    /// <summary>
+    /// Копирует data\Updater из папки релиза на шаре в локальную установку.
+    /// Безопасно при работающем Client_App (updater не запущен).
+    /// Нужно и для штатного самообновления, и для уже выложенных сборок без него.
+    /// </summary>
+    public bool TrySyncUpdaterFromReleaseDirectory(string releaseDirectory)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(releaseDirectory) || !Directory.Exists(releaseDirectory))
+            {
+                return false;
+            }
+
+            var remoteUpdaterDir = Path.Combine(
+                releaseDirectory,
+                NetworkUpdatePaths.DataFolderName,
+                NetworkUpdatePaths.UpdaterFolderName);
+            if (!Directory.Exists(remoteUpdaterDir))
+            {
+                return false;
+            }
+
+            var remoteExe = Path.Combine(remoteUpdaterDir, NetworkUpdatePaths.UpdaterExeName);
+            if (!File.Exists(remoteExe))
+            {
+                return false;
+            }
+
+            var localDir = NetworkUpdatePaths.UpdaterDirectory;
+            Directory.CreateDirectory(localDir);
+
+            var changed = false;
+            foreach (var remoteFile in Directory.GetFiles(remoteUpdaterDir, "MpzfUpdater*"))
+            {
+                var name = Path.GetFileName(remoteFile);
+                var localFile = Path.Combine(localDir, name);
+                if (FilesLookSame(remoteFile, localFile))
+                {
+                    continue;
+                }
+
+                File.Copy(remoteFile, localFile, overwrite: true);
+                changed = true;
+            }
+
+            if (changed)
+            {
+                System.Diagnostics.Debug.WriteLine($"Synced updater from: {remoteUpdaterDir}");
+            }
+
+            return changed;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"TrySyncUpdaterFromReleaseDirectory failed: {ex.Message}");
+            return false;
+        }
+    }
+
+    private static bool FilesLookSame(string pathA, string pathB)
+    {
+        if (!File.Exists(pathB))
+        {
+            return false;
+        }
+
+        var a = new FileInfo(pathA);
+        var b = new FileInfo(pathB);
+        return a.Length == b.Length && a.LastWriteTimeUtc == b.LastWriteTimeUtc;
     }
 
     private static void WritePending(PendingUpdateAction pending)
@@ -162,14 +238,26 @@ public class NetworkUpdateInstaller
         });
     }
 
+    /// <summary>
+    /// Копирование в staging. MpzfUpdater* в корне дистрибутива пропускаем (legacy),
+    /// в data\Updater — копируем, чтобы updater обновлялся вместе с программой.
+    /// </summary>
     public static void CopyDirectory(string sourceDir, string destDir, CancellationToken cancellationToken = default)
     {
         Directory.CreateDirectory(destDir);
+        var sourceFolderName = Path.GetFileName(
+            sourceDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+        var isUpdaterFolder = string.Equals(
+            sourceFolderName,
+            NetworkUpdatePaths.UpdaterFolderName,
+            StringComparison.OrdinalIgnoreCase);
+
         foreach (var file in Directory.GetFiles(sourceDir))
         {
             cancellationToken.ThrowIfCancellationRequested();
             var fileName = Path.GetFileName(file);
-            if (fileName.StartsWith("MpzfUpdater", StringComparison.OrdinalIgnoreCase))
+            if (!isUpdaterFolder
+                && fileName.StartsWith("MpzfUpdater", StringComparison.OrdinalIgnoreCase))
             {
                 continue;
             }

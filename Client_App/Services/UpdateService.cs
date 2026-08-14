@@ -30,6 +30,13 @@ public class UpdateService
     {
         try
         {
+            // Updater можно подтянуть при каждом старте (дёшево, без диалога),
+            // даже если полная проверка обновлений отложена на сутки.
+            if (isNoraoMode)
+            {
+                TrySyncUpdaterFromLatestQuietly();
+            }
+
             if (!ShouldCheckForUpdates())
             {
                 return;
@@ -208,6 +215,18 @@ public class UpdateService
       return;
     }
 
+    // После перехода на новую Client_App (даже если updater раньше не обновлялся):
+    // подтянуть MpzfUpdater с шары без полного обновления программы.
+    try
+    {
+      var releaseDir = NetworkUpdatePaths.GetReleaseDirectory(_networkRoot, release);
+      _installer.TrySyncUpdaterFromReleaseDirectory(releaseDir);
+    }
+    catch (Exception ex)
+    {
+      System.Diagnostics.Debug.WriteLine($"Updater sync skipped: {ex.Message}");
+    }
+
     MarkUpdateCheckCompleted();
 
     // Пустой state + локальные файлы уже = latest → зафиксировать версию без диалога
@@ -279,6 +298,38 @@ public class UpdateService
   private void MarkUpdateCheckCompleted()
   {
     _prefsStore.MarkUpdateCheckCompleted();
+  }
+
+  /// <summary>
+  /// Тихая синхронизация data\Updater с latest на шаре (без диалогов).
+  /// </summary>
+  private void TrySyncUpdaterFromLatestQuietly()
+  {
+    try
+    {
+      if (!NetworkUpdatePaths.IsNetworkRootAccessible(out var networkRoot, out _))
+      {
+        return;
+      }
+
+      if (NetworkUpdatePaths.IsRunningFromNetworkDistribution(networkRoot))
+      {
+        return;
+      }
+
+      var release = _networkChecker.TryReadLatest(networkRoot);
+      if (release == null)
+      {
+        return;
+      }
+
+      var releaseDir = NetworkUpdatePaths.GetReleaseDirectory(networkRoot, release);
+      _installer.TrySyncUpdaterFromReleaseDirectory(releaseDir);
+    }
+    catch (Exception ex)
+    {
+      System.Diagnostics.Debug.WriteLine($"Quiet updater sync failed: {ex.Message}");
+    }
   }
 
   private static async Task ShowUpdateNotificationDialog(UpdateInfo updateInfo)
