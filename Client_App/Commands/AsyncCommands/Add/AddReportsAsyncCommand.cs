@@ -19,11 +19,13 @@ using Client_App.ViewModels.Forms.Forms4;
 using Client_App.ViewModels.Forms.Forms5;
 using Client_App.Views.Forms.Forms4;
 using Client_App.Views.Forms.Forms5;
+using Client_App.ViewModels.Forms.Forms3;
+using Client_App.Views.Forms.Forms3;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
 /// <summary>
-/// Создать и открыть новое окно формы организации (1.0, 2.0, 4.0, 5.0).
+/// Создать и открыть новое окно формы организации (1.0, 2.0, 3.0, 4.0, 5.0).
 /// </summary>
 public class AddReportsAsyncCommand : BaseAsyncCommand
 {
@@ -37,7 +39,7 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
 
         bool isSeparateDivision = true;
 
-        if (mainWindowVM.SelectedReportTypeToString is "1.0" or "2.0")
+        if (mainWindowVM.SelectedReportTypeToString is "1.0" or "2.0" or "3.0")
         {
             #region AskIfTheOrganizationIsSeparateDivision
 
@@ -99,6 +101,15 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                     form20VM.IsSeparateDivision = isSeparateDivision;
                     var window = new Form_20(form20VM) { DataContext = form20VM };
                     await new SaveReportAsyncCommand(form20VM).AsyncExecute(null);
+                    await window.ShowDialog(mainWindow);
+                    break;
+                }
+            case "3.0":
+                {
+                    var form30VM = new Form_30VM(ReportsStorage.LocalReports);
+                    form30VM.IsSeparateDivision = isSeparateDivision;
+                    var window = new Form_30(form30VM) { DataContext = form30VM };
+                    await new SaveReportAsyncCommand(form30VM).AsyncExecute(null);
                     await window.ShowDialog(mainWindow);
                     break;
                 }

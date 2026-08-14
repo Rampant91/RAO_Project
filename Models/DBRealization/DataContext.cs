@@ -11,6 +11,7 @@ using Models.Forms.Form4;
 using Models.Forms.Form5;
 using Models.Passports;
 using Models.StoragePoints;
+using Models.Forms.Form3;
 
 namespace Models.DBRealization;
 
@@ -70,6 +71,14 @@ public class DataContext : DbContext
     public DbSet<Form211> form_211 { get; set; }
     public DbSet<Form212> form_212 { get; set; }
 
+    public DbSet<Form30> form_30 { get; set; }
+    public DbSet<Form31> form_31 { get; set; }
+    public DbSet<ExportedZriOziiiInfo> form_31_table { get; set; }
+    public DbSet<Form32> form_32 { get; set; }
+    public DbSet<ExportedZriInfo> form_32_table_1 { get; set; }
+    public DbSet<ContainerInfo> form_32_table_2 { get; set; }
+    public DbSet<Identificator> form_32_table_3 { get; set; }
+
     public  DbSet<Form40> form_40 { get; set; }
     public DbSet<Form41> form_41 { get; set; }
 
@@ -125,6 +134,14 @@ public class DataContext : DbContext
 
         form_40.Load();
         form_41.Load();
+
+        form_30.Load();
+        form_31.Load();
+        form_31_table.Load();
+        form_32.Load();
+        form_32_table_1.Load();
+        form_32_table_2.Load();
+        form_32_table_3.Load();
 
         form_50.Load();
         form_51.Load();
@@ -183,6 +200,14 @@ public class DataContext : DbContext
             await form_210.LoadAsync();
             await form_211.LoadAsync();
             await form_212.LoadAsync();
+
+            await form_30.LoadAsync();
+            await form_31.LoadAsync();
+            await form_31_table.LoadAsync();
+            await form_32.LoadAsync();
+            await form_32_table_1.LoadAsync();
+            await form_32_table_2.LoadAsync();
+            await form_32_table_3.LoadAsync();
 
             await form_40.LoadAsync();
             await form_41.LoadAsync();

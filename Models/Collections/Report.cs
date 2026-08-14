@@ -18,6 +18,7 @@ using Models.Forms.Form2;
 using Models.Interfaces;
 using Models.Forms.Form4;
 using Models.Forms.Form5;
+using Models.Forms.Form3;
 
 namespace Models.Collections;
 
@@ -107,8 +108,19 @@ public class Report : IKey, IDataGridColumn
         Rows212 = new ObservableCollectionWithItemPropertyChanged<Form212>();
         Rows212.CollectionChanged += CollectionChanged212;
 
+        Rows30 = new ObservableCollectionWithItemPropertyChanged<Form30>();
+        Rows30.CollectionChanged += CollectionChanged30;
+
+        Rows31One = new Form31(); // Форма 3.1 представляет собой единичный набор данных и 1 таблица.
+                                  // Чтобы не дублировать эти данные и не выделять под них память в классе Report, форма 3.1 представляет собой единиичный набор данных,
+                                  // к которому прикрепляется таблица
+
+        Rows32One = new Form32(); // Форма 3.2 представляет собой единичный набор данных и 3 таблицы.
+                                  // Чтобы не дублировать эти данные и не выделять под них память в классе Report, форма 3.2 представляет собой единиичный набор данных,
+                                  // к которому прикрепляется 3 таблицы
+
         Rows40 = new ObservableCollectionWithItemPropertyChanged<Form40>();
-        Rows40.CollectionChanged += CollectionChanged41;
+        Rows40.CollectionChanged += CollectionChanged40;
 
         Rows41 = new ObservableCollectionWithItemPropertyChanged<Form41>();
         Rows41.CollectionChanged += CollectionChanged41;
@@ -1957,6 +1969,20 @@ public class Report : IKey, IDataGridColumn
                     Rows20[0].Okpo.PropertyChanged -= OkpoRep_ValueChanged;
                     Rows20[0].Okpo.PropertyChanged += OkpoRep_ValueChanged;
                     break;
+                case "3.0" when Rows30[1].Okpo_DB is "" or "-":
+                    tmp = Rows30[0].Okpo;
+                    tmp.PropertyChanged -= OkpoRep_ValueChanged;
+                    tmp.PropertyChanged += OkpoRep_ValueChanged;
+                    Rows30[1].Okpo.PropertyChanged -= OkpoRep_ValueChanged;
+                    Rows30[1].Okpo.PropertyChanged += OkpoRep_ValueChanged;
+                    break;
+                case "3.0":
+                    tmp = Rows30[1].Okpo;
+                    tmp.PropertyChanged -= OkpoRep_ValueChanged;
+                    tmp.PropertyChanged += OkpoRep_ValueChanged;
+                    Rows30[0].Okpo.PropertyChanged -= OkpoRep_ValueChanged;
+                    Rows30[0].Okpo.PropertyChanged += OkpoRep_ValueChanged;
+                    break;
                 default: 
                     return new RamAccess<string>() { Value = _OkpoRep };
             }
@@ -2021,7 +2047,22 @@ public class Report : IKey, IDataGridColumn
                     tmp.PropertyChanged -= RegNoRep_ValueChanged;
                     tmp.PropertyChanged += RegNoRep_ValueChanged;
                     return tmp;
-                }
+                    }
+                case "3.0":
+                    {
+                        RamAccess<string> tmp;
+                        if ((Rows30[1].RegNo.Value != "" || Rows30[1].Okpo_DB == "-") && Rows30[1].Okpo.Value != "")
+                        {
+                            tmp = Rows30[1].RegNo;
+                        }
+                        else
+                        {
+                            tmp = Rows30[0].RegNo;
+                        }
+                        tmp.PropertyChanged -= RegNoRep_ValueChanged;
+                        tmp.PropertyChanged += RegNoRep_ValueChanged;
+                        return tmp;
+                    }
                 default: return new RamAccess<string>() { Value = _RegNoRep};
             }
         }
@@ -2095,7 +2136,25 @@ public class Report : IKey, IDataGridColumn
                     Rows20[0].ShortJurLico.PropertyChanged -= ShortJurLicoRep_ValueChanged;
                     Rows20[0].ShortJurLico.PropertyChanged += ShortJurLicoRep_ValueChanged;
                     break;
-                }
+                    }
+                case "3.0" when Rows30[1].Okpo_DB is "" or "-":
+                    {
+                        tmp = Rows30[0].ShortJurLico;
+                        tmp.PropertyChanged -= ShortJurLicoRep_ValueChanged;
+                        tmp.PropertyChanged += ShortJurLicoRep_ValueChanged;
+                        Rows30[1].ShortJurLico.PropertyChanged -= ShortJurLicoRep_ValueChanged;
+                        Rows30[1].ShortJurLico.PropertyChanged += ShortJurLicoRep_ValueChanged;
+                        break;
+                    }
+                case "3.0":
+                    {
+                        tmp = Rows30[1].ShortJurLico;
+                        tmp.PropertyChanged -= ShortJurLicoRep_ValueChanged;
+                        tmp.PropertyChanged += ShortJurLicoRep_ValueChanged;
+                        Rows30[0].ShortJurLico.PropertyChanged -= ShortJurLicoRep_ValueChanged;
+                        Rows30[0].ShortJurLico.PropertyChanged += ShortJurLicoRep_ValueChanged;
+                        break;
+                    }
             }
             return tmp;
         }
@@ -2837,6 +2896,70 @@ public class Report : IKey, IDataGridColumn
     }
 
     #endregion 
+    #region  Rows30
+
+    ObservableCollectionWithItemPropertyChanged<Form30> Rows30_DB;
+
+    public virtual ObservableCollectionWithItemPropertyChanged<Form30> Rows30
+    {
+        get => Rows30_DB;
+        set
+        {
+            Rows30_DB = value;
+            OnPropertyChanged(nameof(Rows30));
+        }
+    }
+
+    private void CollectionChanged30(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(RegNoRep));
+        OnPropertyChanged(nameof(OkpoRep));
+        OnPropertyChanged(nameof(ShortJurLicoRep));
+        OnPropertyChanged(nameof(Rows30));
+    }
+
+    #endregion
+
+    #region Rows31One_DB
+
+    Form31 Rows31One_DB;
+
+    public virtual Form31 Rows31One
+    {
+        get => Rows31One_DB;
+        set
+        {
+            Rows31One_DB = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void CollectionChanged31(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(Rows31One));
+    }
+
+    #endregion
+
+    #region Rows32One_DB
+    Form32 Rows32One_DB;
+
+    public virtual Form32 Rows32One
+    {
+        get => Rows32One_DB;
+        set
+        {
+            Rows32One_DB = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private void CollectionChanged32(object sender, NotifyCollectionChangedEventArgs args)
+    {
+        OnPropertyChanged(nameof(Rows32One));
+    }
+
+    #endregion
 
     #region Rows40
 
@@ -3128,6 +3251,9 @@ public class Report : IKey, IDataGridColumn
                 "2.10" => Rows210,
                 "2.11" => Rows211,
                 "2.12" => Rows212,
+                "3.0" => Rows30,
+                "3.1" => new ObservableCollectionWithItemPropertyChanged<Form31>() { Rows31One },
+                "3.2" => new ObservableCollectionWithItemPropertyChanged<Form32>() { Rows32One },
                 "4.0" => Rows40,
                 "4.1" => Rows41,
                 "5.0" => Rows50,

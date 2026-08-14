@@ -53,6 +53,8 @@ public class DataGridDoubleClickOpenFormBehavior : Behavior<DataGrid>
                     command = new NewChangeReportsAsyncCommand(mainWindowVM.Forms1TabControlVM);
                 else if (reports.Master_DB.FormNum_DB.Split('.')[0] is "2")
                     command = new NewChangeReportsAsyncCommand(mainWindowVM.Forms2TabControlVM);
+                else if (reports.Master_DB.FormNum_DB.Split('.')[0] is "3")
+                    command = new NewChangeReportsAsyncCommand(mainWindowVM.Forms3TabControlVM);
                 else if (reports.Master_DB.FormNum_DB.Split('.')[0] is "4")
                     command = new NewChangeReportsAsyncCommand(mainWindowVM.Forms4TabControlVM);
                 else if (reports.Master_DB.FormNum_DB.Split('.')[0] is "5")
@@ -70,6 +72,8 @@ public class DataGridDoubleClickOpenFormBehavior : Behavior<DataGrid>
                     command = Form2InterfaceFlags.UseNewInterface
                         ? new NewChangeReportAsyncCommand(mainWindowVM.Forms2TabControlVM)
                         : new ChangeFormAsyncCommand();
+                if (report.FormNum_DB.Split('.')[0] is "3")
+                    command = new NewChangeReportAsyncCommand(mainWindowVM.Forms3TabControlVM);
                 else if (report.FormNum_DB.Split('.')[0] is "4")
                     command = new NewChangeReportAsyncCommand(mainWindowVM.Forms4TabControlVM);
                 else if (report.FormNum_DB.Split('.')[0] is "5")

@@ -1,652 +1,1179 @@
-﻿namespace Models;
-
-//[Serializable]
-//[Attributes.Form_Class("Форма 3.0: Титульный лист отчета организации-экспортера радиоактивных источников 1 и 2 категории")]
-//public class Form30 : Abstracts.Form
-//{
-//    public Form30() : base()
-//    {
-//        //FormNum.Value = "30";
-//        //NumberOfFields.Value = 19;
-//    }
-
-//    [Attributes.Form_Property("Форма")]
-//    public override bool Object_Validation()
-//    {
-//        return false;
-//    }
-
-//    //RegNo property
-//    public int? RegNoId { get; set; }
-//    [Attributes.Form_Property("Рег. №")]
-//    public virtual RamAccess<string> RegNo
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(RegNo));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(RegNo), value);
-//            }
-//            OnPropertyChanged(nameof(RegNo));
-//        }
-//    }
-
-//    //RegNo property
-
-//    //OrganUprav property
-//    public int? OrganUpravId { get; set; }
-//    [Attributes.Form_Property("Орган управления")]
-//    public virtual RamAccess<string> OrganUprav
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(OrganUprav));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(OrganUprav), value);
-//            }
-//            OnPropertyChanged(nameof(OrganUprav));
-//        }
-//    }
-
-//    //OrganUprav property
-
-//    //SubjectRF property
-//    public int? SubjectRFId { get; set; }
-//    [Attributes.Form_Property("Субъект РФ")]
-//    public virtual RamAccess<string> SubjectRF
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(SubjectRF));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(SubjectRF), value);
-//            }
-//            OnPropertyChanged(nameof(SubjectRF));
-//        }
-//    }
-
-//    //SubjectRF property
-
-//    //JurLico property
-//    public int? JurLicoId { get; set; }
-//    [Attributes.Form_Property("Юр. лицо")]
-//    public virtual RamAccess<string> JurLico
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(JurLico));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(JurLico), value);
-//            }
-//            OnPropertyChanged(nameof(JurLico));
-//        }
-//    }
-
-//    //JurLico property
-
-//    //ShortJurLico property
-//    public int? ShortJurLicoId { get; set; }
-//    [Attributes.Form_Property("Краткое наименование юр. лица")]
-//    public virtual RamAccess<string> ShortJurLico
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(ShortJurLico));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(ShortJurLico), value);
-//            }
-//            OnPropertyChanged(nameof(ShortJurLico));
-//        }
-//    }
-
-//    //ShortJurLico property
-
-//    //JurLicoAddress property
-//    public int? JurLicoAddressId { get; set; }
-//    [Attributes.Form_Property("Адрес юр. лица")]
-//    public virtual RamAccess<string> JurLicoAddress
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(JurLicoAddress));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(JurLicoAddress), value);
-//            }
-//            OnPropertyChanged(nameof(JurLicoAddress));
-//        }
-//    }
-
-//    //JurLicoAddress property
-
-//    //JurLicoFactAddress property
-//    public int? JurLicoFactAddressId { get; set; }
-//    [Attributes.Form_Property("Фактический адрес юр. лица")]
-//    public virtual RamAccess<string> JurLicoFactAddress
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(JurLicoFactAddress));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(JurLicoFactAddress), value);
-//            }
-//            OnPropertyChanged(nameof(JurLicoFactAddress));
-//        }
-//    }
-
-//    //JurLicoFactAddress property
-
-//    //GradeFIO property
-//    public int? GradeFIOId { get; set; }
-//    [Attributes.Form_Property("ФИО, должность")]
-//    public virtual RamAccess<string> GradeFIO
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(GradeFIO));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(GradeFIO), value);
-//            }
-//            OnPropertyChanged(nameof(GradeFIO));
-//        }
-//    }
-
-//    //GradeFIO property
-
-//    //Telephone property
-//    public int? TelephoneId { get; set; }
-//    [Attributes.Form_Property("Телефон")]
-//    public virtual RamAccess<string> Telephone
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(Telephone));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(Telephone), value);
-//            }
-//            OnPropertyChanged(nameof(Telephone));
-//        }
-//    }
-
-//    //Telephone property
-
-//    //Fax property
-//    public int? FaxId { get; set; }
-//    [Attributes.Form_Property("Факс")]
-//    public virtual RamAccess<string> Fax
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(Fax));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(Fax), value);
-//            }
-//            OnPropertyChanged(nameof(Fax));
-//        }
-//    }
-
-//    //Fax property
-
-//    //Email property
-//    public int? EmailId { get; set; }
-//    [Attributes.Form_Property("Эл. почта")]
-//    public virtual RamAccess<string> Email
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(Email));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(Email), value);
-//            }
-//            OnPropertyChanged(nameof(Email));
-//        }
-//    }
-
-//    //Email property
-
-//    //Okpo property
-//    public int? OkpoId { get; set; }
-//    [Attributes.Form_Property("ОКПО")]
-//    public virtual RamAccess<string> Okpo
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(Okpo));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(Okpo), value);
-//            }
-//            OnPropertyChanged(nameof(Okpo));
-//        }
-//    }
-//    private bool Okpo_Validation(RamAccess<string> value)
-//    {
-//        value.ClearErrors();
-//        if ((value.Value.Length != 8) && (value.Value.Length != 14))
-//        {
-//            value.AddError("Недопустимое значение"); return false;
-//        }
-//        Regex mask = new Regex("^[0123456789]{8}([0123456789_][0123456789]{5}){0,1}$");
-//        if (!mask.IsMatch(value.Value))
-//        {
-//            value.AddError("Недопустимое значение"); return false;
-//        }
-//        return true;
-//    }
-//    //Okpo property
-
-//    //Okved property
-//    public int? OkvedId { get; set; }
-//    [Attributes.Form_Property("ОКВЭД")]
-//    public virtual RamAccess<string> Okved
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(Okved));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(Okved), value);
-//            }
-//            OnPropertyChanged(nameof(Okved));
-//        }
-//    }
-
-//    private bool Okved_Validation(RamAccess<string> value)
-//    {
-//        value.ClearErrors();
-//        Regex ex = new Regex("^[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}$");
-//        if (!ex.IsMatch(value.Value))
-//        {
-//            value.AddError("Недопустимое значение");
-//            return false;
-//        }
-//        return true;
-//    }
-//    //Okved property
-
-//    //Okogu property
-//    public int? OkoguId { get; set; }
-//    [Attributes.Form_Property("ОКОГУ")]
-//    public virtual RamAccess<string> Okogu
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(Okogu));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(Okogu), value);
-//            }
-//            OnPropertyChanged(nameof(Okogu));
-//        }
-//    }
-//    private bool Okogu_Validation(RamAccess<string> value)
-//    {
-//        value.ClearErrors();
-//        Regex ex = new Regex("^[0-9]{5}$");
-//        if (!ex.IsMatch(value.Value))
-//        {
-//            value.AddError("Недопустимое значение"); return false;
-//        }
-//        return true;
-//    }
-//    //Okogu property
-
-//    //Oktmo property
-//    public int? OktmoId { get; set; }
-//    [Attributes.Form_Property("ОКТМО")]
-//    public virtual RamAccess<string> Oktmo
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(Oktmo));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(Oktmo), value);
-//            }
-//            OnPropertyChanged(nameof(Oktmo));
-//        }
-//    }
-
-//    private bool Oktmo_Validation(RamAccess<string> value)
-//    {
-//        value.ClearErrors();
-//        Regex ex = new Regex("^[0-9]{11}$");
-//        if (!ex.IsMatch(value.Value))
-//        {
-//            value.AddError("Недопустимое значение"); return false;
-//        }
-//        return true;
-//    }
-//    //Oktmo property
-
-//    //Inn property
-//    public int? InnId { get; set; }
-//    [Attributes.Form_Property("ИНН")]
-//    public virtual RamAccess<string> Inn
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(Inn));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(Inn), value);
-//            }
-//            OnPropertyChanged(nameof(Inn));
-//        }
-//    }
-
-//    private bool Inn_Validation(RamAccess<string> value)
-//    {
-//        value.ClearErrors();
-//        Regex ex = new Regex("[0-9]{10}");
-//        if (!ex.IsMatch(value.Value))
-//        {
-//            value.AddError("Недопустимое значение");
-//        }
-//        return true;
-//    }
-//    //Inn property
-
-//    //Kpp property
-//    public int? KppId { get; set; }
-//    [Attributes.Form_Property("КПП")]
-//    public virtual RamAccess<string> Kpp
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(Kpp));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(Kpp), value);
-//            }
-//            OnPropertyChanged(nameof(Kpp));
-//        }
-//    }
-
-//    private bool Kpp_Validation(RamAccess<string> value)
-//    {
-//        value.ClearErrors();
-//        Regex ex = new Regex("[0-9]{9}");
-//        if (!ex.IsMatch(value.Value))
-//        {
-//            value.AddError("Недопустимое значение"); return false;
-//        }
-//        return true;
-//    }
-//    //Kpp property
-
-//    //Okopf property
-//    public int? OkopfId { get; set; }
-//    [Attributes.Form_Property("ОКОПФ")]
-//    public virtual RamAccess<string> Okopf
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(Okopf));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(Okopf), value);
-//            }
-//            OnPropertyChanged(nameof(Okopf));
-//        }
-//    }
-
-//    private bool Okopf_Validation(RamAccess<string> value)
-//    {
-//        value.ClearErrors();
-//        Regex ex = new Regex("^[0-9]{5}^");
-//        if (!ex.IsMatch(value.Value))
-//        {
-//            value.AddError("Недопустимое значение"); return false;
-//        }
-//        return true;
-//    }
-//    //Okopf property
-
-//    //Okfs property
-//    public int? OkfsId { get; set; }
-//    [Attributes.Form_Property("ОКФС")]
-//    public virtual RamAccess<string> Okfs
-//    {
-//        get
-//        {
-
-//            {
-//                return DataAccess.Get<string>(nameof(Okfs));
-//            }
-
-//            {
-
-//            }
-//        }
-//        set
-//        {
-
-
-//            {
-//                DataAccess.Set(nameof(Okfs), value);
-//            }
-//            OnPropertyChanged(nameof(Okfs));
-//        }
-//    }
-
-//    private bool Okfs_Validation(RamAccess<string> value)
-//    {
-//        value.ClearErrors();
-//        Regex ex = new Regex("^[0-9]{2}$");
-//        if (!ex.IsMatch(value.Value))
-//        {
-//            value.AddError("Недопустимое значение"); return false;
-//        }
-//        return true;
-//    }
-//    //Okfs property
-//}
+﻿using Models.Attributes;
+using Models.Collections;
+using Models.Comparers.FormContent;
+using Models.Forms.DataAccess;
+using Models.Forms.Form2;
+using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+
+namespace Models.Forms.Form3
+{
+    [Serializable]
+    [Form_Class("Форма 3.0: Титульный лист организации")]
+    [Table(name: "form_30")]
+    public partial class Form30 : Form
+    {
+
+        #region Constructor
+
+        public Form30()
+        {
+            FormNum.Value = "3.0";
+        }
+
+        #endregion
+
+        #region Properties
+
+        #region RegNo (2)
+
+        public string RegNo_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "Рег. №")]
+        public RamAccess<string> RegNo
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(RegNo), out var value))
+                {
+                    ((RamAccess<string>)value).ValueWithOutHandlerAndPropChanged = RegNo_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(RegNo_Validation, RegNo_DB);
+                rm.PropertyChanged += RegNoValueChanged;
+                Dictionary.Add(nameof(RegNo), rm);
+                return (RamAccess<string>)Dictionary[nameof(RegNo)];
+            }
+            set
+            {
+                RegNo_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void RegNoValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                RegNo_DB = ((RamAccess<string>)value).Value;
+            }
+        }
+
+        private bool RegNo_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (value.Value == "-")
+            {
+                return true;
+            }
+            if (value.Value.Length != 5)
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            if (!RegNoRegex().IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+
+        //RegNo property
+
+        #endregion
+
+        #region OrganUprav (3)
+
+        public string OrganUprav_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "Орган управления использованием атомной энергии")]
+        public RamAccess<string> OrganUprav
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(OrganUprav), out var value))
+                {
+                    ((RamAccess<string>)value).Value = OrganUprav_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(OrganUprav_Validation, OrganUprav_DB);
+                rm.PropertyChanged += OrganUpravValueChanged;
+                Dictionary.Add(nameof(OrganUprav), rm);
+                return (RamAccess<string>)Dictionary[nameof(OrganUprav)];
+            }
+            set
+            {
+                OrganUprav_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void OrganUpravValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                OrganUprav_DB = ((RamAccess<string>)value).Value;
+            }
+        }
+
+        private bool OrganUprav_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+
+        //OrganUprav property
+
+        #endregion
+
+        #region SubjectRF (4)
+
+        public string SubjectRF_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "Субъект Российской Федерации", "Субъект Российской Федерации")]
+        public RamAccess<string> SubjectRF
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(SubjectRF), out var value))
+                {
+                    ((RamAccess<string>)value).Value = SubjectRF_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(SubjectRF_Validation, SubjectRF_DB);
+                rm.PropertyChanged += SubjectRFValueChanged;
+                Dictionary.Add(nameof(SubjectRF), rm);
+                return (RamAccess<string>)Dictionary[nameof(SubjectRF)];
+            }
+            set
+            {
+                SubjectRF_DB = ParseInnerText(value.Value);
+                OnPropertyChanged();
+            }
+        }
+
+        private void SubjectRFValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                SubjectRF_DB = ParseInnerText(((RamAccess<string>)value).Value);
+            }
+        }
+
+        private bool SubjectRF_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+
+        //SubjectRF property
+
+        #endregion
+
+        #region JurLico (5)
+
+        public string JurLico_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "Наименование юридического лица", "Наименование обособленного подразделения")]
+        public RamAccess<string> JurLico
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(JurLico), out var value))
+                {
+                    ((RamAccess<string>)value).Value = JurLico_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(JurLico_Validation, JurLico_DB);
+                rm.PropertyChanged += JurLicoValueChanged;
+                Dictionary.Add(nameof(JurLico), rm);
+                return (RamAccess<string>)Dictionary[nameof(JurLico)];
+            }
+            set
+            {
+                JurLico_DB = ParseInnerText(value.Value);
+                OnPropertyChanged();
+            }
+        }
+
+        private void JurLicoValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                JurLico_DB = ParseInnerText(((RamAccess<string>)value).Value);
+            }
+        }
+
+        private bool JurLico_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+
+        //JurLico property
+
+        #endregion
+
+        #region ShortJurLico (6)
+
+        public string ShortJurLico_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "Сокращенное наименование", "Сокращенное наименование")]
+        public RamAccess<string> ShortJurLico
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(ShortJurLico), out var value))
+                {
+                    ((RamAccess<string>)value).ValueWithOutHandlerAndPropChanged = ShortJurLico_DB;
+                    return (RamAccess<string>)value;
+                }
+
+                var rm = new RamAccess<string>(ShortJurLico_Validation, ShortJurLico_DB);
+                rm.PropertyChanged += ShortJurLicoValueChanged;
+                Dictionary.Add(nameof(ShortJurLico), rm);
+                return (RamAccess<string>)Dictionary[nameof(ShortJurLico)];
+            }
+            set
+            {
+                ShortJurLico_DB = ParseInnerText(value.Value);
+                OnPropertyChanged();
+            }
+        }
+
+        private void ShortJurLicoValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                ShortJurLico_DB = ParseInnerText(((RamAccess<string>)value).Value);
+            }
+        }
+
+        private bool ShortJurLico_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+
+        //ShortJurLico property
+
+        #endregion
+
+        #region JurLicoAddress (7)
+
+        public string JurLicoAddress_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "Адрес места нахождения юридического лица", "Адрес места нахождения обособленного подразделения")]
+        public RamAccess<string> JurLicoAddress
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(JurLicoAddress), out var value))
+                {
+                    ((RamAccess<string>)value).Value = JurLicoAddress_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(JurLicoAddress_Validation, JurLicoAddress_DB);
+                rm.PropertyChanged += JurLicoAddressValueChanged;
+                Dictionary.Add(nameof(JurLicoAddress), rm);
+                return (RamAccess<string>)Dictionary[nameof(JurLicoAddress)];
+            }
+            set
+            {
+                JurLicoAddress_DB = ParseInnerText(value.Value);
+                OnPropertyChanged();
+            }
+        }
+
+        private void JurLicoAddressValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                JurLicoAddress_DB = ParseInnerText(((RamAccess<string>)value).Value);
+            }
+        }
+
+        private bool JurLicoAddress_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+
+        //JurLicoAddress property
+
+        #endregion
+
+        #region JurLicoFactAddress (8)
+
+        public string JurLicoFactAddress_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "Фактический адрес юр. лица", "Фактический адрес обособленного подразделения")]
+        public RamAccess<string> JurLicoFactAddress
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(JurLicoFactAddress), out var value))
+                {
+                    ((RamAccess<string>)value).Value = JurLicoFactAddress_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(JurLicoFactAddress_Validation, JurLicoFactAddress_DB);
+                rm.PropertyChanged += JurLicoFactAddressValueChanged;
+                Dictionary.Add(nameof(JurLicoFactAddress), rm);
+                return (RamAccess<string>)Dictionary[nameof(JurLicoFactAddress)];
+            }
+            set
+            {
+                JurLicoFactAddress_DB = ParseInnerText(value.Value);
+                OnPropertyChanged();
+            }
+        }
+
+        private void JurLicoFactAddressValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                JurLicoFactAddress_DB = ParseInnerText(((RamAccess<string>)value).Value);
+            }
+        }
+
+        private bool JurLicoFactAddress_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+
+        //JurLicoFactAddress property
+
+        #endregion
+
+        #region GradeFIO (9)
+
+        public string GradeFIO_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "ФИО, должность руководителя", "ФИО, должность руководителя")]
+        public RamAccess<string> GradeFIO
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(GradeFIO), out var value))
+                {
+                    ((RamAccess<string>)value).Value = GradeFIO_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(GradeFIO_Validation, GradeFIO_DB);
+                rm.PropertyChanged += GradeFIOValueChanged;
+                Dictionary.Add(nameof(GradeFIO), rm);
+                return (RamAccess<string>)Dictionary[nameof(GradeFIO)];
+            }
+            set
+            {
+                GradeFIO_DB = ParseInnerText(value.Value);
+                OnPropertyChanged();
+            }
+        }
+
+        private void GradeFIOValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                GradeFIO_DB = ParseInnerText(((RamAccess<string>)value).Value);
+            }
+        }
+
+        private bool GradeFIO_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+
+        //GradeFIO property
+
+        #endregion
+
+        #region Telephone (10)
+
+        public string Telephone_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "Телефон организации", "Телефон организации")]
+        public RamAccess<string> Telephone
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Telephone), out var value))
+                {
+                    ((RamAccess<string>)value).Value = Telephone_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(Telephone_Validation, Telephone_DB);
+                rm.PropertyChanged += TelephoneValueChanged;
+                Dictionary.Add(nameof(Telephone), rm);
+                return (RamAccess<string>)Dictionary[nameof(Telephone)];
+            }
+            set
+            {
+                Telephone_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void TelephoneValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Telephone_DB = ((RamAccess<string>)value).Value;
+            }
+        }
+
+        private bool Telephone_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+
+        //Telephone property
+
+        #endregion
+
+        #region Fax (11)
+
+        public string Fax_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "Факс организации", "Факс организации")]
+        public RamAccess<string> Fax
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Fax), out var value))
+                {
+                    ((RamAccess<string>)value).Value = Fax_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(Fax_Validation, Fax_DB);
+                rm.PropertyChanged += FaxValueChanged;
+                Dictionary.Add(nameof(Fax), rm);
+                return (RamAccess<string>)Dictionary[nameof(Fax)];
+            }
+            set
+            {
+                Fax_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void FaxValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Fax_DB = ((RamAccess<string>)value).Value;
+            }
+        }
+
+        private bool Fax_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+
+        //Fax property
+
+        #endregion
+
+        #region Email (12)
+
+        public string Email_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "Эл. почта организации", "Эл. почта организации")]
+        public RamAccess<string> Email
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Email), out var value))
+                {
+                    ((RamAccess<string>)value).Value = Email_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(Email_Validation, Email_DB);
+                rm.PropertyChanged += EmailValueChanged;
+                Dictionary.Add(nameof(Email), rm);
+                return (RamAccess<string>)Dictionary[nameof(Email)];
+            }
+            set
+            {
+                Email_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void EmailValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Email_DB = ((RamAccess<string>)value).Value;
+            }
+        }
+
+        private bool Email_Validation(RamAccess<string> value)
+        {
+            return true;
+        }
+
+        //Email property
+
+        #endregion
+
+        #region Okpo (13)
+
+        public string Okpo_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "ОКПО", "ОКПО")]
+        public RamAccess<string> Okpo
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Okpo), out var value))
+                {
+                    ((RamAccess<string>)value).ValueWithOutHandlerAndPropChanged = Okpo_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(Okpo_Validation, Okpo_DB);
+                rm.PropertyChanged += OkpoValueChanged;
+                Dictionary.Add(nameof(Okpo), rm);
+                return (RamAccess<string>)Dictionary[nameof(Okpo)];
+            }
+            set
+            {
+                Okpo_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void OkpoValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName != "Value") return;
+
+            var newValue = ((RamAccess<string>)value).Value;
+
+            var validateOthers = (string.IsNullOrEmpty(Okpo_DB) && !string.IsNullOrEmpty(newValue))
+                                 || (string.IsNullOrEmpty(newValue) && !string.IsNullOrEmpty(Okpo_DB));
+
+            Okpo_DB = newValue;
+
+            if (validateOthers)
+            {
+                Okved_Validation(Okved);
+                Okogu_Validation(Okogu);
+                Oktmo_Validation(Oktmo);
+                Inn_Validation(Inn);
+                Kpp_Validation(Kpp);
+                Okopf_Validation(Okopf);
+                Okfs_Validation(Okfs);
+            }
+        }
+
+        private bool Okpo_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            var okpo = value.Value;
+
+            if (Report is null) return true;
+
+            if (Report.Rows30[0].Id == Id
+                && (okpo.Length != 8 && okpo.Length != 14
+                    || !OkpoRegex().IsMatch(okpo))
+                || (Report.Rows30[1].Id == Id
+                    && !string.IsNullOrEmpty(okpo)
+                    && (okpo.Length != 8 && okpo.Length != 14
+                        || !OkpoRegex().IsMatch(okpo))))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+
+        #endregion
+
+        #region Okved (14)
+
+        public string Okved_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "ОКВЭД", "ОКВЭД")]
+        public RamAccess<string> Okved
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Okved), out var value))
+                {
+                    ((RamAccess<string>)value).Value = Okved_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(Okved_Validation, Okved_DB);
+                rm.PropertyChanged += OkvedValueChanged;
+                Dictionary.Add(nameof(Okved), rm);
+                return (RamAccess<string>)Dictionary[nameof(Okved)];
+            }
+            set
+            {
+                Okved_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void OkvedValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Okved_DB = ((RamAccess<string>)value).Value;
+            }
+        }
+
+        private bool Okved_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if (Report != null && Report.Rows30[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (!OkvedRegex().IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+
+        #endregion
+
+        #region Okogu (15)
+
+        public string Okogu_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "ОКОГУ", "ОКОГУ")]
+        public RamAccess<string> Okogu
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Okogu), out var value))
+                {
+                    ((RamAccess<string>)value).Value = Okogu_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(Okogu_Validation, Okogu_DB);
+                rm.PropertyChanged += OkoguValueChanged;
+                Dictionary.Add(nameof(Okogu), rm);
+                return (RamAccess<string>)Dictionary[nameof(Okogu)];
+            }
+            set
+            {
+                Okogu_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void OkoguValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Okogu_DB = ((RamAccess<string>)value).Value;
+            }
+        }
+
+        private bool Okogu_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if (Report != null && Report.Rows30[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (!OkoguRegex().IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+
+        #endregion
+
+        #region Oktmo (16)
+
+        public string Oktmo_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "ОКТМО", "ОКТМО")]
+        public RamAccess<string> Oktmo
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Oktmo), out var value))
+                {
+                    ((RamAccess<string>)value).Value = Oktmo_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(Oktmo_Validation, Oktmo_DB);
+                rm.PropertyChanged += OktmoValueChanged;
+                Dictionary.Add(nameof(Oktmo), rm);
+                return (RamAccess<string>)Dictionary[nameof(Oktmo)];
+            }
+            set
+            {
+                Oktmo_DB = value.Value;
+                OnPropertyChanged(nameof(Oktmo));
+            }
+        }
+
+        private void OktmoValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Oktmo_DB = ((RamAccess<string>)value).Value;
+            }
+        }
+
+        private bool Oktmo_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if (Report != null && Report.Rows30[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+
+            if (!OktmoRegex().IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+
+            return true;
+        }
+
+        #endregion
+
+        #region Inn (17)
+
+        public string Inn_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "ИНН", "ИНН")]
+        public RamAccess<string> Inn
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Inn), out var value))
+                {
+                    ((RamAccess<string>)value).Value = Inn_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(Inn_Validation, Inn_DB);
+                rm.PropertyChanged += InnValueChanged;
+                Dictionary.Add(nameof(Inn), rm);
+                return (RamAccess<string>)Dictionary[nameof(Inn)];
+            }
+            set
+            {
+                Inn_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void InnValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Inn_DB = ((RamAccess<string>)value).Value;
+            }
+        }
+
+        private bool Inn_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if (Report != null && Report.Rows30[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (!InnRegex().IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+
+        #endregion
+
+        #region Kpp (18)
+
+        public string Kpp_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "КПП", "КПП")]
+        public RamAccess<string> Kpp
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Kpp), out var value))
+                {
+                    ((RamAccess<string>)value).Value = Kpp_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(Kpp_Validation, Kpp_DB);
+                rm.PropertyChanged += KppValueChanged;
+                Dictionary.Add(nameof(Kpp), rm);
+                return (RamAccess<string>)Dictionary[nameof(Kpp)];
+            }
+            set
+            {
+                Kpp_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void KppValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Kpp_DB = ((RamAccess<string>)value).Value;
+            }
+        }
+
+        private bool Kpp_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if (Report != null && Report.Rows30[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (!KppRegex().IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+
+        #endregion
+
+        #region Okopf (19)
+
+        public string Okopf_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "ОКОПФ", "ОКОПФ")]
+        public RamAccess<string> Okopf
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Okopf), out var value))
+                {
+                    ((RamAccess<string>)value).Value = Okopf_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(Okopf_Validation, Okopf_DB);
+                rm.PropertyChanged += OkopfValueChanged;
+                Dictionary.Add(nameof(Okopf), rm);
+                return (RamAccess<string>)Dictionary[nameof(Okopf)];
+            }
+            set
+            {
+                Okopf_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void OkopfValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Okopf_DB = ((RamAccess<string>)value).Value;
+            }
+        }
+
+        private bool Okopf_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if (Report != null && Report.Rows30[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (!OkopfRegex().IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+
+        #endregion
+
+        #region Okfs (30)
+
+        public string Okfs_DB { get; set; } = "";
+
+        [NotMapped]
+        [FormProperty(true, "ОКФС", "ОКФС")]
+        public RamAccess<string> Okfs
+        {
+            get
+            {
+                if (Dictionary.TryGetValue(nameof(Okfs), out var value))
+                {
+                    ((RamAccess<string>)value).Value = Okfs_DB;
+                    return (RamAccess<string>)value;
+                }
+                var rm = new RamAccess<string>(Okfs_Validation, Okfs_DB);
+                rm.PropertyChanged += OkfsValueChanged;
+                Dictionary.Add(nameof(Okfs), rm);
+                return (RamAccess<string>)Dictionary[nameof(Okfs)];
+            }
+            set
+            {
+                Okfs_DB = value.Value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void OkfsValueChanged(object value, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "Value")
+            {
+                Okfs_DB = ((RamAccess<string>)value).Value;
+            }
+        }
+
+        private bool Okfs_Validation(RamAccess<string> value)
+        {
+            value.ClearErrors();
+            if (Report != null && Report.Rows30[0].Id != Id && string.IsNullOrEmpty(Okpo.Value)) return true;
+            if (string.IsNullOrEmpty(value.Value))
+            {
+                value.AddError("Поле не заполнено");
+                return false;
+            }
+            if (!OkfsRegex().IsMatch(value.Value))
+            {
+                value.AddError("Недопустимое значение");
+                return false;
+            }
+            return true;
+        }
+
+        #endregion
+
+        #endregion
+
+        #region PropertyChanged
+
+        protected void InPropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            OnPropertyChanged(args.PropertyName);
+        }
+
+        #endregion
+
+        #region Validation
+
+        public override bool Object_Validation()
+        {
+            return !(Okfs.HasErrors ||
+                     Okpo.HasErrors ||
+                     Okved.HasErrors ||
+                     Oktmo.HasErrors ||
+                     Okogu.HasErrors ||
+                     Okopf.HasErrors ||
+                     Inn.HasErrors ||
+                     Kpp.HasErrors ||
+                     RegNo.HasErrors ||
+                     OrganUprav.HasErrors ||
+                     SubjectRF.HasErrors ||
+                     JurLico.HasErrors ||
+                     ShortJurLico.HasErrors ||
+                     JurLicoAddress.HasErrors ||
+                     JurLicoFactAddress.HasErrors ||
+                     GradeFIO.HasErrors ||
+                     Telephone.HasErrors ||
+                     Fax.HasErrors ||
+                     Email.HasErrors);
+        }
+
+        #endregion
+
+        #region ParseInnerText
+
+        private static string ParseInnerText(string text) => text
+            .Replace("\r", " ")
+            .Replace("\n", " ")
+            .Replace("\t", " ");
+
+        #endregion
+
+        #region IExcel
+
+        public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
+        {
+            if (sumNumber == "")
+            {
+                worksheet.Cells[row, column].Value = Okpo_DB;
+                worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ShortJurLico_DB;
+                worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = RegNo_DB;
+
+                return 3;
+            }
+
+            worksheet.Cells[row, column].Value = sumNumber;
+            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = Okpo_DB;
+            worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ShortJurLico_DB;
+            worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value = RegNo_DB;
+
+            return 4;
+        }
+
+        public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string id = "")
+        {
+            var cnt = Form.ExcelHeader(worksheet, row, column, transpose);
+            column += transpose ? cnt : 0;
+            row += !transpose ? cnt : 0;
+
+            if (id.Equals(""))
+            {
+                worksheet.Cells[row, column].Value =
+                    ((FormPropertyAttribute)Type.GetType("Models.Forms.Form2.Form30,Models")?.GetProperty(nameof(Okpo))
+                    ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[0];
+                worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value =
+                    ((FormPropertyAttribute)Type.GetType("Models.Forms.Form2.Form30,Models")?.GetProperty(nameof(ShortJurLico))
+                    ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[0];
+                worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value =
+                    ((FormPropertyAttribute)Type.GetType("Models.Forms.Form2.Form30,Models")?.GetProperty(nameof(RegNo))
+                    ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[0];
+
+                return 3;
+            }
+
+            worksheet.Cells[row, column].Value = id;
+            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value =
+                ((FormPropertyAttribute)Type.GetType("Models.Forms.Form2.Form30,Models")?.GetProperty(nameof(Okpo))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[0];
+            worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value =
+                ((FormPropertyAttribute)Type.GetType("Models.Forms.Form2.Form30,Models")?.GetProperty(nameof(ShortJurLico))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[0];
+            worksheet.Cells[row + (!transpose ? 3 : 0), column + (transpose ? 3 : 0)].Value =
+                ((FormPropertyAttribute)Type.GetType("Models.Forms.Form2.Form30,Models")?.GetProperty(nameof(RegNo))
+                ?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First())?.Names[0];
+
+            return 4;
+        }
+
+        #endregion
+
+        #region IDataGridColumn
+
+        public override DataGridColumns GetColumnStructure(string param)
+        {
+            return null;
+        }
+
+        #endregion
+
+        #region GeneratedRegex
+
+        [GeneratedRegex(@"^[Мм\d]\d{4}$")]
+        private static partial Regex RegNoRegex();
+
+        [GeneratedRegex(@"^\d{10}$")]
+        private static partial Regex InnRegex();
+
+        [GeneratedRegex(@"^\d{9}$|-")]
+        private static partial Regex KppRegex();
+
+        [GeneratedRegex(@"^\d{2}$")]
+        private static partial Regex OkfsRegex();
+
+        [GeneratedRegex(@"^\d{7}$")]
+        private static partial Regex OkoguRegex();
+
+        [GeneratedRegex(@"^\d{5}$")]
+        private static partial Regex OkopfRegex();
+
+        [GeneratedRegex(@"^\d{11}$")]
+        private static partial Regex OktmoRegex();
+
+        [GeneratedRegex(@"^\d{2}(|\.\d{1,2})(|\.\d{1,2})$")]
+        private static partial Regex OkvedRegex();
+
+        #endregion
+
+        #region ConvertToTSVstring
+
+        /// <summary>
+        /// </summary>
+        /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+        public override string ConvertToTSVstring()
+        {
+            // Создаем текстовое представление (TSV - tab-separated values)
+            string str = $"Форма 3.0";
+            return str;
+        }
+
+        #endregion
+
+        public override bool IsContentEqual(Form otherForm)
+        {
+            if (otherForm is not Form30 formToCompare) return false;
+
+            return FormTextEquality.Equals(RegNo_DB, formToCompare.RegNo_DB)
+                   && FormTextEquality.Equals(OrganUprav_DB, formToCompare.OrganUprav_DB)
+                   && FormTextEquality.Equals(SubjectRF_DB, formToCompare.SubjectRF_DB)
+                   && FormTextEquality.Equals(JurLico_DB, formToCompare.JurLico_DB)
+                   && FormTextEquality.Equals(ShortJurLico_DB, formToCompare.ShortJurLico_DB)
+                   && FormTextEquality.Equals(JurLicoAddress_DB, formToCompare.JurLicoAddress_DB)
+                   && FormTextEquality.Equals(JurLicoFactAddress_DB, formToCompare.JurLicoFactAddress_DB)
+                   && FormTextEquality.Equals(GradeFIO_DB, formToCompare.GradeFIO_DB)
+                   && FormTextEquality.Equals(Telephone_DB, formToCompare.Telephone_DB)
+                   && FormTextEquality.Equals(Fax_DB, formToCompare.Fax_DB)
+                   && FormTextEquality.Equals(Email_DB, formToCompare.Email_DB)
+                   && FormTextEquality.Equals(Okpo_DB, formToCompare.Okpo_DB)
+                   && FormTextEquality.Equals(Okved_DB, formToCompare.Okved_DB)
+                   && FormTextEquality.Equals(Okogu_DB, formToCompare.Okogu_DB)
+                   && FormTextEquality.Equals(Oktmo_DB, formToCompare.Oktmo_DB)
+                   && FormTextEquality.Equals(Inn_DB, formToCompare.Inn_DB)
+                   && FormTextEquality.Equals(Kpp_DB, formToCompare.Kpp_DB)
+                   && FormTextEquality.Equals(Okopf_DB, formToCompare.Okopf_DB)
+                   && FormTextEquality.Equals(Okfs_DB, formToCompare.Okfs_DB);
+        }
+    }
+}

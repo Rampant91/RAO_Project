@@ -276,8 +276,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    private int _rowCount = 30;
-    public int RowCount
+    protected int _rowCount = 30;
+    public virtual int RowCount
     {
         get => _rowCount;
         set
@@ -298,8 +298,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    private int _currentPage = 1;
-    public int CurrentPage
+    protected int _currentPage = 1;
+    public virtual int CurrentPage
     {
         get => _currentPage;
         set
@@ -320,7 +320,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    public int TotalPages
+    public virtual int TotalPages
     {
         get
         {
@@ -332,7 +332,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     }
 
-    public int TotalRows => Report.Rows.Count;
+    public virtual int TotalRows => Report.Rows.Count;
 
 
     private bool _isAutoReplaceEnabled = true;

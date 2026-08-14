@@ -16,6 +16,7 @@ using Models.Collections;
 using System;
 using Models.DBRealization;
 using System.Linq;
+using Client_App.ViewModels.Forms.Forms3;
 
 namespace Client_App.Commands.AsyncCommands.Save;
 
@@ -36,6 +37,8 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                 return _form10VM;
             else if (_form20VM != null)
                 return _form20VM;
+            else if (_form30VM != null)
+                return _form30VM;
             else if (_form40VM != null)
                 return _form40VM;
             else if (_form50VM != null)
@@ -50,6 +53,7 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
     private readonly BaseFormVM _formVM = null!;
     private readonly Form_10VM _form10VM = null!;
     private readonly Form_20VM _form20VM = null!;
+    private readonly Form_30VM _form30VM = null!;
     private readonly Form_40VM _form40VM = null!;
     private readonly Form_50VM _form50VM = null!;
 
@@ -72,7 +76,13 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                 _formType = form20VM.FormType;
                 _form20VM = form20VM;
                 break;
-            }
+                }
+            case Form_30VM form30VM:
+                {
+                    _formType = form30VM.FormType;
+                    _form30VM = form30VM;
+                    break;
+                }
             case Form_40VM form40VM:
             {
                 _formType = form40VM.FormType;
@@ -110,6 +120,11 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
         _formType = formViewModel.FormType;
         _form20VM = formViewModel;
     }
+    public SaveReportAsyncCommand(Form_30VM formViewModel)
+    {
+        _formType = formViewModel.FormType;
+        _form30VM = formViewModel;
+    }
     public SaveReportAsyncCommand(Form_40VM formViewModel)
     {
         _formType = formViewModel.FormType;
@@ -124,7 +139,7 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         //Если это титульная форма, то разрешаем сохранение только если организаций с такими ОКПО + рег.№ отсутствуют в базе.
-        if (_formType is "1.0" or "2.0")
+        if (_formType is "1.0" or "2.0" or "3.0")
         {
             var dbm = StaticConfiguration.DBModel;
             var window = Desktop.Windows.FirstOrDefault(x => x.Name == _formType);
@@ -137,12 +152,14 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                     .Include(x => x.DBObservable)
                     .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows10)
                     .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows20)
+                    .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows30)
                     .Where(reps => reps.DBObservable != null);
 
                 var regNum = _formType switch
                 {
                     "1.0" => _form10VM.Storage.RegNoRep.Value,
                     "2.0" => _form20VM.Storage.RegNoRep.Value,
+                    "3.0" => _form30VM.Storage.RegNoRep.Value,
                     _ => ""
                 };
 
@@ -150,6 +167,7 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                 {
                     "1.0" => _form10VM.Storage.OkpoRep.Value,
                     "2.0" => _form20VM.Storage.OkpoRep.Value,
+                    "3.0" => _form30VM.Storage.OkpoRep.Value,
                     _ => ""
                 };
                 bool reportsAlreadyExist;
@@ -177,6 +195,12 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                                       && x.Master_DB.OkpoRep.Value == okpo
                                       && x.Master_DB.Id != _form20VM.Storage.Id),
 
+                        "3.0" => query
+                            .ToList()
+                            .Any(x => x.Master_DB.FormNum_DB == _formType
+                                      && x.Master_DB.RegNoRep.Value == regNum
+                                      && x.Master_DB.OkpoRep.Value == okpo
+                                      && x.Master_DB.Id != _form30VM.Storage.Id),
                         _ => false
                     };
                 }
@@ -224,10 +248,15 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                 tmp.Master.Rows20[1].OrganUprav.Value = tmp.Master.Rows20[0].OrganUprav.Value;
                 tmp.Master.Rows20[1].RegNo.Value = tmp.Master.Rows20[0].RegNo.Value;
             }
+            if (tmp.Master.Rows30.Count != 0)
+            {
+                tmp.Master.Rows30[1].OrganUprav.Value = tmp.Master.Rows30[0].OrganUprav.Value;
+                tmp.Master.Rows30[1].RegNo.Value = tmp.Master.Rows30[0].RegNo.Value;
+            }
             VM.DBO.Reports_Collection.Add(tmp);
             VM.DBO = null;
         }
-        else if (Storages != null && _formType is not ("1.0" or "2.0" or "4.0" or "5.0") && !Storages.Report_Collection.Contains(Storage))
+        else if (Storages != null && _formType is not ("1.0" or "2.0" or "3.0" or "4.0" or "5.0") && !Storages.Report_Collection.Contains(Storage))
         {
             Storages.Report_Collection.Add(Storage);
         }
@@ -243,6 +272,11 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
             {
                 Storages.Master.Rows20[1].OrganUprav.Value = Storages.Master.Rows20[0].OrganUprav.Value;
                 Storages.Master.Rows20[1].RegNo.Value = Storages.Master.Rows20[0].RegNo.Value;
+            }
+            if (Storages.Master.Rows30.Count != 0)
+            {
+                Storages.Master.Rows30[1].OrganUprav.Value = Storages.Master.Rows30[0].OrganUprav.Value;
+                Storages.Master.Rows30[1].RegNo.Value = Storages.Master.Rows30[0].RegNo.Value;
             }
             Storages.Report_Collection.Sorted = false;
             await Storages.Report_Collection.QuickSortAsync();

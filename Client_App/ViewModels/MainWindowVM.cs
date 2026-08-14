@@ -132,6 +132,12 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     #endregion
 
+    #region Forms3TabControlVM
+
+    public Forms3TabControlVM Forms3TabControlVM { get; }
+
+    #endregion
+
     #region Forms4TabControlVM
 
     public Forms4TabControlVM Forms4TabControlVM { get; }
@@ -152,6 +158,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             {
                 1 => Forms1TabControlVM.SelectedReports,
                 2 => Forms2TabControlVM.SelectedReports,
+                3 => Forms3TabControlVM.SelectedReports,
                 4 => Forms4TabControlVM.SelectedReports,
                 5 => Forms5TabControlVM.SelectedReports,
                 _ => null
@@ -170,6 +177,10 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                     Forms2TabControlVM.SelectedReports = value;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(IsExcelSelectedOrganizationMenuEnabled));
+                    break;
+                case 3:
+                    Forms3TabControlVM.SelectedReports = value;
+                    OnPropertyChanged();
                     break;
                 case 4:
                     Forms4TabControlVM.SelectedReports = value;
@@ -203,6 +214,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             case 2:
                 Forms2TabControlVM.UpdateReportsCollection();
                 break;
+            case 3:
+                Forms3TabControlVM.UpdateReportsCollection();
+                break;
             case 4:
                 Forms4TabControlVM.UpdateReportsCollection();
                 break;
@@ -225,6 +239,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 break;
             case 2:
                 Forms2TabControlVM.UpdateReportCollection();
+                break;
+            case 3:
+                Forms3TabControlVM.UpdateReportCollection();
                 break;
             case 4:
                 Forms4TabControlVM.UpdateReportCollection();
@@ -249,6 +266,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             case 2:
                 Forms2TabControlVM.UpdateOrgsPageInfo();
                 break;
+            case 3:
+                Forms3TabControlVM.UpdateOrgsPageInfo();
+                break;
             case 4:
                 Forms4TabControlVM.UpdateOrgsPageInfo();
                 break;
@@ -272,6 +292,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             case 2:
                 Forms2TabControlVM.UpdateFormsPageInfo();
                 break;
+            case 3:
+                Forms3TabControlVM.UpdateFormsPageInfo();
+                break;
             case 4:
                 Forms4TabControlVM.UpdateFormsPageInfo();
                 break;
@@ -294,6 +317,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             case 2:
                 Forms2TabControlVM.UpdateTotalReportCount();
                 break;
+            case 3:
+                Forms3TabControlVM.UpdateTotalReportCount();
+                break;
             case 4:
                 Forms4TabControlVM.UpdateTotalReportCount();
                 break;
@@ -314,6 +340,9 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 break;
             case 2:
                 Forms2TabControlVM.UpdateTotalReportsCount();
+                break;
+            case 3:
+                Forms3TabControlVM.UpdateTotalReportsCount();
                 break;
             case 4:
                 Forms4TabControlVM.UpdateTotalReportsCount();
@@ -532,6 +561,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
         Forms1TabControlVM = new Forms1TabControlVM(this);
         Forms2TabControlVM = new Forms2TabControlVM(this);
+        Forms3TabControlVM = new Forms3TabControlVM(this);
         Forms4TabControlVM = new Forms4TabControlVM(this);
         Forms5TabControlVM = new Forms5TabControlVM(this);
 

@@ -13,11 +13,13 @@ using Client_App.Views.Forms.Forms2;
 using Client_App.ViewModels.Forms.Forms2;
 using Client_App.Views.Forms.Forms5;
 using Client_App.ViewModels.Forms.Forms5;
+using Client_App.Views.Forms.Forms3;
+using Client_App.ViewModels.Forms.Forms3;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
 /// <summary>
-/// Создать и открыть новое окно с отчётом по форме 1.x, 4.1 и 5.x для выбранной организации.
+/// Создать и открыть новое окно с отчётом по форме 1.x, 3.x, 4.1 и 5.x для выбранной организации.
 /// Для 2.x используется старая команда, пока не обновим там интерфейс.
 /// </summary>
 public class AddReportAsyncCommand : BaseAsyncCommand
@@ -202,7 +204,28 @@ public class AddReportAsyncCommand : BaseAsyncCommand
                     await form212Window.ShowDialog(mainWindow);
                     await selectedReports.Report_Collection.QuickSortAsync();
                     break;
-                }
+                    }
+                case "3.1":
+                    {
+                        try
+                        {
+                            var form31Window = new Form_31(new Form_31VM(selectedReports));
+                            await form31Window.ShowDialog(mainWindow);
+                            await selectedReports.Report_Collection.QuickSortAsync();
+                        }
+                        catch(Exception ex)
+                        {
+                            throw ex;
+                        }
+                        break;
+                    }
+                case "3.2":
+                    {
+                        var form32Window = new Form_32(new Form_32VM(selectedReports));
+                        await form32Window.ShowDialog(mainWindow);
+                        await selectedReports.Report_Collection.QuickSortAsync();
+                        break;
+                    }
                 case "4.1":
                 {
                     var form41Window = new Form_41(new Form_41VM(selectedReports));

@@ -1,0 +1,573 @@
+<Window x:Class="Client_App.Views.Forms.Forms3.Form_32"
+        xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:appControls="clr-namespace:Client_App.Controls"
+        xmlns:controls="clr-namespace:Client_App.Views.Controls"
+        xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:forms="clr-namespace:Models.Forms;assembly=Models"
+        xmlns:forms3="clr-namespace:Models.Forms.Form3;assembly=Models"
+        xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+        xmlns:local="using:Client_App.Behaviors"
+        xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
+        xmlns:headerBehaviors="using:Client_App.Behaviors.TableHeader"
+        xmlns:inputBehaviors="using:Client_App.Behaviors.Input"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms3"
+        xmlns:items="clr-namespace:Client_App.ViewModels.Forms.Forms3.Items"
+        x:Name="3.2"
+        Title="{Binding WindowTitle}"
+        MinWidth="800"
+        MinHeight="600"
+        d:DesignHeight="1080"
+        d:DesignWidth="1920"
+        x:DataType="vm:Form_32VM"
+        KeyDown="DataGrid_KeyDown"
+        KeyUp="DataGrid_KeyUp"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d">
+
+	<Window.Resources>
+		<converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter" />
+		<converter:NullToStringConverter x:Key="NullToStringConverter" />
+		<converter:ShortNullableToStringConverter x:Key="ShortNullableToStringConverter" />
+		<converter:ByteNullableToStringConverter x:Key="ByteNullableToStringConverter" />
+		<converter:ByteNullableOrDashToStringConverter x:Key="ByteNullableOrDashToStringConverter" />
+		<converter:DateConverter x:Key="DateConverter" />
+		<converter:IsOperation41AndSingleSelectionConverter x:Key="Op41AndOneSelectedConverter" />
+	</Window.Resources>
+
+	<Design.DataContext>
+		<vm:Form_32VM />
+	</Design.DataContext>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" MinHeight="175" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<!--#region Верхний блок данных-->
+
+		<Expander Grid.Row="0"
+                  Header="Скрыть/Раскрыть верхнюю панель"
+                  IsExpanded="True">
+			<WrapPanel Classes="header">
+
+				<!--#region Отчёт-->
+
+				<Border Classes="borderContainer">
+					<controls:SelectReportPopup HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                DataContext="{Binding SelectReportPopupVM}"/>
+				</Border>
+
+				<Border Classes="borderContainer">
+					<Grid Margin="5" RowDefinitions="*,*,*,*,*">
+
+						<Grid Grid.Row="0" ColumnDefinitions="*,*,*">
+							<TextBlock Grid.Column="0"
+                                       Margin="5,11"
+                                       Text="Дата окончания предыдущего отчетного периода:" />
+							<TextBox Grid.Column="1"
+                                     MinWidth="83"
+                                     Text="{Binding Report.StartPeriod.Value}"
+                                     Watermark="дд.мм.гггг" />
+							<CalendarDatePicker Grid.Column="2"
+                                                Classes="buttonOnly"
+                                                SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}" />
+						</Grid>
+
+						<Grid Grid.Row="1" ColumnDefinitions="*,*,*">
+							<TextBlock Grid.Column="0"
+                                       Margin="5,13"
+                                       Text="Дата окончания настоящего отчетного периода:" />
+							<TextBox Grid.Column="1"
+                                     MinWidth="83"
+                                     Margin="11,3,0,0"
+                                     Text="{Binding Report.EndPeriod.Value}"
+                                     Watermark="дд.мм.гггг" />
+							<CalendarDatePicker Grid.Column="2"
+                                                Classes="buttonOnly"
+                                                SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}" />
+						</Grid>
+
+						<StackPanel Grid.Row="2" Orientation="Horizontal">
+							<TextBlock Margin="5,10" Text="Номер корректировки:" />
+							<TextBox Width="75"
+                                     Margin="5"
+                                     Text="{Binding Path=Report.CorrectionNumber.Value}" />
+						</StackPanel>
+
+						<StackPanel Grid.Row="3" Orientation="Horizontal">
+							<Button Margin="5"
+                                    Command="{Binding CheckForm}"
+                                    Content="Проверить" />
+							<Button Margin="5"
+                                    Command="{Binding SaveReport}"
+                                    Content="Сохранить" />
+						</StackPanel>
+
+					</Grid>
+				</Border>
+
+				<!--#endregion Отчёт-->
+
+				<!--#region Исполнитель-->
+
+				<Border Classes="borderContainer">
+					<controls:ExecutorDataControl DataContext="{Binding ExecutorDataControlVM}" />
+				</Border>
+
+				<!--#endregion Исполнитель-->
+
+				<!--#region Дополнительные функции-->
+
+				<Border Classes="borderContainer">
+					<Grid Margin="5" RowDefinitions="Auto,Auto,Auto,Auto">
+
+						<!--<StackPanel Grid.Row="1" Orientation="Horizontal">
+							<TextBlock Margin="5" Text="Автозаполнение:" />
+							<CheckBox Margin="5" IsChecked="{Binding IsAutoReplaceEnabled}" />
+						</StackPanel>-->
+
+						<Button Grid.Row="2"
+                                Margin="5"
+                                Command="{Binding SetDefaultColumnWidth}"
+                                CommandParameter="{Binding ElementName=dataGrid}"
+                                Content="Выставить ширину колонок по умолчанию" />
+
+						<StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center">
+							<TextBlock Margin="5" VerticalAlignment="Center" Text="Заморозить колонок:" />
+							<Button Margin="2,5"
+                                    Width="26"
+                                    Content="−"
+                                    IsEnabled="{Binding CanDecreaseFrozen}"
+                                    Command="{Binding DecreaseFrozenColumnCountCommand}" />
+							<TextBlock Margin="4,5"
+                                       Width="16"
+                                       VerticalAlignment="Center"
+                                       TextAlignment="Center"
+                                       Text="{Binding FrozenColumnCount}" />
+							<Button Margin="2,5"
+                                    Width="26"
+                                    Content="+"
+                                    IsEnabled="{Binding CanIncreaseFrozen}"
+                                    Command="{Binding IncreaseFrozenColumnCountCommand}" />
+						</StackPanel>
+
+					</Grid>
+				</Border>
+
+				<!--#endregion Дополнительные функции-->
+
+			</WrapPanel>
+		</Expander>
+
+		<ScrollViewer Grid.Row="1" HorizontalAlignment="Left">
+			<Grid Width="1500"
+				  Margin="10,5,5,5"
+				  ColumnDefinitions="Auto, *, *">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				
+				<TextBlock Grid.Row="0"
+					Grid.Column="0"
+					Margin="5,0,5,0"
+					VerticalAlignment="Center"
+					Text="1"/>
+				<TextBlock Grid.Row="0"
+						 Grid.Column="1"
+					     TextWrapping="WrapWithOverflow"
+					     VerticalAlignment="Center"
+						 Text="Уникальный идентификационный номер согласия"/>
+				<TextBox Grid.Row="0"
+						 Grid.Column="2"/>
+
+				<TextBlock Grid.Row="1"
+						 Grid.Column="0"
+					     Margin="5,0,5,0"
+					     VerticalAlignment="Center"
+						 Text="2"/>
+				<TextBlock Grid.Row="1"
+						 Grid.Column="1"
+					     TextWrapping="WrapWithOverflow"
+					     VerticalAlignment="Center"
+						 Text="Дата поставки (первого этапа поставки)"/>
+				<TextBox Grid.Row="1"
+						 Grid.Column="2"/>
+
+				<TextBlock Grid.Row="2"
+						 Grid.Column="0"
+						 Margin="5,10,5,0"
+					     VerticalAlignment="Center"
+						 Text="3"/>
+				<TextBlock Grid.Row="2"
+						 Grid.Column="1"
+					     TextWrapping="WrapWithOverflow"
+					     VerticalAlignment="Center"
+						 Grid.ColumnSpan="2"
+						 Margin="0,10,0,0"
+						 Text="Сведения о получателя"/>
+
+				<TextBlock Grid.Row="3"
+						 Grid.Column="0"
+						 Margin="5,0,5,0"
+						 VerticalAlignment="Center"
+						 Text="3.1"/>
+				<TextBlock Grid.Row="3"
+						 Grid.Column="1"
+					 TextWrapping="WrapWithOverflow"
+					  VerticalAlignment="Center"
+						 Text="Наименование"/>
+				<TextBox Grid.Row="3"
+						 Grid.Column="2"/>
+
+				<TextBlock Grid.Row="5"
+						 Grid.Column="0"
+						 Margin="15,0,5,0"
+						 VerticalAlignment="Center"
+						 Text="3.2"/>
+				<TextBlock Grid.Row="5"
+						 Grid.Column="1"
+						 TextWrapping="WrapWithOverflow"
+						 VerticalAlignment="Center"
+						 Text="Вид деятельности, виды работ (услуг), выполняемых (оказываемых) а составе вида деятельности"/>
+				<TextBox Grid.Row="5"
+						 Grid.Column="2"/>
+
+				<TextBlock Grid.Row="6"
+						 Grid.Column="0"
+						 Margin="15,10,5,0"
+						 VerticalAlignment="Center"
+						 Text="3.3"/>
+				<TextBlock Grid.Row="6"
+						 Grid.Column="1"
+						 TextWrapping="WrapWithOverflow"
+						 VerticalAlignment="Center"
+						 Margin="0,10,0,0"
+						 Grid.ColumnSpan="2"
+						 Text="Номер лицензии (разрешения)"/>
+
+				<TextBlock Grid.Row="7"
+						 Grid.Column="0"
+						 Margin="25,0,5,0"
+						 VerticalAlignment="Center"
+						 Text="3.3.1"/>
+				<TextBlock Grid.Row="7"
+						 Grid.Column="1"
+					 TextWrapping="WrapWithOverflow"
+					  VerticalAlignment="Center"
+						 Text="На обращение с радиоактивными веществами"/>
+				<TextBox Grid.Row="7"
+						 Grid.Column="2"/>
+
+				<TextBlock Grid.Row="8"
+						 Grid.Column="0"
+					 Margin="25,0,5,0"
+					  VerticalAlignment="Center"
+						 Text="3.3.2"/>
+				<TextBlock Grid.Row="8"
+						 Grid.Column="1"
+					 TextWrapping="WrapWithOverflow"
+					  VerticalAlignment="Center"
+						 Text="На обращение с радиоактивными отходами"/>
+				<TextBox Grid.Row="8"
+						 Grid.Column="2"/>
+
+				<TextBlock Grid.Row="9"
+						 Grid.Column="0"
+						 Margin="15,10,5,0"
+						 VerticalAlignment="Center"
+						 Text="3.4"/>
+				<TextBlock Grid.Row="9"
+						 Grid.Column="1"
+						 TextWrapping="WrapWithOverflow"
+						 Margin="0,10,0,0"
+						 VerticalAlignment="Center"
+						 Grid.ColumnSpan="2"
+						 Text="Срок действия лицензии (разрешения) до"/>
+
+				<TextBlock Grid.Row="10"
+						 Grid.Column="0"
+						 Margin="25,0,5,0"
+						 VerticalAlignment="Center"
+						 Text="3.4.1"/>
+				<TextBlock Grid.Row="10"
+						 Grid.Column="1"
+						 TextWrapping="WrapWithOverflow"
+						 VerticalAlignment="Center"
+						 Text="На обращение с радиоактивными веществами"/>
+				<TextBox Grid.Row="10"
+						 Grid.Column="2"/>
+
+				<TextBlock Grid.Row="11"
+						 Grid.Column="0"
+						 Margin="25,0,5,0"
+						 VerticalAlignment="Center"
+						 Text="3.4.2"/>
+				<TextBlock Grid.Row="11"
+						 Grid.Column="1"
+						 TextWrapping="WrapWithOverflow"
+						 VerticalAlignment="Center"
+						 Text="на обращение с радиоактивными отходами"/>
+				<TextBox Grid.Row="11"
+						 Grid.Column="2"/>
+
+				<TextBlock Grid.Row="12"
+						 Grid.Column="0"
+						 Margin="5,0,5,0"
+						 VerticalAlignment="Center"
+						 Text="4"/>
+				<TextBlock Grid.Row="12"
+						 Grid.Column="1"
+					 TextWrapping="WrapWithOverflow"
+					  VerticalAlignment="Center"
+						 Text="Адрес поставки"/>
+				<TextBox Grid.Row="12"
+						 Grid.Column="2"/>
+
+				<TextBlock Grid.Row="13"
+						 Grid.Column="0"
+						 Margin="5,0,5,0"
+						 VerticalAlignment="Center"
+						 Text="5"/>
+				<TextBlock Grid.Row="13"
+						 Grid.Column="1"
+						 TextWrapping="WrapWithOverflow"
+						 VerticalAlignment="Center"
+						 Text="Радионуклидный состав ЗРИ"/>
+				<TextBox Grid.Row="13"
+						 Grid.Column="2"/>
+
+				<TextBlock Grid.Row="14"
+						 Grid.Column="0"
+						 Margin="5,0,5,0"
+						 VerticalAlignment="Center"
+						 Text="6"/>
+				<TextBlock Grid.Row="14"
+						 Grid.Column="1"
+						 TextWrapping="WrapWithOverflow"
+						 VerticalAlignment="Center"
+						 Text="Суммарная активность, Бк"/>
+				<TextBox Grid.Row="14"
+						 Grid.Column="2"/>
+
+				<TextBlock Grid.Row="15"
+						 Grid.Column="0"
+						 Margin="5,0,5,0"
+						 VerticalAlignment="Center"
+						 Text="7"/>
+				<TextBlock Grid.Row="15"
+						 Grid.Column="1"
+						 TextWrapping="WrapWithOverflow"
+						 VerticalAlignment="Center"
+						 Text="Общее количество ЗРИ, шт."/>
+				<TextBox Grid.Row="15"
+						 Grid.Column="2"/>
+				
+				<TextBlock Grid.Row="16"
+						 Grid.Column="0"
+						 Margin="5,10,5,0"
+						 VerticalAlignment="Center"
+						 Text="8"/>
+				<TextBlock Grid.Row="16"
+						 Grid.Column="1"
+						 Margin="0,10,0,0"
+						 TextWrapping="WrapWithOverflow"
+						 VerticalAlignment="Center"
+						 Grid.ColumnSpan="2"
+						 Text="Сведения о поставляемых ЗРИ:"/>
+
+				<DataGrid x:Name="dataGrid1"
+						  Grid.Row="17"
+						  Grid.Column="0"
+                          Classes="table"
+						  MinHeight="150"
+						  MaxHeight="250"
+						  RowHeight="25"
+						  Margin="0,10,0,0"
+						  HorizontalScrollBarVisibility="Auto"
+						  VerticalScrollBarVisibility ="Auto"
+						  Grid.ColumnSpan="3">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Номер паспорта (сертификата)" Width="*"></DataGridTextColumn>
+						<DataGridTextColumn Header="Тип (модель, тип капсулы)"  Width="*"></DataGridTextColumn>
+						<DataGridTextColumn Header="Заводской номер"  Width="*"></DataGridTextColumn>
+						<DataGridTextColumn Header="Радионуклидный состав"  Width="*"></DataGridTextColumn>
+						<DataGridTextColumn Header="Дата выпуска"  Width="*"></DataGridTextColumn>
+						<DataGridTextColumn Header="Активность на дату выпуска, Бк"  Width="*"></DataGridTextColumn>
+						<DataGridTextColumn Header="Содержание ядерных материалов, г"  Width="*"></DataGridTextColumn>
+						<DataGridTextColumn Header="Категория"  Width="*"></DataGridTextColumn>
+						<DataGridTextColumn Header="Код ОКПО изготовителя (краткое наименование государства в соответствии с ОКСМ)"  Width="*"></DataGridTextColumn>
+						<DataGridTextColumn Header="Номер сертификата-разрешения на РВ особого вида"  Width="*"></DataGridTextColumn>
+						<DataGridTextColumn Header="Срок действия сертификата-разрешения на рВ особого вида"  Width="*"></DataGridTextColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+
+				<TextBlock Grid.Row="18"
+						 Grid.Column="0"
+						 Margin="5,10,5,0"
+						 VerticalAlignment="Center"
+						 Text="9"/>
+				<TextBlock Grid.Row="18"
+						 Grid.Column="1"
+						 Margin="0,10,0,0"
+						 TextWrapping="WrapWithOverflow"
+						 VerticalAlignment="Center"
+						 Grid.ColumnSpan="2"
+						 Text="Сведения о контейнере, приборе, установке"/>
+
+				<DataGrid x:Name="dataGrid"
+						  Grid.Row="19"
+						  Grid.Column="0"
+                          Classes="table"
+						  MinHeight="150"
+						  MaxHeight="250"
+						  RowHeight="25"
+						  Margin="0,10,0,0"
+						  HorizontalScrollBarVisibility="Auto"
+						  VerticalScrollBarVisibility ="Auto"
+						  Grid.ColumnSpan="3">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Наименование" Width="*"></DataGridTextColumn>
+						<DataGridTextColumn Header="Тип"  Width="*"></DataGridTextColumn>
+						<DataGridTextColumn Header="Идентификационный номер"  Width="*"></DataGridTextColumn>
+						<DataGridTextColumn Header="Год выпуска"  Width="*"></DataGridTextColumn>
+						<DataGridTextColumn Header="Дата выпуска"  Width="*"></DataGridTextColumn>
+						<DataGridTextColumn Header="Масса обедненного урана в конструкции, кг"  Width="*"></DataGridTextColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+
+				<TextBlock Grid.Row="20"
+						 Grid.Column="0"
+						 Margin="5,10,5,0"
+						 VerticalAlignment="Center"
+						 Text="10"/>
+				<TextBlock Grid.Row="20"
+						 Grid.Column="1"
+						 Margin="0,10,0,0"
+						 TextWrapping="WrapWithOverflow"
+						 VerticalAlignment="Center"
+						 Grid.ColumnSpan="2"
+						 Text="Идентификаторы"/>
+
+				<DataGrid x:Name="dataGrid3"
+						  Grid.Row="21"
+						  Grid.Column="0"
+                          Classes="table"
+						  MinHeight="150"
+						  MaxHeight="250"
+						  RowHeight="25"
+						  Margin="0,10,0,0"
+						  HorizontalScrollBarVisibility="Auto"
+						  VerticalScrollBarVisibility ="Auto"
+						  Grid.ColumnSpan="3">
+					<DataGrid.Columns>
+						<DataGridTextColumn Header="Наименование идентификатора" Width="*"></DataGridTextColumn>
+						<DataGridTextColumn Header="Значение"  Width="*"></DataGridTextColumn>
+					</DataGrid.Columns>
+				</DataGrid>
+			</Grid>
+		</ScrollViewer>
+
+		<Expander Grid.Row="3"
+				 ExpandDirection="Up"
+				 Header="Скрыть/Раскрыть нижнюю панель"
+				 IsExpanded="True">
+			<Border Classes="notesContainer">
+				<Grid ColumnDefinitions="Auto" RowDefinitions="Auto,Auto">
+					<Grid.ContextMenu>
+						<ContextMenu>
+							<MenuItem Command="{Binding AddNote}"
+                                      Header="Добавить строку" />
+							<MenuItem Command="{Binding AddNotes}"
+                                      Header="Добавить N строк" />
+							<MenuItem Command="{Binding CopyNotes}"
+                                      CommandParameter="{Binding SelectedNotes}"
+                                      Header="Копировать" />
+							<MenuItem Command="{Binding PasteNotes}" Header="Вставить" />
+							<MenuItem Command="{Binding DeleteNotes}"
+                                      CommandParameter="{Binding SelectedNotes}"
+                                      Header="Удалить выбранные строчки" />
+						</ContextMenu>
+					</Grid.ContextMenu>
+					<TextBlock Grid.Row="0"
+                               Margin="5"
+                               Text="Примечания" />
+					<DataGrid x:Name="notesDataGrid"
+                              Grid.Row="1"
+                              x:CompileBindings="True"
+                              Classes="notesTable"
+                              Items="{Binding NoteList}"
+                              SelectedItem="{Binding SelectedNote}">
+
+						<interactivity:Interaction.Behaviors>
+							<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="notes" />
+							<dgBehaviors:DataGridPointerBehavior />
+							<dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedNotes, Mode=TwoWay}" />
+							<!--<dgBehaviors:DataGridSwitchToNotesBehavior SourceDataGrid="{Binding #dataGrid}"/>-->
+							<dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
+						</interactivity:Interaction.Behaviors>
+
+						<DataGrid.Columns>
+
+							<DataGridTemplateColumn Width="100" Header="№ строки">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate x:DataType="forms:Note">
+										<TextBox Text="{Binding RowNumber.Value, Mode=TwoWay}" />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTemplateColumn Width="100" Header="№ графы">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate x:DataType="forms:Note">
+										<TextBox Text="{Binding GraphNumber.Value, Mode=TwoWay}" />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+							<DataGridTemplateColumn Width="1000" Header="Пояснения">
+								<DataGridTemplateColumn.CellTemplate>
+									<DataTemplate x:DataType="forms:Note">
+										<TextBox Text="{Binding Comment.Value, Mode=TwoWay}" />
+									</DataTemplate>
+								</DataGridTemplateColumn.CellTemplate>
+							</DataGridTemplateColumn>
+
+						</DataGrid.Columns>
+					</DataGrid>
+				</Grid>
+			</Border>
+		</Expander>
+	</Grid>
+</Window>

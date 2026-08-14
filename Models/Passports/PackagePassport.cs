@@ -22,36 +22,6 @@ namespace Models.Passports
     [Table(name: "package_passport")]
     public class PackagePassport : INotifyPropertyChanged, INotifyDataErrorInfo
     {
-        // Метод валидации OKPO
-        private void ValidateOkpo(string propertyName, string okpo)
-        {
-            ClearErrors(propertyName);
-
-            if (string.IsNullOrEmpty(okpo))
-            {
-                AddError(propertyName, "Поле обязательно для заполнения.");
-            }
-            else if (okpo.Length != 8 && okpo.Length != 14)
-            {
-                AddError(propertyName, "Длина должна быть 8 или 14 символов.");
-            }
-            else if (!Form.OkpoRegex().IsMatch(okpo)) // Ваш регулярное выражение
-            {
-                AddError(propertyName, "Некорректный формат ОКПО.");
-            }
-        }
-
-        private void ValidatePostiveDouble(string propertyName, double? value)
-        {
-            ClearErrors(propertyName);
-
-            if (value == null) return;
-
-            if (value<0)
-                AddError(propertyName, "Число должно быть положительным");
-        }
-
-
         #region Constructor
         public PackagePassport()
         {
@@ -856,6 +826,37 @@ namespace Models.Passports
         }
         #endregion
 
+        #endregion
+
+        #region Validation
+        // Метод валидации OKPO
+        private void ValidateOkpo(string propertyName, string okpo)
+        {
+            ClearErrors(propertyName);
+
+            if (string.IsNullOrEmpty(okpo))
+            {
+                AddError(propertyName, "Поле обязательно для заполнения.");
+            }
+            else if (okpo.Length != 8 && okpo.Length != 14)
+            {
+                AddError(propertyName, "Длина должна быть 8 или 14 символов.");
+            }
+            else if (!Form.OkpoRegex().IsMatch(okpo)) // Ваш регулярное выражение
+            {
+                AddError(propertyName, "Некорректный формат ОКПО.");
+            }
+        }
+
+        private void ValidatePostiveDouble(string propertyName, double? value)
+        {
+            ClearErrors(propertyName);
+
+            if (value == null) return;
+
+            if (value < 0)
+                AddError(propertyName, "Число должно быть положительным");
+        }
         #endregion
 
         #region NotifyDataError

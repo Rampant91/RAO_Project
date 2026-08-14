@@ -1,12 +1,14 @@
 ﻿using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
+using Client_App.ViewModels.Forms.Forms3;
 using Client_App.ViewModels.Forms.Forms4;
 using Client_App.ViewModels.Forms.Forms5;
 using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms2;
+using Client_App.Views.Forms.Forms3;
 using Client_App.Views.Forms.Forms4;
 using Client_App.Views.Forms.Forms5;
 using System.Threading.Tasks;
@@ -14,7 +16,7 @@ using System.Threading.Tasks;
 namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
-/// Изменить Формы организации (1.0, 2.0, 4.0, 5.0).
+/// Изменить Формы организации (1.0, 2.0, 3.0, 4.0, 5.0).
 /// </summary>
 public class NewChangeReportsAsyncCommand : BaseAsyncCommand
 {
@@ -66,7 +68,17 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
                 var window = new Form_20(form20VM) { DataContext = form20VM };
                 await window.ShowDialog(mainWindow);
                 break;
-            }
+                }
+            case "3.0":
+                {
+                    var form30VM = new Form_30VM(formNum, report)
+                    {
+                        IsSeparateDivision = !string.IsNullOrWhiteSpace(report.Rows30[1].Okpo.Value)
+                    };
+                    var window = new Form_30(form30VM) { DataContext = form30VM };
+                    await window.ShowDialog(mainWindow);
+                    break;
+                }
             case "4.0":
             {
                 var form40VM = new Form_40VM(formNum, report);

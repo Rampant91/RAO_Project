@@ -15,6 +15,9 @@ using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using Models.Forms.Form3;
+using Models.Forms.Form4;
+using Models.Forms.Form5;
 using Models.Interfaces;
 using Spravochniki;
 using System;
@@ -26,8 +29,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using static Client_App.ViewModels.BaseVM;
-using Models.Forms.Form4;
-using Models.Forms.Form5;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -78,18 +79,24 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         mainWindowViewModel.OnStartProgressBar = 35;
         await dbm.form_20.LoadAsync();
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 4.0";
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 3.0";
         mainWindowViewModel.OnStartProgressBar = 45;
+        await dbm.form_30.LoadAsync();
+
+
+        onStartProgressBarVm.LoadStatus = "Загрузка форм 4.0";
+        mainWindowViewModel.OnStartProgressBar = 55;
         await dbm.form_40.LoadAsync();
 
         onStartProgressBarVm.LoadStatus = "Загрузка форм 5.0";
-        mainWindowViewModel.OnStartProgressBar = 55;
+        mainWindowViewModel.OnStartProgressBar = 65;
         await dbm.form_50.LoadAsync();
 
         try
         {
             onStartProgressBarVm.LoadStatus = "Загрузка коллекций отчетов";
-            mainWindowViewModel.OnStartProgressBar = 72;
+            mainWindowViewModel.OnStartProgressBar = 77;
             await dbm.ReportCollectionDbSet.LoadAsync();
         }
         catch (Exception ex)
@@ -100,11 +107,11 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         }
 
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
-        mainWindowViewModel.OnStartProgressBar = 74;
+        mainWindowViewModel.OnStartProgressBar = 79;
         await dbm.ReportsCollectionDbSet.LoadAsync();
 
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
-        mainWindowViewModel.OnStartProgressBar = 76;
+        mainWindowViewModel.OnStartProgressBar = 81;
         if (!dbm.DBObservableDbSet.Any())
         {
             dbm.DBObservableDbSet.Add(new DBObservable());
@@ -123,17 +130,17 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         #endregion
 
         onStartProgressBarVm.LoadStatus = "Сортировка организаций";
-        mainWindowViewModel.OnStartProgressBar = 80;
+        mainWindowViewModel.OnStartProgressBar = 85;
         await ProcessDataBaseFillEmpty(dbm);
 
         onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
-        mainWindowViewModel.OnStartProgressBar = 85;
+        mainWindowViewModel.OnStartProgressBar = 90;
         ReportsStorage.LocalReports = dbm.DBObservableDbSet.Local.First();
 
         await ProcessDataBaseFillNullOrder();
 
         onStartProgressBarVm.LoadStatus = "Сохранение";
-        mainWindowViewModel.OnStartProgressBar = 90;
+        mainWindowViewModel.OnStartProgressBar = 95;
         await dbm.SaveChangesAsync();
         ReportsStorage.LocalReports.PropertyChanged += Local_ReportsChanged;
 
@@ -385,6 +392,13 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             .SelectMany(x => x.Master_DB.Rows20)
             .ToList();
 
+        var masterRepRows30List = db.ReportsCollectionDbSet
+            .Include(x => x.DBObservable)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows30)
+            .Where(x => x.DBObservable != null)
+            .SelectMany(x => x.Master_DB.Rows30)
+            .ToList();
+
         foreach (var form10 in masterRepRows10List)
         {
             form10.RegNo_DB = CustomTrim(form10.RegNo_DB);
@@ -428,6 +442,29 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             form20.Kpp_DB = CustomTrim(form20.Kpp_DB);
             form20.Okopf_DB = CustomTrim(form20.Okopf_DB);
             form20.Okfs_DB = CustomTrim(form20.Okfs_DB);
+        }
+
+        foreach (var form30 in masterRepRows30List)
+        {
+            form30.RegNo_DB = CustomTrim(form30.RegNo_DB);
+            form30.OrganUprav_DB = CustomTrim(form30.OrganUprav_DB);
+            form30.SubjectRF_DB = CustomTrim(form30.SubjectRF_DB);
+            form30.JurLico_DB = CustomTrim(form30.JurLico_DB);
+            form30.ShortJurLico_DB = CustomTrim(form30.ShortJurLico_DB);
+            form30.JurLicoAddress_DB = CustomTrim(form30.JurLicoAddress_DB);
+            form30.JurLicoFactAddress_DB = CustomTrim(form30.JurLicoFactAddress_DB);
+            form30.GradeFIO_DB = CustomTrim(form30.GradeFIO_DB);
+            form30.Telephone_DB = CustomTrim(form30.Telephone_DB);
+            form30.Fax_DB = CustomTrim(form30.Fax_DB);
+            form30.Email_DB = CustomTrim(form30.Email_DB);
+            form30.Okpo_DB = CustomTrim(form30.Okpo_DB);
+            form30.Okved_DB = CustomTrim(form30.Okved_DB);
+            form30.Okogu_DB = CustomTrim(form30.Okogu_DB);
+            form30.Oktmo_DB = CustomTrim(form30.Oktmo_DB);
+            form30.Inn_DB = CustomTrim(form30.Inn_DB);
+            form30.Kpp_DB = CustomTrim(form30.Kpp_DB);
+            form30.Okopf_DB = CustomTrim(form30.Okopf_DB);
+            form30.Okfs_DB = CustomTrim(form30.Okfs_DB);
         }
         await db.SaveChangesAsync();
     }
@@ -747,6 +784,18 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     it.Master_DB.Rows20.Add(ty1);
                     it.Master_DB.Rows20.Add(ty2);
                 }
+
+                if (it.Master_DB.FormNum_DB == "3.0"
+                    && it.Master_DB.Rows30.Count == 0)
+                {
+                    var ty1 = (Form30)FormCreator.Create("3.0");
+                    ty1.NumberInOrder_DB = 1;
+                    var ty2 = (Form30)FormCreator.Create("3.0");
+                    ty2.NumberInOrder_DB = 2;
+                    it.Master_DB.Rows30.Add(ty1);
+                    it.Master_DB.Rows30.Add(ty2);
+                }
+
                 if (it.Master_DB.FormNum_DB == "4.0"
                     && it.Master_DB.Rows40.Count == 0)
                 {
@@ -774,11 +823,13 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
                 it.Master_DB.Rows10.Sorted = false;
                 it.Master_DB.Rows20.Sorted = false;
+                it.Master_DB.Rows30.Sorted = false;
                 it.Master_DB.Rows40.Sorted = false;
                 it.Master_DB.Rows50.Sorted = false;
                 //it.Master_DB.Rows40.Sorted = false;
                 await it.Master_DB.Rows10.QuickSortAsync();
                 await it.Master_DB.Rows20.QuickSortAsync();
+                await it.Master_DB.Rows30.QuickSortAsync();
                 await it.Master_DB.Rows40.QuickSortAsync();
                 await it.Master_DB.Rows50.QuickSortAsync();
                 //await it.Master_DB.Rows40.QuickSortAsync();

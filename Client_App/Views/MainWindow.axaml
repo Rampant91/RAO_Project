@@ -408,7 +408,10 @@
 				</TabItem>
 				<TabItem x:Name="Forms3" 
                          Header="Формы 3" 
-                         IsVisible="False"/>
+						 IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
+					<tabs:Forms3TabControl DataContext="{Binding Forms3TabControlVM, Mode=TwoWay}"/>
+			    </TabItem>
+				
 				<TabItem x:Name="Forms4" 
                          Header="Формы 4"
                          IsVisible="True">

@@ -107,6 +107,20 @@ public class ReportConfiguration : IEntityTypeConfiguration<Report>
             .WithOne(x => x.Report)
             .OnDelete(DeleteBehavior.Cascade);
 
+        builder.HasMany(x => x.Rows30)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        //В единственном экземпляре
+        builder.HasOne(x => x.Rows31One)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        //В единственном экземпляре
+        builder.HasOne(x => x.Rows32One)
+            .WithOne(x => x.Report)
+            .OnDelete(DeleteBehavior.Cascade);
+
         builder.HasMany(x => x.Rows40)
             .WithOne(x => x.Report)
             .OnDelete(DeleteBehavior.Cascade);

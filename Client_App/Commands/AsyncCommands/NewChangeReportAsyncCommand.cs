@@ -1,11 +1,13 @@
 ﻿using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
+using Client_App.ViewModels.Forms.Forms3;
 using Client_App.ViewModels.Forms.Forms4;
 using Client_App.ViewModels.Forms.Forms5;
 using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms2;
+using Client_App.Views.Forms.Forms3;
 using Client_App.Views.Forms.Forms4;
 using Client_App.Views.Forms.Forms5;
 using Microsoft.EntityFrameworkCore;
@@ -350,7 +352,31 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     var window = new Form_212(form212VM);
                     await window.ShowDialog(t);
                     break;
-                }
+                    }
+                case "3.1":
+                    {
+                        var dbReport = queryWithNotes
+                            .Include(rep => rep.Rows31One)
+                            .FirstOrDefault(x => x.Id == report.Id);
+
+                        report.Rows31One = dbReport.Rows31One;
+                        var form31VM = new Form_31VM(report);
+                        var window = new Form_31(form31VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
+                case "3.2":
+                    {
+                        var dbReport = queryWithNotes
+                            .Include(rep => rep.Rows32One)
+                            .FirstOrDefault(x => x.Id == report.Id);
+
+                        report.Rows32One = dbReport.Rows32One;
+                        var form32VM = new Form_32VM(report);
+                        var window = new Form_32(form32VM);
+                        await window.ShowDialog(t);
+                        break;
+                    }
                 case "4.1":
                 {
                     var dbReport = queryWithOutNotes

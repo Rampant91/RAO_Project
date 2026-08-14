@@ -1,5 +1,6 @@
 ﻿using Models.Forms.Form1;
 using Models.Forms.Form2;
+using Models.Forms.Form3;
 using Models.Forms.Form4;
 using Models.Forms.Form5;
 
@@ -34,6 +35,9 @@ public static class FormCreator
             "2.10" => new Form210(),
             "2.11" => new Form211(),
             "2.12" => new Form212(),
+            "3.0" => new Form30(),
+            "3.1" => new Form31(),
+            "3.2" => new Form32(),
             "4.0" => new Form40(),
             "4.1" => new Form41(),
             "5.0" => new Form50(),
