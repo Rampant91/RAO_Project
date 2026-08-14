@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
+using Models.Helpers;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -590,7 +591,7 @@ public abstract class CheckF14 : CheckBase
     {
         List<CheckError> result = new();
         var opDate = ReplaceNullAndTrim(forms[line].OperationDate_DB);
-        if (opDate is "" or "-")
+        if (DashStringHelper.IsNullOrEmptyOrDash(opDate))
         {
             result.Add(new CheckError
             {
@@ -895,7 +896,7 @@ public abstract class CheckF14 : CheckBase
     {
         List<CheckError> result = new();
         var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
-        if (rads is "" or "-") return result;
+        if (DashStringHelper.IsNullOrEmptyOrDash(rads)) return result;
         var radsSet = rads
             .ToLower()
             .Replace(',', ';')
@@ -1000,7 +1001,7 @@ public abstract class CheckF14 : CheckBase
     {
         List<CheckError> result = new();
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
-        if (activity is "" or "-") return result;
+        if (DashStringHelper.IsNullOrEmptyOrDash(activity)) return result;
         if (!TryParseDoubleExtended(activity, out var activityReal) || activity.Contains('-'))
         {
             result.Add(new CheckError
@@ -1421,7 +1422,7 @@ public abstract class CheckF14 : CheckBase
     {
         List<CheckError> result = new();
         var activityMeasurementDate = ReplaceNullAndTrim(forms[line].ActivityMeasurementDate_DB);
-        if (activityMeasurementDate is "" or "-")
+        if (DashStringHelper.IsNullOrEmptyOrDash(activityMeasurementDate))
         {
             result.Add(new CheckError
             {
@@ -1540,7 +1541,7 @@ public abstract class CheckF14 : CheckBase
     {
         List<CheckError> result = new();
         var mass = ConvertStringToExponential(forms[line].Mass_DB);
-        if (mass is "" or "-")
+        if (DashStringHelper.IsNullOrEmptyOrDash(mass))
         {
             result.Add(new CheckError
             {
@@ -1871,7 +1872,7 @@ public abstract class CheckF14 : CheckBase
     {
         List<CheckError> result = new();
         var docDate = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
-        if (docDate is "" or "-")
+        if (DashStringHelper.IsNullOrEmptyOrDash(docDate))
         {
             result.Add(new CheckError
             {
@@ -2163,7 +2164,7 @@ public abstract class CheckF14 : CheckBase
         var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         if (!applicableOperationCodes.Contains(opCode)) return result;
         var transporterOkpo = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
-        var valid = transporterOkpo is "-";
+        var valid = DashStringHelper.IsDash(transporterOkpo);
         if (!valid)
         {
             result.Add(new CheckError
@@ -2214,7 +2215,7 @@ public abstract class CheckF14 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика.",
-                IsCritical = !(dashesOperationCodes.Contains(operationCode) && transporterOkpo is "-")
+                IsCritical = !(dashesOperationCodes.Contains(operationCode) && DashStringHelper.IsDash(transporterOkpo))
             });
         }
         return result;
@@ -2243,7 +2244,7 @@ public abstract class CheckF14 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек.",
-                IsCritical = transporterOkpo is not "-"
+                IsCritical = !DashStringHelper.IsDash(transporterOkpo)
             });
         }
         return result;

@@ -208,7 +208,7 @@ public partial class ExportAllReportsFromSubjectRFOneFileAsyncCommand : ExportRa
                 #endregion
 
                 await using var db = new DBModel(newDbPath);
-                await db.Database.MigrateAsync(cancellationToken: cts.Token);
+                await db.MigrateDatabaseAsync(cts.Token);
 
                 await db.ReportsCollectionDbSet.AddAsync(repsFull, cts.Token);
                 if (!db.DBObservableDbSet.Any())

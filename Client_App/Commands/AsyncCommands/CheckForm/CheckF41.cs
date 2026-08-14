@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Models.Helpers;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -73,12 +74,12 @@ public abstract class CheckF41 : CheckBase
                     && (form41.Okpo_DB == reports.Master_DB.Rows10[0].Okpo_DB
                     || form41.Okpo_DB == reports.Master_DB.Rows10[1].Okpo_DB)))
                 {
-                    var okpo = reports.Master_DB.Rows10[1].Okpo_DB is "" or "-" or null
+                    var okpo = DashStringHelper.IsNullOrEmptyOrDash(reports.Master_DB.Rows10[1].Okpo_DB)
                         ? reports.Master_DB.Rows10[0].Okpo_DB
                         : reports.Master_DB.Rows10[1].Okpo_DB;
 
                     string regNo;
-                    if ((reports.Master_DB.Rows10[1].RegNo.Value != "" || reports.Master_DB.Rows10[1].Okpo_DB == "-") && reports.Master_DB.Rows10[1].Okpo.Value != "")
+                    if ((reports.Master_DB.Rows10[1].RegNo.Value != "" || DashStringHelper.IsDash(reports.Master_DB.Rows10[1].Okpo_DB)) && reports.Master_DB.Rows10[1].Okpo.Value != "")
                         regNo = reports.Master_DB.Rows10[1].RegNo_DB;
                     else
                         regNo = reports.Master_DB.Rows10[0].RegNo_DB;
@@ -169,12 +170,12 @@ public abstract class CheckF41 : CheckBase
                      && (form41.Okpo_DB == reports.Master_DB.Rows20[0].Okpo_DB
                      || form41.Okpo_DB == reports.Master_DB.Rows20[1].Okpo_DB)))
                 {
-                    var okpo = reports.Master_DB.Rows20[1].Okpo_DB is "" or "-" or null
+                    var okpo = DashStringHelper.IsNullOrEmptyOrDash(reports.Master_DB.Rows20[1].Okpo_DB)
                         ? reports.Master_DB.Rows20[0].Okpo_DB
                         : reports.Master_DB.Rows20[1].Okpo_DB;
 
                     string regNo;
-                    if ((reports.Master_DB.Rows20[1].RegNo.Value != "" || reports.Master_DB.Rows20[1].Okpo_DB == "-") && reports.Master_DB.Rows20[1].Okpo.Value != "")
+                    if ((reports.Master_DB.Rows20[1].RegNo.Value != "" || DashStringHelper.IsDash(reports.Master_DB.Rows20[1].Okpo_DB)) && reports.Master_DB.Rows20[1].Okpo.Value != "")
                         regNo = reports.Master_DB.Rows20[1].RegNo_DB;
                     else
                         regNo = reports.Master_DB.Rows20[0].RegNo_DB;

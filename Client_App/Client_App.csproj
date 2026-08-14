@@ -60,7 +60,82 @@
   <ItemGroup>
     <ProjectReference Include="..\Spravochniki\Spravochniki.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
+    <ProjectReference Include="..\MpzfUpdater\MpzfUpdater.csproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <Private>false</Private>
+    </ProjectReference>
   </ItemGroup>
+  <!-- Репозиторная data\ → publish\data\ (REDDB только под текущий RID; Astra 1.6 → linux-x64) -->
+  <PropertyGroup>
+    <_RepoDataDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\data'))</_RepoDataDir>
+    <!-- Имя папки в дистрибутиве (как ожидает RedDataBaseUse) -->
+    <_ReddbDestFolder Condition="'$(RuntimeIdentifier)' == 'win-x64'">win-x64</_ReddbDestFolder>
+    <_ReddbDestFolder Condition="'$(RuntimeIdentifier)' == 'win-x86'">win-x32</_ReddbDestFolder>
+    <_ReddbDestFolder Condition="'$(RuntimeIdentifier)' == 'linux-x64'">linux-x64</_ReddbDestFolder>
+    <!-- Источник в репозитории -->
+    <_ReddbSourceFolder>$(_ReddbDestFolder)</_ReddbSourceFolder>
+    <_ReddbSourceFolder Condition="'$(AstraLegacy)' == 'true' and '$(RuntimeIdentifier)' == 'linux-x64'">linux-x64_astra_1.6</_ReddbSourceFolder>
+  </PropertyGroup>
+  <Target Name="_ResolveDataPublishDir">
+    <PropertyGroup>
+      <_DataPublishDir Condition="'$(PublishDir)' != ''">$(PublishDir)</_DataPublishDir>
+      <_DataPublishDir Condition="'$(_DataPublishDir)' == '' and '$(PublishUrl)' != ''">$(PublishUrl)</_DataPublishDir>
+    </PropertyGroup>
+  </Target>
+  <Target Name="CopyRepoDataToPublish" AfterTargets="Publish" DependsOnTargets="_ResolveDataPublishDir">
+    <Warning
+      Text="CopyRepoDataToPublish: RuntimeIdentifier не задан — REDDB не скопирован. Укажите RID в publish-профиле."
+      Condition="'$(_DataPublishDir)' != '' and '$(_ReddbDestFolder)' == ''" />
+    <Warning
+      Text="CopyRepoDataToPublish: не найдена папка $(_RepoDataDir)\REDDB\$(_ReddbSourceFolder)"
+      Condition="'$(_DataPublishDir)' != '' and '$(_ReddbSourceFolder)' != '' and !Exists('$(_RepoDataDir)\REDDB\$(_ReddbSourceFolder)')" />
+    <ItemGroup Condition="'$(_DataPublishDir)' != '' and Exists('$(_RepoDataDir)')">
+      <_RepoDataFiles Include="$(_RepoDataDir)\**\*.*"
+                      Exclude="$(_RepoDataDir)\REDDB\**\*.*;$(_RepoDataDir)\Updater\**\*.*;$(_RepoDataDir)\**\firebird.log" />
+      <_RepoReddbFiles Include="$(_RepoDataDir)\REDDB\$(_ReddbSourceFolder)\**\*.*"
+                       Exclude="$(_RepoDataDir)\REDDB\$(_ReddbSourceFolder)\**\firebird.log"
+                       Condition="'$(_ReddbSourceFolder)' != '' and Exists('$(_RepoDataDir)\REDDB\$(_ReddbSourceFolder)')" />
+    </ItemGroup>
+    <Copy
+      SourceFiles="@(_RepoDataFiles)"
+      DestinationFiles="@(_RepoDataFiles->'$(_DataPublishDir)data\%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true"
+      Condition="'$(_DataPublishDir)' != '' and '@(_RepoDataFiles)' != ''" />
+    <Copy
+      SourceFiles="@(_RepoReddbFiles)"
+      DestinationFiles="@(_RepoReddbFiles->'$(_DataPublishDir)data\REDDB\$(_ReddbDestFolder)\%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true"
+      Condition="'$(_DataPublishDir)' != '' and '@(_RepoReddbFiles)' != ''" />
+  </Target>
+  <Target Name="_CollectMpzfUpdaterFiles">
+    <PropertyGroup>
+      <_MpzfUpdaterOutDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\MpzfUpdater\bin\$(Configuration)\net9.0\'))</_MpzfUpdaterOutDir>
+    </PropertyGroup>
+    <ItemGroup Condition="Exists('$(_MpzfUpdaterOutDir)')">
+      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterOutDir)MpzfUpdater.exe" />
+      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterOutDir)MpzfUpdater.dll" />
+      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterOutDir)MpzfUpdater.deps.json" />
+      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterOutDir)MpzfUpdater.runtimeconfig.json" />
+      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterOutDir)MpzfUpdater.pdb" Condition="Exists('$(_MpzfUpdaterOutDir)MpzfUpdater.pdb')" />
+    </ItemGroup>
+  </Target>
+  <Target Name="CopyMpzfUpdaterToOutput" AfterTargets="Build" DependsOnTargets="_CollectMpzfUpdaterFiles">
+    <MakeDir Directories="$(TargetDir)data\Updater" />
+    <Copy
+      SourceFiles="@(_MpzfUpdaterFiles)"
+      DestinationFolder="$(TargetDir)data\Updater"
+      SkipUnchangedFiles="true"
+      Condition="'@(_MpzfUpdaterFiles)' != ''" />
+  </Target>
+  <!-- После CopyRepoDataToPublish, чтобы data\Updater не затирался и всегда был свежий updater -->
+  <Target Name="CopyMpzfUpdaterToPublish" AfterTargets="CopyRepoDataToPublish" DependsOnTargets="_CollectMpzfUpdaterFiles;_ResolveDataPublishDir">
+    <MakeDir Directories="$(_DataPublishDir)data\Updater" Condition="'$(_DataPublishDir)' != ''" />
+    <Copy
+      SourceFiles="@(_MpzfUpdaterFiles)"
+      DestinationFolder="$(_DataPublishDir)data\Updater"
+      SkipUnchangedFiles="true"
+      Condition="'$(_DataPublishDir)' != '' and '@(_MpzfUpdaterFiles)' != ''" />
+  </Target>
   <ItemGroup>
     <Resource Include="Assets\Radiation_sign.ico" />
   </ItemGroup>

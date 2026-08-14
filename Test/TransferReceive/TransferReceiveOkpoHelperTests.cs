@@ -5,7 +5,7 @@ using static Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairin
 namespace Test.TransferReceive;
 
 /// <summary>
-/// Хелперы ОКПО без БД: SQL-variants, seed титулов, NormalizeNumber-фильтр.
+/// Хелперы ОКПО без БД: SQL-variants, seed титулов, 8 ↔ 8_5.
 /// </summary>
 public sealed class TransferReceiveOkpoHelperTests
 {
@@ -20,12 +20,61 @@ public sealed class TransferReceiveOkpoHelperTests
     }
 
     [Fact]
-    public void CounterpartProviderPointsToUs_UsesNormalizeNumber()
+    public void BuildOurOkpoSqlMatchVariants_IncludesEightDigitHeadOfExtended()
     {
-        var ourNorm = TransferReceiveTestAccess.NormalizeNumberForTests("10000001");
-        Assert.True(TransferReceiveTestAccess.CounterpartProviderPointsToUsForTests("010000001", ourNorm));
-        Assert.False(TransferReceiveTestAccess.CounterpartProviderPointsToUsForTests("20000002", ourNorm));
-        Assert.False(TransferReceiveTestAccess.CounterpartProviderPointsToUsForTests("-", ourNorm));
+        var variants = TransferReceiveTestAccess.BuildOurOkpoSqlMatchVariantsForTests("08624243_40044");
+        Assert.Contains("08624243_40044", variants);
+        Assert.Contains("08624243", variants);
+    }
+
+    [Fact]
+    public void CounterpartProviderPointsToUs_AcceptsFullMatchAndEightPrefix()
+    {
+        Assert.True(TransferReceiveTestAccess.CounterpartProviderPointsToUsForTests(
+            "010000001", "10000001"));
+        Assert.True(TransferReceiveTestAccess.CounterpartProviderPointsToUsForTests(
+            "08624243", "08624243_40044"));
+        Assert.True(TransferReceiveTestAccess.CounterpartProviderPointsToUsForTests(
+            "08624243_40044", "08624243"));
+        Assert.False(TransferReceiveTestAccess.CounterpartProviderPointsToUsForTests(
+            "20000002", "10000001"));
+        Assert.False(TransferReceiveTestAccess.CounterpartProviderPointsToUsForTests(
+            "-", "10000001"));
+    }
+
+    [Fact]
+    public void OkpoReferencesMatch_EightVsExtended_IsMatch_DifferentTail_IsNot()
+    {
+        Assert.True(TransferReceiveTestAccess.OkpoReferencesMatchForTests(
+            "08624243", "08624243_40044"));
+        Assert.True(TransferReceiveTestAccess.OkpoReferencesMatchForTests(
+            "08624243_40044", "08624243"));
+        Assert.True(TransferReceiveTestAccess.OkpoReferencesMatchForTests(
+            "08624243_40044", "08624243_40044"));
+        Assert.False(TransferReceiveTestAccess.OkpoReferencesMatchForTests(
+            "08624243_40044", "08624243_99999"));
+        Assert.False(TransferReceiveTestAccess.OkpoReferencesMatchForTests(
+            "08624243", "08624244_40044"));
+    }
+
+    [Fact]
+    public void SimilarityProviderOkpo_EightPrefix_IsNearAlmostExact()
+    {
+        Assert.Equal(
+            FieldMatchLevel.Near,
+            TransferReceiveTestAccess.SimilarityProviderOkpoLevelForTests(
+                "08624243", "08624243_40044", "08624243_40044"));
+        Assert.True(
+            TransferReceiveTestAccess.SimilarityProviderOkpoScoreForTests(
+                "08624243", "08624243_40044", "08624243_40044") >= 0.99);
+        Assert.Equal(
+            FieldMatchLevel.Exact,
+            TransferReceiveTestAccess.SimilarityProviderOkpoLevelForTests(
+                "08624243_40044", "08624243_40044", "08624243_40044"));
+        Assert.Equal(
+            FieldMatchLevel.Mismatch,
+            TransferReceiveTestAccess.SimilarityProviderOkpoLevelForTests(
+                "99999999", "08624243_40044", "08624243_40044"));
     }
 
     [Fact]
@@ -34,15 +83,23 @@ public sealed class TransferReceiveOkpoHelperTests
         var map = TransferReceiveTestAccess.SeedOkpoAliasMapFromTitlesForTests(
             new Dictionary<int, string>
             {
-                [10] = "00100",
-                [20] = "200",
-                [30] = "-"
+                [1] = "00100",
+                [2] = "200"
             });
 
         var key100 = TransferReceiveTestAccess.NormalizeNumberForTests("00100");
-        Assert.True(map.ContainsKey(key100));
-        Assert.Equal([10], map[key100]);
+        Assert.Contains(1, map[key100]);
         Assert.True(map.ContainsKey(TransferReceiveTestAccess.NormalizeNumberForTests("200")));
-        Assert.DoesNotContain(map.Keys, k => k.Length == 0);
+    }
+
+    [Fact]
+    public void SeedOkpoAliasMapFromTitles_IndexesEightDigitHeadOfExtended()
+    {
+        var map = TransferReceiveTestAccess.SeedOkpoAliasMapFromTitlesForTests(
+            new Dictionary<int, string> { [7] = "08624243_40044" });
+
+        Assert.Contains(7, map["08624243"]);
+        Assert.Contains(7, map[TransferReceiveTestAccess.NormalizeNumberForTests("08624243")]);
+        Assert.Contains(7, map[TransferReceiveTestAccess.NormalizeNumberForTests("08624243_40044")]);
     }
 }

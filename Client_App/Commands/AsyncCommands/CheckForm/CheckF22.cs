@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -24,6 +24,7 @@ using Models.Forms.Form1;
 using Models.Forms.Form2;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using Models.Helpers;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -404,7 +405,7 @@ public class CheckF22 : CheckBase
                     foreach (var key1 in report.Rows17)
                     {
                         var form = (Form17)key1;
-                        if (form.OperationCode_DB != "-" && !string.IsNullOrWhiteSpace(form.OperationCode_DB)) formHeader17 = form;
+                        if (!DashStringHelper.IsNullOrWhiteSpaceOrDash(form.OperationCode_DB)) formHeader17 = form;
                         form22New = FormConvert(form, formHeader17, repYear);
                         if (form22New != null)
                         {
@@ -421,7 +422,7 @@ public class CheckF22 : CheckBase
                     foreach (var key1 in report.Rows18)
                     {
                         var form = (Form18)key1;
-                        if (form.OperationCode_DB != "-" && !string.IsNullOrWhiteSpace(form.OperationCode_DB)) formHeader18 = form;
+                        if (!DashStringHelper.IsNullOrWhiteSpaceOrDash(form.OperationCode_DB)) formHeader18 = form;
                         form22New = FormConvert(form, formHeader18, repYear);
                         if (form22New != null)
                         {
@@ -567,8 +568,8 @@ public class CheckF22 : CheckBase
             if (string.IsNullOrWhiteSpace(form.FcpNumber_DB.Trim())) form.FcpNumber_DB = "-";
 
             TryParseDoubleExtended(form.Subsidy_DB.Replace("%", ""), out var subsidy);
-            if (form.CodeRAO_DB != "-" && !string.IsNullOrWhiteSpace(form.CodeRAO_DB)
-                && form.StatusRAO_DB != "-" && !string.IsNullOrWhiteSpace(form.StatusRAO_DB))
+            if (!DashStringHelper.IsNullOrWhiteSpaceOrDash(form.CodeRAO_DB)
+                && !DashStringHelper.IsNullOrWhiteSpaceOrDash(form.StatusRAO_DB))
             {
                 var key = (
                     KeyInclude1 ? form.StoragePlaceName_DB.Replace(" ", "").ToLower() : "",
@@ -1110,7 +1111,7 @@ public class CheckF22 : CheckBase
         {
             return null;    //the operation isn't from this year
         }
-        if ((string.IsNullOrWhiteSpace(form.CodeRAO_DB) || form.CodeRAO_DB.Trim()=="-") && (string.IsNullOrWhiteSpace(form.StatusRAO_DB) || form.StatusRAO_DB.Trim() == "-"))
+        if (DashStringHelper.IsNullOrWhiteSpaceOrDash(form.CodeRAO_DB) && DashStringHelper.IsNullOrWhiteSpaceOrDash(form.StatusRAO_DB))
         {
             return null;    //header line
         }
@@ -1160,7 +1161,7 @@ public class CheckF22 : CheckBase
         var formTrue = formHeader ?? form;
         //List<string> validOperationCodesPlus = new(["12", "18", "31", "32", "33", "34", "35", "36", "37", "38", "39", "52", "55"]);
         //List<string> ValidOperationCodesMinus = new(["21", "22", "23", "24", "25", "26", "27", "28", "29", "51"]);
-        if (form.CodeRAO_DB == "-" || string.IsNullOrWhiteSpace(form.CodeRAO_DB))
+        if (DashStringHelper.IsNullOrWhiteSpaceOrDash(form.CodeRAO_DB))
         {
             return null;    //empty line
         }
@@ -1172,7 +1173,7 @@ public class CheckF22 : CheckBase
         {
             return null;    //the operation isn't from this year
         }
-        if ((string.IsNullOrWhiteSpace(form.CodeRAO_DB) || form.CodeRAO_DB.Trim() == "-") && (string.IsNullOrWhiteSpace(form.StatusRAO_DB) || form.StatusRAO_DB.Trim() == "-"))
+        if (DashStringHelper.IsNullOrWhiteSpaceOrDash(form.CodeRAO_DB) && DashStringHelper.IsNullOrWhiteSpaceOrDash(form.StatusRAO_DB))
         {
             return null;    //header line
         }
@@ -1222,7 +1223,7 @@ public class CheckF22 : CheckBase
         var formTrue = formHeader ?? form;
         //List<string> validOperationCodesPlus = new(["12", "18", "31", "32", "33", "34", "35", "36", "37", "38", "39", "52", "55"]);
         //List<string> ValidOperationCodesMinus = new(["21", "22", "23", "24", "25", "26", "27", "28", "29", "51"]);
-        if (form.CodeRAO_DB == "-" || string.IsNullOrWhiteSpace(form.CodeRAO_DB))
+        if (DashStringHelper.IsNullOrWhiteSpaceOrDash(form.CodeRAO_DB))
         {
             return null;    //empty line
         }
@@ -1234,7 +1235,7 @@ public class CheckF22 : CheckBase
         {
             return null;    //the operation isn't from this year
         }
-        if ((string.IsNullOrWhiteSpace(form.CodeRAO_DB) || form.CodeRAO_DB.Trim() == "-") && (string.IsNullOrWhiteSpace(form.StatusRAO_DB) || form.StatusRAO_DB.Trim() == "-"))
+        if (DashStringHelper.IsNullOrWhiteSpaceOrDash(form.CodeRAO_DB) && DashStringHelper.IsNullOrWhiteSpaceOrDash(form.StatusRAO_DB))
         {
             return null;    //header line
         }
@@ -1280,7 +1281,7 @@ public class CheckF22 : CheckBase
     }
     private static Form22? FormConvert(Form22 form, string year)
     {
-        if ((string.IsNullOrWhiteSpace(form.CodeRAO_DB) || form.CodeRAO_DB.Trim() == "-") && (string.IsNullOrWhiteSpace(form.StatusRAO_DB) || form.StatusRAO_DB.Trim() == "-"))
+        if (DashStringHelper.IsNullOrWhiteSpaceOrDash(form.CodeRAO_DB) && DashStringHelper.IsNullOrWhiteSpaceOrDash(form.StatusRAO_DB))
         {
             return null;    //header line
         }
@@ -1471,9 +1472,9 @@ public class CheckF22 : CheckBase
     {
         if (receiver == FormGenericPlug || giver == FormGenericPlug) return FormGenericPlug;
         if (receiver == Form15Plug || giver == Form15Plug) return Form15Plug;
-        var receiverRealRaw = receiver == "-" || string.IsNullOrWhiteSpace(receiver)
+        var receiverRealRaw = DashStringHelper.IsNullOrWhiteSpaceOrDash(receiver)
             ? "0" : receiver;
-        var giverRealRaw = giver == "-" || string.IsNullOrWhiteSpace(giver)
+        var giverRealRaw = DashStringHelper.IsNullOrWhiteSpaceOrDash(giver)
             ? "0" : giver;
         double receiverReal = decimal.TryParse(receiverRealRaw, out var receiverDecimal)
             ? (double)receiverDecimal
@@ -1499,9 +1500,9 @@ public class CheckF22 : CheckBase
     {
         if (giver == FormGenericPlug || taker == FormGenericPlug) return FormGenericPlug;
         if (giver == Form15Plug || taker == Form15Plug) return Form15Plug;
-        var giverRealRaw = giver == "-" || string.IsNullOrWhiteSpace(giver)
+        var giverRealRaw = DashStringHelper.IsNullOrWhiteSpaceOrDash(giver)
             ? "0" : giver;
-        var takerRealRaw = taker == "-" || string.IsNullOrWhiteSpace(taker)
+        var takerRealRaw = DashStringHelper.IsNullOrWhiteSpaceOrDash(taker)
             ? "0" : taker;
         double takerReal = decimal.TryParse(takerRealRaw, out var takerDecimal)
             ? (double)takerDecimal
@@ -1582,9 +1583,9 @@ public class CheckF22 : CheckBase
         TryParseDoubleExtended(form2Val, out var val2);
         val1 = Math.Round(val1, 5);
         val2 = Math.Round(val2, 5);
-        if (!((form1Val == "-" && form2Val == "-")
-              || (val1 < 0.00001 && form2Val == "-")
-              || (form1Val == "-" && val2 < 0.00001)
+        if (!((DashStringHelper.IsDash(form1Val) && DashStringHelper.IsDash(form2Val))
+              || (val1 < 0.00001 && DashStringHelper.IsDash(form2Val))
+              || (DashStringHelper.IsDash(form1Val) && val2 < 0.00001)
               || val1 >= val2 * (1.0 - valB)
               && val2 >= val1 * (1.0 - valB)))
         {
@@ -1612,9 +1613,9 @@ public class CheckF22 : CheckBase
         TryParseDoubleExtended(form2Val, out var val2);
         val1 = Math.Round(val1, 5);
         val2 = Math.Round(val2, 5);
-        if (!((form1Val == "-" && form2Val == "-")
-              || (val1 < 0.00001 && form2Val == "-")
-              || (form1Val == "-" && val2 < 0.00001)
+        if (!((DashStringHelper.IsDash(form1Val) && DashStringHelper.IsDash(form2Val))
+              || (val1 < 0.00001 && DashStringHelper.IsDash(form2Val))
+              || (DashStringHelper.IsDash(form1Val) && val2 < 0.00001)
               || val1 >= val2 * (1.0 - valB)
               && val2 >= val1 * (1.0 - valB))
               && !(allowLesser && val1 > val2))

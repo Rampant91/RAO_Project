@@ -19,7 +19,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
 
 /// <summary>
 /// Выгрузка в .xlsx непарных операций приёма/передачи (формы 1.1–1.8).
-/// Реализована сверка для форм 1.1, 1.2 и 1.3: выбранная организация или вся БД.
+/// Реализована сверка для форм 1.1, 1.2, 1.3 и 1.4: выбранная организация или вся БД.
 /// </summary>
 public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBaseAllAsyncCommand
 {
@@ -216,7 +216,26 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
             CheckPackNumber: vm.CheckPackNumber13,
             CheckAggregateState: vm.CheckAggregateState13);
 
-        return TransferReceiveParamsSet.Create(form11, form12, form13);
+        var form14 = new TransferReceiveFormParams(
+            CheckOperationCode: vm.CheckOperationCode14,
+            CheckOperationDate: vm.CheckOperationDate14,
+            CheckPassportNumber: vm.CheckPassportNumber14,
+            CheckType: vm.CheckName14,
+            CheckRadionuclids: vm.CheckRadionuclids14,
+            CheckFactoryNumber: false,
+            CheckQuantity: false,
+            CheckActivity: vm.CheckActivity14,
+            CheckMass: vm.CheckMass14,
+            CheckCreatorOkpo: false,
+            CheckCreationDate: false,
+            CheckProviderOrRecieverOkpo: vm.CheckProviderOrRecieverOkpo14,
+            CheckPackNumber: vm.CheckPackNumber14,
+            CheckAggregateState: vm.CheckAggregateState14,
+            CheckSort: vm.CheckSort14,
+            CheckVolume: vm.CheckVolume14,
+            CheckActivityMeasurementDate: vm.CheckActivityMeasurementDate14);
+
+        return TransferReceiveParamsSet.Create(form11, form12, form13, form14);
     }
 
     #endregion
@@ -377,8 +396,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
         bool wholeDatabase = false)
     {
         var contentMessage = wholeDatabase
-            ? "Непарные операции приёма/передачи по формам 1.1–1.3 по всей базе не обнаружены."
-            : "Непарные операции приёма/передачи по формам 1.1–1.3 у выбранной организации не обнаружены.";
+            ? "Непарные операции приёма/передачи по формам 1.1–1.4 по всей базе не обнаружены."
+            : "Непарные операции приёма/передачи по формам 1.1–1.4 у выбранной организации не обнаружены.";
 
         await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
@@ -403,7 +422,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
                 ContentTitle = "Проверка приёма-передачи",
                 ContentHeader = "Уведомление",
                 ContentMessage =
-                    "Не выбрано ни одного поля для форм 1.1–1.3. Отметьте параметры хотя бы для одной формы — иначе проверку выполнять нечего.",
+                    "Не выбрано ни одного поля для форм 1.1–1.4. Отметьте параметры хотя бы для одной формы — иначе проверку выполнять нечего.",
                 MinWidth = 420,
                 MinHeight = 160,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner

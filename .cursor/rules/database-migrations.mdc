@@ -1,0 +1,23 @@
+---
+description: Правила миграции БД — запрет прямого Database.Migrate/MigrateAsync
+globs: "**/*.cs"
+alwaysApply: false
+---
+
+# Миграции БД: используй обёртку
+
+НИКОГДА не вызывай `db.Database.Migrate()` или `db.Database.MigrateAsync()` напрямую.
+
+```csharp
+// ❌ ЗАПРЕЩЕНО
+await db.Database.MigrateAsync(ct);
+db.Database.Migrate();
+
+// ✅ ПРАВИЛЬНО
+await db.MigrateDatabaseAsync(ct);
+db.MigrateDatabase();
+```
+
+Единственное место с прямым `Migrate*` — `DatabaseMigrationHelper.cs`.
+
+Подробности бага, матрица repair и куда дописывать новые кейсы — в XML-comments у `DatabaseMigrationHelper`. Новый silent-repair добавляй в `RepairMigrationHistory` / `RepairMigrationHistoryAsync` до вызова `database.Migrate*`.

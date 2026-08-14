@@ -13,6 +13,8 @@ internal static partial class TransferReceiveTestCases
         yield return O01_CandidateNotPointingToUs_InReport();
         yield return O02_OkpoAlias_Paired();
         yield return O03_EmptyProviderOkpo_InReport_NoClosest();
+        yield return O04_EightDigitPrefixOfExtended_Paired();
+        yield return O05_ExtendedVsEightDigitProvider_Paired();
     }
 
     /// <summary>O01. Candidate.ProviderOkpo не указывает на нас → unpaired.</summary>
@@ -59,4 +61,44 @@ internal static partial class TransferReceiveTestCases
         ExpectedUnpairedIds = [1],
         ExpectedClosest = new Dictionary<int, IReadOnlyDictionary<TransferReceiveField, bool>>()
     };
+
+    /// <summary>
+    /// O04. Наш ОКПО формата 8_5; контрагент в кол.19 указал только первые 8 цифр → пара.
+    /// </summary>
+    private static TransferReceiveTestCase O04_EightDigitPrefixOfExtended_Paired()
+    {
+        const string ourExtended = "08624243_40044";
+        const string shortHead = "08624243";
+        return new TransferReceiveTestCase
+        {
+            Name = "O04. Кол.19 = первые 8 цифр нашего 8_5 — пара.",
+            OurOkpo = ourExtended,
+            OurOps = [RowTransfer(1, orgOkpo: ourExtended, providerOkpo: DefaultCounterpartOkpo)],
+            CounterpartOps =
+            [
+                RowReceive(101, providerOkpo: shortHead)
+            ],
+            ExpectedUnpairedIds = []
+        };
+    }
+
+    /// <summary>
+    /// O05. Мы указали полный 8_5 контрагента; у него титул — 8 цифр (голова) → пара через индекс.
+    /// </summary>
+    private static TransferReceiveTestCase O05_ExtendedVsEightDigitProvider_Paired()
+    {
+        const string counterpartExtended = "20000002_12345";
+        const string counterpartHead = "20000002";
+        return new TransferReceiveTestCase
+        {
+            Name = "O05. Мы пишем 8_5 контрагента, титул у него — 8 цифр — пара.",
+            OurOkpo = DefaultOurOkpo,
+            OurOps = [RowTransfer(1, providerOkpo: counterpartExtended)],
+            CounterpartOps =
+            [
+                RowReceive(101, orgOkpo: counterpartHead, providerOkpo: DefaultOurOkpo)
+            ],
+            ExpectedUnpairedIds = []
+        };
+    }
 }

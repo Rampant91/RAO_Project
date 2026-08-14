@@ -39,6 +39,9 @@ public static class TransferReceiveScenarioRunner
     public static ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveFormParams DefaultForm12Params() =>
         ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveTestAccess.DefaultForm12ParamsForTests();
 
+    public static ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveFormParams DefaultForm14Params() =>
+        ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveTestAccess.DefaultForm14ParamsForTests();
+
     public static TransferReceiveScenarioResult Run(TransferReceiveTestCase testCase) =>
         ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveTestAccess.RunScenario(testCase);
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -6,6 +6,7 @@ using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
+using Models.Helpers;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -678,7 +679,7 @@ public abstract class CheckF12 : CheckBase
     {
         List<CheckError> result = new();
         var opDate = ReplaceNullAndTrim(forms[line].OperationDate_DB);
-        if (string.IsNullOrWhiteSpace(opDate) || opDate is "-")
+        if (DashStringHelper.IsNullOrWhiteSpaceOrDash(opDate))
         {
             result.Add(new CheckError
             {
@@ -1045,7 +1046,7 @@ public abstract class CheckF12 : CheckBase
         var creationDate = ReplaceNullAndTrim(forms[line].CreationDate_DB);
         const byte graphNumber = 9;
         string[] correctNotes = ["прим.", "прим", "примечание", "примечания"];
-        if (creationDate is "" or "-")
+        if (DashStringHelper.IsNullOrEmptyOrDash(creationDate))
         {
             result.Add(new CheckError
             {
@@ -1492,7 +1493,7 @@ public abstract class CheckF12 : CheckBase
     {
         List<CheckError> result = new();
         var docDate = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
-        if (docDate is "" or "-")
+        if (DashStringHelper.IsNullOrEmptyOrDash(docDate))
         {
             result.Add(new CheckError
             {
@@ -1847,7 +1848,7 @@ public abstract class CheckF12 : CheckBase
         var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         if (!applicableOperationCodes.Contains(opCode)) return result;
         var transporterOkpo = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
-        var valid = transporterOkpo is "-";
+        var valid = DashStringHelper.IsDash(transporterOkpo);
         if (!valid)
         {
             result.Add(new CheckError
@@ -1894,7 +1895,7 @@ public abstract class CheckF12 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика.",
-                IsCritical = !(dashesOperationCodes.Contains(operationCode) && transporterOkpo is "-")
+                IsCritical = !(dashesOperationCodes.Contains(operationCode) && DashStringHelper.IsDash(transporterOkpo))
             });
         }
         return result;
@@ -1923,7 +1924,7 @@ public abstract class CheckF12 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек.",
-                IsCritical = transporterOkpo is not "-"
+                IsCritical = !DashStringHelper.IsDash(transporterOkpo)
             });
         }
         return result;

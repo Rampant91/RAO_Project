@@ -316,17 +316,23 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
         public bool TryGetCandidates(TransferReceiveDto source, out CandidateSet set)
         {
-            var counterpartOkpo = NormalizeNumber(source.ProviderOrRecieverOkpo);
-            if (counterpartOkpo.Length == 0
-                || !_byOkpo.TryGetValue(counterpartOkpo, out var pools))
+            foreach (var key in OkpoIndexKeys(source.ProviderOrRecieverOkpo))
             {
-                set = CandidateSet.Empty;
-                return false;
+                if (!_byOkpo.TryGetValue(key, out var pools))
+                {
+                    continue;
+                }
+
+                // Передача ищет приём у контрагента и наоборот.
+                set = source.IsTransfer ? pools.Receives : pools.Transfers;
+                if (set.All.Count > 0)
+                {
+                    return true;
+                }
             }
 
-            // Передача ищет приём у контрагента и наоборот.
-            set = source.IsTransfer ? pools.Receives : pools.Transfers;
-            return set.All.Count > 0;
+            set = CandidateSet.Empty;
+            return false;
         }
 
         private sealed class OkpoDirectionSets(CandidateSet transfers, CandidateSet receives)
@@ -427,8 +433,11 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         if (options.CheckFactoryNumber) fields.Add(TransferReceiveField.FactoryNumber);
         if (options.CheckQuantity) fields.Add(TransferReceiveField.Quantity);
         if (options.CheckAggregateState) fields.Add(TransferReceiveField.AggregateState);
+        if (options.CheckSort) fields.Add(TransferReceiveField.Sort);
         if (options.CheckActivity) fields.Add(TransferReceiveField.Activity);
+        if (options.CheckActivityMeasurementDate) fields.Add(TransferReceiveField.ActivityMeasurementDate);
         if (options.CheckMass) fields.Add(TransferReceiveField.Mass);
+        if (options.CheckVolume) fields.Add(TransferReceiveField.Volume);
         if (options.CheckCreatorOkpo) fields.Add(TransferReceiveField.CreatorOkpo);
         if (options.CheckCreationDate) fields.Add(TransferReceiveField.CreationDate);
         if (options.CheckProviderOrRecieverOkpo) fields.Add(TransferReceiveField.ProviderOrRecieverOkpo);
@@ -457,8 +466,11 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             CreationDate = NormalizeDate(row.CreationDate),
             Activity = row.Activity ?? string.Empty,
             Mass = row.Mass ?? string.Empty,
+            Volume = row.Volume ?? string.Empty,
+            ActivityMeasurementDate = NormalizeDate(row.ActivityMeasurementDate),
             Quantity = GetQuantityForComparison(row),
-            AggregateState = row.AggregateState
+            AggregateState = row.AggregateState,
+            Sort = row.Sort
         };
     }
 
@@ -491,8 +503,11 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         FactoryNumber,
         Quantity,
         AggregateState,
+        Sort,
         Activity,
+        ActivityMeasurementDate,
         Mass,
+        Volume,
         CreatorOkpo,
         CreationDate,
         PackType,
@@ -517,8 +532,11 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         public required string CreationDate { get; init; }
         public required string Activity { get; init; }
         public required string Mass { get; init; }
+        public required string Volume { get; init; }
+        public required string ActivityMeasurementDate { get; init; }
         public required int Quantity { get; init; }
         public byte? AggregateState { get; init; }
+        public byte? Sort { get; init; }
     }
 
     #endregion

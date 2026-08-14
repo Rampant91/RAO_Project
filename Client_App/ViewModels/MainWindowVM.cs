@@ -71,6 +71,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 Settings.Default.Save();
 
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(CanRollbackPreviousRelease));
             }
         }
     }
@@ -81,6 +82,12 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         get => _developerModeEverEnabled;
         private set => SetProperty(ref _developerModeEverEnabled, value);
     }
+
+    /// <summary>
+    /// Доступен откат на previous (только режим отдела и есть бэкап).
+    /// </summary>
+    public bool CanRollbackPreviousRelease =>
+        AppLaunchedAtNorao && _updateService.CanRollback();
 
     #endregion
 
@@ -382,7 +389,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ConvertExcelToRaodb { get; set; }               //  Дополнительно -> Конвертер из Excel в .RAODB
     public ICommand ExcelExportCheckAllForms { get; set; }          //  Проверить все формы у организации
     public ICommand ExcelExportCheckPairingOfCode41 { get; set; }   //  Непарные операции 41 (org / вся БД, формы 1.1–1.6)
-    public ICommand ExcelExportCheckTransferReceive { get; set; }   //  Проверка операций приёма-передачи (org / вся БД, формы 1.1–1.3)
+    public ICommand ExcelExportCheckTransferReceive { get; set; }   //  Проверка операций приёма-передачи (org / вся БД, формы 1.1–1.4)
     public ICommand DeleteReports { get; set; }                     //  Удалить выбранную организацию (1.0, 2.0, 4.0)
 
     /// <summary>
@@ -517,6 +524,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand MaxGraphsLength { get; set; }                           //  Excel -> Максимальное число символов в каждой колонке
     public ICommand OpenCalculator { get; set; }                            //  Открыть калькулятор пересчёта активности
     public ICommand CheckForUpdates { get; set; }                           //  Сервис -> Проверить обновления
+    public ICommand RollbackPreviousRelease { get; set; }                   //  Сервис -> Откат (отдел)
     public ICommand OpenFile { get; set; }                                  //  Открыть файл
     public ICommand OpenFolder { get; set; }                                //  Открыть папку
     public ICommand SaveReports { get; set; }                               //  Сохраняет текущую базу, используется только для сохранения комментария формы
@@ -537,6 +545,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     {
         _updateService = new UpdateService();
         CheckForUpdates = new CheckForUpdatesAsyncCommand(_updateService, () => AppLaunchedAtNorao);
+        RollbackPreviousRelease = new RollbackPreviousReleaseAsyncCommand(_updateService);
 
         AddReports = new AddReportsAsyncCommand();
         ChangeForm = new ChangeFormAsyncCommand();
@@ -575,12 +584,10 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
         OnPropertyChanged(nameof(AppLaunchedAtNorao));
         OnPropertyChanged(nameof(DeveloperModeEverEnabled));
+        OnPropertyChanged(nameof(CanRollbackPreviousRelease));
 
-        if (!AppLaunchedAtNorao)
-        {
-            // Блокируем конструктор до завершения проверки обновлений
-            _updateService.CheckAndNotifyAsync(AppLaunchedAtNorao).Wait();
-        }
+        // Блокируем конструктор до завершения проверки (сайт или сетевая шара для отдела)
+        _updateService.CheckAndNotifyAsync(AppLaunchedAtNorao).Wait();
     }
 
     #endregion
