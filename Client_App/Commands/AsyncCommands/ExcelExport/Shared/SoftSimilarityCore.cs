@@ -1,5 +1,4 @@
 using System;
-using System.Globalization;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -13,17 +12,8 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Shared;
 /// </summary>
 public static partial class SoftSimilarityCore
 {
-    public static bool TryParseNumeric(string? value, out double result)
-    {
-        result = 0;
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return false;
-        }
-
-        var normalized = value.Trim().Replace(" ", string.Empty).Replace(',', '.');
-        return double.TryParse(normalized, NumberStyles.Float, CultureInfo.InvariantCulture, out result);
-    }
+    public static bool TryParseNumeric(string? value, out double result) =>
+        FormExponentialEquality.TryParse(value, out result);
 
     public static bool DatesEqualExact(string? left, string? right)
     {
@@ -106,6 +96,29 @@ public static partial class SoftSimilarityCore
             return FieldSimilarity.Exact;
         }
 
+        // Ведущие нули в числовых фрагментах (001↔1, 0001↔001, P-001↔P-1) — почти совпадение.
+        // Сравниваем без mapDigitZeroToO, иначе нули станут «о» и потеряют смысл.
+        var leftDigitsKeep = LightNormalizeId(leftRaw!, mapDigitZeroToO: false);
+        var rightDigitsKeep = LightNormalizeId(rightRaw!, mapDigitZeroToO: false);
+        if (EqualIgnoringLeadingZerosInDigitRuns(leftDigitsKeep, rightDigitsKeep))
+        {
+            return FieldSimilarity.Near(0.97);
+        }
+
+        // Перестановка двух соседних символов (4510↔4501) — типичная опечатка, не «почти точное» совпадение.
+        if (IsAdjacentCharacterTransposition(left, right)
+            || IsAdjacentCharacterTransposition(leftDigitsKeep, rightDigitsKeep))
+        {
+            return FieldSimilarity.Near(0.78);
+        }
+
+        // «196 06.2015» ↔ «196»: к номеру дописана дата MM.yyyy (через пробел/спецсимвол).
+        // Сравниваем без mapDigitZeroToO — иначе нули в дате станут «о».
+        if (MatchesTrailingMonthYearAlias(leftDigitsKeep, rightDigitsKeep))
+        {
+            return FieldSimilarity.Near(0.70);
+        }
+
         if (TryYearSuffixVariantMatch(left, right, out var yearScore))
         {
             return yearScore;
@@ -137,7 +150,121 @@ public static partial class SoftSimilarityCore
             return FieldSimilarity.Near(0.86);
         }
 
+        // Перестановка двух соседних символов в любом месте (ГХ↔ХГ) — типичная опечатка, не «сильное» отличие.
+        if (IsAdjacentCharacterTransposition(left, right)
+            || IsAdjacentCharacterTransposition(leftCore, rightCore)
+            || IsAdjacentCharacterTransposition(leftCore, right)
+            || IsAdjacentCharacterTransposition(left, rightCore))
+        {
+            return FieldSimilarity.Near(0.78);
+        }
+
+        // «ИМН-Г-1 (ОИСН)» ↔ «ОИСН»: в одном значении текст в скобках, в другом — только содержимое скобок.
+        if (MatchesParentheticalAlias(left, right)
+            || MatchesParentheticalAlias(leftCore, right)
+            || MatchesParentheticalAlias(left, rightCore)
+            || MatchesParentheticalAlias(leftCore, rightCore))
+        {
+            return FieldSimilarity.Near(0.70);
+        }
+
         return SimilarityByEditDistance(left, right);
+    }
+
+    /// <summary>
+    /// True, если одна строка равна содержимому скобок другой
+    /// (например «имн-г-1(оисн)» и «оисн»).
+    /// </summary>
+    public static bool MatchesParentheticalAlias(string left, string right)
+    {
+        if (left.Length == 0 || right.Length == 0)
+        {
+            return false;
+        }
+
+        if (TryExtractLastParentheticalContent(left, out var leftInner)
+            && string.Equals(leftInner, right, StringComparison.Ordinal))
+        {
+            return true;
+        }
+
+        if (TryExtractLastParentheticalContent(right, out var rightInner)
+            && string.Equals(rightInner, left, StringComparison.Ordinal))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>Содержимое последней пары скобок (после light-normalize пробелы уже сняты).</summary>
+    public static bool TryExtractLastParentheticalContent(string value, out string content)
+    {
+        content = string.Empty;
+        if (string.IsNullOrEmpty(value))
+        {
+            return false;
+        }
+
+        Match? last = null;
+        foreach (Match match in ParentheticalContentRegex().Matches(value))
+        {
+            last = match;
+        }
+
+        if (last is null || !last.Success)
+        {
+            return false;
+        }
+
+        content = last.Groups[1].Value;
+        return content.Length > 0;
+    }
+
+    /// <summary>
+    /// True, если строки одинаковой длины и отличаются только обменом двух соседних символов
+    /// (например «АИП-ЭДГХ» и «АИП-ЭДХГ»).
+    /// </summary>
+    public static bool IsAdjacentCharacterTransposition(string left, string right)
+    {
+        if (left.Length != right.Length || left.Length < 2)
+        {
+            return false;
+        }
+
+        var firstDiff = -1;
+        for (var i = 0; i < left.Length; i++)
+        {
+            if (left[i] == right[i])
+            {
+                continue;
+            }
+
+            if (firstDiff < 0)
+            {
+                firstDiff = i;
+                continue;
+            }
+
+            if (i != firstDiff + 1
+                || left[firstDiff] != right[i]
+                || left[i] != right[firstDiff])
+            {
+                return false;
+            }
+
+            for (var j = i + 1; j < left.Length; j++)
+            {
+                if (left[j] != right[j])
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     public static FieldSimilarity SimilarityRadionuclids(string leftNormJoined, string rightNormJoined)
@@ -269,6 +396,24 @@ public static partial class SoftSimilarityCore
             return FieldSimilarity.Mismatch(0.15);
         }
 
+        // 001↔1, 0001↔001 — почти совпадение (как у паспорта / зав.№).
+        if (EqualIgnoringLeadingZerosInDigitRuns(left, right))
+        {
+            return FieldSimilarity.Near(0.97);
+        }
+
+        // Перестановка двух соседних символов — опечатка (как у типа / паспорта / зав.№).
+        if (IsAdjacentCharacterTransposition(left, right))
+        {
+            return FieldSimilarity.Near(0.78);
+        }
+
+        // «196 06.2015» ↔ «196»: дописанная дата MM.yyyy.
+        if (MatchesTrailingMonthYearAlias(left, right))
+        {
+            return FieldSimilarity.Near(0.70);
+        }
+
         var leftParts = ParsePackParts(leftRaw);
         var rightParts = ParsePackParts(rightRaw);
         if (leftParts.Count > 0 && rightParts.Count > 0)
@@ -370,6 +515,36 @@ public static partial class SoftSimilarityCore
         return prev[m];
     }
 
+    /// <summary>
+    /// True, если после снятия ведущих нулей в каждом непрерывном числовом фрагменте
+    /// строки совпадают («001»↔«1», «0001»↔«001», «P-001»↔«P-1»).
+    /// Число из одних нулей нормализуется в «0».
+    /// </summary>
+    public static bool EqualIgnoringLeadingZerosInDigitRuns(string left, string right)
+    {
+        if (string.Equals(left, right, StringComparison.Ordinal))
+        {
+            return true;
+        }
+
+        if (left.Length == 0 || right.Length == 0)
+        {
+            return false;
+        }
+
+        return string.Equals(
+            StripLeadingZerosInDigitRuns(left),
+            StripLeadingZerosInDigitRuns(right),
+            StringComparison.Ordinal);
+    }
+
+    public static string StripLeadingZerosInDigitRuns(string value) =>
+        PackNumberTokenRegex().Replace(value, static match =>
+        {
+            var digits = match.Value.TrimStart('0');
+            return digits.Length == 0 ? "0" : digits;
+        });
+
     public static string LightNormalizeId(string value, bool mapDigitZeroToO = false)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -437,6 +612,46 @@ public static partial class SoftSimilarityCore
     {
         var match = ManufacturerFactoryPrefixRegex().Match(value);
         return match.Success ? match.Groups[1].Value : value;
+    }
+
+    /// <summary>
+    /// True, если одна строка — это другая плюс хвост даты «MM.yyyy»
+    /// (после light-normalize пробелы уже сняты: «196 06.2015» → «19606.2015»;
+    /// допустимы разделители , ; / - _ перед датой).
+    /// </summary>
+    public static bool MatchesTrailingMonthYearAlias(string left, string right)
+    {
+        if (left.Length == 0 || right.Length == 0)
+        {
+            return false;
+        }
+
+        if (TryStripTrailingMonthYear(left, out var leftCore)
+            && string.Equals(leftCore, right, StringComparison.Ordinal))
+        {
+            return true;
+        }
+
+        if (TryStripTrailingMonthYear(right, out var rightCore)
+            && string.Equals(rightCore, left, StringComparison.Ordinal))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static bool TryStripTrailingMonthYear(string value, out string core)
+    {
+        core = value;
+        var match = TrailingMonthYearSuffixRegex().Match(value);
+        if (!match.Success)
+        {
+            return false;
+        }
+
+        core = match.Groups[1].Value;
+        return core.Length > 0;
     }
 
     private static bool TryYearSuffixVariantMatch(string left, string right, out FieldSimilarity similarity)
@@ -537,8 +752,17 @@ public static partial class SoftSimilarityCore
     [GeneratedRegex(@"^(.+?)[/\-]\d{2}$")]
     private static partial Regex TrailingYearSuffixRegex();
 
+    /// <summary>
+    /// Хвост «MM.yyyy» с опциональным разделителем (пробел уже снят light-normalize).
+    /// </summary>
+    [GeneratedRegex(@"^(.+?)[,;/\-_]*(\d{2}\.\d{4})$")]
+    private static partial Regex TrailingMonthYearSuffixRegex();
+
     [GeneratedRegex(@"^([^\-]+?)(?:\-\d+(?:\.\d+)?)?$")]
     private static partial Regex TypeOptionalTailRegex();
+
+    [GeneratedRegex(@"\(([^()]*)\)")]
+    private static partial Regex ParentheticalContentRegex();
 
     [GeneratedRegex(@"\d+")]
     private static partial Regex PackNumberTokenRegex();

@@ -124,6 +124,80 @@ public sealed class Pairing41SoftSimilarityTests
     }
 
     [Fact]
+    public void Type_AdjacentCharSwap_IsNear()
+    {
+        var level = Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.Type,
+            new Pairing41Row { Id = 1, Type = "АИП-ЭДГХ" },
+            new Pairing41Row { Id = 2, Type = "АИП-ЭДХГ" });
+        Assert.Equal(FieldMatchLevel.Near, level);
+    }
+
+    [Fact]
+    public void TypeAndPackType_ParentheticalAlias_IsNear()
+    {
+        Assert.Equal(FieldMatchLevel.Near, Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.Type,
+            new Pairing41Row { Id = 1, Type = "ИМН-Г-1 (ОИСН)" },
+            new Pairing41Row { Id = 2, Type = "ОИСН" }));
+        Assert.Equal(FieldMatchLevel.Near, Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.PackType,
+            new Pairing41Row { Id = 1, PackType = "ИМН-Г-1 (ОИСН)" },
+            new Pairing41Row { Id = 2, PackType = "ОИСН" }));
+    }
+
+    [Fact]
+    public void PassportFactoryPack_LeadingZeros_AreNear()
+    {
+        Assert.Equal(FieldMatchLevel.Near, Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.PassportNumber,
+            new Pairing41Row { Id = 1, PasNum = "001" },
+            new Pairing41Row { Id = 2, PasNum = "1" }));
+        Assert.Equal(FieldMatchLevel.Near, Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.FactoryNumber,
+            new Pairing41Row { Id = 1, FacNum = "0001" },
+            new Pairing41Row { Id = 2, FacNum = "001" }));
+        Assert.Equal(FieldMatchLevel.Near, Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.PackNumber,
+            new Pairing41Row { Id = 1, PackNumber = "001" },
+            new Pairing41Row { Id = 2, PackNumber = "1" }));
+    }
+
+    [Fact]
+    public void PassportFactoryPack_AdjacentCharSwap_IsNear()
+    {
+        Assert.Equal(FieldMatchLevel.Near, Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.PassportNumber,
+            new Pairing41Row { Id = 1, PasNum = "4510" },
+            new Pairing41Row { Id = 2, PasNum = "4501" }));
+        Assert.Equal(FieldMatchLevel.Near, Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.FactoryNumber,
+            new Pairing41Row { Id = 1, FacNum = "4510" },
+            new Pairing41Row { Id = 2, FacNum = "4501" }));
+        Assert.Equal(FieldMatchLevel.Near, Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.PackNumber,
+            new Pairing41Row { Id = 1, PackNumber = "4510" },
+            new Pairing41Row { Id = 2, PackNumber = "4501" }));
+    }
+
+    [Fact]
+    public void PassportFactoryPack_TrailingMonthYear_IsNear()
+    {
+        Assert.Equal(FieldMatchLevel.Near, Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.PassportNumber,
+            new Pairing41Row { Id = 1, PasNum = "196 06.2015" },
+            new Pairing41Row { Id = 2, PasNum = "196" }));
+        Assert.Equal(FieldMatchLevel.Near, Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.FactoryNumber,
+            new Pairing41Row { Id = 1, FacNum = "513 11.2014" },
+            new Pairing41Row { Id = 2, FacNum = "513" }));
+        Assert.Equal(FieldMatchLevel.Near, Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.PackNumber,
+            new Pairing41Row { Id = 1, PackNumber = "196,06.2015" },
+            new Pairing41Row { Id = 2, PackNumber = "196" }));
+    }
+
+    [Fact]
     public void Activity_Within10Percent_IsExact_Outside_IsMismatchOrNear()
     {
         var within = Pairing41TestAccess.SimilarityLevel11To15ForTests(

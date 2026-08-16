@@ -193,6 +193,141 @@ public sealed class TransferReceiveSoftSimilarityTests
     }
 
     [Fact]
+    public void Type_AdjacentCharSwap_Anywhere_IsNear()
+    {
+        // Пример из практики: перепутаны две соседние буквы в конце.
+        var endSwap = TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.Type,
+            new TransferReceiveRow { Id = 1, OpCode = "21", Type = "АИП-ЭДГХ", IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", Type = "АИП-ЭДХГ", IsTransfer = false });
+        Assert.Equal(FieldMatchLevel.Near, endSwap);
+
+        // Та же опечатка может быть в середине строки.
+        var midSwap = TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.Type,
+            new TransferReceiveRow { Id = 1, OpCode = "21", Type = "АИПГХ-ЭД", IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", Type = "АИПХГ-ЭД", IsTransfer = false });
+        Assert.Equal(FieldMatchLevel.Near, midSwap);
+
+        Assert.True(SoftSimilarityCore.IsAdjacentCharacterTransposition("АИП-ЭДГХ", "АИП-ЭДХГ"));
+        Assert.False(SoftSimilarityCore.IsAdjacentCharacterTransposition("АИП-ЭДГХ", "АИП-ЭДГY"));
+    }
+
+    [Fact]
+    public void TypeAndPackType_ParentheticalAlias_IsNear()
+    {
+        var typeLevel = TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.Type,
+            new TransferReceiveRow { Id = 1, OpCode = "21", Type = "ИМН-Г-1 (ОИСН)", IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", Type = "ОИСН", IsTransfer = false });
+        Assert.Equal(FieldMatchLevel.Near, typeLevel);
+
+        var packLevel = TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.PackType,
+            new TransferReceiveRow { Id = 1, OpCode = "21", PackType = "ИМН-Г-1 (ОИСН)", IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", PackType = "ОИСН", IsTransfer = false });
+        Assert.Equal(FieldMatchLevel.Near, packLevel);
+
+        Assert.True(SoftSimilarityCore.MatchesParentheticalAlias(
+            SoftSimilarityCore.LightNormalizeId("ИМН-Г-1 (ОИСН)", mapDigitZeroToO: true),
+            SoftSimilarityCore.LightNormalizeId("ОИСН", mapDigitZeroToO: true)));
+        Assert.False(SoftSimilarityCore.MatchesParentheticalAlias(
+            SoftSimilarityCore.LightNormalizeId("ИМН-Г-1 (ОИСН)", mapDigitZeroToO: true),
+            SoftSimilarityCore.LightNormalizeId("ДРУГОЕ", mapDigitZeroToO: true)));
+    }
+
+    [Theory]
+    [InlineData("001", "1")]
+    [InlineData("0001", "001")]
+    [InlineData("0001", "1")]
+    [InlineData("P-001", "P-1")]
+    public void PassportFactoryPack_LeadingZeros_AreNear(string left, string right)
+    {
+        Assert.Equal(FieldMatchLevel.Near, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.PassportNumber,
+            new TransferReceiveRow { Id = 1, OpCode = "21", PasNum = left, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", PasNum = right, IsTransfer = false }));
+
+        Assert.Equal(FieldMatchLevel.Near, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.FactoryNumber,
+            new TransferReceiveRow { Id = 1, OpCode = "21", FacNum = left, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", FacNum = right, IsTransfer = false }));
+
+        Assert.Equal(FieldMatchLevel.Near, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.PackNumber,
+            new TransferReceiveRow { Id = 1, OpCode = "21", PackNumber = left, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", PackNumber = right, IsTransfer = false }));
+
+        Assert.True(SoftSimilarityCore.EqualIgnoringLeadingZerosInDigitRuns(
+            SoftSimilarityCore.LightNormalizeId(left),
+            SoftSimilarityCore.LightNormalizeId(right)));
+    }
+
+    [Fact]
+    public void Passport_LeadingZeros_DifferentNumber_IsMismatch()
+    {
+        // После снятия нулей: «1» vs «100» — разные числа, не Near по ведущим нулям.
+        var level = TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.PassportNumber,
+            new TransferReceiveRow { Id = 1, OpCode = "21", PasNum = "001", IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", PasNum = "100", IsTransfer = false });
+        Assert.Equal(FieldMatchLevel.Mismatch, level);
+        Assert.False(SoftSimilarityCore.EqualIgnoringLeadingZerosInDigitRuns("001", "100"));
+    }
+
+    [Theory]
+    [InlineData("4510", "4501")]
+    [InlineData("AB12", "AB21")]
+    public void PassportFactoryPack_AdjacentCharSwap_IsNear(string left, string right)
+    {
+        Assert.Equal(FieldMatchLevel.Near, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.PassportNumber,
+            new TransferReceiveRow { Id = 1, OpCode = "21", PasNum = left, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", PasNum = right, IsTransfer = false }));
+
+        Assert.Equal(FieldMatchLevel.Near, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.FactoryNumber,
+            new TransferReceiveRow { Id = 1, OpCode = "21", FacNum = left, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", FacNum = right, IsTransfer = false }));
+
+        Assert.Equal(FieldMatchLevel.Near, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.PackNumber,
+            new TransferReceiveRow { Id = 1, OpCode = "21", PackNumber = left, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", PackNumber = right, IsTransfer = false }));
+
+        Assert.True(SoftSimilarityCore.IsAdjacentCharacterTransposition(
+            SoftSimilarityCore.LightNormalizeId(left),
+            SoftSimilarityCore.LightNormalizeId(right)));
+    }
+
+    [Theory]
+    [InlineData("196 06.2015", "196")]
+    [InlineData("513 11.2014", "513")]
+    [InlineData("196,06.2015", "196")]
+    [InlineData("513/11.2014", "513")]
+    public void PassportFactoryPack_TrailingMonthYear_IsNear(string withDate, string bare)
+    {
+        Assert.Equal(FieldMatchLevel.Near, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.PassportNumber,
+            new TransferReceiveRow { Id = 1, OpCode = "21", PasNum = withDate, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", PasNum = bare, IsTransfer = false }));
+
+        Assert.Equal(FieldMatchLevel.Near, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.FactoryNumber,
+            new TransferReceiveRow { Id = 1, OpCode = "21", FacNum = withDate, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", FacNum = bare, IsTransfer = false }));
+
+        Assert.Equal(FieldMatchLevel.Near, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.PackNumber,
+            new TransferReceiveRow { Id = 1, OpCode = "21", PackNumber = withDate, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", PackNumber = bare, IsTransfer = false }));
+
+        var left = SoftSimilarityCore.LightNormalizeId(withDate, mapDigitZeroToO: false);
+        var right = SoftSimilarityCore.LightNormalizeId(bare, mapDigitZeroToO: false);
+        Assert.True(SoftSimilarityCore.MatchesTrailingMonthYearAlias(left, right));
+    }
+
+    [Fact]
     public void Radionuclids_MissingNuclide_IsMismatch()
     {
         var level = TransferReceiveTestAccess.SimilarityLevelForTests(

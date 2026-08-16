@@ -46,12 +46,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
 
     private static readonly HashSet<string> TransferCodesForm11To14 = new(StringComparer.Ordinal)
     {
-        "21", "22", "25", "27", "28", "29"
+        "21", "22", "25", "26", "27", "28", "29"
     };
 
     private static readonly HashSet<string> ReceiveCodesForm11To14 = new(StringComparer.Ordinal)
     {
-        "31", "32", "35", "37", "38", "39"
+        "31", "32", "35", "36", "37", "38", "39"
     };
 
     /// <summary>
@@ -235,7 +235,21 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
             CheckVolume: vm.CheckVolume14,
             CheckActivityMeasurementDate: vm.CheckActivityMeasurementDate14);
 
-        return TransferReceiveParamsSet.Create(form11, form12, form13, form14);
+        var form15 = new TransferReceiveFormParams(
+            CheckOperationCode: vm.CheckOperationCode15,
+            CheckOperationDate: vm.CheckOperationDate15,
+            CheckPassportNumber: vm.CheckPassportNumber15,
+            CheckType: vm.CheckType15,
+            CheckRadionuclids: vm.CheckRadionuclids15,
+            CheckFactoryNumber: vm.CheckFactoryNumber15,
+            CheckQuantity: vm.CheckQuantity15,
+            CheckActivity: vm.CheckActivity15,
+            CheckCreatorOkpo: false,
+            CheckCreationDate: vm.CheckCreationDate15,
+            CheckProviderOrRecieverOkpo: vm.CheckProviderOrRecieverOkpo15,
+            CheckPackNumber: vm.CheckPackNumber15);
+
+        return TransferReceiveParamsSet.Create(form11, form12, form13, form14, form15);
     }
 
     #endregion

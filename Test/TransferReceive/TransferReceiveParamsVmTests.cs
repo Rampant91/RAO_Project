@@ -158,6 +158,10 @@ public class TransferReceiveParamsVmTests
         Assert.True(set.Form14.CheckMass);
         Assert.False(set.Form14.CheckFactoryNumber);
         Assert.False(set.Form14.CheckQuantity);
+        Assert.True(set.Form15.CheckQuantity);
+        Assert.True(set.Form15.CheckActivity);
+        Assert.False(set.Form15.CheckCreatorOkpo);
+        Assert.True(set.Form15.CheckCreationDate);
     }
 
     [Fact]
@@ -187,5 +191,29 @@ public class TransferReceiveParamsVmTests
         Assert.True(p.CheckMass);
         Assert.True(p.CheckAggregateState);
         Assert.True(p.CheckType);
+    }
+
+    [Fact]
+    public void CheckAll15_DefaultsToTrue_AndUncheckingOneField_MakesIndeterminate()
+    {
+        var vm = new GetTransferReceiveParamsVM();
+        Assert.True(vm.CheckAll15);
+        Assert.True(vm.CheckQuantity15);
+
+        vm.CheckType15 = false;
+        Assert.Null(vm.CheckAll15);
+    }
+
+    [Fact]
+    public void DefaultForm15Params_IsEnabled_AndDisablesCreatorOkpo()
+    {
+        var p = ExcelExportCheckTransferReceiveAsyncCommand.DefaultForm15Params();
+        Assert.True(ExcelExportCheckTransferReceiveAsyncCommand.IsFormCheckEnabled(p));
+        Assert.True(p.CheckQuantity);
+        Assert.True(p.CheckActivity);
+        Assert.True(p.CheckFactoryNumber);
+        Assert.False(p.CheckCreatorOkpo);
+        Assert.True(p.CheckCreationDate);
+        Assert.True(p.CheckPackNumber);
     }
 }

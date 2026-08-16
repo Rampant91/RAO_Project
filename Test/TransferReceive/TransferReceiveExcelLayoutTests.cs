@@ -138,6 +138,21 @@ public sealed class TransferReceiveExcelLayoutTests
             TransferReceiveField.PackNumber, TransferReceiveSheetLayout.Form14));
         Assert.Null(TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
             TransferReceiveField.FactoryNumber, TransferReceiveSheetLayout.Form14));
+
+        // 1.5: как 1.1 без ОКПО изготовителя (17 колонок).
+        Assert.Equal(17, TransferReceiveTestAccess.SourceColCountForLayoutForTests(TransferReceiveSheetLayout.Form15));
+        Assert.Equal(12, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.Quantity, TransferReceiveSheetLayout.Form15));
+        Assert.Equal(13, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.Activity, TransferReceiveSheetLayout.Form15));
+        Assert.Equal(14, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.CreationDate, TransferReceiveSheetLayout.Form15));
+        Assert.Equal(15, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.ProviderOrRecieverOkpo, TransferReceiveSheetLayout.Form15));
+        Assert.Equal(16, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.PackNumber, TransferReceiveSheetLayout.Form15));
+        Assert.Null(TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.CreatorOkpo, TransferReceiveSheetLayout.Form15));
     }
 
     [Fact]

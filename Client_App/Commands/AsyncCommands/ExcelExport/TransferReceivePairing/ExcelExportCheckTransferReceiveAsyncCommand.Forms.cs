@@ -17,7 +17,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Form11 = 11,
         Form12 = 12,
         Form13 = 13,
-        Form14 = 14
+        Form14 = 14,
+        Form15 = 15
     }
 
     /// <summary>Вариант колонок Excel для формы.</summary>
@@ -33,7 +34,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Form13,
 
         /// <summary>1.4: наименование, вид, объём, дата изм. активности, масса, агр. состояние.</summary>
-        Form14
+        Form14,
+
+        /// <summary>1.5: как 1.1 без ОКПО изготовителя (+ коды 26↔36).</summary>
+        Form15
     }
 
     /// <summary>Описание реализованной формы: лист Excel, номер, стиль колонок.</summary>
@@ -56,7 +60,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         new(TransferReceiveFormId.Form11, "1.1", "Форма 1.1", TransferReceiveSheetLayout.Form11),
         new(TransferReceiveFormId.Form12, "1.2", "Форма 1.2", TransferReceiveSheetLayout.Form12),
         new(TransferReceiveFormId.Form13, "1.3", "Форма 1.3", TransferReceiveSheetLayout.Form13),
-        new(TransferReceiveFormId.Form14, "1.4", "Форма 1.4", TransferReceiveSheetLayout.Form14)
+        new(TransferReceiveFormId.Form14, "1.4", "Форма 1.4", TransferReceiveSheetLayout.Form14),
+        new(TransferReceiveFormId.Form15, "1.5", "Форма 1.5", TransferReceiveSheetLayout.Form15)
     ];
 
     public static TransferReceiveFormDescriptor GetFormDescriptor(TransferReceiveFormId id) =>
@@ -91,7 +96,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         bool CheckActivityMeasurementDate = false);
 
     /// <summary>
-    /// Набор параметров диалога по реализованным формам (порядок: 1.1 → 1.2 → 1.3 → 1.4).
+    /// Набор параметров диалога по реализованным формам (порядок: 1.1 → 1.2 → 1.3 → 1.4 → 1.5).
     /// </summary>
     public sealed class TransferReceiveParamsSet
     {
@@ -99,32 +104,36 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             TransferReceiveFormParams form11,
             TransferReceiveFormParams form12,
             TransferReceiveFormParams form13,
-            TransferReceiveFormParams? form14 = null)
+            TransferReceiveFormParams? form14 = null,
+            TransferReceiveFormParams? form15 = null)
         {
             Form11 = form11;
             Form12 = form12;
             Form13 = form13;
             Form14 = form14 ?? DisabledFormParams();
+            Form15 = form15 ?? DisabledFormParams();
         }
 
-        /// <summary>Фабрика с явным порядком форм 1.1 → 1.2 → 1.3 → 1.4.</summary>
+        /// <summary>Фабрика с явным порядком форм 1.1 → 1.2 → 1.3 → 1.4 → 1.5.</summary>
         public static TransferReceiveParamsSet Create(
             TransferReceiveFormParams form11,
             TransferReceiveFormParams form12,
             TransferReceiveFormParams form13,
-            TransferReceiveFormParams form14) =>
-            new(form11, form12, form13, form14);
+            TransferReceiveFormParams form14,
+            TransferReceiveFormParams form15) =>
+            new(form11, form12, form13, form14, form15);
 
-        /// <summary>Обратная совместимость: слоты 1.2 и 1.4 выключены.</summary>
+        /// <summary>Обратная совместимость: слоты 1.2, 1.4 и 1.5 выключены.</summary>
         public static TransferReceiveParamsSet Form11And13(
             TransferReceiveFormParams form11,
             TransferReceiveFormParams form13) =>
-            new(form11, DisabledFormParams(), form13, DisabledFormParams());
+            new(form11, DisabledFormParams(), form13, DisabledFormParams(), DisabledFormParams());
 
         public TransferReceiveFormParams Form11 { get; }
         public TransferReceiveFormParams Form12 { get; }
         public TransferReceiveFormParams Form13 { get; }
         public TransferReceiveFormParams Form14 { get; }
+        public TransferReceiveFormParams Form15 { get; }
 
         public TransferReceiveFormParams GetParams(TransferReceiveFormId id) =>
             id switch
@@ -133,6 +142,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 TransferReceiveFormId.Form12 => Form12,
                 TransferReceiveFormId.Form13 => Form13,
                 TransferReceiveFormId.Form14 => Form14,
+                TransferReceiveFormId.Form15 => Form15,
                 _ => throw new ArgumentOutOfRangeException(nameof(id), id, "Нет слота параметров для формы.")
             };
 
@@ -205,6 +215,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             CheckSort: true,
             CheckVolume: true,
             CheckActivityMeasurementDate: true);
+
+    /// <summary>
+    /// Параметры формы 1.5 по умолчанию: как 1.1, но без ОКПО изготовителя (поля нет в форме).
+    /// </summary>
+    public static TransferReceiveFormParams DefaultForm15Params() =>
+        new(CheckCreatorOkpo: false);
 
     /// <summary>
     /// Форма участвует в выгрузке, если выбрано хотя бы одно поле.

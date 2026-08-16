@@ -22,6 +22,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
         public static TransferReceiveFormParams DefaultForm14ParamsForTests() => DefaultForm14Params();
 
+        public static TransferReceiveFormParams DefaultForm15ParamsForTests() => DefaultForm15Params();
+
         public static TransferReceiveParamsSet MapParamsFromDialogVmForTests(
             Client_App.ViewModels.Messages.GetTransferReceiveParamsVM vm) =>
             MapParamsFromDialogVm(vm);
