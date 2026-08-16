@@ -1,13 +1,13 @@
 using System.Collections.Generic;
-using Client_App.Commands.AsyncCommands.ExcelExport.Shared;
-using Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.Testing;
-using static Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.Testing;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
 
 namespace Test.TransferReceive;
 
 /// <summary>
 /// Группа F15 — форма 1.5: как 1.1 без ОКПО изготовителя; коды включают 26↔36; qty-drain при пустых сериях.
-/// Общие правила (даты, нормализация, soft-match) покрыты сценариями 1.1 — здесь только дельты и smoke.
+/// Общие правила (даты, нормализация, soft-match) покрыты сценариями 1.1 — здесь дельты и минимальный smoke.
 /// </summary>
 internal static partial class TransferReceiveTestCases
 {
@@ -17,10 +17,8 @@ internal static partial class TransferReceiveTestCases
         yield return F15_A01_NoCounterpart_Unpaired();
         yield return F15_C01_Codes26_36_Paired();
         yield return F15_C02_WrongCodePair_Unpaired();
-        yield return F15_Q01_EmptySerial_QtyEqual_Paired();
-        yield return F15_Q02_EmptySerial_QtyPartial_InReport();
+        yield return F15_Q01_EmptySerialMarkers_QtyEqual_Paired();
         yield return F15_Act01_ExponentialEqualsDecimal_Paired();
-        yield return F15_O01_WrongProviderOkpo_Unpaired();
         yield return F15_H01_PassportMismatch_ClosestLevels();
     }
 
@@ -94,7 +92,7 @@ internal static partial class TransferReceiveTestCases
             IsTransfer = false
         };
 
-    /// <summary>F15_V01. Идеальная пара 21↔31 → непарных нет.</summary>
+    /// <summary>F15_V01. Идеальная пара 21↔31 → непарных нет (smoke конвейера 1.5).</summary>
     private static TransferReceiveTestCase F15_V01_IdealPair_EmptyResult() => new()
     {
         Name = "F15_V01. Идеальная пара 21↔31 — непарных нет.",
@@ -118,7 +116,7 @@ internal static partial class TransferReceiveTestCases
         ExpectedUnpairedIds = [1]
     };
 
-    /// <summary>F15_C01. Пара кодов 26↔36 → парные.</summary>
+    /// <summary>F15_C01. Пара кодов 26↔36 → парные (дельта 1.5).</summary>
     private static TransferReceiveTestCase F15_C01_Codes26_36_Paired() => new()
     {
         Name = "F15_C01. Коды 26↔36 — пара.",
@@ -152,31 +150,22 @@ internal static partial class TransferReceiveTestCases
         ExpectedClosestCandidateIds = new Dictionary<int, int> { [1] = 101 }
     };
 
-    /// <summary>F15_Q01. Пустые паспорт+зав.№, qty 8↔8 → пара.</summary>
-    private static TransferReceiveTestCase F15_Q01_EmptySerial_QtyEqual_Paired() => new()
+    /// <summary>
+    /// F15_Q01. Заглушки «н.д.» / «нет данных» как пустые серии, qty 8↔8 → пара
+    /// (общий qty-drain на DefaultForm15Params; маркеры — дельта к Q на «-»).
+    /// </summary>
+    private static TransferReceiveTestCase F15_Q01_EmptySerialMarkers_QtyEqual_Paired() => new()
     {
-        Name = "F15_Q01. Пустые серии, qty 8↔8 — пара.",
+        Name = "F15_Q01. Пустые серии (н.д. / нет данных), qty 8↔8 — пара.",
         FormNum = "1.5",
         Params = DefaultForm15Params(),
         OurOkpo = DefaultOurOkpo,
-        OurOps = [Form15Transfer(1, pasNum: "-", facNum: "-", quantity: 8)],
-        CounterpartOps = [Form15Receive(101, pasNum: "-", facNum: "-", quantity: 8)],
+        OurOps = [Form15Transfer(1, pasNum: "н.д.", facNum: "нет данных", quantity: 8)],
+        CounterpartOps = [Form15Receive(101, pasNum: "н/д", facNum: "н.д.", quantity: 8)],
         ExpectedUnpairedIds = []
     };
 
-    /// <summary>F15_Q02. Пустые серии, qty 8↔5 → остаток в отчёте.</summary>
-    private static TransferReceiveTestCase F15_Q02_EmptySerial_QtyPartial_InReport() => new()
-    {
-        Name = "F15_Q02. Пустые серии, qty 8↔5 — остаток в отчёте.",
-        FormNum = "1.5",
-        Params = DefaultForm15Params(),
-        OurOkpo = DefaultOurOkpo,
-        OurOps = [Form15Transfer(1, pasNum: "-", facNum: "-", quantity: 8)],
-        CounterpartOps = [Form15Receive(101, pasNum: "-", facNum: "-", quantity: 5)],
-        ExpectedUnpairedIds = [1]
-    };
-
-    /// <summary>F15_Act01. Активность 1000 ↔ 1e+3 → пара.</summary>
+    /// <summary>F15_Act01. Активность 1000 ↔ 1e+3 → пара (FormExponentialEquality на 1.5).</summary>
     private static TransferReceiveTestCase F15_Act01_ExponentialEqualsDecimal_Paired() => new()
     {
         Name = "F15_Act01. Активность 1000 ↔ 1e+3 — пара.",
@@ -186,18 +175,6 @@ internal static partial class TransferReceiveTestCases
         OurOps = [Form15Transfer(1, activity: "1000")],
         CounterpartOps = [Form15Receive(101, activity: "1e+3")],
         ExpectedUnpairedIds = []
-    };
-
-    /// <summary>F15_O01. Неверный ОКПО пост/пол. → непарная.</summary>
-    private static TransferReceiveTestCase F15_O01_WrongProviderOkpo_Unpaired() => new()
-    {
-        Name = "F15_O01. Неверный ОКПО пост/пол. — непарная.",
-        FormNum = "1.5",
-        Params = DefaultForm15Params(),
-        OurOkpo = DefaultOurOkpo,
-        OurOps = [Form15Transfer(1)],
-        CounterpartOps = [Form15Receive(101, providerOkpo: "99999999")],
-        ExpectedUnpairedIds = [1]
     };
 
     /// <summary>F15_H01. Разный паспорт → closest: Passport Mismatch.</summary>

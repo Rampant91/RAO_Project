@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.Shared;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
 
 /// <summary>
 /// Общий взвешенный перебор кандидатов closest (soft-score + tie-break по дате и Id).
@@ -12,6 +12,12 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Shared;
 /// </summary>
 public static class WeightedClosestMatchEngine
 {
+    /// <summary>
+    /// Потолок «Схожесть, %» для ближайшего совпадения непарной строки.
+    /// 100 не показываем: это не подтверждённая пара, а оценка похожести.
+    /// </summary>
+    public const int MaxConfidencePercent = 99;
+
     public sealed record BestMatch<TCandidate, TField>(
         TCandidate Candidate,
         IReadOnlyDictionary<TField, FieldMatchLevel> FieldLevels,
@@ -230,8 +236,7 @@ public static class WeightedClosestMatchEngine
                     levelMap[fields[i]] = bestLevels[i];
                 }
 
-                var confidence = (int)Math.Round(100.0 * bestScore / bestMaxWeight);
-                confidence = Math.Clamp(confidence, 0, 100);
+                var confidence = ToConfidencePercent(bestScore, bestMaxWeight);
                 bag[getSourceId(source)] = new BestMatch<TCandidate, TField>(
                     bestCandidate, levelMap, bestScore, bestMaxWeight, confidence);
             }
@@ -255,5 +260,19 @@ public static class WeightedClosestMatchEngine
         }
 
         return new Dictionary<int, BestMatch<TCandidate, TField>>(bag);
+    }
+
+    /// <summary>
+    /// Нормирует взвешенный soft-score в проценты 0…<see cref="MaxConfidencePercent"/>.
+    /// </summary>
+    public static int ToConfidencePercent(double weightedScore, double maxWeight)
+    {
+        if (maxWeight <= 0)
+        {
+            return 0;
+        }
+
+        var confidence = (int)Math.Round(100.0 * weightedScore / maxWeight);
+        return Math.Clamp(confidence, 0, MaxConfidencePercent);
     }
 }

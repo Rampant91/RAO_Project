@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing;
 
 public partial class ExcelExportCheckTransferReceiveAsyncCommand
 {

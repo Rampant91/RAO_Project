@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
-using Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.Testing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.Testing;
 using Xunit;
-using static Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
 
 namespace Test.TransferReceive;
 
@@ -195,5 +195,77 @@ public sealed class TransferReceiveFormEnableTests
             OurOkpo, our11, [], [], [], [], [], pairing);
 
         Assert.Equal([1], unpaired11);
+    }
+
+    [Fact]
+    public void Form15Disabled_SkipsUnpairedEvenWhenOpsPresent()
+    {
+        var pairing = TransferReceiveParamsSet.Create(
+            DisabledFormParams(),
+            DisabledFormParams(),
+            DisabledFormParams(),
+            DisabledFormParams(),
+            DisabledFormParams());
+
+        var our15 = new List<TransferReceiveRow>
+        {
+            new()
+            {
+                Id = 15,
+                OpCode = "26",
+                OpDate = OpDate,
+                PasNum = "P-15",
+                FacNum = "F-15",
+                Type = "T",
+                Radionuclids = "Cs-137",
+                PackNumber = "U",
+                ProviderOrRecieverOkpo = CounterpartOkpo,
+                Activity = "1e6",
+                CreationDate = OpDate,
+                Quantity = 1,
+                IsTransfer = true
+            }
+        };
+
+        var unpaired = TransferReceiveTestAccess.AnalyzeFormUnpairedIfEnabledForTests(
+            TransferReceiveFormId.Form15, OurOkpo, our15, [], pairing);
+
+        Assert.Empty(unpaired);
+    }
+
+    [Fact]
+    public void Form15Enabled_WithSameOps_ReportsUnpaired()
+    {
+        var pairing = TransferReceiveParamsSet.Create(
+            DisabledFormParams(),
+            DisabledFormParams(),
+            DisabledFormParams(),
+            DisabledFormParams(),
+            DefaultForm15Params());
+
+        var our15 = new List<TransferReceiveRow>
+        {
+            new()
+            {
+                Id = 15,
+                OpCode = "26",
+                OpDate = OpDate,
+                PasNum = "P-15",
+                FacNum = "F-15",
+                Type = "T",
+                Radionuclids = "Cs-137",
+                PackNumber = "U",
+                ProviderOrRecieverOkpo = CounterpartOkpo,
+                Activity = "1e6",
+                CreationDate = OpDate,
+                Quantity = 1,
+                IsTransfer = true
+            }
+        };
+
+        var unpaired = TransferReceiveTestAccess.AnalyzeFormUnpairedIfEnabledForTests(
+            TransferReceiveFormId.Form15, OurOkpo, our15, [], pairing);
+
+        Assert.Equal([15], unpaired);
     }
 }

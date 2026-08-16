@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.Shared;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
 
 /// <summary>
 /// Индекс кандидатов closest по дню операции (±N) для ускорения перебора без смены результата,

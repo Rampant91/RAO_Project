@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using OfficeOpenXml;
 using Xunit;
-using static Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
 
 namespace Test.Pairing41;
 

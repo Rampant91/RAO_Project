@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Client_App.Commands.AsyncCommands.ExcelExport.Shared;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
 using Client_App.Resources;
 using Client_App.Resources.CustomComparers.SnkComparers;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41;
 
 public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 {

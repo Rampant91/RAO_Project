@@ -1,4 +1,4 @@
-using Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.Testing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.Testing;
 using Xunit;
 
 namespace Test.TransferReceive;
@@ -44,7 +44,13 @@ public class TransferReceiveNormalizationTests
     [InlineData("б.н.")]
     [InlineData("бн")]
     [InlineData("Б.Н.")]
+    [InlineData("б\\н")]
     [InlineData("без номера")]
+    [InlineData("без ном.")]
+    [InlineData("н.д.")]
+    [InlineData("н/д")]
+    [InlineData("Н/Д")]
+    [InlineData("нет данных")]
     [InlineData("-")]
     public void SerialNumbersAreEmpty_RecognizesPlaceholders(string marker)
     {

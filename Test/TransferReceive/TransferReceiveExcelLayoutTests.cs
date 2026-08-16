@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using OfficeOpenXml;
 using Xunit;
-using static Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
 
 namespace Test.TransferReceive;
 
@@ -177,6 +177,10 @@ public sealed class TransferReceiveExcelLayoutTests
         Assert.Contains("важн", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("±15", text, StringComparison.Ordinal);
         Assert.Contains("±10%", text, StringComparison.Ordinal);
+        Assert.Contains("диапазон", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ведущ", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("1.5", text, StringComparison.Ordinal);
+        Assert.Contains("26", text, StringComparison.Ordinal);
         Assert.DoesNotContain("closest", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("lookalike", text, StringComparison.OrdinalIgnoreCase);
     }
@@ -205,6 +209,33 @@ public sealed class TransferReceiveExcelLayoutTests
         Assert.Equal("Тип УКТ", sheet.Cells[2, closest + 15].Text);
         Assert.Equal("Номер УКТ", sheet.Cells[2, closest + 16].Text);
         Assert.Equal("Форма 1.2", sheet.Name);
+    }
+
+    [Fact]
+    public void Form15Sheet_HasHeadersLikeForm11_WithoutCreatorOkpo()
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        using var package = new ExcelPackage();
+        TransferReceiveTestAccess.CreateForm15SheetForTests(package);
+
+        var sheet = package.Workbook.Worksheets["Форма 1.5"];
+        Assert.NotNull(sheet);
+
+        Assert.Equal(17, TransferReceiveTestAccess.SourceColCountForLayoutForTests(TransferReceiveSheetLayout.Form15));
+        Assert.Equal("Количество, шт", sheet.Cells[2, 13].Text);
+        Assert.Equal("Суммарная активность", sheet.Cells[2, 14].Text);
+        Assert.Equal("Дата выпуска", sheet.Cells[2, 15].Text);
+        Assert.Equal("ОКПО поставщика или получателя", sheet.Cells[2, 16].Text);
+        Assert.Equal("Номер УКТ", sheet.Cells[2, 17].Text);
+
+        var headerRow = string.Join('|', Enumerable.Range(1, 17).Select(c => sheet.Cells[2, c].Text));
+        Assert.DoesNotContain("изготовителя", headerRow, StringComparison.OrdinalIgnoreCase);
+
+        var closest = TransferReceiveTestAccess.ClosestStartColForLayoutForTests(TransferReceiveSheetLayout.Form15);
+        Assert.Equal("Количество, шт", sheet.Cells[2, closest + 12].Text);
+        Assert.Equal("ОКПО поставщика или получателя", sheet.Cells[2, closest + 15].Text);
+        Assert.Equal("Номер УКТ", sheet.Cells[2, closest + 16].Text);
+        Assert.Equal("Форма 1.5", sheet.Name);
     }
 
     [Fact]

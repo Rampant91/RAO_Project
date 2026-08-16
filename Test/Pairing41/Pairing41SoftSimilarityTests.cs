@@ -1,7 +1,7 @@
-using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
-using Client_App.Commands.AsyncCommands.ExcelExport.Shared;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.Testing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
 using Xunit;
-using static Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
 
 namespace Test.Pairing41;
 
@@ -113,6 +113,31 @@ public sealed class Pairing41SoftSimilarityTests
         Assert.Equal(FieldMatchLevel.Exact, level);
     }
 
+    [Theory]
+    [InlineData("-", "без номера")]
+    [InlineData("без номера", "-")]
+    [InlineData("б.н.", "без номера")]
+    [InlineData("н.д.", "-")]
+    [InlineData("н/д", "нет данных")]
+    public void PackNumber_EmptyMarkers_AreExact(string left, string right)
+    {
+        var level = Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.PackNumber,
+            new Pairing41Row { Id = 1, PackNumber = left },
+            new Pairing41Row { Id = 2, PackNumber = right });
+        Assert.Equal(FieldMatchLevel.Exact, level);
+    }
+
+    [Fact]
+    public void PackNumber_EmptyVsFilled_IsMismatch()
+    {
+        var level = Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.PackNumber,
+            new Pairing41Row { Id = 1, PackNumber = "-" },
+            new Pairing41Row { Id = 2, PackNumber = "17425" });
+        Assert.Equal(FieldMatchLevel.Mismatch, level);
+    }
+
     [Fact]
     public void Type_LookalikeZeroO_IsNear()
     {
@@ -195,6 +220,41 @@ public sealed class Pairing41SoftSimilarityTests
             Pairing11To15Field.PackNumber,
             new Pairing41Row { Id = 1, PackNumber = "196,06.2015" },
             new Pairing41Row { Id = 2, PackNumber = "196" }));
+    }
+
+    [Fact]
+    public void FactoryAndQuantity_NumericRange_AreHighNear()
+    {
+        // Проводка Code41: диапазон/список зав.№ + qty ↔ одиночный номер (логика в SoftSimilarityCore).
+        Assert.Equal(FieldMatchLevel.Near, Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.FactoryNumber,
+            new Pairing41Row { Id = 1, FacNum = "0376-0445", Quantity = 70 },
+            new Pairing41Row { Id = 2, FacNum = "0400", Quantity = 1 }));
+        Assert.Equal(FieldMatchLevel.Near, Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.Quantity,
+            new Pairing41Row { Id = 1, FacNum = "0376-0445", Quantity = 70 },
+            new Pairing41Row { Id = 2, FacNum = "0400", Quantity = 1 }));
+
+        const string list = "503, 505, 506, 509-511, 513-518, 530-534, 543-545";
+        Assert.Equal(FieldMatchLevel.Near, Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.FactoryNumber,
+            new Pairing41Row { Id = 1, FacNum = "510", Quantity = 1 },
+            new Pairing41Row { Id = 2, FacNum = list, Quantity = 20 }));
+        Assert.Equal(FieldMatchLevel.Near, Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.Quantity,
+            new Pairing41Row { Id = 1, FacNum = list, Quantity = 20 },
+            new Pairing41Row { Id = 2, FacNum = "545", Quantity = 1 }));
+
+        Assert.Equal(FieldMatchLevel.Near, Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.Activity,
+            new Pairing41Row
+            {
+                Id = 1,
+                FacNum = "663-692, 706-717, 723, 726-742",
+                Quantity = 60,
+                Activity = "18000000000"
+            },
+            new Pairing41Row { Id = 2, FacNum = "723", Quantity = 1, Activity = "300000000" }));
     }
 
     [Fact]
@@ -299,6 +359,26 @@ public sealed class Pairing41SoftSimilarityTests
     }
 
     [Fact]
+    public void Type_SpaceVsHyphen_AndDigitOneVsLetterI_Long_IsNear()
+    {
+        var level = Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.Type,
+            new Pairing41Row { Id = 1, Type = "ИБИРЗН-63 IIб-1" },
+            new Pairing41Row { Id = 2, Type = "ИБИРЗН-63-IIб-I" });
+        Assert.Equal(FieldMatchLevel.Near, level);
+    }
+
+    [Fact]
+    public void Type_OptionalDotLetterSuffix_IsNear()
+    {
+        var level = Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.Type,
+            new Pairing41Row { Id = 1, Type = "BNi3.C3.4" },
+            new Pairing41Row { Id = 2, Type = "BNi3.C3.4.R" });
+        Assert.Equal(FieldMatchLevel.Near, level);
+    }
+
+    [Fact]
     public void Activity_OrderOfMagnitude_IsNear()
     {
         var level = Pairing41TestAccess.SimilarityLevel11To15ForTests(
@@ -356,5 +436,15 @@ public sealed class Pairing41SoftSimilarityTests
             new Pairing41Row { Id = 1, PackNumber = "67" },
             new Pairing41Row { Id = 2, PackNumber = "67(69)" });
         Assert.Equal(FieldMatchLevel.Near, level);
+    }
+
+    [Fact]
+    public void PackNumber_HyphenatedSerials_Different_IsMismatch()
+    {
+        var level = Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.PackNumber,
+            new Pairing41Row { Id = 1, PackNumber = "1-692" },
+            new Pairing41Row { Id = 2, PackNumber = "1-346" });
+        Assert.Equal(FieldMatchLevel.Mismatch, level);
     }
 }

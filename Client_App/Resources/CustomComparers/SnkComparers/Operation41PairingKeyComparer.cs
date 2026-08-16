@@ -16,7 +16,10 @@ public static partial class Operation41PairingKeyComparer
     {
         "бн",
         "безномера",
+        "безном",
         "нет",
+        "нетданных", // «нет данных»
+        "нд", // «н.д.», «н/д»
         "отсутствует",
         "прим",
         "примечание"
@@ -29,7 +32,7 @@ public static partial class Operation41PairingKeyComparer
         IsEmptySerial(pasNum) && IsEmptySerial(facNum);
 
     /// <summary>
-    /// Пустая строка, «-», «б.н.», «без номера», «прим.» и т.п.
+    /// Пустая строка, «-», «б.н.», «без номера», «н.д.», «н/д», «нет данных», «прим.» и т.п.
     /// </summary>
     public static bool IsEmptySerial(string? value)
     {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using OfficeOpenXml;
 using Xunit;
-using static Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
 
 namespace Test.TransferReceive;
 

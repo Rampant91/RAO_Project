@@ -12,7 +12,7 @@ using Models.DBRealization;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41;
 
 public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 {

@@ -7,7 +7,7 @@ using Client_App.Resources;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41;
 
 public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 {
@@ -81,7 +81,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             .ToList();
 
     private static int WholeDbPageSize() =>
-        WholeDbOpsPageSize > 0 ? WholeDbOpsPageSize : 2000;
+        WholeDbOpsPageSize > 0 ? WholeDbOpsPageSize : 5000;
 
     #region Form 1.1
 

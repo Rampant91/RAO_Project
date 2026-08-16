@@ -1,7 +1,7 @@
-using Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing;
 using Client_App.ViewModels.Messages;
 using Xunit;
-using static Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
 
 namespace Test.TransferReceive;
 

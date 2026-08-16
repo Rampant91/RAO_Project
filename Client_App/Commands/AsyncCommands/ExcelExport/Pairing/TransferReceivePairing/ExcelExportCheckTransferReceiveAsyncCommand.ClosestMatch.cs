@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Client_App.Commands.AsyncCommands.ExcelExport.Shared;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing;
 
 public partial class ExcelExportCheckTransferReceiveAsyncCommand
 {
@@ -400,7 +400,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         /// <summary>Exact-only карта (зелёный) — для обратной совместимости тестов.</summary>
         public IReadOnlyDictionary<TransferReceiveField, bool> FieldMatches { get; } = fieldMatches;
 
-        /// <summary>Индекс схожести 0–100 (нормированный взвешенный soft-score).</summary>
+        /// <summary>Индекс схожести 0–99 (нормированный взвешенный soft-score; 100 не показываем).</summary>
         public int ConfidencePercent { get; } = confidencePercent;
 
         public double RawScore { get; } = rawScore;

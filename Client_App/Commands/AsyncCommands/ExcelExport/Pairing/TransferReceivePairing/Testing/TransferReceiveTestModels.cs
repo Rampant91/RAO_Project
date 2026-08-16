@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Client_App.Commands.AsyncCommands.ExcelExport.Shared;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.Testing;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.Testing;
 
-using static Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
 
 /// <summary>
 /// Строка операции приёма/передачи для unit-тестов (без БД).
@@ -40,7 +40,7 @@ public sealed class TransferReceiveRow
 }
 
 /// <summary>
-/// Сценарий сверки приёма-передачи (формы 1.1–1.4) и ожидания.
+/// Сценарий сверки приёма-передачи (формы 1.1–1.5) и ожидания.
 /// Closest: null = не проверять; пустой словарь = ожидаем отсутствие карт; иначе частичное сравнение.
 /// </summary>
 public sealed class TransferReceiveTestCase

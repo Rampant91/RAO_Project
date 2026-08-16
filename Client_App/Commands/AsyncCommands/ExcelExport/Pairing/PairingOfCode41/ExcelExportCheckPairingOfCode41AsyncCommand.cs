@@ -13,7 +13,7 @@ using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.Interfaces;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41;
 
 /// <summary>
 /// Выгрузка в .xlsx операций с кодом 41 без парной записи при переводе РВ → РАО
@@ -38,7 +38,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
     /// <summary>
     /// Размер страницы при whole-DB загрузке ops (keyset по Id). Прогресс — после каждой страницы.
     /// </summary>
-    private const int WholeDbOpsPageSize = 2000;
+    private const int WholeDbOpsPageSize = 5000;
 
     private readonly MainWindowVM _mainWindowVM;
 

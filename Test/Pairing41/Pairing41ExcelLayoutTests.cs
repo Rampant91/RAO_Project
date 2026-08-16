@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using OfficeOpenXml;
 using Xunit;
-using static Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
 
 namespace Test.Pairing41;
 
@@ -174,6 +174,10 @@ public sealed class Pairing41ExcelLayoutTests
         Assert.Contains("№ формы", text, StringComparison.Ordinal);
         Assert.Contains("Схожесть", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("Жёлтый", text, StringComparison.Ordinal);
+        Assert.Contains("диапазон", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("ведущ", text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("будет жёлтой", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("будет красной", text, StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]
@@ -210,7 +214,7 @@ public sealed class Pairing41ExcelLayoutTests
         Assert.True(sheet.Cells[dataRow, Pairing41TestAccess.Layout12ConfidenceColForTests].Style.Font.Bold);
 
         Pairing41TestAccess.ApplyFieldLevelFill12ForTests(
-            sheet, dataRow, startCol: 1, Pairing12To16Field.Mass, Client_App.Commands.AsyncCommands.ExcelExport.Shared.FieldMatchLevel.Near);
+            sheet, dataRow, startCol: 1, Pairing12To16Field.Mass, Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared.FieldMatchLevel.Near);
         var massOffset = Pairing41TestAccess.GetForm12FieldOffsetForTests(Pairing12To16Field.Mass)!.Value;
         Assert.Equal("FFFFF3A0", sheet.Cells[dataRow, 1 + massOffset].Style.Fill.BackgroundColor.Rgb);
     }
@@ -233,7 +237,7 @@ public sealed class Pairing41ExcelLayoutTests
         Assert.True(sheet.Cells[dataRow, Pairing41TestAccess.Layout13ConfidenceColForTests].Style.Font.Bold);
 
         Pairing41TestAccess.ApplyFieldLevelFill13ForTests(
-            sheet, dataRow, startCol: 1, Pairing13To16Field.MainRadionuclids, Client_App.Commands.AsyncCommands.ExcelExport.Shared.FieldMatchLevel.Near);
+            sheet, dataRow, startCol: 1, Pairing13To16Field.MainRadionuclids, Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared.FieldMatchLevel.Near);
         var radsOffset = Pairing41TestAccess.GetForm13FieldOffsetForTests(Pairing13To16Field.MainRadionuclids)!.Value;
         Assert.Equal("FFFFF3A0", sheet.Cells[dataRow, 1 + radsOffset].Style.Fill.BackgroundColor.Rgb);
     }
@@ -256,7 +260,7 @@ public sealed class Pairing41ExcelLayoutTests
         Assert.True(sheet.Cells[dataRow, Pairing41TestAccess.Layout14ConfidenceColForTests].Style.Font.Bold);
 
         Pairing41TestAccess.ApplyFieldLevelFill14ForTests(
-            sheet, dataRow, startCol: 1, Pairing14To16Field.Volume, Client_App.Commands.AsyncCommands.ExcelExport.Shared.FieldMatchLevel.Near);
+            sheet, dataRow, startCol: 1, Pairing14To16Field.Volume, Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared.FieldMatchLevel.Near);
         var volumeOffset = Pairing41TestAccess.GetForm14FieldOffsetForTests(Pairing14To16Field.Volume)!.Value;
         Assert.Equal("FFFFF3A0", sheet.Cells[dataRow, 1 + volumeOffset].Style.Fill.BackgroundColor.Rgb);
     }
@@ -300,7 +304,7 @@ public sealed class Pairing41ExcelLayoutTests
         Assert.True(sheet.Cells[dataRow, confCol].Style.Font.Bold);
 
         Pairing41TestAccess.ApplyFieldLevelFill1115ForTests(
-            sheet, dataRow, startCol: 1, Pairing11To15Field.PassportNumber, Client_App.Commands.AsyncCommands.ExcelExport.Shared.FieldMatchLevel.Near);
+            sheet, dataRow, startCol: 1, Pairing11To15Field.PassportNumber, Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared.FieldMatchLevel.Near);
         var pasOffset = Pairing41TestAccess.GetForm1115FieldOffsetForTests(Pairing11To15Field.PassportNumber)!.Value;
         var nearArgb = sheet.Cells[dataRow, 1 + pasOffset].Style.Fill.BackgroundColor.Rgb;
         Assert.Equal("FFFFF3A0", nearArgb);

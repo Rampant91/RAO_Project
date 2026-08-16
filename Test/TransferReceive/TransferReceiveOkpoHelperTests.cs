@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Client_App.Commands.AsyncCommands.ExcelExport.Shared;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
 using Xunit;
-using static Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
 
 namespace Test.TransferReceive;
 
@@ -76,6 +76,28 @@ public sealed class TransferReceiveOkpoHelperTests
             FieldMatchLevel.Mismatch,
             TransferReceiveTestAccess.SimilarityProviderOkpoLevelForTests(
                 "99999999", "08624243_40044", "08624243_40044"));
+    }
+
+    [Fact]
+    public void SimilarityProviderOkpo_LongNearTypo_IsNear_ShortTypo_IsMismatch()
+    {
+        // Длинный ОКПО: несколько перепутанных цифр при той же длине — Near (подсветка).
+        Assert.Equal(
+            FieldMatchLevel.Near,
+            TransferReceiveTestAccess.SimilarityProviderOkpoLevelForTests(
+                "84111730330002", "84117173030002", "84117173030002"));
+
+        // Короткий 8-значный: одна опечатка — по-прежнему Mismatch (не смягчаем).
+        Assert.Equal(
+            FieldMatchLevel.Mismatch,
+            TransferReceiveTestAccess.SimilarityProviderOkpoLevelForTests(
+                "08624244", "08624243", "08624243"));
+
+        // Совсем другой длинный номер — Mismatch.
+        Assert.Equal(
+            FieldMatchLevel.Mismatch,
+            TransferReceiveTestAccess.SimilarityProviderOkpoLevelForTests(
+                "99999999999999", "84117173030002", "84117173030002"));
     }
 
     [Fact]

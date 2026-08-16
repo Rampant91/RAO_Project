@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.Testing;
-using static Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
-using static Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.Testing.TransferReceiveScenarioRunner;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.Testing;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.Testing.TransferReceiveScenarioRunner;
 
 namespace Test.TransferReceive;
 

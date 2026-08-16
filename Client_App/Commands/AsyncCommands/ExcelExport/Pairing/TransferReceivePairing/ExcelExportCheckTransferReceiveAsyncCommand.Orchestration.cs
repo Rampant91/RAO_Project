@@ -12,7 +12,7 @@ using Models.DBRealization;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing;
 
 public partial class ExcelExportCheckTransferReceiveAsyncCommand
 {

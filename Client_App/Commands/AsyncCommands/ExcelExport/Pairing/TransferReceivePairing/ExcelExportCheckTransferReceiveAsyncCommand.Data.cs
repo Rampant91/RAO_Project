@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Models.Comparers.FormContent;
 using Models.DBRealization;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing;
 
 public partial class ExcelExportCheckTransferReceiveAsyncCommand
 {
@@ -468,7 +468,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         string formNum)
     {
         var codes = TransferReceiveOpCodes;
-        var pageSize = WholeDbOpsPageSize > 0 ? WholeDbOpsPageSize : 2000;
+        var pageSize = WholeDbOpsPageSize > 0 ? WholeDbOpsPageSize : 5000;
         var result = new List<TransferReceiveDto>();
         var lastId = 0;
         var page = 0;
@@ -574,7 +574,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         string formNum)
     {
         var codes = TransferReceiveOpCodes;
-        var pageSize = WholeDbOpsPageSize > 0 ? WholeDbOpsPageSize : 2000;
+        var pageSize = WholeDbOpsPageSize > 0 ? WholeDbOpsPageSize : 5000;
         var result = new List<TransferReceiveDto>();
         var lastId = 0;
         var page = 0;
@@ -679,7 +679,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         string formNum)
     {
         var codes = TransferReceiveOpCodes;
-        var pageSize = WholeDbOpsPageSize > 0 ? WholeDbOpsPageSize : 2000;
+        var pageSize = WholeDbOpsPageSize > 0 ? WholeDbOpsPageSize : 5000;
         var result = new List<TransferReceiveDto>();
         var lastId = 0;
         var page = 0;
@@ -786,7 +786,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         string formNum)
     {
         var codes = TransferReceiveOpCodes;
-        var pageSize = WholeDbOpsPageSize > 0 ? WholeDbOpsPageSize : 2000;
+        var pageSize = WholeDbOpsPageSize > 0 ? WholeDbOpsPageSize : 5000;
         var result = new List<TransferReceiveDto>();
         var lastId = 0;
         var page = 0;
@@ -877,7 +877,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         string formNum)
     {
         var codes = TransferReceiveOpCodesForm15;
-        var pageSize = WholeDbOpsPageSize > 0 ? WholeDbOpsPageSize : 2000;
+        var pageSize = WholeDbOpsPageSize > 0 ? WholeDbOpsPageSize : 5000;
         var result = new List<TransferReceiveDto>();
         var lastId = 0;
         var page = 0;
@@ -1506,69 +1506,89 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                            && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
             }
 
-            var rows = await query
-                .Select(form => new
-                {
-                    form.Id,
-                    ReportId = form.ReportId ?? 0,
-                    RepsId = form.Report!.Reports.Id,
-                    NumberInOrder = form.NumberInOrder_DB,
-                    OpCode = form.OperationCode_DB,
-                    OpDate = form.OperationDate_DB,
-                    PasNum = form.PassportNumber_DB,
-                    FacNum = form.FactoryNumber_DB,
-                    Type = form.Type_DB,
-                    Radionuclids = form.Radionuclids_DB,
-                    PackNumber = form.PackNumber_DB,
-                    ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
-                    Quantity = form.Quantity_DB,
-                    Activity = form.Activity_DB,
-                    CreatorOkpo = form.CreatorOKPO_DB,
-                    CreationDate = form.CreationDate_DB,
-                    StartPeriod = form.Report.StartPeriod_DB,
-                    EndPeriod = form.Report.EndPeriod_DB
-                })
-                .ToListAsync(cancellationToken);
-
-            foreach (var row in rows)
+            var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
+            var lastRowId = 0;
+            while (true)
             {
-                if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                cancellationToken.ThrowIfCancellationRequested();
+                var rows = await query
+                    .Where(form => form.Id > lastRowId)
+                    .OrderBy(form => form.Id)
+                    .Take(pageSize)
+                    .Select(form => new
+                    {
+                        form.Id,
+                        ReportId = form.ReportId ?? 0,
+                        RepsId = form.Report!.Reports.Id,
+                        NumberInOrder = form.NumberInOrder_DB,
+                        OpCode = form.OperationCode_DB,
+                        OpDate = form.OperationDate_DB,
+                        PasNum = form.PassportNumber_DB,
+                        FacNum = form.FactoryNumber_DB,
+                        Type = form.Type_DB,
+                        Radionuclids = form.Radionuclids_DB,
+                        PackNumber = form.PackNumber_DB,
+                        ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                        Quantity = form.Quantity_DB,
+                        Activity = form.Activity_DB,
+                        CreatorOkpo = form.CreatorOKPO_DB,
+                        CreationDate = form.CreationDate_DB,
+                        StartPeriod = form.Report.StartPeriod_DB,
+                        EndPeriod = form.Report.EndPeriod_DB
+                    })
+                    .ToListAsync(cancellationToken);
+
+                if (rows.Count == 0)
                 {
-                    continue;
+                    break;
                 }
 
-                if (ourOkpoFilter is { Length: > 0 }
-                    && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
+                foreach (var row in rows)
                 {
-                    continue;
+                    if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                    {
+                        continue;
+                    }
+
+                    if (ourOkpoFilter is { Length: > 0 }
+                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
+                    {
+                        continue;
+                    }
+
+                    orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
+                    result.Add(new TransferReceiveDto
+                    {
+                        Id = row.Id,
+                        RepsId = row.RepsId,
+                        ReportId = row.ReportId,
+                        NumberInOrder = row.NumberInOrder,
+                        OrgOkpo = title?.Okpo ?? string.Empty,
+                        OrgRegNo = title?.RegNo ?? string.Empty,
+                        OrgShortName = title?.ShortName ?? string.Empty,
+                        OpCode = row.OpCode ?? string.Empty,
+                        OpDate = row.OpDate ?? string.Empty,
+                        PasNum = row.PasNum ?? string.Empty,
+                        FacNum = row.FacNum ?? string.Empty,
+                        Type = row.Type ?? string.Empty,
+                        Radionuclids = row.Radionuclids ?? string.Empty,
+                        PackNumber = row.PackNumber ?? string.Empty,
+                        ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
+                        Quantity = row.Quantity,
+                        Activity = row.Activity ?? string.Empty,
+                        CreatorOkpo = row.CreatorOkpo ?? string.Empty,
+                        CreationDate = row.CreationDate ?? string.Empty,
+                        StartPeriod = row.StartPeriod ?? string.Empty,
+                        EndPeriod = row.EndPeriod ?? string.Empty,
+                        IsTransfer = IsTransferCodeForm11(row.OpCode)
+                    });
                 }
 
-                orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
-                result.Add(new TransferReceiveDto
+                lastRowId = rows[^1].Id;
+                if (rows.Count < pageSize)
                 {
-                    Id = row.Id,
-                    RepsId = row.RepsId,
-                    ReportId = row.ReportId,
-                    NumberInOrder = row.NumberInOrder,
-                    OrgOkpo = title?.Okpo ?? string.Empty,
-                    OrgRegNo = title?.RegNo ?? string.Empty,
-                    OrgShortName = title?.ShortName ?? string.Empty,
-                    OpCode = row.OpCode ?? string.Empty,
-                    OpDate = row.OpDate ?? string.Empty,
-                    PasNum = row.PasNum ?? string.Empty,
-                    FacNum = row.FacNum ?? string.Empty,
-                    Type = row.Type ?? string.Empty,
-                    Radionuclids = row.Radionuclids ?? string.Empty,
-                    PackNumber = row.PackNumber ?? string.Empty,
-                    ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
-                    Quantity = row.Quantity,
-                    Activity = row.Activity ?? string.Empty,
-                    CreatorOkpo = row.CreatorOkpo ?? string.Empty,
-                    CreationDate = row.CreationDate ?? string.Empty,
-                    StartPeriod = row.StartPeriod ?? string.Empty,
-                    EndPeriod = row.EndPeriod ?? string.Empty,
-                    IsTransfer = IsTransferCodeForm11(row.OpCode)
-                });
+                    break;
+                }
             }
 
             orgsDone += idChunk.Count;
@@ -1692,68 +1712,88 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                            && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
             }
 
-            var rows = await query
-                .Select(form => new
-                {
-                    form.Id,
-                    ReportId = form.ReportId ?? 0,
-                    RepsId = form.Report!.Reports.Id,
-                    NumberInOrder = form.NumberInOrder_DB,
-                    OpCode = form.OperationCode_DB,
-                    OpDate = form.OperationDate_DB,
-                    PasNum = form.PassportNumber_DB,
-                    FacNum = form.FactoryNumber_DB,
-                    Name = form.NameIOU_DB,
-                    Mass = form.Mass_DB,
-                    PackType = form.PackType_DB,
-                    PackNumber = form.PackNumber_DB,
-                    ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
-                    CreatorOkpo = form.CreatorOKPO_DB,
-                    CreationDate = form.CreationDate_DB,
-                    StartPeriod = form.Report.StartPeriod_DB,
-                    EndPeriod = form.Report.EndPeriod_DB
-                })
-                .ToListAsync(cancellationToken);
-
-            foreach (var row in rows)
+            var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
+            var lastRowId = 0;
+            while (true)
             {
-                if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                cancellationToken.ThrowIfCancellationRequested();
+                var rows = await query
+                    .Where(form => form.Id > lastRowId)
+                    .OrderBy(form => form.Id)
+                    .Take(pageSize)
+                    .Select(form => new
+                    {
+                        form.Id,
+                        ReportId = form.ReportId ?? 0,
+                        RepsId = form.Report!.Reports.Id,
+                        NumberInOrder = form.NumberInOrder_DB,
+                        OpCode = form.OperationCode_DB,
+                        OpDate = form.OperationDate_DB,
+                        PasNum = form.PassportNumber_DB,
+                        FacNum = form.FactoryNumber_DB,
+                        Name = form.NameIOU_DB,
+                        Mass = form.Mass_DB,
+                        PackType = form.PackType_DB,
+                        PackNumber = form.PackNumber_DB,
+                        ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                        CreatorOkpo = form.CreatorOKPO_DB,
+                        CreationDate = form.CreationDate_DB,
+                        StartPeriod = form.Report.StartPeriod_DB,
+                        EndPeriod = form.Report.EndPeriod_DB
+                    })
+                    .ToListAsync(cancellationToken);
+
+                if (rows.Count == 0)
                 {
-                    continue;
+                    break;
                 }
 
-                if (ourOkpoFilter is { Length: > 0 }
-                    && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
+                foreach (var row in rows)
                 {
-                    continue;
+                    if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                    {
+                        continue;
+                    }
+
+                    if (ourOkpoFilter is { Length: > 0 }
+                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
+                    {
+                        continue;
+                    }
+
+                    orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
+                    result.Add(new TransferReceiveDto
+                    {
+                        Id = row.Id,
+                        RepsId = row.RepsId,
+                        ReportId = row.ReportId,
+                        NumberInOrder = row.NumberInOrder,
+                        OrgOkpo = title?.Okpo ?? string.Empty,
+                        OrgRegNo = title?.RegNo ?? string.Empty,
+                        OrgShortName = title?.ShortName ?? string.Empty,
+                        OpCode = row.OpCode ?? string.Empty,
+                        OpDate = row.OpDate ?? string.Empty,
+                        PasNum = row.PasNum ?? string.Empty,
+                        FacNum = row.FacNum ?? string.Empty,
+                        Type = row.Name ?? string.Empty,
+                        PackType = row.PackType ?? string.Empty,
+                        PackNumber = row.PackNumber ?? string.Empty,
+                        ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
+                        Quantity = 1,
+                        Mass = row.Mass ?? string.Empty,
+                        CreatorOkpo = row.CreatorOkpo ?? string.Empty,
+                        CreationDate = row.CreationDate ?? string.Empty,
+                        StartPeriod = row.StartPeriod ?? string.Empty,
+                        EndPeriod = row.EndPeriod ?? string.Empty,
+                        IsTransfer = IsTransferCodeForm11(row.OpCode)
+                    });
                 }
 
-                orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
-                result.Add(new TransferReceiveDto
+                lastRowId = rows[^1].Id;
+                if (rows.Count < pageSize)
                 {
-                    Id = row.Id,
-                    RepsId = row.RepsId,
-                    ReportId = row.ReportId,
-                    NumberInOrder = row.NumberInOrder,
-                    OrgOkpo = title?.Okpo ?? string.Empty,
-                    OrgRegNo = title?.RegNo ?? string.Empty,
-                    OrgShortName = title?.ShortName ?? string.Empty,
-                    OpCode = row.OpCode ?? string.Empty,
-                    OpDate = row.OpDate ?? string.Empty,
-                    PasNum = row.PasNum ?? string.Empty,
-                    FacNum = row.FacNum ?? string.Empty,
-                    Type = row.Name ?? string.Empty,
-                    PackType = row.PackType ?? string.Empty,
-                    PackNumber = row.PackNumber ?? string.Empty,
-                    ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
-                    Quantity = 1,
-                    Mass = row.Mass ?? string.Empty,
-                    CreatorOkpo = row.CreatorOkpo ?? string.Empty,
-                    CreationDate = row.CreationDate ?? string.Empty,
-                    StartPeriod = row.StartPeriod ?? string.Empty,
-                    EndPeriod = row.EndPeriod ?? string.Empty,
-                    IsTransfer = IsTransferCodeForm11(row.OpCode)
-                });
+                    break;
+                }
             }
 
             orgsDone += idChunk.Count;
@@ -1879,70 +1919,90 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                            && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
             }
 
-            var rows = await query
-                .Select(form => new
-                {
-                    form.Id,
-                    ReportId = form.ReportId ?? 0,
-                    RepsId = form.Report!.Reports.Id,
-                    NumberInOrder = form.NumberInOrder_DB,
-                    OpCode = form.OperationCode_DB,
-                    OpDate = form.OperationDate_DB,
-                    PasNum = form.PassportNumber_DB,
-                    FacNum = form.FactoryNumber_DB,
-                    Type = form.Type_DB,
-                    Radionuclids = form.Radionuclids_DB,
-                    PackNumber = form.PackNumber_DB,
-                    ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
-                    Activity = form.Activity_DB,
-                    CreatorOkpo = form.CreatorOKPO_DB,
-                    CreationDate = form.CreationDate_DB,
-                    AggregateState = form.AggregateState_DB,
-                    StartPeriod = form.Report.StartPeriod_DB,
-                    EndPeriod = form.Report.EndPeriod_DB
-                })
-                .ToListAsync(cancellationToken);
-
-            foreach (var row in rows)
+            var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
+            var lastRowId = 0;
+            while (true)
             {
-                if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                cancellationToken.ThrowIfCancellationRequested();
+                var rows = await query
+                    .Where(form => form.Id > lastRowId)
+                    .OrderBy(form => form.Id)
+                    .Take(pageSize)
+                    .Select(form => new
+                    {
+                        form.Id,
+                        ReportId = form.ReportId ?? 0,
+                        RepsId = form.Report!.Reports.Id,
+                        NumberInOrder = form.NumberInOrder_DB,
+                        OpCode = form.OperationCode_DB,
+                        OpDate = form.OperationDate_DB,
+                        PasNum = form.PassportNumber_DB,
+                        FacNum = form.FactoryNumber_DB,
+                        Type = form.Type_DB,
+                        Radionuclids = form.Radionuclids_DB,
+                        PackNumber = form.PackNumber_DB,
+                        ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                        Activity = form.Activity_DB,
+                        CreatorOkpo = form.CreatorOKPO_DB,
+                        CreationDate = form.CreationDate_DB,
+                        AggregateState = form.AggregateState_DB,
+                        StartPeriod = form.Report.StartPeriod_DB,
+                        EndPeriod = form.Report.EndPeriod_DB
+                    })
+                    .ToListAsync(cancellationToken);
+
+                if (rows.Count == 0)
                 {
-                    continue;
+                    break;
                 }
 
-                if (ourOkpoFilter is { Length: > 0 }
-                    && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
+                foreach (var row in rows)
                 {
-                    continue;
+                    if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                    {
+                        continue;
+                    }
+
+                    if (ourOkpoFilter is { Length: > 0 }
+                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
+                    {
+                        continue;
+                    }
+
+                    orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
+                    result.Add(new TransferReceiveDto
+                    {
+                        Id = row.Id,
+                        RepsId = row.RepsId,
+                        ReportId = row.ReportId,
+                        NumberInOrder = row.NumberInOrder,
+                        OrgOkpo = title?.Okpo ?? string.Empty,
+                        OrgRegNo = title?.RegNo ?? string.Empty,
+                        OrgShortName = title?.ShortName ?? string.Empty,
+                        OpCode = row.OpCode ?? string.Empty,
+                        OpDate = row.OpDate ?? string.Empty,
+                        PasNum = row.PasNum ?? string.Empty,
+                        FacNum = row.FacNum ?? string.Empty,
+                        Type = row.Type ?? string.Empty,
+                        Radionuclids = row.Radionuclids ?? string.Empty,
+                        PackNumber = row.PackNumber ?? string.Empty,
+                        ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
+                        Quantity = 1,
+                        AggregateState = row.AggregateState,
+                        Activity = row.Activity ?? string.Empty,
+                        CreatorOkpo = row.CreatorOkpo ?? string.Empty,
+                        CreationDate = row.CreationDate ?? string.Empty,
+                        StartPeriod = row.StartPeriod ?? string.Empty,
+                        EndPeriod = row.EndPeriod ?? string.Empty,
+                        IsTransfer = IsTransferCodeForm11(row.OpCode)
+                    });
                 }
 
-                orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
-                result.Add(new TransferReceiveDto
+                lastRowId = rows[^1].Id;
+                if (rows.Count < pageSize)
                 {
-                    Id = row.Id,
-                    RepsId = row.RepsId,
-                    ReportId = row.ReportId,
-                    NumberInOrder = row.NumberInOrder,
-                    OrgOkpo = title?.Okpo ?? string.Empty,
-                    OrgRegNo = title?.RegNo ?? string.Empty,
-                    OrgShortName = title?.ShortName ?? string.Empty,
-                    OpCode = row.OpCode ?? string.Empty,
-                    OpDate = row.OpDate ?? string.Empty,
-                    PasNum = row.PasNum ?? string.Empty,
-                    FacNum = row.FacNum ?? string.Empty,
-                    Type = row.Type ?? string.Empty,
-                    Radionuclids = row.Radionuclids ?? string.Empty,
-                    PackNumber = row.PackNumber ?? string.Empty,
-                    ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
-                    Quantity = 1,
-                    AggregateState = row.AggregateState,
-                    Activity = row.Activity ?? string.Empty,
-                    CreatorOkpo = row.CreatorOkpo ?? string.Empty,
-                    CreationDate = row.CreationDate ?? string.Empty,
-                    StartPeriod = row.StartPeriod ?? string.Empty,
-                    EndPeriod = row.EndPeriod ?? string.Empty,
-                    IsTransfer = IsTransferCodeForm11(row.OpCode)
-                });
+                    break;
+                }
             }
 
             orgsDone += idChunk.Count;
@@ -2051,51 +2111,71 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                            && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
             }
 
-            var rows = await query
-                .Select(form => new
-                {
-                    form.Id,
-                    ReportId = form.ReportId ?? 0,
-                    RepsId = form.Report!.Reports.Id,
-                    NumberInOrder = form.NumberInOrder_DB,
-                    OpCode = form.OperationCode_DB,
-                    OpDate = form.OperationDate_DB,
-                    PasNum = form.PassportNumber_DB,
-                    Name = form.Name_DB,
-                    Sort = form.Sort_DB,
-                    Radionuclids = form.Radionuclids_DB,
-                    Activity = form.Activity_DB,
-                    ActivityMeasurementDate = form.ActivityMeasurementDate_DB,
-                    Volume = form.Volume_DB,
-                    Mass = form.Mass_DB,
-                    AggregateState = form.AggregateState_DB,
-                    PackNumber = form.PackNumber_DB,
-                    ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
-                    StartPeriod = form.Report.StartPeriod_DB,
-                    EndPeriod = form.Report.EndPeriod_DB
-                })
-                .ToListAsync(cancellationToken);
-
-            foreach (var row in rows)
+            var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
+            var lastRowId = 0;
+            while (true)
             {
-                if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                cancellationToken.ThrowIfCancellationRequested();
+                var rows = await query
+                    .Where(form => form.Id > lastRowId)
+                    .OrderBy(form => form.Id)
+                    .Take(pageSize)
+                    .Select(form => new
+                    {
+                        form.Id,
+                        ReportId = form.ReportId ?? 0,
+                        RepsId = form.Report!.Reports.Id,
+                        NumberInOrder = form.NumberInOrder_DB,
+                        OpCode = form.OperationCode_DB,
+                        OpDate = form.OperationDate_DB,
+                        PasNum = form.PassportNumber_DB,
+                        Name = form.Name_DB,
+                        Sort = form.Sort_DB,
+                        Radionuclids = form.Radionuclids_DB,
+                        Activity = form.Activity_DB,
+                        ActivityMeasurementDate = form.ActivityMeasurementDate_DB,
+                        Volume = form.Volume_DB,
+                        Mass = form.Mass_DB,
+                        AggregateState = form.AggregateState_DB,
+                        PackNumber = form.PackNumber_DB,
+                        ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                        StartPeriod = form.Report.StartPeriod_DB,
+                        EndPeriod = form.Report.EndPeriod_DB
+                    })
+                    .ToListAsync(cancellationToken);
+
+                if (rows.Count == 0)
                 {
-                    continue;
+                    break;
                 }
 
-                if (ourOkpoFilter is { Length: > 0 }
-                    && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
+                foreach (var row in rows)
                 {
-                    continue;
+                    if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                    {
+                        continue;
+                    }
+
+                    if (ourOkpoFilter is { Length: > 0 }
+                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
+                    {
+                        continue;
+                    }
+
+                    orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
+                    result.Add(MapForm14Row(
+                        row.Id, row.RepsId, row.ReportId, row.NumberInOrder,
+                        title?.Okpo ?? string.Empty, title?.RegNo ?? string.Empty, title?.ShortName ?? string.Empty,
+                        row.OpCode, row.OpDate, row.PasNum, row.Name, row.Sort, row.Radionuclids,
+                        row.Activity, row.ActivityMeasurementDate, row.Volume, row.Mass, row.AggregateState,
+                        row.PackNumber, row.ProviderOrRecieverOkpo, row.StartPeriod, row.EndPeriod));
                 }
 
-                orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
-                result.Add(MapForm14Row(
-                    row.Id, row.RepsId, row.ReportId, row.NumberInOrder,
-                    title?.Okpo ?? string.Empty, title?.RegNo ?? string.Empty, title?.ShortName ?? string.Empty,
-                    row.OpCode, row.OpDate, row.PasNum, row.Name, row.Sort, row.Radionuclids,
-                    row.Activity, row.ActivityMeasurementDate, row.Volume, row.Mass, row.AggregateState,
-                    row.PackNumber, row.ProviderOrRecieverOkpo, row.StartPeriod, row.EndPeriod));
+                lastRowId = rows[^1].Id;
+                if (rows.Count < pageSize)
+                {
+                    break;
+                }
             }
 
             orgsDone += idChunk.Count;
@@ -2344,67 +2424,87 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                            && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
             }
 
-            var rows = await query
-                .Select(form => new
-                {
-                    form.Id,
-                    ReportId = form.ReportId ?? 0,
-                    RepsId = form.Report!.Reports.Id,
-                    NumberInOrder = form.NumberInOrder_DB,
-                    OpCode = form.OperationCode_DB,
-                    OpDate = form.OperationDate_DB,
-                    PasNum = form.PassportNumber_DB,
-                    FacNum = form.FactoryNumber_DB,
-                    Type = form.Type_DB,
-                    Radionuclids = form.Radionuclids_DB,
-                    PackNumber = form.PackNumber_DB,
-                    ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
-                    Quantity = form.Quantity_DB,
-                    Activity = form.Activity_DB,
-                    CreationDate = form.CreationDate_DB,
-                    StartPeriod = form.Report.StartPeriod_DB,
-                    EndPeriod = form.Report.EndPeriod_DB
-                })
-                .ToListAsync(cancellationToken);
-
-            foreach (var row in rows)
+            var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
+            var lastRowId = 0;
+            while (true)
             {
-                if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                cancellationToken.ThrowIfCancellationRequested();
+                var rows = await query
+                    .Where(form => form.Id > lastRowId)
+                    .OrderBy(form => form.Id)
+                    .Take(pageSize)
+                    .Select(form => new
+                    {
+                        form.Id,
+                        ReportId = form.ReportId ?? 0,
+                        RepsId = form.Report!.Reports.Id,
+                        NumberInOrder = form.NumberInOrder_DB,
+                        OpCode = form.OperationCode_DB,
+                        OpDate = form.OperationDate_DB,
+                        PasNum = form.PassportNumber_DB,
+                        FacNum = form.FactoryNumber_DB,
+                        Type = form.Type_DB,
+                        Radionuclids = form.Radionuclids_DB,
+                        PackNumber = form.PackNumber_DB,
+                        ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                        Quantity = form.Quantity_DB,
+                        Activity = form.Activity_DB,
+                        CreationDate = form.CreationDate_DB,
+                        StartPeriod = form.Report.StartPeriod_DB,
+                        EndPeriod = form.Report.EndPeriod_DB
+                    })
+                    .ToListAsync(cancellationToken);
+
+                if (rows.Count == 0)
                 {
-                    continue;
+                    break;
                 }
 
-                if (ourOkpoFilter is { Length: > 0 }
-                    && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
+                foreach (var row in rows)
                 {
-                    continue;
+                    if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                    {
+                        continue;
+                    }
+
+                    if (ourOkpoFilter is { Length: > 0 }
+                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
+                    {
+                        continue;
+                    }
+
+                    orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
+                    result.Add(new TransferReceiveDto
+                    {
+                        Id = row.Id,
+                        RepsId = row.RepsId,
+                        ReportId = row.ReportId,
+                        NumberInOrder = row.NumberInOrder,
+                        OrgOkpo = title?.Okpo ?? string.Empty,
+                        OrgRegNo = title?.RegNo ?? string.Empty,
+                        OrgShortName = title?.ShortName ?? string.Empty,
+                        OpCode = row.OpCode ?? string.Empty,
+                        OpDate = row.OpDate ?? string.Empty,
+                        PasNum = row.PasNum ?? string.Empty,
+                        FacNum = row.FacNum ?? string.Empty,
+                        Type = row.Type ?? string.Empty,
+                        Radionuclids = row.Radionuclids ?? string.Empty,
+                        PackNumber = row.PackNumber ?? string.Empty,
+                        ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
+                        Quantity = row.Quantity,
+                        Activity = row.Activity ?? string.Empty,
+                        CreationDate = row.CreationDate ?? string.Empty,
+                        StartPeriod = row.StartPeriod ?? string.Empty,
+                        EndPeriod = row.EndPeriod ?? string.Empty,
+                        IsTransfer = IsTransferCodeForm11(row.OpCode)
+                    });
                 }
 
-                orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
-                result.Add(new TransferReceiveDto
+                lastRowId = rows[^1].Id;
+                if (rows.Count < pageSize)
                 {
-                    Id = row.Id,
-                    RepsId = row.RepsId,
-                    ReportId = row.ReportId,
-                    NumberInOrder = row.NumberInOrder,
-                    OrgOkpo = title?.Okpo ?? string.Empty,
-                    OrgRegNo = title?.RegNo ?? string.Empty,
-                    OrgShortName = title?.ShortName ?? string.Empty,
-                    OpCode = row.OpCode ?? string.Empty,
-                    OpDate = row.OpDate ?? string.Empty,
-                    PasNum = row.PasNum ?? string.Empty,
-                    FacNum = row.FacNum ?? string.Empty,
-                    Type = row.Type ?? string.Empty,
-                    Radionuclids = row.Radionuclids ?? string.Empty,
-                    PackNumber = row.PackNumber ?? string.Empty,
-                    ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
-                    Quantity = row.Quantity,
-                    Activity = row.Activity ?? string.Empty,
-                    CreationDate = row.CreationDate ?? string.Empty,
-                    StartPeriod = row.StartPeriod ?? string.Empty,
-                    EndPeriod = row.EndPeriod ?? string.Empty,
-                    IsTransfer = IsTransferCodeForm11(row.OpCode)
-                });
+                    break;
+                }
             }
 
             orgsDone += idChunk.Count;

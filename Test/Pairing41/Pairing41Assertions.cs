@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Client_App.Commands.AsyncCommands.ExcelExport.Shared;
-using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.Testing;
 using Xunit;
-using static Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
 
 namespace Test.Pairing41;
 

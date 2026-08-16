@@ -1,4 +1,4 @@
-using Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.Testing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.Testing;
 using Xunit;
 
 namespace Test.TransferReceive;

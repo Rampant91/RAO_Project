@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Client_App.Commands.AsyncCommands.ExcelExport.Shared;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.Testing;
 
-using static Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
 
 /// <summary>
 /// Строка операции 41 для unit-тестов сопоставления (без БД).

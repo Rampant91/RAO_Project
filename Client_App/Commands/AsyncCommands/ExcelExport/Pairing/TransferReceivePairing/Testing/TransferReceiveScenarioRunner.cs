@@ -1,4 +1,4 @@
-namespace Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.Testing;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.Testing;
 
 /// <summary>
 /// Запуск тестовых сценариев приёма-передачи без обращения к БД.

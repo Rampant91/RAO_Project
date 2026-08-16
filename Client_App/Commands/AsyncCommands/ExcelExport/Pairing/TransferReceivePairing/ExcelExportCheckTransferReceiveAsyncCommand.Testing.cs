@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Client_App.Commands.AsyncCommands.ExcelExport.Shared;
-using Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.Testing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.Testing;
 using Client_App.Resources.CustomComparers.SnkComparers;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing;
 
 public partial class ExcelExportCheckTransferReceiveAsyncCommand
 {
@@ -132,6 +132,41 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             sheet.Cells[1, 1].Value = "Непарная операция выбранной организации";
             sheet.Cells[2, ConfidenceColFor(TransferReceiveSheetLayout.Form13)].Value = "Схожесть, %";
             sheet.Cells[2, ConfidenceColFor(TransferReceiveSheetLayout.Form13)].Style.Font.Bold = true;
+        }
+
+        /// <summary>Создаёт лист «Форма 1.5» с заголовками (как 1.1 без ОКПО изготовителя).</summary>
+        public static void CreateForm15SheetForTests(OfficeOpenXml.ExcelPackage excelPackage)
+        {
+            var sheet = excelPackage.Workbook.Worksheets.Add("Форма 1.5");
+            var closestStart = ClosestStartColFor(TransferReceiveSheetLayout.Form15);
+            WriteFieldHeadersToSheet(sheet, row: 2, startCol: 1, TransferReceiveSheetLayout.Form15);
+            WriteFieldHeadersToSheet(sheet, row: 2, startCol: closestStart, TransferReceiveSheetLayout.Form15);
+            sheet.Cells[1, 1].Value = "Непарная операция выбранной организации";
+            sheet.Cells[2, ConfidenceColFor(TransferReceiveSheetLayout.Form15)].Value = "Схожесть, %";
+            sheet.Cells[2, ConfidenceColFor(TransferReceiveSheetLayout.Form15)].Style.Font.Bold = true;
+        }
+
+        /// <summary>
+        /// Unpaired для одной формы, если она включена в <paramref name="pairingParams"/> (иначе пусто).
+        /// </summary>
+        public static IReadOnlyList<int> AnalyzeFormUnpairedIfEnabledForTests(
+            TransferReceiveFormId formId,
+            string ourOkpo,
+            IReadOnlyList<TransferReceiveRow> ourOps,
+            IReadOnlyList<TransferReceiveRow> counterpartOps,
+            TransferReceiveParamsSet pairingParams)
+        {
+            if (!pairingParams.IsEnabled(formId) || ourOps.Count == 0)
+            {
+                return [];
+            }
+
+            var formNum = GetFormDescriptor(formId).FormNum;
+            var options = pairingParams.GetParams(formId);
+            var our = ToDtoList(ourOps, ourOkpo, formNum);
+            var counterpart = ToDtoList(counterpartOps, null, formNum);
+            var (unpaired, _) = AnalyzeFormForOrganization(our, counterpart, ourOkpo, options, null);
+            return unpaired.Select(op => op.Id).OrderBy(id => id).ToList();
         }
 
         /// <summary>

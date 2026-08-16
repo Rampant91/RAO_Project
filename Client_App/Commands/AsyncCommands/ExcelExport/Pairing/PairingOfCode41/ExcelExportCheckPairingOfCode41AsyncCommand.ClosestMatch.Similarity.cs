@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
 using Client_App.Resources.CustomComparers.SnkComparers;
-using static Client_App.Commands.AsyncCommands.ExcelExport.Shared.SoftSimilarityCore;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared.SoftSimilarityCore;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41;
 
 public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 {
@@ -26,15 +27,28 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             Pairing11To15Field.PassportNumber => SimilarityPassportOrFactory(source.PasNum, candidate.PasNum, isFactory: false),
             Pairing11To15Field.Type => SimilarityType(source.Type, candidate.Type),
             Pairing11To15Field.Radionuclids => SimilarityRadionuclids(sourceNorm.Radionuclids, candidateNorm.Radionuclids),
-            Pairing11To15Field.FactoryNumber => SimilarityPassportOrFactory(source.FacNum, candidate.FacNum, isFactory: true),
-            Pairing11To15Field.Activity => SimilarityNumericWithTolerance(sourceNorm.Activity.Raw, candidateNorm.Activity.Raw),
-            Pairing11To15Field.Quantity => sourceNorm.Quantity == candidateNorm.Quantity
-                ? Shared.FieldSimilarity.Exact
-                : Shared.FieldSimilarity.Mismatch(0),
-            Pairing11To15Field.CreationDate => SimilarityCreationDate(source.CreationDate, candidate.CreationDate),
+            Pairing11To15Field.FactoryNumber => SimilarityPassportOrFactory(
+                source.FacNum,
+                candidate.FacNum,
+                isFactory: true,
+                sourceNorm.Quantity,
+                candidateNorm.Quantity),
+            Pairing11To15Field.Activity => SimilarityActivityConsideringFactoryEnumeration(
+                sourceNorm.Activity.Raw,
+                candidateNorm.Activity.Raw,
+                source.FacNum,
+                candidate.FacNum,
+                sourceNorm.Quantity,
+                candidateNorm.Quantity),
+            Pairing11To15Field.Quantity => SimilarityQuantityConsideringFactoryRange(
+                sourceNorm.Quantity,
+                candidateNorm.Quantity,
+                source.FacNum,
+                candidate.FacNum),
+            Pairing11To15Field.CreationDate => SimilarityCalendarDate(source.CreationDate, candidate.CreationDate),
             Pairing11To15Field.DocumentVid => SimilarityTextNormalized(sourceNorm.DocumentVid, candidateNorm.DocumentVid),
             Pairing11To15Field.DocumentNumber => SimilarityTextNormalized(sourceNorm.DocumentNumber, candidateNorm.DocumentNumber),
-            Pairing11To15Field.DocumentDate => SimilarityCreationDate(source.DocumentDate, candidate.DocumentDate),
+            Pairing11To15Field.DocumentDate => SimilarityCalendarDate(source.DocumentDate, candidate.DocumentDate),
             Pairing11To15Field.ProviderOrRecieverOkpo => SimilarityTextNormalized(
                 sourceNorm.ProviderOrRecieverOkpo, candidateNorm.ProviderOrRecieverOkpo),
             Pairing11To15Field.TransporterOkpo => SimilarityTextNormalized(
@@ -60,11 +74,11 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 sourceNorm.BetaGammaActivity.Raw, candidateNorm.BetaGammaActivity.Raw),
             Pairing12To16Field.AlphaActivity => SimilarityNumericWithTolerance(
                 sourceNorm.AlphaActivity.Raw, candidateNorm.AlphaActivity.Raw),
-            Pairing12To16Field.ActivityMeasurementDate => SimilarityCreationDate(
+            Pairing12To16Field.ActivityMeasurementDate => SimilarityCalendarDate(
                 source.ActivityMeasurementDate, candidate.ActivityMeasurementDate),
             Pairing12To16Field.DocumentVid => SimilarityTextNormalized(sourceNorm.DocumentVid, candidateNorm.DocumentVid),
             Pairing12To16Field.DocumentNumber => SimilarityTextNormalized(sourceNorm.DocumentNumber, candidateNorm.DocumentNumber),
-            Pairing12To16Field.DocumentDate => SimilarityCreationDate(source.DocumentDate, candidate.DocumentDate),
+            Pairing12To16Field.DocumentDate => SimilarityCalendarDate(source.DocumentDate, candidate.DocumentDate),
             Pairing12To16Field.PackName => SimilarityTextNormalized(sourceNorm.PackName, candidateNorm.PackName),
             Pairing12To16Field.PackType => SimilarityType(source.PackType, candidate.PackType),
             Pairing12To16Field.PackNumber => SimilarityPackNumber(source.PackNumber, candidate.PackNumber),
@@ -92,11 +106,11 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 sourceNorm.AlphaActivity.Raw, candidateNorm.AlphaActivity.Raw),
             Pairing13To16Field.TransuraniumActivity => SimilarityNumericWithTolerance(
                 sourceNorm.TransuraniumActivity.Raw, candidateNorm.TransuraniumActivity.Raw),
-            Pairing13To16Field.ActivityMeasurementDate => SimilarityCreationDate(
+            Pairing13To16Field.ActivityMeasurementDate => SimilarityCalendarDate(
                 source.ActivityMeasurementDate, candidate.ActivityMeasurementDate),
             Pairing13To16Field.DocumentVid => SimilarityTextNormalized(sourceNorm.DocumentVid, candidateNorm.DocumentVid),
             Pairing13To16Field.DocumentNumber => SimilarityTextNormalized(sourceNorm.DocumentNumber, candidateNorm.DocumentNumber),
-            Pairing13To16Field.DocumentDate => SimilarityCreationDate(source.DocumentDate, candidate.DocumentDate),
+            Pairing13To16Field.DocumentDate => SimilarityCalendarDate(source.DocumentDate, candidate.DocumentDate),
             Pairing13To16Field.PackName => SimilarityTextNormalized(sourceNorm.PackName, candidateNorm.PackName),
             Pairing13To16Field.PackType => SimilarityType(source.PackType, candidate.PackType),
             Pairing13To16Field.PackNumber => SimilarityPackNumber(source.PackNumber, candidate.PackNumber),
@@ -126,11 +140,11 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 sourceNorm.AlphaActivity.Raw, candidateNorm.AlphaActivity.Raw),
             Pairing14To16Field.TransuraniumActivity => SimilarityNumericWithTolerance(
                 sourceNorm.TransuraniumActivity.Raw, candidateNorm.TransuraniumActivity.Raw),
-            Pairing14To16Field.ActivityMeasurementDate => SimilarityCreationDate(
+            Pairing14To16Field.ActivityMeasurementDate => SimilarityCalendarDate(
                 source.ActivityMeasurementDate, candidate.ActivityMeasurementDate),
             Pairing14To16Field.DocumentVid => SimilarityTextNormalized(sourceNorm.DocumentVid, candidateNorm.DocumentVid),
             Pairing14To16Field.DocumentNumber => SimilarityTextNormalized(sourceNorm.DocumentNumber, candidateNorm.DocumentNumber),
-            Pairing14To16Field.DocumentDate => SimilarityCreationDate(source.DocumentDate, candidate.DocumentDate),
+            Pairing14To16Field.DocumentDate => SimilarityCalendarDate(source.DocumentDate, candidate.DocumentDate),
             Pairing14To16Field.PackName => SimilarityTextNormalized(sourceNorm.PackName, candidateNorm.PackName),
             Pairing14To16Field.PackType => SimilarityType(source.PackType, candidate.PackType),
             Pairing14To16Field.PackNumber => SimilarityPackNumber(source.PackNumber, candidate.PackNumber),
@@ -268,9 +282,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     private static (int confidence, double rawScore, double maxWeight) ComputeConfidence(
         double weightedScore,
         double maxWeight) =>
-        maxWeight <= 0
-            ? (0, weightedScore, maxWeight)
-            : ((int)Math.Clamp(Math.Round(100.0 * weightedScore / maxWeight), 0, 100), weightedScore, maxWeight);
+        (WeightedClosestMatchEngine.ToConfidencePercent(weightedScore, maxWeight), weightedScore, maxWeight);
 
     #endregion
 }

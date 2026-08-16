@@ -13,7 +13,7 @@ using Models.Collections;
 using Models.Comparers.FormContent;
 using Models.DBRealization;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41;
 
 public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 {
@@ -209,7 +209,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         Operation41PairingKeyComparer.SerialNumbersIsEmpty(item.PasNum, item.FacNum);
 
     /// <summary>
-    /// Паспорт / зав. №: пустая строка, «-», «б.н.», «без номера» и т.п. → одна пустая каноническая форма.
+    /// Паспорт / зав. №: пустая строка, «-», «б.н.», «без номера», «н.д.», «н/д», «нет данных» и т.п. → одна пустая каноническая форма.
     /// </summary>
     private static string NormalizeSerialNumber(string? value) =>
         Operation41PairingKeyComparer.IsEmptySerial(value) ? string.Empty : NormalizeNumber(value);

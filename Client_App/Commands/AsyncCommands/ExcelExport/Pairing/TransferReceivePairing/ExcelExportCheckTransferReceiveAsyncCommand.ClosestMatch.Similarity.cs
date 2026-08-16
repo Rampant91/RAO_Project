@@ -1,8 +1,8 @@
 using System;
-using Client_App.Commands.AsyncCommands.ExcelExport.Shared;
-using static Client_App.Commands.AsyncCommands.ExcelExport.Shared.SoftSimilarityCore;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared.SoftSimilarityCore;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing;
 
 public partial class ExcelExportCheckTransferReceiveAsyncCommand
 {
@@ -23,21 +23,32 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             TransferReceiveField.PassportNumber => SimilarityPassportOrFactory(
                 source.PasNum, candidate.PasNum, isFactory: false),
             TransferReceiveField.FactoryNumber => SimilarityPassportOrFactory(
-                source.FacNum, candidate.FacNum, isFactory: true),
+                source.FacNum,
+                candidate.FacNum,
+                isFactory: true,
+                sourceNorm.Quantity,
+                candidateNorm.Quantity),
             TransferReceiveField.Type => SimilarityType(source.Type, candidate.Type),
             TransferReceiveField.Radionuclids => SimilarityRadionuclids(
                 sourceNorm.Radionuclids, candidateNorm.Radionuclids),
-            TransferReceiveField.Quantity => sourceNorm.Quantity == candidateNorm.Quantity
-                ? FieldSimilarity.Exact
-                : FieldSimilarity.Mismatch(0),
+            TransferReceiveField.Quantity => SimilarityQuantityConsideringFactoryRange(
+                sourceNorm.Quantity,
+                candidateNorm.Quantity,
+                source.FacNum,
+                candidate.FacNum),
             TransferReceiveField.AggregateState => sourceNorm.AggregateState == candidateNorm.AggregateState
                 ? FieldSimilarity.Exact
                 : FieldSimilarity.Mismatch(0),
             TransferReceiveField.Sort => sourceNorm.Sort == candidateNorm.Sort
                 ? FieldSimilarity.Exact
                 : FieldSimilarity.Mismatch(0),
-            TransferReceiveField.Activity => SimilarityNumericWithTolerance(
-                sourceNorm.Activity, candidateNorm.Activity),
+            TransferReceiveField.Activity => SimilarityActivityConsideringFactoryEnumeration(
+                sourceNorm.Activity,
+                candidateNorm.Activity,
+                source.FacNum,
+                candidate.FacNum,
+                sourceNorm.Quantity,
+                candidateNorm.Quantity),
             TransferReceiveField.ActivityMeasurementDate => DatesEqualExact(
                     source.ActivityMeasurementDate, candidate.ActivityMeasurementDate)
                 || string.Equals(
@@ -45,14 +56,14 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                     candidateNorm.ActivityMeasurementDate,
                     StringComparison.Ordinal)
                 ? FieldSimilarity.Exact
-                : SimilarityCreationDate(source.ActivityMeasurementDate, candidate.ActivityMeasurementDate),
+                : SimilarityCalendarDate(source.ActivityMeasurementDate, candidate.ActivityMeasurementDate),
             TransferReceiveField.Mass => SimilarityNumericWithTolerance(
                 sourceNorm.Mass, candidateNorm.Mass),
             TransferReceiveField.Volume => SimilarityNumericWithTolerance(
                 sourceNorm.Volume, candidateNorm.Volume),
             TransferReceiveField.CreatorOkpo => SimilarityTextNormalized(
                 sourceNorm.CreatorOkpo, candidateNorm.CreatorOkpo),
-            TransferReceiveField.CreationDate => SimilarityCreationDate(source.CreationDate, candidate.CreationDate),
+            TransferReceiveField.CreationDate => SimilarityCalendarDate(source.CreationDate, candidate.CreationDate),
             TransferReceiveField.PackType => SimilarityType(source.PackType, candidate.PackType),
             TransferReceiveField.PackNumber => SimilarityPackNumber(source.PackNumber, candidate.PackNumber),
             TransferReceiveField.ProviderOrRecieverOkpo => SimilarityProviderOkpo(
@@ -105,15 +116,79 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             return FieldSimilarity.Near(0.99);
         }
 
+        if (TryProviderOkpoSoftNear(candidateProviderNorm, sourceOrgNorm, out var nearScore)
+            || TryProviderOkpoSoftNear(candidateProviderNorm, sourceOrgOkpoNorm, out nearScore))
+        {
+            return FieldSimilarity.Near(nearScore);
+        }
+
         var best = Math.Max(
             NormalizedEditSimilarity(candidateProviderNorm, sourceOrgNorm),
             NormalizedEditSimilarity(candidateProviderNorm, sourceOrgOkpoNorm));
-        if (best >= 0.9)
+        return FieldSimilarity.Mismatch(Math.Min(0.25, best));
+    }
+
+    /// <summary>
+    /// Близкое ОКПО для подсветки: высокая схожесть, либо длинный номер с несколькими опечатками в цифрах.
+    /// Короткие (8 цифр) не смягчаем ниже порога 0.9 — слишком легко склеить разных юрлиц.
+    /// </summary>
+    private const int ProviderOkpoLongMinLength = 12;
+
+    private const int ProviderOkpoLongMaxHammingNear = 5;
+
+    private static bool TryProviderOkpoSoftNear(string left, string right, out double score)
+    {
+        score = 0;
+        if (left.Length == 0 || right.Length == 0)
         {
-            return FieldSimilarity.Near(best);
+            return false;
         }
 
-        return FieldSimilarity.Mismatch(Math.Min(0.25, best));
+        var similarity = NormalizedEditSimilarity(left, right);
+        if (similarity >= 0.9)
+        {
+            score = similarity;
+            return true;
+        }
+
+        var maxLen = Math.Max(left.Length, right.Length);
+        if (maxLen < ProviderOkpoLongMinLength
+            || left.Length < ProviderOkpoLongMinLength
+            || right.Length < ProviderOkpoLongMinLength)
+        {
+            return false;
+        }
+
+        if (left.Length == right.Length)
+        {
+            var hamming = 0;
+            for (var i = 0; i < left.Length; i++)
+            {
+                if (left[i] != right[i])
+                {
+                    hamming++;
+                    if (hamming > ProviderOkpoLongMaxHammingNear)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (hamming is > 0 and <= ProviderOkpoLongMaxHammingNear)
+            {
+                score = Math.Max(0.70, 1.0 - hamming / (double)left.Length);
+                return true;
+            }
+        }
+
+        var distance = LevenshteinDistance(left, right);
+        if (distance is > 0 and <= 4 && similarity >= 0.70)
+        {
+            score = Math.Max(0.70, similarity);
+            return true;
+        }
+
+        return false;
     }
 
     private static double GetFieldWeight(TransferReceiveField field, TransferReceiveDto source)

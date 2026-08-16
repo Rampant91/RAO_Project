@@ -15,11 +15,11 @@ using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.Interfaces;
 
-namespace Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing;
 
 /// <summary>
-/// Выгрузка в .xlsx непарных операций приёма/передачи (формы 1.1–1.8).
-/// Реализована сверка для форм 1.1, 1.2, 1.3 и 1.4: выбранная организация или вся БД.
+/// Выгрузка в .xlsx непарных операций приёма/передачи.
+/// Реализованы формы 1.1–1.5 (листы 1.6–1.8 — заглушки); режимы: выбранная организация или вся БД.
 /// </summary>
 public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBaseAllAsyncCommand
 {
@@ -33,22 +33,31 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
     private const int FirebirdInListMaxCount = 1000;
 
     /// <summary>
-    /// Размер пакета при загрузке операций контрагентов (org-режим).
-    /// Меньше лимита Firebird IN — чтобы прогрессбар двигался чаще (сейчас 20).
+    /// Размер пакета при загрузке операций контрагентов (org-режим), в организациях на SQL IN.
+    /// Меньше лимита Firebird IN — чтобы прогрессбар двигался чаще.
     /// </summary>
     private const int CounterpartOpsLoadChunkSize = 20;
 
     /// <summary>
-    /// Размер страницы (строк формы) при whole-DB загрузке ops keyset-пагинацией по Id.
-    /// Без предварительного Distinct по всей таблице — прогресс после каждой страницы.
+    /// Размер страницы строк формы при whole-DB загрузке (keyset по Id).
     /// </summary>
-    private const int WholeDbOpsPageSize = 2000;
+    private const int WholeDbOpsPageSize = 5000;
 
+    /// <summary>
+    /// Размер страницы строк формы при загрузке контрагентов в режиме выбранной организации (keyset по Id).
+    /// </summary>
+    private const int SelectedOrgOpsPageSize = 2500;
+
+    /// <summary>
+    /// Коды передачи для классификации стороны операции (включая 26 — пара на формах 1.5+).
+    /// SQL load-set для 1.1–1.4 уже — без 26/36; см. массивы кодов в Data.cs.
+    /// </summary>
     private static readonly HashSet<string> TransferCodesForm11To14 = new(StringComparer.Ordinal)
     {
         "21", "22", "25", "26", "27", "28", "29"
     };
 
+    /// <summary>Коды приёма (включая 36 — пара на формах 1.5+).</summary>
     private static readonly HashSet<string> ReceiveCodesForm11To14 = new(StringComparer.Ordinal)
     {
         "31", "32", "35", "36", "37", "38", "39"
@@ -410,8 +419,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
         bool wholeDatabase = false)
     {
         var contentMessage = wholeDatabase
-            ? "Непарные операции приёма/передачи по формам 1.1–1.4 по всей базе не обнаружены."
-            : "Непарные операции приёма/передачи по формам 1.1–1.4 у выбранной организации не обнаружены.";
+            ? "Непарные операции приёма/передачи по формам 1.1–1.5 по всей базе не обнаружены."
+            : "Непарные операции приёма/передачи по формам 1.1–1.5 у выбранной организации не обнаружены.";
 
         await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
@@ -436,7 +445,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
                 ContentTitle = "Проверка приёма-передачи",
                 ContentHeader = "Уведомление",
                 ContentMessage =
-                    "Не выбрано ни одного поля для форм 1.1–1.4. Отметьте параметры хотя бы для одной формы — иначе проверку выполнять нечего.",
+                    "Не выбрано ни одного поля для форм 1.1–1.5. Отметьте параметры хотя бы для одной формы — иначе проверку выполнять нечего.",
                 MinWidth = 420,
                 MinHeight = 160,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner

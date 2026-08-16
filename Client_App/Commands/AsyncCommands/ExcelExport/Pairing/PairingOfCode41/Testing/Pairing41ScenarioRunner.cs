@@ -1,4 +1,4 @@
-namespace Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
+namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.Testing;
 
 /// <summary>
 /// Запуск тестовых сценариев парности 41 без обращения к БД.
