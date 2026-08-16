@@ -1,7 +1,7 @@
 ﻿using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Import;
-using Client_App.Resources.CustomComparers;
+using Client_App.Services.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -86,18 +86,8 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
     {
         get
         {
-            if (!string.IsNullOrEmpty(SearchText))
-            {
-                var search = SearchText.ToLower().Trim();
-                return StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(x => x.DBObservable != null)
-                    .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
-                    .Count(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
-                                   || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
-                                   || GetAdditionalSearchConditions(reps, search));
-            }
-            return TotalRowsOrgs;
+            return MainWindowListQuery.CountOrgsForm12(
+                StaticConfiguration.DBModel, "2.0", SearchText);
         }
     }
 
@@ -109,19 +99,15 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
 
     protected override void CheckAndResetFilterIfNeeded()
     {
-        // Если фильтр установлен и выбрана новая организация
-        if (!string.IsNullOrEmpty(FormNumWhiteList) && SelectedReports != null)
-        {
-            // Проверяем, есть ли отчёты для текущего фильтра в новой организации
-            var hasMatchingReports = SelectedReports.Report_Collection
-                .Any(rep => rep.FormNum_DB == FormNumWhiteList);
+        if (string.IsNullOrEmpty(FormNumWhiteList) || SelectedReports == null)
+            return;
 
-            // Если нет отчётов для текущего фильтра, сбрасываем фильтр
-            if (!hasMatchingReports)
-            {
-                FormNumWhiteList = string.Empty;
-            }
-        }
+        var hasMatchingReports = OrgReportsQuery.HasFormNumAsync(
+                StaticConfiguration.DBModel, SelectedReports.Id, FormNumWhiteList)
+            .GetAwaiter().GetResult();
+
+        if (!hasMatchingReports)
+            FormNumWhiteList = string.Empty;
     }
 
     #region FormNumWhiteList
@@ -145,32 +131,15 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
         {
             if (SelectedReports is null) return null;
 
+            var page = MainWindowListQuery.GetReportPage(
+                StaticConfiguration.DBModel,
+                SelectedReports.Id,
+                FormNumWhiteList,
+                CurrentPageForms,
+                RowsCountForms,
+                orderByYear: true);
 
-            var result = SelectedReports
-                .Report_Collection
-                .AsEnumerable();
-
-            if (!string.IsNullOrEmpty(FormNumWhiteList))
-            {
-                result = result.Where(rep => rep.FormNum_DB == FormNumWhiteList);
-            }
-
-            result = result.OrderBy(x =>
-                {
-                    if (int.TryParse(x.FormNum_DB.Split('.')[1], out var result))
-                        return result;
-                    return int.MinValue;
-                })
-                .ThenByDescending(x =>
-                    x.Year_DB == null ||
-                    !int.TryParse(x.Year_DB, out _) ?
-                        int.MaxValue :
-                        int.Parse(x.Year_DB))
-                .ThenBy(rep => rep.CorrectionNumber_DB)
-                .Skip((CurrentPageForms - 1) * RowsCountForms)
-                .Take(RowsCountForms);
-
-            return new ObservableCollection<Report>(result);
+            return new ObservableCollection<Report>(page);
         }
     }
 
@@ -178,32 +147,13 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
     {
         get
         {
-            var comparator = new CustomReportsComparer();
-            if (!string.IsNullOrEmpty(SearchText))
-            {
-                var search = SearchText.ToLower().Trim();
-                return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(x => x.DBObservable != null)
-                    .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
-                    .Where(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
-                                   || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
-                                   || reps.Master_DB.Rows20[0].ShortJurLico_DB.ToLower().Contains(search)
-                                   || reps.Master_DB.Rows20[1].ShortJurLico_DB.ToLower().Contains(search))
-                    .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
-                    .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
-                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                    .Take(RowsCountOrgs));
-            }
-            else
-                return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(x => x.DBObservable != null)
-                    .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
-                    .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
-                    .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
-                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                    .Take(RowsCountOrgs));
+            var page = MainWindowListQuery.GetOrgPageForm12(
+                StaticConfiguration.DBModel,
+                "2.0",
+                SearchText,
+                CurrentPageOrgs,
+                RowsCountOrgs);
+            return new ObservableCollection<Reports>(page.Items);
         }
     }
 
@@ -257,10 +207,10 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
         {
             if (SelectedReports is null) return 0;
 
-            if (!string.IsNullOrEmpty(FormNumWhiteList))
-                return SelectedReports.Report_Collection.Count(rep => rep.FormNum_DB == FormNumWhiteList);
-
-            return SelectedReports.Report_Collection.Count;
+            return MainWindowListQuery.CountReports(
+                StaticConfiguration.DBModel,
+                SelectedReports.Id,
+                string.IsNullOrEmpty(FormNumWhiteList) ? null : FormNumWhiteList);
         }
     }
 

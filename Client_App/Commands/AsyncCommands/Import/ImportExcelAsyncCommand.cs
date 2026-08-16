@@ -2,6 +2,7 @@
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Resources.CustomComparers;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views.Messages;
@@ -207,6 +208,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                             {
                                 var selectedReports = parameter as Reports ?? _formsTabControlBaseVM.SelectedReports;
                                 if (selectedReports is null) return;
+                                OrgMatchQuery.EnsureTitleRowsLoaded(selectedReports);
                                 var selectedReportsInfo = new OrganizationInfo
                                 {
                                     RegNum = selectedReports.Master_DB.RegNoRep.Value,
@@ -486,6 +488,8 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         {
             var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
             mainWindowVM.UpdateReportsCollection();
+            mainWindowVM.UpdateOrgsPageInfo();
+            mainWindowVM.UpdateTotalReportCount();
         }
         else if (!importSummaryShown && readAnyExcel)
         {
@@ -521,99 +525,13 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
     /// <returns></returns>
     private static Reports? GetBaseReps(ExcelWorksheet worksheet)
     {
-        // Для форм 1.0, 2.0 (Старое)
-
         var excelOkpo0 = Convert.ToString(worksheet.Cells["B36"].Value);
-        var excelOkpo1= Convert.ToString(worksheet.Cells["B37"].Value);
+        var excelOkpo1 = Convert.ToString(worksheet.Cells["B37"].Value);
         var excelRegNo = Convert.ToString(worksheet.Cells["F6"].Value);
 
-        return worksheet.Name switch
-        {
-            "1.0" => ReportsStorage.LocalReports.Reports_Collection10
-                         .FirstOrDefault(t =>
-                         
-                             // обособленные пусты и в базе и в импорте, то сверяем головное
-                             excelOkpo0 == t.Master.Rows10[0].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[0].RegNo_DB
-                             && excelOkpo1 == ""
-                             && t.Master.Rows10[1].Okpo_DB == ""
-
-                             // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                             || excelOkpo0 == t.Master.Rows10[0].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[1].RegNo_DB
-                             && excelOkpo1 == ""
-                             && t.Master.Rows10[1].Okpo_DB == ""
-
-                             // обособленные не пусты, их и сверяем
-                             || excelOkpo1 == t.Master.Rows10[1].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[1].RegNo_DB
-                             && excelOkpo1 != ""
-
-                             // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                             || excelOkpo1 == t.Master.Rows10[1].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[0].RegNo_DB
-                             && excelOkpo1 != ""
-                             && t.Master.Rows10[1].RegNo_DB == "")
-
-                     ?? ReportsStorage.LocalReports
-                         .Reports_Collection10 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
-                         .FirstOrDefault(t =>
-
-                             // юр лицо в базе совпадает с обособленным в импорте
-                             excelOkpo1 != ""
-                             && t.Master.Rows10[1].Okpo_DB == ""
-                             && excelOkpo1 == t.Master.Rows10[0].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[0].RegNo_DB
-
-                             // юр лицо в импорте совпадает с обособленным в базе
-                             || excelOkpo1 == ""
-                             && t.Master.Rows10[1].Okpo_DB != ""
-                             && excelOkpo0 == t.Master.Rows10[1].Okpo_DB
-                             && excelRegNo == t.Master.Rows10[1].RegNo_DB),
-
-            "2.0" => ReportsStorage.LocalReports.Reports_Collection20
-                       .FirstOrDefault(t =>
-
-                           // обособленные пусты и в базе и в импорте, то сверяем головное
-                           excelOkpo0 == t.Master.Rows20[0].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[0].RegNo_DB
-                           && excelOkpo1 == ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
-
-                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || excelOkpo0 == t.Master.Rows20[0].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[1].RegNo_DB
-                           && excelOkpo1 == ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
-
-                           // обособленные не пусты, их и сверяем
-                           || excelOkpo1 == t.Master.Rows20[1].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[1].RegNo_DB
-                           && excelOkpo1 != ""
-
-                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || excelOkpo1 == t.Master.Rows20[1].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[0].RegNo_DB
-                           && excelOkpo1 != ""
-                           && t.Master.Rows20[1].RegNo_DB == "")
-
-                   ?? ReportsStorage.LocalReports.Reports_Collection20 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
-                       .FirstOrDefault(t =>
-
-                           // юр лицо в базе совпадает с обособленным в импорте
-                           excelOkpo1 != ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
-                           && excelOkpo1 == t.Master.Rows20[0].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[0].RegNo_DB
-
-                           // юр лицо в импорте совпадает с обособленным в базе
-                           || excelOkpo1 == ""
-                           && t.Master.Rows20[1].Okpo_DB != ""
-                           && excelOkpo0 == t.Master.Rows20[1].Okpo_DB
-                           && excelRegNo == t.Master.Rows20[1].RegNo_DB),
-
-            _ => null
-        };
+        return worksheet.Name is "1.0" or "2.0"
+            ? OrgMatchQuery.FindByExcelTitleFields(worksheet.Name, excelOkpo0, excelOkpo1, excelRegNo)
+            : null;
     }
 
     #endregion

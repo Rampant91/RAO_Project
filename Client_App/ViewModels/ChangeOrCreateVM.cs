@@ -8,6 +8,7 @@ using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.Commands.SyncCommands;
+using Client_App.Services.DataAccess;
 using Models.Attributes;
 using Models.Collections;
 using Models.DBRealization;
@@ -24,6 +25,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Client_App.Commands.AsyncCommands.Calculator;
+using Microsoft.EntityFrameworkCore;
 
 namespace Client_App.ViewModels;
 
@@ -332,16 +334,18 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
     private void Init()
     {
         var formNum = FormType.Replace(".", "");
+        var formName = ((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{formNum[0]}.Form{formNum},Models")!
+            .GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+
         if (FormType.Split('.')[1] != "0" && FormType.Split('.')[0] is "1" or "2")
         {
-            WindowHeader = $"{((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{formNum[0]}.Form{formNum},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name} "
-                           + $"{Storages.Master_DB.RegNoRep.Value} "
-                           + $"{Storages.Master_DB.ShortJurLicoRep.Value} "
-                           + $"{Storages.Master_DB.OkpoRep.Value}";
+            EnsureStoragesForWindowHeader();
+            var (reg, shortName, okpo) = SafeTitleFields(Storages);
+            WindowHeader = $"{formName} {reg} {shortName} {okpo}";
         }
         else if (FormType is "1.0" or "2.0")
         {
-            WindowHeader = ((Form_ClassAttribute)Type.GetType($"Models.Forms.Form{formNum[0]}.Form{formNum},Models")!.GetCustomAttributes(typeof(Form_ClassAttribute), false).First()).Name;
+            WindowHeader = formName;
         }
 
         AddNote = new AddNoteAsyncCommand(this);
@@ -374,6 +378,86 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         if (!isSum)
         {
             //Storage.Sort();
+        }
+    }
+
+    /// <summary>
+    /// После paging LocalReports.Report_Collection часто пуста — Storages может быть null.
+    /// Титул берём из Storage.Reports / Local по Id org / БД, с догрузкой Rows10/20.
+    /// </summary>
+    private void EnsureStoragesForWindowHeader()
+    {
+        if (Storages != null)
+        {
+            OrgMatchQuery.EnsureTitleRowsLoaded(Storages);
+            return;
+        }
+
+        if (Storage?.Reports != null)
+        {
+            Storages = Storage.Reports;
+            OrgMatchQuery.EnsureTitleRowsLoaded(Storages);
+            return;
+        }
+
+        if (Storage == null || Storage.Id <= 0)
+            return;
+
+        try
+        {
+            var db = StaticConfiguration.DBModel;
+            var orgId = db.ReportCollectionDbSet
+                .AsNoTracking()
+                .Where(r => r.Id == Storage.Id)
+                .Select(r => r.Reports != null ? r.Reports.Id : 0)
+                .FirstOrDefault();
+
+            if (orgId == 0)
+                return;
+
+            var local = ReportsStorage.LocalReports.Reports_Collection
+                .FirstOrDefault(r => r.Id == orgId);
+            if (local != null)
+            {
+                Storages = local;
+                if (Storage.Reports is null)
+                    Storage.Reports = local;
+                OrgMatchQuery.EnsureTitleRowsLoaded(Storages);
+                return;
+            }
+
+            var fromDb = db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .Include(x => x.Master_DB).ThenInclude(m => m.Rows10)
+                .Include(x => x.Master_DB).ThenInclude(m => m.Rows20)
+                .FirstOrDefault(x => x.Id == orgId);
+            if (fromDb != null)
+            {
+                Storages = fromDb;
+                Storage.Reports = fromDb;
+            }
+        }
+        catch
+        {
+            // заголовок без рег.№/ОКПО
+        }
+    }
+
+    private static (string Reg, string Short, string Okpo) SafeTitleFields(Reports? org)
+    {
+        try
+        {
+            var master = org?.Master_DB;
+            if (master == null)
+                return ("", "", "");
+            return (
+                master.RegNoRep?.Value ?? "",
+                master.ShortJurLicoRep?.Value ?? "",
+                master.OkpoRep?.Value ?? "");
+        }
+        catch
+        {
+            return ("", "", "");
         }
     }
 }

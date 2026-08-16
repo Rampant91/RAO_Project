@@ -11,6 +11,7 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Resources;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Messages;
 using Client_App.Views.Messages;
@@ -128,26 +129,32 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
 
         if (form1Numbers.Length > 0 && orgIdsForm10.Count > 0)
         {
-            var reportsForm1 = await dbReadOnly.ReportCollectionDbSet
-                .AsNoTracking()
-                .Where(rep => rep.Reports != null && orgIdsForm10.Contains(rep.Reports.Id))
-                .Where(rep => form1Numbers.Contains(rep.FormNum_DB))
-                .Select(rep => new { rep.Id, OrgId = rep.Reports!.Id, rep.FormNum_DB, rep.StartPeriod_DB, rep.EndPeriod_DB, rep.Year_DB })
-                .ToListAsync(cancellationToken: cts.Token);
-            reportCandidates.AddRange(reportsForm1.Select(r =>
-                (r.Id, r.OrgId, r.FormNum_DB, r.StartPeriod_DB, r.EndPeriod_DB, r.Year_DB)));
+            foreach (var batch in FirebirdInClause.Chunk(orgIdsForm10.ToList()))
+            {
+                var reportsForm1 = await dbReadOnly.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .Where(rep => rep.Reports != null && batch.Contains(rep.Reports.Id))
+                    .Where(rep => form1Numbers.Contains(rep.FormNum_DB))
+                    .Select(rep => new { rep.Id, OrgId = rep.Reports!.Id, rep.FormNum_DB, rep.StartPeriod_DB, rep.EndPeriod_DB, rep.Year_DB })
+                    .ToListAsync(cancellationToken: cts.Token);
+                reportCandidates.AddRange(reportsForm1.Select(r =>
+                    (r.Id, r.OrgId, r.FormNum_DB, r.StartPeriod_DB, r.EndPeriod_DB, r.Year_DB)));
+            }
         }
 
         if (form2Numbers.Length > 0 && orgIdsForm20.Count > 0)
         {
-            var reportsForm2 = await dbReadOnly.ReportCollectionDbSet
-                .AsNoTracking()
-                .Where(rep => rep.Reports != null && orgIdsForm20.Contains(rep.Reports.Id))
-                .Where(rep => form2Numbers.Contains(rep.FormNum_DB))
-                .Select(rep => new { rep.Id, OrgId = rep.Reports!.Id, rep.FormNum_DB, rep.StartPeriod_DB, rep.EndPeriod_DB, rep.Year_DB })
-                .ToListAsync(cancellationToken: cts.Token);
-            reportCandidates.AddRange(reportsForm2.Select(r =>
-                (r.Id, r.OrgId, r.FormNum_DB, r.StartPeriod_DB, r.EndPeriod_DB, r.Year_DB)));
+            foreach (var batch in FirebirdInClause.Chunk(orgIdsForm20.ToList()))
+            {
+                var reportsForm2 = await dbReadOnly.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .Where(rep => rep.Reports != null && batch.Contains(rep.Reports.Id))
+                    .Where(rep => form2Numbers.Contains(rep.FormNum_DB))
+                    .Select(rep => new { rep.Id, OrgId = rep.Reports!.Id, rep.FormNum_DB, rep.StartPeriod_DB, rep.EndPeriod_DB, rep.Year_DB })
+                    .ToListAsync(cancellationToken: cts.Token);
+                reportCandidates.AddRange(reportsForm2.Select(r =>
+                    (r.Id, r.OrgId, r.FormNum_DB, r.StartPeriod_DB, r.EndPeriod_DB, r.Year_DB)));
+            }
         }
 
         var reportIdArray = reportCandidates

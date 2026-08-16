@@ -4,6 +4,7 @@ using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Properties;
 using Client_App.Resources.CustomComparers;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using Client_App.Views.Messages;
 using MessageBox.Avalonia.DTO;
@@ -52,9 +53,9 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         mainWindowViewModel.OnStartProgressBar = 10;
         await ProcessSpravochniks();
 
-        onStartProgressBarVm.LoadStatus = "Создание базы данных";
+        onStartProgressBarVm.LoadStatus = "Подключение к базе данных";
         mainWindowViewModel.OnStartProgressBar = 15;
-        await ProcessDataBaseCreate();
+        await ProcessDataBaseCreate(onStartProgressBarVm);
 
         onStartProgressBarVm.LoadStatus = "Очистка";
         mainWindowViewModel.OnStartProgressBar = 17;
@@ -70,9 +71,10 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
         #region LoadTables
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.0";
+        onStartProgressBarVm.LoadStatus = "Пропуск полной загрузки форм 1.0 (страницы из БД)";
         mainWindowViewModel.OnStartProgressBar = 25;
-        await dbm.form_10.LoadAsync();
+        // form_10 больше не грузим целиком: грид 1.0 берёт RegNo/Okpo/Short через
+        // MainWindowListQuery (+ Include Rows10 только для текущей страницы).
 
         onStartProgressBarVm.LoadStatus = "Загрузка форм 2.0";
         mainWindowViewModel.OnStartProgressBar = 35;
@@ -86,18 +88,10 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         mainWindowViewModel.OnStartProgressBar = 55;
         await dbm.form_50.LoadAsync();
 
-        try
-        {
-            onStartProgressBarVm.LoadStatus = "Загрузка коллекций отчетов";
-            mainWindowViewModel.OnStartProgressBar = 72;
-            await dbm.ReportCollectionDbSet.LoadAsync();
-        }
-        catch (Exception ex)
-        {
-            var msg = $"{Environment.NewLine}Message: {ex.Message}" + 
-                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-            ServiceExtension.LoggerManager.Error(msg);
-        }
+        // Оболочки отчётов 1.x/2.x/... больше не грузим целиком при старте —
+        // главный экран подгружает страницы через MainWindowListQuery.
+        onStartProgressBarVm.LoadStatus = "Пропуск полной загрузки отчётов";
+        mainWindowViewModel.OnStartProgressBar = 72;
 
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
         mainWindowViewModel.OnStartProgressBar = 74;
@@ -466,7 +460,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     /// <summary>
     /// Создание файла БД, либо чтение имеющегося.
     /// </summary>
-    private async Task ProcessDataBaseCreate()
+    private async Task ProcessDataBaseCreate(OnStartProgressBarVM? progressBarVm = null)
     {
         var i = 0;
         var loadDbFileError = false;
@@ -501,6 +495,9 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         {
             try
             {
+                if (progressBarVm != null)
+                    progressBarVm.LoadStatus = "Открытие базы данных";
+
                 dbFileInfo = fileInfo;
                 DbFileName = Path.GetFileNameWithoutExtension(fileInfo.Name);
                 mainWindowViewModel.Current_Db =
@@ -538,6 +535,10 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
             }
         }
+
+        if (progressBarVm != null)
+            progressBarVm.LoadStatus = "Создание базы данных";
+
         DbFileName = $"Local_{i}";
         mainWindowViewModel.Current_Db = $"МПЗФ ver.{Assembly.GetExecutingAssembly().GetName().Version} " +
                                          $"Текущая база данных - {DbFileName}";
@@ -719,6 +720,15 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     public static async Task ProcessDataBaseFillEmpty(DataContext dbm)
     {
         if (!dbm.DBObservableDbSet.Any()) dbm.DBObservableDbSet.Add(new DBObservable());
+
+        // form_10 при старте не preload'ится — нельзя смотреть только local Count (==0 у всех).
+        var masterIdsWithForm10 = dbm.form_10
+            .AsNoTracking()
+            .Where(f => f.ReportId != null)
+            .Select(f => f.ReportId!.Value)
+            .Distinct()
+            .ToHashSet();
+
         foreach (var item in dbm.DBObservableDbSet)
         {
             foreach (var key in item.Reports_Collection)
@@ -728,6 +738,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 if (it.Master_DB.FormNum_DB == "") continue;
 
                 if (it.Master_DB.FormNum_DB == "1.0"
+                    && !masterIdsWithForm10.Contains(it.Master_DB.Id)
                     && it.Master_DB.Rows10.Count == 0)
                 {
                     var ty1 = (Form10)FormCreator.Create("1.0");
@@ -763,26 +774,18 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     it.Master_DB.Rows50.Add(ty);
                 }
 
-                //if (it.Master_DB.Rows40.Count == 0)
-                //{
-                //    var ty1 = (Form40)FormCreator.Create("4.0");
-                //    ty1.NumberInOrder_DB = 1;
-                //    var ty2 = (Form40)FormCreator.Create("4.0");
-                //    ty2.NumberInOrder_DB = 2;
-                //    it.Master_DB.Rows40.Add(ty1);
-                //    it.Master_DB.Rows40.Add(ty2);
-                //}
+                if (it.Master_DB.Rows10.Count > 0)
+                {
+                    it.Master_DB.Rows10.Sorted = false;
+                    await it.Master_DB.Rows10.QuickSortAsync();
+                }
 
-                it.Master_DB.Rows10.Sorted = false;
                 it.Master_DB.Rows20.Sorted = false;
                 it.Master_DB.Rows40.Sorted = false;
                 it.Master_DB.Rows50.Sorted = false;
-                //it.Master_DB.Rows40.Sorted = false;
-                await it.Master_DB.Rows10.QuickSortAsync();
                 await it.Master_DB.Rows20.QuickSortAsync();
                 await it.Master_DB.Rows40.QuickSortAsync();
                 await it.Master_DB.Rows50.QuickSortAsync();
-                //await it.Master_DB.Rows40.QuickSortAsync();
             }
         }
     }
@@ -816,16 +819,32 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             await item.SortAsync();
         }
 
-        
+        // form_10 не в Local — RegNoRep/OkpoRep для 1.0 недоступны. Сортируем по проекции из БД.
         var comparator = new CustomReportsComparer();
+        var sortKeys = MainWindowListQuery.GetForm10DisplayKeys(StaticConfiguration.DBModel);
+
         var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
         ReportsStorage.LocalReports.Reports_Collection.Clear();
         ReportsStorage.LocalReports.Reports_Collection
             .AddRange(tmpReportsList
-                .OrderBy(x => x.Master_DB?.RegNoRep?.Value, comparator)
-                .ThenBy(x => x.Master_DB?.OkpoRep?.Value, comparator));
+                .OrderBy(x => GetSortRegNo(x, sortKeys), comparator)
+                .ThenBy(x => GetSortOkpo(x, sortKeys), comparator));
+    }
 
-        //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync();
+    private static string GetSortRegNo(
+        Reports x, IReadOnlyDictionary<int, Form10TitleSelector.TitleFields> form10Keys)
+    {
+        if (x.Master_DB?.FormNum_DB == "1.0" && form10Keys.TryGetValue(x.Id, out var t))
+            return t.RegNo;
+        return x.Master_DB?.RegNoRep?.Value ?? "";
+    }
+
+    private static string GetSortOkpo(
+        Reports x, IReadOnlyDictionary<int, Form10TitleSelector.TitleFields> form10Keys)
+    {
+        if (x.Master_DB?.FormNum_DB == "1.0" && form10Keys.TryGetValue(x.Id, out var t))
+            return t.Okpo;
+        return x.Master_DB?.OkpoRep?.Value ?? "";
     }
 
     #endregion

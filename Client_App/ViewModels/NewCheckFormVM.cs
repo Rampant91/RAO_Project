@@ -47,11 +47,19 @@ public class NewCheckFormVM : BaseVM, INotifyPropertyChanged
             {
                 case '1' or '2':
                     {
-                        if (FormVM.Reports.Master_DB.RegNoRep != null)
-                            title = title + $"{FormVM.Reports.Master_DB.RegNoRep.Value}_";
+                        try
+                        {
+                            var master = FormVM.Reports?.Master_DB;
+                            if (master?.RegNoRep != null)
+                                title = title + $"{master.RegNoRep.Value}_";
 
-                        if (FormVM.Reports.Master_DB.OkpoRep != null)
-                            title = title + $"{FormVM.Reports.Master_DB.OkpoRep.Value}_";
+                            if (master?.OkpoRep != null)
+                                title = title + $"{master.OkpoRep.Value}_";
+                        }
+                        catch
+                        {
+                            // Rows10/20 могут отсутствовать
+                        }
                         break;
                     }
 

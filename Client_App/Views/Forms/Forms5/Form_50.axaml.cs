@@ -34,6 +34,7 @@ public partial class Form_50 : BaseWindow<Form_50VM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
+        args.Cancel = true;
         if (DataContext is not Form_50VM vm) return;
 
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
@@ -42,6 +43,8 @@ public partial class Form_50 : BaseWindow<Form_50VM>
             if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
             {
                 desktop.MainWindow.WindowState = WindowState.Normal;
+                Closing -= OnStandardClosing;
+                Close();
                 return;
             }
         }
@@ -81,6 +84,7 @@ public partial class Form_50 : BaseWindow<Form_50VM>
         {
             case "Да":
                 {
+                    flag = true;
                     try
                     {
                         await dbm.SaveChangesAsync();
@@ -88,11 +92,7 @@ public partial class Form_50 : BaseWindow<Form_50VM>
                     }
                     catch { }
 
-                    if (desktop.Windows.Count == 1)
-                    {
-                        desktop.MainWindow.WindowState = WindowState.Normal;
-                    }
-                    return;
+                    break;
                 }
             case "Нет":
                 {
@@ -125,9 +125,9 @@ public partial class Form_50 : BaseWindow<Form_50VM>
         desktop.MainWindow.WindowState = WindowState.Normal;
         if (flag)
         {
+            Closing -= OnStandardClosing;
             Close();
         }
-        args.Cancel = true;
     }
 
     #endregion

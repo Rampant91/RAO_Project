@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Client_App.Resources.CustomComparers;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
 using Microsoft.EntityFrameworkCore;
@@ -47,6 +48,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         CancellationTokenSource cts)
     {
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
+        OrgMatchQuery.EnsureTitleRowsLoaded(selectedReports);
         var regNum = RemoveForbiddenChars(selectedReports.Master_DB.RegNoRep.Value);
         var okpo = RemoveForbiddenChars(selectedReports.Master_DB.OkpoRep.Value);
         var fileName = $"{regNum}_{okpo}_непарные_операции_41";

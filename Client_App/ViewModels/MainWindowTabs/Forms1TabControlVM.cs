@@ -1,7 +1,7 @@
 ﻿using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Import;
-using Client_App.Resources.CustomComparers;
+using Client_App.Services.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -9,7 +9,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Threading;
 
 namespace Client_App.ViewModels.MainWindowTabs;
 
@@ -22,6 +25,12 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
     private protected override byte DefaultOrgsPerPage => 8;
 
     private protected override char FormNum => '1';
+
+    private readonly ObservableCollection<Report> _reportCollection = new();
+    private readonly ObservableCollection<Reports> _orgsCollection = new();
+    private readonly Forms1WarmCache _cache = Forms1WarmCache.Instance;
+    private int _reportLoadGeneration;
+    private int _orgLoadGeneration;
 
     #endregion
 
@@ -80,18 +89,8 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
     {
         get
         {
-            if (!string.IsNullOrEmpty(SearchText))
-            {
-                var search = SearchText.ToLower().Trim();
-                return StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(x => x.DBObservable != null)
-                    .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
-                    .Count(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
-                                   || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
-                                   || GetAdditionalSearchConditions(reps, search));
-            }
-            return TotalRowsOrgs;
+            return MainWindowListQuery.CountOrgsForm12(
+                StaticConfiguration.DBModel, "1.0", SearchText);
         }
     }
 
@@ -103,19 +102,13 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
 
     protected override void CheckAndResetFilterIfNeeded()
     {
-        // Если фильтр установлен и выбрана новая организация
-        if (!string.IsNullOrEmpty(FormNumWhiteList) && SelectedReports != null)
-        {
-            // Проверяем, есть ли отчёты для текущего фильтра в новой организации
-            var hasMatchingReports = SelectedReports.Report_Collection
-                .Any(rep => rep.FormNum_DB == FormNumWhiteList);
+        if (string.IsNullOrEmpty(FormNumWhiteList) || SelectedReports == null)
+            return;
 
-            // Если нет отчётов для текущего фильтра, сбрасываем фильтр
-            if (!hasMatchingReports)
-            {
-                FormNumWhiteList = string.Empty;
-            }
-        }
+        // Не блокируем UI загрузкой stubs: сбрасываем только если stubs уже есть и формы нет.
+        var has = _cache.TryHasFormNum(SelectedReports.Id, FormNumWhiteList);
+        if (has == false)
+            FormNumWhiteList = string.Empty;
     }
 
     #region FormNumWhiteList
@@ -137,37 +130,8 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
     {
         get
         {
-            if (SelectedReports is null) return null;
-
-            var result = SelectedReports
-                    .Report_Collection
-                    .AsEnumerable();
-
-            if (!string.IsNullOrEmpty(FormNumWhiteList))
-            {
-                result = result.Where(rep => rep.FormNum_DB == FormNumWhiteList);
-            }
-
-            result = result.OrderBy(x => 
-                {
-                    if (int.TryParse(x.FormNum_DB.Split('.')[1], out var result))
-                        return result;
-                    return int.MinValue;
-                })
-                // Сортируем по валидным датам, некорректные уходят в начало/конец
-                .ThenByDescending(x => x.StartPeriod_DB == null || 
-                                       !DateOnly.TryParse(x.StartPeriod_DB, out _) 
-                    ? DateOnly.MaxValue
-                    : DateOnly.Parse(x.StartPeriod_DB))
-                .ThenByDescending(x => x.EndPeriod_DB == null || 
-                                       !DateOnly.TryParse(x.EndPeriod_DB, out _)
-                    ? DateOnly.MaxValue
-                    : DateOnly.Parse(x.EndPeriod_DB))
-                .ThenBy(rep => rep.CorrectionNumber_DB)
-                .Skip((CurrentPageForms - 1) * RowsCountForms)
-                .Take(RowsCountForms);
-
-            return new ObservableCollection<Report>(result);
+            // Коллекция обновляется явно (UpdateReportCollection / async); getter без Sync.
+            return _reportCollection;
         }
     }
 
@@ -175,35 +139,8 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
     {
         get
         {
-            var comparator = new CustomReportsComparer();
-            if (!string.IsNullOrEmpty(SearchText))
-            {
-                var search = SearchText.ToLower().Trim();
-
-                return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(x => x.DBObservable != null)
-                    .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
-                    .Where(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
-                                   || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
-                                   || reps.Master_DB.Rows10[0].ShortJurLico_DB.ToLower().Contains(search)
-                                   || reps.Master_DB.Rows10[1].ShortJurLico_DB.ToLower().Contains(search))
-                    .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
-                    .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
-                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                    .Take(RowsCountOrgs));
-            }
-            else
-            {
-                return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(x => x.DBObservable != null)
-                    .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
-                    .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
-                    .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
-                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                    .Take(RowsCountOrgs));
-            }
+            SyncOrgsCollection();
+            return _orgsCollection;
         }
     }
 
@@ -254,10 +191,12 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
         {
             if (SelectedReports is null) return 0;
 
-            if (!string.IsNullOrEmpty(FormNumWhiteList))
-                return SelectedReports.Report_Collection.Count(rep => rep.FormNum_DB == FormNumWhiteList);
+            var filter = string.IsNullOrEmpty(FormNumWhiteList) ? null : FormNumWhiteList;
+            if (_cache.TryCountReports(SelectedReports.Id, filter, out var count))
+                return count;
 
-            return SelectedReports.Report_Collection.Count;
+            // Пока stubs грузятся фоном — не блокируем UI.
+            return _reportCollection.Count;
         }
     }
 
@@ -265,18 +204,89 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
 
     #region Functions
 
+    public override void UpdateReportCollection()
+    {
+        if (SelectedReports is null)
+        {
+            if (_reportCollection.Count > 0)
+                _reportCollection.Clear();
+            OnPropertyChanged(nameof(ReportCollection));
+            return;
+        }
+
+        var orgId = SelectedReports.Id;
+        var filter = string.IsNullOrEmpty(FormNumWhiteList) ? null : FormNumWhiteList;
+        var page = CurrentPageForms;
+        var pageSize = RowsCountForms;
+
+        // Cache hit — мгновенно; иначе не блокируем UI, грузим фоном.
+        if (_cache.TryGetReportPage(orgId, filter, page, pageSize, out var cached))
+        {
+            ReplaceCollection(_reportCollection, cached, r => r.Id);
+            OnPropertyChanged(nameof(ReportCollection));
+            OnPropertyChanged(nameof(TotalRowsForms));
+            OnPropertyChanged(nameof(TotalPagesForms));
+            OnPropertyChanged(nameof(SelectedReports)); // обновить IsEnabled кнопок фильтра
+            WarmSelectedOrgAndPrefetchReports();
+            return;
+        }
+
+        var generation = Interlocked.Increment(ref _reportLoadGeneration);
+        if (_reportCollection.Count > 0)
+            _reportCollection.Clear();
+        OnPropertyChanged(nameof(ReportCollection));
+
+        var dbPath = StaticConfiguration.DBPath;
+        _ = Task.Run(() =>
+        {
+            try
+            {
+                using var db = new DBModel(dbPath);
+                var items = _cache.GetReportPage(db, orgId, filter, page, pageSize);
+                var total = _cache.CountReports(db, orgId, filter);
+                var hasFilter = string.IsNullOrEmpty(FormNumWhiteList)
+                    || _cache.HasFormNum(db, orgId, FormNumWhiteList);
+
+                Dispatcher.UIThread.Post(() =>
+                {
+                    if (generation != _reportLoadGeneration || SelectedReports?.Id != orgId)
+                        return;
+
+                    if (!hasFilter && !string.IsNullOrEmpty(FormNumWhiteList))
+                        FormNumWhiteList = string.Empty;
+
+                    ReplaceCollection(_reportCollection, items, r => r.Id);
+                    OnPropertyChanged(nameof(ReportCollection));
+                    OnPropertyChanged(nameof(TotalRowsForms));
+                    OnPropertyChanged(nameof(TotalPagesForms));
+                    OnPropertyChanged(nameof(SelectedReports));
+                    WarmSelectedOrgAndPrefetchReports();
+                });
+            }
+            catch
+            {
+                // UI уже очищен; следующий выбор повторит загрузку.
+            }
+        });
+    }
+
     public void SetWhiteList(string formNum)
     {
         FormNumWhiteList = FormNumWhiteList != formNum 
             ? formNum 
             : string.Empty;
 
-        UpdateReportCollection();
+        if (CurrentPageForms != 1)
+            CurrentPageForms = 1;
+        else
+            UpdateReportCollection();
+
         UpdateFormsPageInfo();
     }
 
     private protected override void NotifySearchTextChanged()
     {
+        SyncOrgsCollection();
         OnPropertyChanged(nameof(ReportsCollection));
         OnPropertyChanged(nameof(FilteredRowsOrgs));
         OnPropertyChanged(nameof(TotalPagesOrgs));
@@ -285,10 +295,140 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
 
     public void UpdateOrgsPageInfo()
     {
+        _cache.InvalidateAll();
+        SyncOrgsCollection();
         OnPropertyChanged(nameof(TotalRowsOrgs));
         OnPropertyChanged(nameof(TotalPagesOrgs));
+        OnPropertyChanged(nameof(ReportsCollection));
         UpdateTotalReportCount();
         UpdateTotalReportsCount();
+        if (SelectedReports != null)
+            UpdateReportCollection();
+    }
+
+    /// <summary>
+    /// После правки титула 1.0: пересобрать текущую страницу org из уже пропатченных ключей
+    /// (без полного сброса OrgKeys / report warm-cache). Сохраняет SelectedReports.
+    /// </summary>
+    public void RefreshOrgListAfterTitleChange()
+    {
+        var keep = SelectedReports;
+        _cache.InvalidateOrgPages();
+        SyncOrgsCollection();
+
+        if (keep != null)
+        {
+            for (var i = 0; i < _orgsCollection.Count; i++)
+            {
+                if (_orgsCollection[i].Id == keep.Id)
+                {
+                    _orgsCollection[i] = keep;
+                    break;
+                }
+            }
+
+            SetSelectedReportsWithoutReload(keep);
+        }
+
+        OnPropertyChanged(nameof(FilteredRowsOrgs));
+        OnPropertyChanged(nameof(TotalPagesOrgs));
+        OnPropertyChanged(nameof(ReportsCollection));
+    }
+
+    public override void UpdateReportsCollectionWithoutReCreation()
+    {
+        var selectedId = SelectedReports?.Master_DB?.Id;
+        _cache.InvalidateAll();
+        SyncOrgsCollection();
+
+        if (selectedId.HasValue)
+        {
+            var restored = _orgsCollection.FirstOrDefault(r => r.Master_DB?.Id == selectedId.Value);
+            if (restored != null)
+                SetSelectedReportsWithoutReload(restored);
+        }
+
+        OnPropertyChanged(nameof(ReportsCollection));
+    }
+
+    private void SyncOrgsCollection()
+    {
+        var search = SearchText;
+        var pageNum = CurrentPageOrgs;
+        var pageSize = RowsCountOrgs;
+
+        if (_cache.TryGetOrgPage(search, pageNum, pageSize, out var cached))
+        {
+            ReplaceCollection(_orgsCollection, cached.Items, r => r.Id);
+            _cache.PrefetchAdjacentOrgPages(
+                StaticConfiguration.DBPath, search, pageNum, pageSize, TotalPagesOrgs);
+            return;
+        }
+
+        var generation = Interlocked.Increment(ref _orgLoadGeneration);
+        var dbPath = StaticConfiguration.DBPath;
+
+        // Быстрый sync-путь, если UI уже на странице и кэша нет — всё же грузим sync,
+        // но параллельно не дёргаем TotalReportCount (убрано с CurrentPageOrgs).
+        // Для смены страницы предпочтительнее показать кэш; при miss — короткий sync.
+        try
+        {
+            var page = _cache.GetOrgPage(StaticConfiguration.DBModel, search, pageNum, pageSize);
+            if (generation != _orgLoadGeneration) return;
+            ReplaceCollection(_orgsCollection, page.Items, r => r.Id);
+            _cache.PrefetchAdjacentOrgPages(dbPath, search, pageNum, pageSize, TotalPagesOrgs);
+        }
+        catch
+        {
+            // leave previous page visible
+        }
+    }
+
+    private void WarmSelectedOrgAndPrefetchReports()
+    {
+        if (SelectedReports is null) return;
+
+        var filter = string.IsNullOrEmpty(FormNumWhiteList) ? null : FormNumWhiteList;
+        _cache.OnOrgSelected(
+            StaticConfiguration.DBPath,
+            SelectedReports.Id,
+            filter,
+            CurrentPageForms,
+            RowsCountForms);
+
+        _cache.PrefetchAdjacentReportPages(
+            StaticConfiguration.DBPath,
+            SelectedReports.Id,
+            filter,
+            CurrentPageForms,
+            RowsCountForms,
+            TotalPagesForms);
+    }
+
+    private static void ReplaceCollection<T>(
+        ObservableCollection<T> target,
+        IReadOnlyList<T> source,
+        Func<T, int> idSelector)
+    {
+        if (target.Count == source.Count)
+        {
+            var same = true;
+            for (var i = 0; i < source.Count; i++)
+            {
+                if (idSelector(target[i]) != idSelector(source[i]))
+                {
+                    same = false;
+                    break;
+                }
+            }
+
+            if (same)
+                return;
+        }
+
+        target.Clear();
+        foreach (var item in source)
+            target.Add(item);
     }
 
     #endregion

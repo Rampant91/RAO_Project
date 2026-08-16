@@ -16,6 +16,7 @@ using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
+using Client_App.Services.DataAccess;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms.Form1;
@@ -152,57 +153,55 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
             .Where(x => x.DBObservable != null)
             .Any(reps => reps.Report_Collection
                 .Any(rep => rep.FormNum_DB == formNum));
-        switch (forSelectedOrg)
+
+        if (forSelectedOrg && selectedReports is null)
         {
-            case true when selectedReports is null:
-            {
-                #region MessageExcelExportFail
+            #region MessageExcelExportFail
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в .xlsx",
-                        ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация",
-                        MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                        Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в .xlsx",
+                    ContentMessage = "Выгрузка не выполнена, поскольку не выбрана организация",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
+                })
+                .ShowDialog(Desktop.MainWindow));
 
-                #endregion
+            #endregion
 
-                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+            return;
+        }
 
-                return;
-            }
-            case true when selectedReports.Report_Collection.All(rep => rep.FormNum_DB != formNum):
-            case false when !isAnyRepWithSameFormNum:
-            {
-                #region MessageRepsNotFound
+        var selectedOrgMissingForm = forSelectedOrg
+            && !await OrgReportsQuery.HasFormNumAsync(db, selectedReports!.Id, formNum, cts.Token);
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в .xlsx",
-                        ContentHeader = "Уведомление",
-                        ContentMessage =
-                            $"Не удалось совершить выгрузку форм {formNum}," +
-                            $"{Environment.NewLine}поскольку эти формы отсутствуют в текущей организации/базе.",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                        Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+        if (selectedOrgMissingForm || (!forSelectedOrg && !isAnyRepWithSameFormNum))
+        {
+            #region MessageRepsNotFound
 
-                #endregion
-                
-                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-                
-                return;
-            }
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка в .xlsx",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        $"Не удалось совершить выгрузку форм {formNum}," +
+                        $"{Environment.NewLine}поскольку эти формы отсутствуют в текущей организации/базе.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
+                })
+                .ShowDialog(Desktop.MainWindow));
+
+            #endregion
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
     }
 
@@ -289,6 +288,7 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
             case true:
             {
                 ExportType = $"Выбранная_организация_Формы_{formNum}";
+                OrgMatchQuery.EnsureTitleRowsLoaded(selectedReports);
                 var regNum = StaticStringMethods.RemoveForbiddenChars(selectedReports.Master.RegNoRep.Value);
                 var okpo = StaticStringMethods.RemoveForbiddenChars(selectedReports.Master.OkpoRep.Value);
                 fileName = $"{ExportType}_{regNum}_{okpo}_{Assembly.GetExecutingAssembly().GetName().Version}";
@@ -324,7 +324,10 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
         var repsList = new List<Reports>();
         if (forSelectedOrg)
         {
-            repsList.Add(selectedReports);
+            var fromDb = await OrgReportsQuery.LoadOrgWithReportShellsForFormAsync(
+                db, selectedReports.Id, formNum, cts.Token);
+            if (fromDb != null)
+                repsList.Add(fromDb);
         }
         else
         {
@@ -583,10 +586,6 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
         excelPackage.Workbook.Properties.Author = "RAO_APP";
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
-        if (ReportsStorage.LocalReports.Reports_Collection.Count == 0)
-        {
-            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-        }
         Worksheet = excelPackage.Workbook.Worksheets.Add($"Отчеты {formNum}");
         WorksheetPrim = excelPackage.Workbook.Worksheets.Add($"Примечания {formNum}");
         Worksheet.View.FreezePanes(2, 1);

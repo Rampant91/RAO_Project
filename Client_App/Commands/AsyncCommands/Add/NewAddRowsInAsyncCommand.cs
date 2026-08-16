@@ -1,8 +1,10 @@
 ﻿using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Messages;
 using Models.Collections;
+using Models.DBRealization;
 using Models.Forms;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,16 +23,13 @@ public class NewAddRowsInAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     private string FormType => formVM.FormType;
 
     /// <param name="parameter">В качестве параметра принимает список выбранных форм</param>
-    /// <returns></returns>
     public override async Task AsyncExecute(object? parameter)
     {
-        var currentPageIsLastPage = formVM.CurrentPage == formVM.TotalPages;
         var collection = (IEnumerable<Form>)parameter;
         var item = collection.FirstOrDefault();
         var owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
             .FirstOrDefault(w => w.IsActive);
 
-        //Прекращение выполнения при получении некорректных данных
         if (owner == null) return;
         if (item == null) return;
 
@@ -39,9 +38,7 @@ public class NewAddRowsInAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             $"Сколько добавить перед указанной строкой?\n" +
             $"Выбранная строка:   {numberCell}"));
 
-        //Если пользователь отменил ввод числа, окно вернет null
         var rowCount = await dialog.ShowDialog<int?>(owner);
-        //Если пользователь ничего не ввел, то прекращаем выполнение команды
         if (rowCount is null or <= 0) return;
 
         foreach (var key in Storage[item.FormNum_DB])
@@ -58,11 +55,21 @@ public class NewAddRowsInAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             var frm = FormCreator.Create(FormType);
             frm.NumberInOrder_DB = numberCell;
             frm.Report = Storage;
+            frm.ReportId = Storage.Id;
             lst.Add(frm);
             numberCell++;
         }
         Storage[Storage.FormNum_DB].AddRange(lst);
+        foreach (var frm in lst)
+            FormRowsPageLoader.TrackNewFormRow(StaticConfiguration.DBModel, Storage, frm);
+
         await Storage.SortAsync();
+
+        if (formVM.UseDbPaging)
+        {
+            formVM.DbTotalRows = (formVM.DbTotalRows ?? 0) + rowCount.Value;
+            formVM.IsCanSaveReportEnabled = true;
+        }
 
         formVM.UpdateFormList();
         formVM.UpdatePageInfo();

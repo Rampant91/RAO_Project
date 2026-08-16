@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Resources;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using FirebirdSql.Data.FirebirdClient;
@@ -103,6 +104,7 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #region Progress = 10
 
+        OrgMatchQuery.EnsureTitleRowsLoaded(exportOrg);
         if (exportOrg.Master_DB.FormNum_DB.Split('.')[0] is "1" or "2")
         {
             progressBarVM.ExportName = $"Выгрузка организации {exportOrg.Master_DB.RegNoRep.Value}_{exportOrg.Master_DB.OkpoRep.Value}";
@@ -133,21 +135,19 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         
         #endregion
 
-        var repsReportIds = parameter switch
+        // Полный экспорт SelectedReports — всегда из БД (память может быть неполной).
+        // Явный subset (напр. ExportReportsWithDateRange) — новый Reports ≠ SelectedReports с уже отфильтрованной коллекцией.
+        int[] repsReportIds;
+        if (parameter is Reports subset
+            && !ReferenceEquals(subset, _mainWindowVM.SelectedReports)
+            && subset.Report_Collection.Count > 0)
         {
-            Reports => exportOrg.Report_Collection.Select(x => x.Id).ToArray(),
-            _ => await dbReadOnly.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(x => x.Report_Collection)
-                .Where(x => x.Id == repsId)
-                .SelectMany(x => x.Report_Collection
-                    .OrderBy(x => x.FormNum_DB)
-                    .ThenBy(x => x.StartPeriod_DB)
-                    .Select(x => x.Id))
-                .ToArrayAsync(cancellationToken: cts.Token)
-        };
+            repsReportIds = subset.Report_Collection.Select(x => x.Id).ToArray();
+        }
+        else
+        {
+            repsReportIds = await OrgReportsQuery.GetReportIdsAsync(dbReadOnly, repsId, cts.Token);
+        }
         
         #region Progress = 15
         

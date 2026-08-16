@@ -39,6 +39,7 @@ public partial class Form_20 : BaseWindow<Form_20VM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
+        args.Cancel = true;
         if (DataContext is not Form_20VM vm) return;
 
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
@@ -47,6 +48,8 @@ public partial class Form_20 : BaseWindow<Form_20VM>
             if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
             {
                 desktop.MainWindow.WindowState = WindowState.Normal;
+                Closing -= OnStandardClosing;
+                Close();
                 return;
             }
         }
@@ -94,8 +97,6 @@ public partial class Form_20 : BaseWindow<Form_20VM>
 
         if (reportsAlreadyExist)
         {
-            args.Cancel = true;
-
             await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
@@ -147,6 +148,7 @@ public partial class Form_20 : BaseWindow<Form_20VM>
         {
             case "Да":
             {
+                flag = true;
                 try
                 {
                     await dbm.SaveChangesAsync();
@@ -154,11 +156,7 @@ public partial class Form_20 : BaseWindow<Form_20VM>
                 }
                 catch { }
 
-                if (desktop.Windows.Count == 1)
-                {
-                    desktop.MainWindow.WindowState = WindowState.Normal;
-                }
-                return;
+                break;
             }
             case "Нет":
             {
@@ -191,9 +189,9 @@ public partial class Form_20 : BaseWindow<Form_20VM>
         desktop.MainWindow.WindowState = WindowState.Normal;
         if (flag)
         {
+            Closing -= OnStandardClosing;
             Close();
         }
-        args.Cancel = true;
     }
 
     #endregion

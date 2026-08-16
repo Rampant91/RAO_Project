@@ -284,15 +284,6 @@ public partial class Form_17 : BaseWindow<Form_17VM>
                         ServiceExtension.LoggerManager.Error(msg);
                     }
 
-                    if (desktop.Windows.Count == 1)
-                    {
-                        desktop.MainWindow.WindowState = OwnerPrevState;
-
-                        break;
-                    }
-
-                    args.Cancel = false;
-
                     break;
                 }
             case "Нет":

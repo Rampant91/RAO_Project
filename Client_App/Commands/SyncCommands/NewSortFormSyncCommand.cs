@@ -13,12 +13,8 @@ public class NewSortFormSyncCommand(BaseFormVM formVM) : BaseCommand
 
     public override void Execute(object? parameter)
     {
-        //var formNum = Storage.FormNum_DB;
-        //var enumerable = Storage[formNum].GetEnumerable();
-        //if (enumerable is null) return;
-        //if (enumerable.Count() <= 0) return;
+        formVM.EnsureAllRowsForMutationAsync().GetAwaiter().GetResult();
 
-        //var minItem = enumerable.Min(x => x.Order);
         var minItem = 1;
 
         Storage.Sort();
@@ -35,5 +31,6 @@ public class NewSortFormSyncCommand(BaseFormVM formVM) : BaseCommand
         }
 
         formVM.UpdateFormList();
+        formVM.UpdatePageInfo();
     }
 }

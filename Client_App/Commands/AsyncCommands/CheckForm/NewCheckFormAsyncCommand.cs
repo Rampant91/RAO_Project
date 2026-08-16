@@ -43,6 +43,9 @@ public class NewCheckFormAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 
         var window = Desktop.Windows.FirstOrDefault(x => x.Name == rep.FormNum_DB);
 
+        // До page-lazy строк: страховка, что проверка видит полный набор из БД.
+        await formVM.EnsureAllRowsForMutationAsync();
+
         await using var db = new DBModel(StaticConfiguration.DBPath);
         List<CheckError> result = [];
         try

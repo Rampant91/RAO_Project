@@ -1,8 +1,11 @@
 ﻿using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels.Forms;
 using Models.Collections;
+using Models.DBRealization;
 using Models.Forms;
 using Models.Interfaces;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -21,17 +24,27 @@ public class NewAddRowAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     {
         var currentPageIsLastPage = formVM.CurrentPage == formVM.TotalPages || formVM.TotalPages == 0;
         var frm = FormCreator.Create(FormType);
-        frm.NumberInOrder_DB = GetNumberInOrder(Storage[Storage.FormNum_DB]);
+        frm.NumberInOrder_DB = await ResolveNextNumberInOrderAsync();
         frm.Report = Storage;
+        frm.ReportId = Storage.Id;
+
         var formContainRowAtStart = Storage.Rows.Count > 0;
         Storage[Storage.FormNum_DB].Add(frm);
+
+        // Paging грузит страницы AsNoTracking — без явного Add SaveChanges строку не увидит.
+        FormRowsPageLoader.TrackNewFormRow(StaticConfiguration.DBModel, Storage, frm);
+
         await Storage.SortAsync();
         if (!formContainRowAtStart)
         {
             await new SaveReportAsyncCommand(formVM).AsyncExecute(null);
         }
+        else if (formVM.UseDbPaging)
+        {
+            formVM.DbTotalRows = (formVM.DbTotalRows ?? 0) + 1;
+            formVM.IsCanSaveReportEnabled = true;
+        }
 
-        //Обновление DataGrid для отображения новых строк
         if (currentPageIsLastPage)
         {
             formVM.UpdateFormList();
@@ -40,11 +53,25 @@ public class NewAddRowAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         Debug.WriteLine(this);
     }
 
-    /// <summary>
-    /// Получить порядковый номер
-    /// </summary>
-    /// <param name="lst">Список элементов</param>
-    /// <returns>Порядковый номер</returns>
+    private async Task<int> ResolveNextNumberInOrderAsync()
+    {
+        if (formVM.UseDbPaging && FormRowsPageLoader.SupportsDbPaging(FormType) && Storage.Id > 0)
+        {
+            var dbMax = await FormRowsPageLoader.GetMaxNumberInOrderAsync(
+                StaticConfiguration.DBModel, Storage.Id, FormType);
+            var localMax = 0;
+            foreach (var item in Storage[Storage.FormNum_DB])
+            {
+                if (item is INumberInOrder n && n.Order > localMax)
+                    localMax = (int)n.Order;
+            }
+
+            return Math.Max(dbMax, localMax) + 1;
+        }
+
+        return GetNumberInOrder(Storage[Storage.FormNum_DB]);
+    }
+
     private static int GetNumberInOrder(IKeyCollection lst)
     {
         var maxNum = 0;

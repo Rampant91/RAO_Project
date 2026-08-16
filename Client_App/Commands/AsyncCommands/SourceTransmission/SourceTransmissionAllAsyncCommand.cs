@@ -25,6 +25,8 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
 
     public override async Task AsyncExecute(object? parameter)
     {
+        await FormVM.EnsureAllRowsForMutationAsync();
+
         var formWindow = Desktop.Windows.FirstOrDefault(x => x.Name == FormVM.FormType);
         var desktop = (IClassicDesktopStyleApplicationLifetime)Avalonia.Application.Current?.ApplicationLifetime!;
         var activeWindow = formWindow ?? desktop.MainWindow;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.Services.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -156,12 +157,19 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             return [];
         }
 
-        var reports = await db.ReportCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .Include(r => r.Notes.OrderBy(n => n.Order))
-            .Where(r => reportIds.Contains(r.Id))
-            .ToListAsync(ct);
+        var idList = reportIds as List<int> ?? reportIds.ToList();
+        var reports = new List<Report>(idList.Count);
+        foreach (var batch in FirebirdInClause.Chunk(idList))
+        {
+            var batchReports = await db.ReportCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Include(r => r.Notes.OrderBy(n => n.Order))
+                .Where(r => batch.Contains(r.Id))
+                .ToListAsync(ct);
+            reports.AddRange(batchReports);
+        }
+
         var byId = reports.ToDictionary(r => r.Id);
 
         switch (formNum)
@@ -276,28 +284,32 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
         CancellationToken ct)
         where T : Form
     {
-        var rows = await source.AsNoTracking()
-            .Where(f => f.ReportId != null && reportIds.Contains(f.ReportId.Value))
-            .OrderBy(f => f.ReportId)
-            .ThenBy(f => f.NumberInOrder_DB)
-            .ToListAsync(ct);
-
-        foreach (var group in rows.GroupBy(f => f.ReportId!.Value))
+        var idList = reportIds as List<int> ?? reportIds.ToList();
+        foreach (var batch in FirebirdInClause.Chunk(idList))
         {
-            if (!targetsByReportId.TryGetValue(group.Key, out var target))
-            {
-                continue;
-            }
+            var rows = await source.AsNoTracking()
+                .Where(f => f.ReportId != null && batch.Contains(f.ReportId.Value))
+                .OrderBy(f => f.ReportId)
+                .ThenBy(f => f.NumberInOrder_DB)
+                .ToListAsync(ct);
 
-            if (target is ObservableCollectionWithItemPropertyChanged<T> obs)
+            foreach (var group in rows.GroupBy(f => f.ReportId!.Value))
             {
-                obs.AddRangeNoChange(group);
-            }
-            else
-            {
-                foreach (var row in group)
+                if (!targetsByReportId.TryGetValue(group.Key, out var target))
                 {
-                    target.Add(row);
+                    continue;
+                }
+
+                if (target is ObservableCollectionWithItemPropertyChanged<T> obs)
+                {
+                    obs.AddRangeNoChange(group);
+                }
+                else
+                {
+                    foreach (var row in group)
+                    {
+                        target.Add(row);
+                    }
                 }
             }
         }

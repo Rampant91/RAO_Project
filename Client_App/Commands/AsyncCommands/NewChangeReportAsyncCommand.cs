@@ -1,4 +1,6 @@
-﻿using Client_App.ViewModels.Forms.Forms1;
+﻿using Client_App.Services.DataAccess;
+using Client_App.ViewModels.Forms;
+using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
 using Client_App.ViewModels.Forms.Forms4;
 using Client_App.ViewModels.Forms.Forms5;
@@ -8,9 +10,11 @@ using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms2;
 using Client_App.Views.Forms.Forms4;
 using Client_App.Views.Forms.Forms5;
+using Avalonia.Controls;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -91,122 +95,41 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
             switch (numForm)
             {
                 case "1.1":
-                {
-                    var dbReport = queryWithNotes
-                        .Include(rep => rep.Rows11.OrderBy(x => x.NumberInOrder_DB))
-                        .FirstOrDefault(x => x.Id == report.Id);
-
-                    report.Rows11 = dbReport.Rows11;
-                    await report.Rows11.QuickSortAsync(); 
-                    var form11VM = new Form_11VM(report);
-                    var window = new Form_11(form11VM);
-                    await window.ShowDialog(t);
+                    await OpenForm1xPagedAsync(t, report, dBModel, "1.1",
+                        r => new Form_11VM(r), vm => new Form_11(vm));
                     break;
-                }
                 case "1.2":
-                {
-                    var dbReport = queryWithNotes
-                        .Include(rep => rep.Rows12.OrderBy(x => x.NumberInOrder_DB))
-                        .FirstOrDefault(x => x.Id == report.Id);
-
-                    report.Rows12 = dbReport.Rows12;
-                    await report.Rows12.QuickSortAsync();
-                    var form12VM = new Form_12VM(report);
-                    var window = new Form_12(form12VM);
-                    await window.ShowDialog(t);
+                    await OpenForm1xPagedAsync(t, report, dBModel, "1.2",
+                        r => new Form_12VM(r), vm => new Form_12(vm));
                     break;
-                }
                 case "1.3":
-                {
-                    var dbReport = queryWithNotes
-                        .Include(rep => rep.Rows13.OrderBy(x => x.NumberInOrder_DB))
-                        .FirstOrDefault(x => x.Id == report.Id);
-
-                    report.Rows13 = dbReport.Rows13;
-                    await report.Rows13.QuickSortAsync();
-                    var form13VM = new Form_13VM(report);
-                    var window = new Form_13(form13VM);
-                    await window.ShowDialog(t);
+                    await OpenForm1xPagedAsync(t, report, dBModel, "1.3",
+                        r => new Form_13VM(r), vm => new Form_13(vm));
                     break;
-                }
                 case "1.4":
-                {
-                    var dbReport = queryWithNotes
-                        .Include(rep => rep.Rows14.OrderBy(x => x.NumberInOrder_DB))
-                        .FirstOrDefault(x => x.Id == report.Id);
-
-                    report.Rows14 = dbReport.Rows14;
-                    await report.Rows14.QuickSortAsync();
-                    var form14VM = new Form_14VM(report);
-                    var window = new Form_14(form14VM);
-                    await window.ShowDialog(t);
+                    await OpenForm1xPagedAsync(t, report, dBModel, "1.4",
+                        r => new Form_14VM(r), vm => new Form_14(vm));
                     break;
-                }
                 case "1.5":
-                {
-                    var dbReport = queryWithNotes
-                        .Include(rep => rep.Rows15.OrderBy(x => x.NumberInOrder_DB))
-                        .FirstOrDefault(x => x.Id == report.Id);
-
-                    report.Rows15 = dbReport.Rows15;
-                    await report.Rows15.QuickSortAsync();
-                    var form15VM = new Form_15VM(report);
-                    var window = new Form_15(form15VM);
-                    await window.ShowDialog(t);
+                    await OpenForm1xPagedAsync(t, report, dBModel, "1.5",
+                        r => new Form_15VM(r), vm => new Form_15(vm));
                     break;
-                }
                 case "1.6":
-                {
-                    var dbReport = queryWithNotes
-                        .Include(rep => rep.Rows16.OrderBy(x => x.NumberInOrder_DB))
-                        .FirstOrDefault(x => x.Id == report.Id);
-
-                    report.Rows16 = dbReport.Rows16;
-                    await report.Rows16.QuickSortAsync();
-                    var form16VM = new Form_16VM(report);
-                    var window = new Form_16(form16VM);
-                    await window.ShowDialog(t);
+                    await OpenForm1xPagedAsync(t, report, dBModel, "1.6",
+                        r => new Form_16VM(r), vm => new Form_16(vm));
                     break;
-                }
                 case "1.7":
-                {
-                    var dbReport = queryWithNotes
-                        .Include(rep => rep.Rows17.OrderBy(x => x.NumberInOrder_DB))
-                        .FirstOrDefault(x => x.Id == report.Id);
-
-                    report.Rows17 = dbReport.Rows17;
-                    await report.Rows17.QuickSortAsync();
-                    var form17VM = new Form_17VM(report);
-                    var window = new Form_17(form17VM);
-                    await window.ShowDialog(t);
+                    await OpenForm1xPagedAsync(t, report, dBModel, "1.7",
+                        r => new Form_17VM(r), vm => new Form_17(vm));
                     break;
-                }
                 case "1.8":
-                {
-                    var dbReport = queryWithNotes
-                        .Include(rep => rep.Rows18.OrderBy(x => x.NumberInOrder_DB))
-                        .FirstOrDefault(x => x.Id == report.Id);
-
-                    report.Rows18 = dbReport.Rows18;
-                    await report.Rows18.QuickSortAsync();
-                    var form18VM = new Form_18VM(report);
-                    var window = new Form_18(form18VM);
-                    await window.ShowDialog(t);
+                    await OpenForm1xPagedAsync(t, report, dBModel, "1.8",
+                        r => new Form_18VM(r), vm => new Form_18(vm));
                     break;
-                }
                 case "1.9":
-                {
-                    var dbReport = queryWithNotes
-                        .Include(rep => rep.Rows19.OrderBy(x => x.NumberInOrder_DB))
-                        .FirstOrDefault(x => x.Id == report.Id);
-
-                    report.Rows19 = dbReport.Rows19;
-                    await report.Rows19.QuickSortAsync();
-                    var form19VM = new Form_19VM(report);
-                    var window = new Form_19(form19VM);
-                    await window.ShowDialog(t);
+                    await OpenForm1xPagedAsync(t, report, dBModel, "1.9",
+                        r => new Form_19VM(r), vm => new Form_19(vm));
                     break;
-                }
                 case "2.1":
                 {
                     var dbReport = queryWithNotes
@@ -450,6 +373,66 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
             }
 
         }
+    }
+
+    private static async Task OpenForm1xPagedAsync<TVm>(
+        MainWindow owner,
+        Report report,
+        DBModel db,
+        string formNum,
+        Func<Report, TVm> createVm,
+        Func<TVm, Window> createWindow)
+        where TVm : BaseFormVM
+    {
+        // Грид отдаёт AsNoTracking-оболочку: правки/новые строки иначе не в ChangeTracker.
+        var tracked = db.ReportCollectionDbSet.Local.FirstOrDefault(r => r.Id == report.Id);
+        if (tracked == null)
+        {
+            tracked = await db.ReportCollectionDbSet
+                .AsSplitQuery()
+                .Include(r => r.Reports!).ThenInclude(reps => reps.Master_DB).ThenInclude(m => m.Rows10)
+                .Include(r => r.Reports!).ThenInclude(reps => reps.Master_DB).ThenInclude(m => m.Rows20)
+                .Include(r => r.Notes)
+                .FirstOrDefaultAsync(x => x.Id == report.Id);
+        }
+        else
+        {
+            // Догружаем навигации, если открыли уже tracked stub без Master/Notes.
+            if (tracked.Reports == null || tracked.Notes == null || tracked.Notes.Count == 0)
+            {
+                var meta = await db.ReportCollectionDbSet
+                    .AsSplitQuery()
+                    .Include(r => r.Reports!).ThenInclude(reps => reps.Master_DB).ThenInclude(m => m.Rows10)
+                    .Include(r => r.Reports!).ThenInclude(reps => reps.Master_DB).ThenInclude(m => m.Rows20)
+                    .Include(r => r.Notes)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(x => x.Id == report.Id);
+                if (meta != null)
+                {
+                    if (tracked.Reports == null)
+                        tracked.Reports = meta.Reports;
+                    if (meta.Notes != null)
+                        tracked.Notes = meta.Notes;
+                }
+            }
+        }
+
+        if (tracked == null)
+            return;
+
+        const int defaultPageSize = 30;
+        var total = await FormRowsPageLoader.CountAsync(db, tracked.Id, formNum);
+        await FormRowsPageLoader.LoadPageIntoReportAsync(db, tracked, formNum, skip: 0, take: defaultPageSize);
+
+        var vm = createVm(tracked);
+        vm.UseDbPaging = true;
+        vm.DbTotalRows = total;
+        vm.RowCount = defaultPageSize;
+        vm.UpdateFormList();
+        vm.UpdatePageInfo();
+
+        var window = createWindow(vm);
+        await window.ShowDialog(owner);
     }
 
     #endregion

@@ -183,6 +183,7 @@ public partial class Form_41 : BaseWindow<Form_41VM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
+        args.Cancel = true;
         if (DataContext is not Form_41VM vm) return;
 
         try
@@ -202,6 +203,8 @@ public partial class Form_41 : BaseWindow<Form_41VM>
             if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
             {
                 desktop.MainWindow.WindowState = WindowState.Normal;
+                Closing -= OnStandardClosing;
+                Close();
                 return;
             }
         }
@@ -241,6 +244,7 @@ public partial class Form_41 : BaseWindow<Form_41VM>
         {
             case "Да":
                 {
+                    flag = true;
                     //Перед тем как сохранить данные пользователю предлагают удалить пустые строчки
                     try
                     {
@@ -253,13 +257,19 @@ public partial class Form_41 : BaseWindow<Form_41VM>
                         ServiceExtension.LoggerManager.Error(msg);
                     }
 
-                    await dbm.SaveChangesAsync();
-                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
-                    if (desktop.Windows.Count == 1)
+                    try
                     {
-                        desktop.MainWindow.WindowState = WindowState.Normal;
+                        await dbm.SaveChangesAsync();
+                        await new SaveReportAsyncCommand(vm).AsyncExecute(null);
                     }
-                    return;
+                    catch (Exception ex)
+                    {
+                        var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                                  $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                        ServiceExtension.LoggerManager.Error(msg);
+                    }
+
+                    break;
                 }
             case "Нет":
                 {
@@ -319,9 +329,9 @@ public partial class Form_41 : BaseWindow<Form_41VM>
         desktop.MainWindow.WindowState = WindowState.Normal;
         if (flag)
         {
+            Closing -= OnStandardClosing;
             Close();
         }
-        args.Cancel = true;
     }
 
     #region CheckPeriod

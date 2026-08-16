@@ -68,6 +68,9 @@ public static class ReportsStorage
             }
         }
 
+        // После paging Report_Collection в Local часто пуста — ищем org по Id / БД.
+        reps ??= await ResolveOrgForReportAsync(db, id, newRep);
+
         if (newRep is not null && reps is not null && newRep.Reports is null)
         {
             newRep.Reports = reps;
@@ -81,6 +84,34 @@ public static class ReportsStorage
             NormalizeHiddenFlagsForReport(newRep);
         }
         return newRep;
+    }
+
+    /// <summary>
+    /// Org для отчёта: Local по Id, либо Master+Rows10/20 из БД (без полной Report_Collection).
+    /// </summary>
+    private static async Task<Reports?> ResolveOrgForReportAsync(DBModel db, int reportId, Report? report)
+    {
+        if (report?.Reports != null)
+            return report.Reports;
+
+        var orgId = await db.ReportCollectionDbSet
+            .AsNoTracking()
+            .Where(r => r.Id == reportId)
+            .Select(r => r.Reports != null ? r.Reports.Id : 0)
+            .FirstOrDefaultAsync();
+
+        if (orgId == 0)
+            return null;
+
+        var local = LocalReports.Reports_Collection.FirstOrDefault(r => r.Id == orgId);
+        if (local != null)
+            return local;
+
+        return await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .Include(x => x.Master_DB).ThenInclude(m => m.Rows10)
+            .Include(x => x.Master_DB).ThenInclude(m => m.Rows20)
+            .FirstOrDefaultAsync(x => x.Id == orgId);
     }
 
     #region NormalizeHiddenFlagsForReport

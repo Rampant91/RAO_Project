@@ -4767,7 +4767,11 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
+        // Сразу отменяем закрытие: после первого await иначе окно уже «уехало» или зависает.
+        args.Cancel = true;
         if (DataContext is not ChangeOrCreateVM vm) return;
+
+        var closeConfirmed = false;
         try
         {
             await RemoveEmptyForms(vm);
@@ -4785,6 +4789,9 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
             if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
             {
                 desktop.MainWindow.WindowState = WindowState.Normal;
+                closeConfirmed = true;
+                Closing -= OnStandardClosing;
+                Close();
                 return;
             }
         }
@@ -4795,17 +4802,16 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
             ServiceExtension.LoggerManager.Error(msg);
         }
 
-        var flag = false;
-
         #region MessageRemoveEmptyForms
 
-        var res = Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
                     new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" }
+                    new ButtonDefinition { Name = "Нет" },
+                    new ButtonDefinition { Name = "Отмена" }
                 ],
                 ContentTitle = "Сохранение изменений",
                 ContentHeader = "Уведомление",
@@ -4814,30 +4820,44 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
             })
-            .ShowDialog(desktop.MainWindow));
+            .ShowDialog(this));
 
         #endregion
 
-        await res.WaitAsync(new CancellationToken());
         var dbm = StaticConfiguration.DBModel;
-        switch (res.Result)
+        switch (res)
         {
             case "Да":
             {
-                await dbm.SaveChangesAsync();
-                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
-                if (desktop.Windows.Count == 1)
+                closeConfirmed = true;
+                try
                 {
-                    desktop.MainWindow.WindowState = WindowState.Normal;
+                    await dbm.SaveChangesAsync();
+                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
                 }
-                return;
+                catch (Exception ex)
+                {
+                    var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                              $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                    ServiceExtension.LoggerManager.Error(msg);
+                }
+                break;
             }
             case "Нет":
             {
-                flag = true;
+                closeConfirmed = true;
                 dbm.Restore();
                 new SortFormSyncCommand(vm).Execute(null);
-                await dbm.SaveChangesAsync();
+                try
+                {
+                    await dbm.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                              $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                    ServiceExtension.LoggerManager.Error(msg);
+                }
 
                 var lst = vm.Storage[vm.FormType];
 
@@ -4879,13 +4899,16 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
 
                 break;
             }
+            default:
+                return; // Отмена — окно остаётся открытым (args.Cancel уже true)
         }
+
         desktop.MainWindow.WindowState = WindowState.Normal;
-        if (flag)
+        if (closeConfirmed)
         {
+            Closing -= OnStandardClosing;
             Close();
         }
-        args.Cancel = true;
     }
 
     #endregion

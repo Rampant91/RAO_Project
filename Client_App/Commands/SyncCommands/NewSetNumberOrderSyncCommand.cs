@@ -13,6 +13,8 @@ public class NewSetNumberOrderSyncCommand(BaseFormVM formVM) : BaseCommand
 
     public override void Execute(object? parameter)
     {
+        formVM.EnsureAllRowsForMutationAsync().GetAwaiter().GetResult();
+
         var count = 1;
         var rows = Storage.Rows
             .GetEnumerable()
@@ -24,5 +26,6 @@ public class NewSetNumberOrderSyncCommand(BaseFormVM formVM) : BaseCommand
         }
 
         formVM.UpdateFormList();
+        formVM.UpdatePageInfo();
     }
 }

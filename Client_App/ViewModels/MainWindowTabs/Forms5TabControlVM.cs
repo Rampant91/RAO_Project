@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Client_App.Services.DataAccess;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using System;
@@ -34,35 +35,22 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
     {
         get
         {
-            if (!string.IsNullOrEmpty(SearchText))
-            {
-                var search = SearchText.ToLower().Trim();
-                return StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(x => x.DBObservable != null)
-                    .Where(reps => reps.Master_DB.FormNum_DB == "5.0")
-                    .Count(reps => !string.IsNullOrEmpty(reps.Master_DB.Rows50[0].ShortName_DB)
-                                   && reps.Master_DB.Rows50[0].ShortName_DB.ToLower().Contains(search));
-            }
-            return TotalRowsOrgs;
+            return MainWindowListQuery.GetOrgPageForm50(
+                StaticConfiguration.DBModel, SearchText, page: 1, pageSize: 1).TotalCount;
         }
     }
 
     protected override void CheckAndResetFilterIfNeeded()
     {
-        // Если фильтр установлен и выбрана новая организация
-        if (!string.IsNullOrEmpty(FormNumWhiteList) && SelectedReports != null)
-        {
-            // Проверяем, есть ли отчёты для текущего фильтра в новой организации
-            var hasMatchingReports = SelectedReports.Report_Collection
-                .Any(rep => rep.FormNum_DB == FormNumWhiteList);
+        if (string.IsNullOrEmpty(FormNumWhiteList) || SelectedReports == null)
+            return;
 
-            // Если нет отчётов для текущего фильтра, сбрасываем фильтр
-            if (!hasMatchingReports)
-            {
-                FormNumWhiteList = string.Empty;
-            }
-        }
+        var hasMatchingReports = OrgReportsQuery.HasFormNumAsync(
+                StaticConfiguration.DBModel, SelectedReports.Id, FormNumWhiteList)
+            .GetAwaiter().GetResult();
+
+        if (!hasMatchingReports)
+            FormNumWhiteList = string.Empty;
     }
 
     #region FormNumWhiteList
@@ -86,35 +74,14 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
         {
             if (SelectedReports is null) return null;
 
-            var result = SelectedReports
-                .Report_Collection
-                .AsEnumerable();
+            var page = MainWindowListQuery.GetReportPage(
+                StaticConfiguration.DBModel,
+                SelectedReports.Id,
+                string.IsNullOrEmpty(FormNumWhiteList) ? null : FormNumWhiteList,
+                CurrentPageForms,
+                RowsCountForms);
 
-            if (!string.IsNullOrEmpty(FormNumWhiteList))
-            {
-                result = result.Where(rep => rep.FormNum_DB == FormNumWhiteList);
-            }
-
-            result = result.OrderBy(x =>
-                {
-                    if (int.TryParse(x.FormNum_DB.Split('.')[1], out var result))
-                        return result;
-                    return int.MinValue;
-                })
-                // Сортируем по валидным датам, некорректные уходят в начало/конец
-                .ThenByDescending(x => x.StartPeriod_DB == null ||
-                                       !DateOnly.TryParse(x.StartPeriod_DB, out _) 
-                    ? DateOnly.MaxValue 
-                    : DateOnly.Parse(x.StartPeriod_DB))
-                .ThenByDescending(x => x.EndPeriod_DB == null ||
-                                       !DateOnly.TryParse(x.EndPeriod_DB, out _) 
-                    ? DateOnly.MaxValue 
-                    : DateOnly.Parse(x.EndPeriod_DB))
-                .ThenBy(rep => rep.CorrectionNumber_DB)
-                .Skip((CurrentPageForms - 1) * RowsCountForms)
-                .Take(RowsCountForms);
-
-            return new ObservableCollection<Report>(result);
+            return new ObservableCollection<Report>(page);
         }
     }
 
@@ -122,27 +89,12 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
     {
         get
         {
-            if (!string.IsNullOrEmpty(SearchText))
-            {
-                var search = SearchText.ToLower().Trim();
-                return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(reps =>
-                        (!string.IsNullOrEmpty(reps.Master_DB.Rows50[0].ShortName_DB) && reps.Master_DB.Rows50[0].ShortName_DB.ToLower().Contains(search))
-                        || (string.IsNullOrEmpty(reps.Master_DB.Rows50[0].ShortName_DB) && reps.Master_DB.Rows50[0].Name_DB.ToLower().Contains(search)))
-                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                    .Take(RowsCountOrgs));
-            }
-            else
-            {
-                var result = new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(reps => reps.Master_DB.FormNum_DB == "5.0")
-                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                    .Take(RowsCountOrgs));
-
-                return result;
-            }
+            var page = MainWindowListQuery.GetOrgPageForm50(
+                StaticConfiguration.DBModel,
+                SearchText,
+                CurrentPageOrgs,
+                RowsCountOrgs);
+            return new ObservableCollection<Reports>(page.Items);
         }
     }
 
@@ -191,10 +143,10 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
         {
             if (SelectedReports is null) return 0;
 
-            if (!string.IsNullOrEmpty(FormNumWhiteList))
-                return SelectedReports.Report_Collection.Count(rep => rep.FormNum_DB == FormNumWhiteList);
-
-            return SelectedReports.Report_Collection.Count;
+            return MainWindowListQuery.CountReports(
+                StaticConfiguration.DBModel,
+                SelectedReports.Id,
+                string.IsNullOrEmpty(FormNumWhiteList) ? null : FormNumWhiteList);
         }
     }
 

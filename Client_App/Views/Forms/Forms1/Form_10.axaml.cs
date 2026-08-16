@@ -38,6 +38,7 @@ public partial class Form_10 : BaseWindow<Form_10VM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
+        args.Cancel = true;
         if (DataContext is not Form_10VM vm) return;
 
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
@@ -46,6 +47,8 @@ public partial class Form_10 : BaseWindow<Form_10VM>
             if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
             {
                 desktop.MainWindow.WindowState = WindowState.Normal;
+                Closing -= OnStandardClosing;
+                Close();
                 return;
             }
         }
@@ -99,12 +102,12 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         //        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
         //        {
         //            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-        //            ContentTitle = "Ошибка при сохранении титульного листа организации",
-        //            ContentHeader = "Ошибка",
+        //            ContentTitle = "     ",
+        //            ContentHeader = "",
         //            ContentMessage =
-        //                $"Не удалось сохранить изменения в титульном листе организации, " +
-        //                $"поскольку организация с данными ОКПО и рег.№ уже существует в базе данных. " +
-        //                $"Убедитесь в правильности заполнения ОКПО и рег.№.",
+        //                $"       , " +
+        //                $"      .     . " +
+        //                $"      ..",
         //            MinWidth = 400,
         //            MaxWidth = 600,
         //            MinHeight = 150,
@@ -154,22 +157,22 @@ public partial class Form_10 : BaseWindow<Form_10VM>
                 {
                     ButtonDefinitions =
                     [
-                        new ButtonDefinition { Name = "Да" },
-                        new ButtonDefinition { Name = "Нет" }
+                        new ButtonDefinition { Name = "" },
+                        new ButtonDefinition { Name = "" }
                     ],
-                    ContentTitle = "Форма 1.0",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = "При заполнении данных обособленного территориального подразделения, " +
-                                     $"{Environment.NewLine}также необходимо заполнить данные юридического лица. " +
-                                     $"{Environment.NewLine}Вы уверены, что хотите закрыть форму, " +
-                                     $"оставив данные юридического лица незаполненными?",
+                    ContentTitle = " 1.0",
+                    ContentHeader = "",
+                    ContentMessage = "     , " +
+                                     $"{Environment.NewLine}     . " +
+                                     $"{Environment.NewLine} ,    , " +
+                                     $"    ?",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
                 })
                 .ShowDialog(desktop.MainWindow));
 
-            if (answer is not "Да")
+            if (answer is not "")
             {
                 args.Cancel = true;
                 return;
@@ -185,12 +188,12 @@ public partial class Form_10 : BaseWindow<Form_10VM>
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" }
+                    new ButtonDefinition { Name = "" },
+                    new ButtonDefinition { Name = "" }
                 ],
-                ContentTitle = "Сохранение изменений",
-                ContentHeader = "Уведомление",
-                ContentMessage = $"Сохранить форму {vm.FormType}?",
+                ContentTitle = " ",
+                ContentHeader = "",
+                ContentMessage = $"  {vm.FormType}?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
@@ -203,8 +206,9 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         var dbm = StaticConfiguration.DBModel;
         switch (res.Result)
         {
-            case "Да":
+            case "":
             {
+                flag = true;
                 try
                 {
                     await dbm.SaveChangesAsync();
@@ -212,13 +216,9 @@ public partial class Form_10 : BaseWindow<Form_10VM>
                 }
                 catch { }
 
-                if (desktop.Windows.Count == 1)
-                {
-                    desktop.MainWindow.WindowState = WindowState.Normal;
-                }
-                return;
+                break;
             }
-            case "Нет":
+            case "":
             {
                 flag = true;
                 dbm.Restore();
@@ -249,6 +249,7 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         desktop.MainWindow.WindowState = WindowState.Normal;
         if (flag)
         {
+            Closing -= OnStandardClosing;
             Close();
         }
         args.Cancel = true;

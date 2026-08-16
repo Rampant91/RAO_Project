@@ -1,5 +1,6 @@
 ﻿ using Avalonia.Controls;
 using Client_App.Resources;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.Views;
@@ -73,7 +74,29 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
         {
             report.Reports = ReportsStorage.LocalReports.Reports_Collection
                 .FirstOrDefault(r => r.Report_Collection.Any(x => x.Id == report.Id));
+
+            if (report.Reports is null)
+            {
+                var orgId = await StaticConfiguration.DBModel.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .Where(r => r.Id == report.Id)
+                    .Select(r => r.Reports != null ? r.Reports.Id : 0)
+                    .FirstOrDefaultAsync();
+                if (orgId != 0)
+                {
+                    report.Reports = ReportsStorage.LocalReports.Reports_Collection
+                                        .FirstOrDefault(r => r.Id == orgId)
+                                    ?? await StaticConfiguration.DBModel.ReportsCollectionDbSet
+                                        .AsNoTracking()
+                                        .Include(x => x.Master_DB).ThenInclude(m => m.Rows10)
+                                        .Include(x => x.Master_DB).ThenInclude(m => m.Rows20)
+                                        .FirstOrDefaultAsync(x => x.Id == orgId);
+                }
+            }
         }
+
+        if (report.Reports != null)
+            OrgMatchQuery.EnsureTitleRowsLoaded(report.Reports);
 
         var db = StaticConfiguration.DBModel;
         var modifiedEntities = db.ChangeTracker.Entries()

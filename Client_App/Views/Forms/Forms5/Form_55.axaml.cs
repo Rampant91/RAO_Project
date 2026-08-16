@@ -284,17 +284,17 @@ public partial class Form_55 : BaseWindow<Form_55VM>
                     ServiceExtension.LoggerManager.Error(msg);
                 }
 
-                await dbm.SaveChangesAsync();
-                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
-
-                if (desktop.Windows.Count == 1)
+                try
                 {
-                    desktop.MainWindow.WindowState = OwnerPrevState;
-               
-                    break; 
+                    await dbm.SaveChangesAsync();
+                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
                 }
-
-                args.Cancel = false;
+                catch (Exception ex)
+                {
+                    var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                              $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                    ServiceExtension.LoggerManager.Error(msg);
+                }
 
                 break;
             }

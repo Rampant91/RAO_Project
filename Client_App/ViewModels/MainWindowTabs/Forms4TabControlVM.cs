@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Client_App.Services.DataAccess;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using System;
@@ -34,19 +35,9 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
     {
         get
         {
-            if (!string.IsNullOrEmpty(SearchText))
-            {
-                var search = SearchText.ToLower().Trim();
-                return StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(x => x.DBObservable != null)
-                    .Where(reps => reps.Master_DB.FormNum_DB == "4.0")
-                    .Count(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB.ToString().Contains(search)
-                                   || reps.Master_DB.Rows40[0].SubjectRF_DB.ToLower().Contains(search)
-                                   || (!string.IsNullOrEmpty(reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB)
-                                       && reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB.ToLower().Contains(search)));
-            }
-            return TotalRowsOrgs;
+            var page = MainWindowListQuery.GetOrgPageForm40(
+                StaticConfiguration.DBModel, SearchText, page: 1, pageSize: 1);
+            return page.TotalCount;
         }
     }
 
@@ -56,18 +47,15 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
         {
             if (SelectedReports is null) return null;
 
-            return new ObservableCollection<Report>(
-                SelectedReports
-                    .Report_Collection
-                    .AsEnumerable()
-                    .OrderBy(x => x.FormNum_DB)
-                    .ThenByDescending(x => x.Year_DB == null ||
-                                           !int.TryParse(x.Year_DB, out _) ?
-                        int.MaxValue :
-                        int.Parse(x.Year_DB))
-                    .ThenBy(rep => rep.CorrectionNumber_DB)
-                    .Skip((CurrentPageForms - 1) * RowsCountForms)
-                    .Take(RowsCountForms));
+            var page = MainWindowListQuery.GetReportPage(
+                StaticConfiguration.DBModel,
+                SelectedReports.Id,
+                formNumWhiteList: null,
+                CurrentPageForms,
+                RowsCountForms,
+                orderByYear: true);
+
+            return new ObservableCollection<Report>(page);
         }
     }
 
@@ -75,27 +63,12 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
     {
         get
         {
-            if (!string.IsNullOrEmpty(SearchText))
-            {
-                var search = SearchText.ToLower().Trim();
-                return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(reps => reps.Master_DB.FormNum_DB == "4.0")
-                    .Where(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB.ToString().Contains(search)
-                                   || reps.Master_DB.Rows40[0].SubjectRF_DB.ToLower().Contains(search)
-                                   || (!string.IsNullOrEmpty(reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB)
-                                       && reps.Master_DB.Rows40[0].ShortNameOrganUprav_DB.ToLower().Contains(search)))
-                    .OrderBy(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB)
-                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                    .Take(RowsCountOrgs));
-            }
-            else
-                return new ObservableCollection<Reports>(StaticConfiguration.DBModel.ReportsCollectionDbSet
-                    .AsEnumerable()
-                    .Where(reps => reps.Master_DB.FormNum_DB == "4.0")
-                    .OrderBy(reps => reps.Master_DB.Rows40[0].CodeSubjectRF_DB)
-                    .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                    .Take(RowsCountOrgs));
+            var page = MainWindowListQuery.GetOrgPageForm40(
+                StaticConfiguration.DBModel,
+                SearchText,
+                CurrentPageOrgs,
+                RowsCountOrgs);
+            return new ObservableCollection<Reports>(page.Items);
         }
     }
 
@@ -137,7 +110,7 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
         get
         {
             if (SelectedReports != null)
-                return SelectedReports.Report_Collection.Count;
+                return MainWindowListQuery.CountReports(StaticConfiguration.DBModel, SelectedReports.Id);
             return 0;
         }
     }

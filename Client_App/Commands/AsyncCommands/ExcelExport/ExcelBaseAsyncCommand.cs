@@ -11,6 +11,7 @@ using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Properties;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
@@ -216,6 +217,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// <param name="master">Головной отчёт организации.</param>
     private protected static void ExcelPrintTitleExport(string formNum, ExcelWorksheet worksheet, Report rep, Report master)
     {
+        // Без preload form_10 титул SelectedReports может быть пустым — догружаем из БД.
+        OrgMatchQuery.EnsureMasterReportTitleRows(master);
+
         if (formNum.Split('.')[0] == "2")
         {
             if (master.Rows20.Count < 2)

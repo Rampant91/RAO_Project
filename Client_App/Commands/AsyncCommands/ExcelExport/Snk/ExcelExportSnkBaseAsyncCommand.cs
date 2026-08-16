@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Resources.CustomComparers.SnkComparers;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels.Messages;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.Messages;
@@ -361,7 +362,8 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-        else if (selectedReports.Report_Collection.All(rep => rep.FormNum_DB != formNum))
+        else if (!await OrgReportsQuery.HasFormNumAsync(
+                     StaticConfiguration.DBModel, selectedReports.Id, formNum, cts.Token))
         {
             #region MessageRepsNotFound
 

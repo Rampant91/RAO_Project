@@ -281,19 +281,19 @@ public partial class Form_14 : BaseWindow<Form_14VM>
                         ServiceExtension.LoggerManager.Error(msg);
                     }
 
-                    await dbm.SaveChangesAsync();
-                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
-
-                    if (desktop.Windows.Count == 1)
+                    try
                     {
-                        desktop.MainWindow.WindowState = OwnerPrevState;
-
-                        break;
+                        await dbm.SaveChangesAsync();
+                        await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                    }
+                    catch (Exception ex)
+                    {
+                        var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                                  $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                        ServiceExtension.LoggerManager.Error(msg);
                     }
 
-                    args.Cancel = false;
-
-                    return;
+                    break;
                 }
             case "Нет":
                 {

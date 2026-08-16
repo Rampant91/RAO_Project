@@ -1,5 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Data.Converters;
+using Client_App.Services.DataAccess;
 using Models.Collections;
 using System;
 using System.Collections.Generic;
@@ -8,23 +9,21 @@ using System.Linq;
 
 namespace Client_App.VisualRealization.Converters;
 
-//Этот конвертер используется, чтобы деактивировать кнопки белого списка в FormsTabControl.
-//Настроить CanExecute у команды не получилось, т.к. нужно его обновлять после каждого изменения SelectedReports 
+/// <summary>
+/// Активность кнопок фильтра форм (1.1…1.9). Нельзя опираться на SelectedReports.Report_Collection —
+/// оболочки отчётов больше не preload'ятся; наличиеём stubs из warm-cache / БД.
+/// </summary>
 public class CheckReportsAnyMatchingFormNumConverter : IValueConverter, IMultiValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is Reports selectedReports
-            && parameter is string formNum)
-        {
-            return selectedReports.Report_Collection.Any(rep => rep.FormNum_DB == formNum);
-        }
+        if (value is Reports selectedReports && parameter is string formNum)
+            return HasForm(selectedReports, formNum);
         return false;
     }
+
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        throw new NotImplementedException();
-    }
+        => throw new NotImplementedException();
 
     public object Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
     {
@@ -35,8 +34,18 @@ public class CheckReportsAnyMatchingFormNumConverter : IValueConverter, IMultiVa
             return false;
 
         if (values[0] is Reports selectedReports && values[1] is string formNum)
-            return selectedReports.Report_Collection.Any(rep => rep.FormNum_DB == formNum);
+            return HasForm(selectedReports, formNum);
 
         return false;
+    }
+
+    private static bool HasForm(Reports selectedReports, string formNum)
+    {
+        var cached = Forms1WarmCache.Instance.TryHasFormNum(selectedReports.Id, formNum);
+        if (cached.HasValue)
+            return cached.Value;
+
+        // Не грузим stubs в Convert (UI-поток): кнопки обновятся после async OnPropertyChanged(SelectedReports).
+        return selectedReports.Report_Collection.Any(rep => rep.FormNum_DB == formNum);
     }
 }

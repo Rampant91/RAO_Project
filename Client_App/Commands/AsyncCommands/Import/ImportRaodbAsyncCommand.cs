@@ -2,6 +2,7 @@
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Resources.CustomComparers;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views.Messages;
@@ -168,6 +169,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         {
                             var selectedReports = parameter as Reports ?? _formsTabControlBaseVM.SelectedReports;
                             if (selectedReports is null) return;
+                            OrgMatchQuery.EnsureTitleRowsLoaded(selectedReports);
                             var selectedReportsInfo = new OrganizationInfo
                             {
                                 RegNum = selectedReports.Master_DB.RegNoRep.Value,

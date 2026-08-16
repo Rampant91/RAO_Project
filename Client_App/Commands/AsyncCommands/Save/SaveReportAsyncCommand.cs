@@ -214,38 +214,34 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
         if (VM.DBO != null)
         {
             var tmp = new Reports { Master = Storage };
-            if (tmp.Master.Rows10.Count != 0)
-            {
-                tmp.Master.Rows10[1].OrganUprav.Value = tmp.Master.Rows10[0].OrganUprav.Value;
-                tmp.Master.Rows10[1].RegNo.Value = tmp.Master.Rows10[0].RegNo.Value;
-            }
-            if (tmp.Master.Rows20.Count != 0)
-            {
-                tmp.Master.Rows20[1].OrganUprav.Value = tmp.Master.Rows20[0].OrganUprav.Value;
-                tmp.Master.Rows20[1].RegNo.Value = tmp.Master.Rows20[0].RegNo.Value;
-            }
+            SyncTitleOrganUpravRegNo(tmp.Master);
             VM.DBO.Reports_Collection.Add(tmp);
             VM.DBO = null;
         }
-        else if (Storages != null && _formType is not ("1.0" or "2.0" or "4.0" or "5.0") && !Storages.Report_Collection.Contains(Storage))
+        else if (Storages != null
+                 && _formType is not ("1.0" or "2.0" or "4.0" or "5.0")
+                 && Storage.Id == 0
+                 && !Storages.Report_Collection.Contains(Storage))
         {
+            // Не добавляем уже сохранённый отчёт только потому, что его нет на текущей
+            // странице Report_Collection (paging) — иначе падает SaveChanges / зависает закрытие.
             Storages.Report_Collection.Add(Storage);
         }
 
-        if (Storages != null)
+        if (Storages?.Master != null)
         {
-            if (Storages.Master.Rows10.Count != 0)
+            SyncTitleOrganUpravRegNo(Storages.Master);
+            try
             {
-                Storages.Master.Rows10[1].OrganUprav.Value = Storages.Master.Rows10[0].OrganUprav.Value;
-                Storages.Master.Rows10[1].RegNo.Value = Storages.Master.Rows10[0].RegNo.Value;
+                Storages.Report_Collection.Sorted = false;
+                await Storages.Report_Collection.QuickSortAsync();
             }
-            if (Storages.Master.Rows20.Count != 0)
+            catch (Exception ex)
             {
-                Storages.Master.Rows20[1].OrganUprav.Value = Storages.Master.Rows20[0].OrganUprav.Value;
-                Storages.Master.Rows20[1].RegNo.Value = Storages.Master.Rows20[0].RegNo.Value;
+                var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                          $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
             }
-            Storages.Report_Collection.Sorted = false;
-            await Storages.Report_Collection.QuickSortAsync();
         }
         var db = StaticConfiguration.DBModel;
         try
@@ -261,11 +257,38 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
             ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
         }
 
-        var mainWindow = Desktop.MainWindow as MainWindow;
-        var mainWindowVM = await Dispatcher.UIThread.InvokeAsync(() => mainWindow.DataContext as MainWindowVM);
+        try
+        {
+            var mainWindow = Desktop.MainWindow as MainWindow;
+            var mainWindowVM = await Dispatcher.UIThread.InvokeAsync(() => mainWindow?.DataContext as MainWindowVM);
+            mainWindowVM?.Forms1TabControlVM.UpdateReportsCollectionWithoutReCreation();
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
+        }
+    }
 
-        //mainWindowVM.UpdateReportsCollection();
+    /// <summary>
+    /// Копирует OrganUprav/RegNo с юрлица на обособленное подразделение (вторая строка титула).
+    /// При paging/warm-cache Master может иметь 0–1 строку — не обращаемся к [1] без проверки.
+    /// </summary>
+    private static void SyncTitleOrganUpravRegNo(Report? master)
+    {
+        if (master == null) return;
 
-        mainWindowVM.Forms1TabControlVM.UpdateReportsCollectionWithoutReCreation();
+        if (master.Rows10 is { Count: > 1 })
+        {
+            master.Rows10[1].OrganUprav.Value = master.Rows10[0].OrganUprav.Value;
+            master.Rows10[1].RegNo.Value = master.Rows10[0].RegNo.Value;
+        }
+
+        if (master.Rows20 is { Count: > 1 })
+        {
+            master.Rows20[1].OrganUprav.Value = master.Rows20[0].OrganUprav.Value;
+            master.Rows20[1].RegNo.Value = master.Rows20[0].RegNo.Value;
+        }
     }
 }

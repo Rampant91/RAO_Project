@@ -75,7 +75,7 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
                     ContentTitle = "Выгрузка",
                     ContentHeader = "Уведомление",
                     ContentMessage =
-                        $"Текущая база содержит {ReportsStorage.LocalReports.Reports_Collection.Count} форм организаций," +
+                        $"Текущая база содержит {countReports} форм организаций," +
                         $"{Environment.NewLine}выгрузка может занять длительный период времени. Продолжить операцию?",
                     MinWidth = 400,
                     MinHeight = 150,

@@ -11,6 +11,7 @@ using Client_App.Views;
 using Models.DBRealization;
 using System.Reflection;
 using System.Collections.Generic;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using OfficeOpenXml;
 using Microsoft.EntityFrameworkCore;
@@ -39,6 +40,7 @@ public class ExcelExportSnkAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
             $"Выгрузка СНК {formNum}", "СНК");
         await CheckRepsAndRepPresence(formNum, selectedReports, progressBar, cts);
 
+        OrgMatchQuery.EnsureTitleRowsLoaded(selectedReports!);
         var regNum = selectedReports!.Master_DB.RegNoRep.Value;
         var okpo = selectedReports.Master_DB.OkpoRep.Value;
         ExportType = $"СНК_{formNum}_{regNum}_{okpo}";

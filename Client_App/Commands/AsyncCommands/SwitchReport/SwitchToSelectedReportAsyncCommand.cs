@@ -23,6 +23,9 @@ public class SwitchToSelectedReportAsyncCommand(BaseFormVM formVM) : BaseAsyncCo
     {
         if (parameter is not Report selectedReport) return;
 
+        // Shell из popup может не иметь Reports — без этого ChangeOrCreateVM.Storages = null.
+        selectedReport.Reports ??= formVM.Reports ?? formVM.Report.Reports;
+
         // Проверяем изменения и предлагаем сохранить
         var shouldContinue = await new CheckForChangesAndSaveCommand(formVM).AsyncExecute(null);
         if (!shouldContinue) return;

@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels.Forms;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
@@ -132,6 +133,10 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         if (SelectedForm == null) return;
+
+        // Paging держит в Rows только страницу; индекс NumberInOrder-1 иначе врёт.
+        await formVM.EnsureAllRowsForMutationAsync();
+
         var clipboard = Application.Current!.Clipboard;
 
         var pastedString = await clipboard.GetTextAsync();
@@ -209,7 +214,10 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             }
         }
         
-        var start = SelectedForm.NumberInOrder.Value - 1;
+        var rows = Storage.Rows.ToList<Form>();
+        var start = rows.IndexOf(SelectedForm);
+        if (start < 0)
+            start = Math.Max(0, SelectedForm.NumberInOrder_DB - 1);
 
         if (start + parsedRows.Length > Storage.Rows.Count)
         {

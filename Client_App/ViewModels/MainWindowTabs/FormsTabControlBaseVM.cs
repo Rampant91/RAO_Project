@@ -3,7 +3,7 @@ using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.RaodbExport;
-using Client_App.Resources.CustomComparers;
+using Client_App.Services.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -113,7 +113,6 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
             _currentPageForms = value;
             OnPropertyChanged();
             UpdateReportCollection();
-            OnPropertyChanged(nameof(TotalReportCount));
         }
     }
 
@@ -135,7 +134,7 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
             _currentPageOrgs = value;
             OnPropertyChanged(nameof(ReportsCollection));
             OnPropertyChanged();
-            OnPropertyChanged(nameof(TotalReportCount));
+            // TotalReportCount не зависит от страницы org — не пересчитываем (дорого на Firebird).
         }
     }
 
@@ -312,24 +311,15 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     {
         get
         {
-            var allOrgs = StaticConfiguration.DBModel.ReportsCollectionDbSet
-                .AsEnumerable()
-                .Where(x => x.DBObservable != null)
-                .Where(reps => reps.Master_DB.FormNum_DB == FormNum + ".0");
-
-            if (!string.IsNullOrEmpty(SearchText))
+            var db = StaticConfiguration.DBModel;
+            return FormNum switch
             {
-                var search = SearchText.ToLower().Trim();
-                allOrgs = allOrgs.Where(reps => 
-                    reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
-                    || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
-                    || GetAdditionalSearchConditions(reps, search));
-            }
-
-            return allOrgs
-                .Sum(org => org.Report_Collection
-                    .Count(rep => rep.FormNum_DB.StartsWith($"{MainWindowVM.SelectedReportType}")
-                                  && !rep.FormNum_DB.EndsWith(".0")));
+                '1' => MainWindowListQuery.CountAllReportsForFormType(db, '1', SearchText, "1.0"),
+                '2' => MainWindowListQuery.CountAllReportsForFormType(db, '2', SearchText, "2.0"),
+                '4' => MainWindowListQuery.CountAllReportsForForm40(db, SearchText),
+                '5' => MainWindowListQuery.CountAllReportsForForm50(db, SearchText),
+                _ => 0
+            };
         }
     }
 
@@ -426,7 +416,7 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
         InSelectedReportFormsCount = count;
     }
 
-    public void UpdateReportCollection()
+    public virtual void UpdateReportCollection()
     {
         OnPropertyChanged(nameof(ReportCollection));
     }
@@ -440,64 +430,38 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     /// Обновляет содержимое коллекции организаций без пересоздания объекта.
     /// Сохраняет выбранную организацию.
     /// </summary>
-    public void UpdateReportsCollectionWithoutReCreation()
+    public virtual void UpdateReportsCollectionWithoutReCreation()
     {
-        // Получаем текущую коллекцию (не создаем новую)
         var currentCollection = ReportsCollection;
         if (currentCollection == null) return;
 
-        // Сохраняем ID выбранной организации
         var selectedId = SelectedReports?.Master_DB?.Id;
+        var page = MainWindowListQuery.GetOrgPage(
+            StaticConfiguration.DBModel,
+            FormNum,
+            SearchText,
+            CurrentPageOrgs,
+            RowsCountOrgs);
 
-        // Получаем новые данные
-        var comparator = new CustomReportsComparer();
-        IEnumerable<Reports> newItems;
-
-        if (!string.IsNullOrEmpty(SearchText))
-        {
-            var search = SearchText.ToLower().Trim();
-            newItems = StaticConfiguration.DBModel.ReportsCollectionDbSet
-                .AsEnumerable()
-                .Where(x => x.DBObservable != null)
-                .Where(reps => reps.Master_DB.FormNum_DB == FormNum + ".0")
-                .Where(reps => reps.Master_DB.RegNoRep.Value.ToLower().Contains(search)
-                               || reps.Master_DB.OkpoRep.Value.ToLower().Contains(search)
-                               || GetAdditionalSearchConditions(reps, search))
-                .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
-                .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
-                .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                .Take(RowsCountOrgs);
-        }
-        else
-        {
-            newItems = StaticConfiguration.DBModel.ReportsCollectionDbSet
-                .AsEnumerable()
-                .Where(x => x.DBObservable != null)
-                .Where(reps => reps.Master_DB.FormNum_DB == FormNum + ".0")
-                .OrderBy(reps => reps.Master_DB.RegNoRep.Value, comparator)
-                .ThenBy(reps => reps.Master_DB.OkpoRep.Value, comparator)
-                .Skip((CurrentPageOrgs - 1) * RowsCountOrgs)
-                .Take(RowsCountOrgs);
-        }
-
-        // Обновляем содержимое существующей коллекции
         currentCollection.Clear();
-        foreach (var item in newItems)
-        {
+        foreach (var item in page.Items)
             currentCollection.Add(item);
-        }
 
-        // Восстанавливаем выбор по ID
         if (selectedId.HasValue)
         {
             var restored = currentCollection.FirstOrDefault(r => r.Master_DB?.Id == selectedId.Value);
             if (restored != null)
-            {
-                // Используем поле напрямую, чтобы не вызвать сеттер
-                _selectedReports = restored;
-                OnPropertyChanged(nameof(SelectedReports));
-            }
+                SetSelectedReportsWithoutReload(restored);
         }
+    }
+
+    /// <summary>
+    /// Меняет SelectedReports без перезагрузки списка отчётов (восстановление после refresh org page).
+    /// </summary>
+    protected void SetSelectedReportsWithoutReload(Reports? reports)
+    {
+        _selectedReports = reports;
+        OnPropertyChanged(nameof(SelectedReports));
     }
 
     public void UpdateTotalReportCount()

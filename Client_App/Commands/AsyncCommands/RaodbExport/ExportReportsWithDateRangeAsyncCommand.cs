@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
+using Models.DBRealization;
 using Models.Interfaces;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
@@ -129,8 +132,26 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
             return;
         }
 
-        var org = reports;
-        var repInRange = org.Report_Collection
+        var orgFromDb = await OrgReportsQuery.LoadOrgWithReportShellsAsync(
+            StaticConfiguration.DBModel, reports.Id, CancellationToken.None);
+        if (orgFromDb is null)
+        {
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = "Выгрузка",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "Экспорт не будет выполнен: организация не найдена в базе.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
+                }).ShowDialog(Desktop.MainWindow));
+            return;
+        }
+
+        var repInRange = orgFromDb.Report_Collection
             .Where(rep => (DateOnly.TryParse(rep.StartPeriod_DB, out var repStartDateTime)
                           && DateOnly.TryParse(rep.EndPeriod_DB, out var repEndDateTime)
                           && startDateTime <= repEndDateTime && endDateTime >= repStartDateTime)
@@ -139,7 +160,7 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
                           && startDateTime.Year <= year && year <= endDateTime.Year))
             .ToArray();
 
-        Reports exportOrg = new() { Master = org.Master, Id = org.Id };
+        Reports exportOrg = new() { Master = orgFromDb.Master, Id = orgFromDb.Id };
         exportOrg.Report_Collection.AddRangeNoChange(repInRange);
 
         ICommand ExportReports = new ExportReportsAsyncCommand(_mainWindowVM);

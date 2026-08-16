@@ -1,4 +1,5 @@
-﻿using Client_App.ViewModels;
+﻿using Client_App.Services.DataAccess;
+using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
 using Client_App.ViewModels.Forms.Forms4;
@@ -9,6 +10,12 @@ using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms2;
 using Client_App.Views.Forms.Forms4;
 using Client_App.Views.Forms.Forms5;
+using Microsoft.EntityFrameworkCore;
+using Models.Collections;
+using Models.DBRealization;
+using Models.Forms;
+using Models.Forms.Form1;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands;
@@ -44,17 +51,32 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
 
         var report = mainWindowVM.SelectedReports.Master;
         var formNum = report.FormNum.Value;
+        var refreshOrgListAfterTitle = false;
 
         switch (formNum)
         {
             case "1.0":
             {
+                await EnsureForm10RowsLoadedAsync(report);
+                var titleBefore = SnapshotForm10Title(report);
                 var form10VM = new Form_10VM(formNum, report)
                 {
                     IsSeparateDivision = !string.IsNullOrWhiteSpace(report.Rows10[1].Okpo.Value)
                 };
                 var window = new Form_10(form10VM) { DataContext = form10VM };
                 await window.ShowDialog(mainWindow);
+
+                // Не InvalidateOrgKeys / не InvalidateOrg: полный rebuild ключей и сброс report-кэша
+                // давали заметный лаг на UI до выбора следующей org.
+                var titleAfter = SnapshotForm10Title(report);
+                if (titleBefore != titleAfter)
+                {
+                    MainWindowListQuery.UpsertOrgKeyForm10FromMaster(
+                        mainWindowVM.SelectedReports.Id, report);
+                    mainWindowVM.Forms1TabControlVM.RefreshOrgListAfterTitleChange();
+                }
+
+                refreshOrgListAfterTitle = true;
                 break;
             }
             case "2.0":
@@ -83,6 +105,46 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
             }
         }
 
-        mainWindowVM.UpdateReportsCollection();
+        // Для 1.0 список org уже обновлён точечно (или не менялся) — без Sync через getter ReportsCollection.
+        if (!refreshOrgListAfterTitle)
+            mainWindowVM.UpdateReportsCollection();
+    }
+
+    private static Form10TitleSelector.TitleFields SnapshotForm10Title(Report master)
+    {
+        var rows = master.Rows10.OrderBy(r => r.NumberInOrder_DB).ToList();
+        var r0 = rows.ElementAtOrDefault(0);
+        var r1 = rows.ElementAtOrDefault(1);
+        return Form10TitleSelector.Pick(
+            r0?.RegNo_DB, r0?.Okpo_DB, r0?.ShortJurLico_DB,
+            r1?.RegNo_DB, r1?.Okpo_DB, r1?.ShortJurLico_DB);
+    }
+
+    /// <summary>
+    /// Страница грида уже Include'ит Rows10; если сущности detached/неполные — догружаем из БД.
+    /// </summary>
+    private static async Task EnsureForm10RowsLoadedAsync(Report master)
+    {
+        if (master.Rows10.Count >= 2)
+            return;
+
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+        var rows = await db.form_10
+            .AsNoTracking()
+            .Where(f => f.ReportId == master.Id)
+            .OrderBy(f => f.NumberInOrder_DB)
+            .ToListAsync();
+
+        master.Rows10.Clear();
+        foreach (var row in rows)
+            master.Rows10.Add(row);
+
+        // Гарантируем две строки для UI (как ProcessDataBaseFillEmpty).
+        while (master.Rows10.Count < 2)
+        {
+            var empty = (Form10)FormCreator.Create("1.0");
+            empty.NumberInOrder_DB = (short)(master.Rows10.Count + 1);
+            master.Rows10.Add(empty);
+        }
     }
 }

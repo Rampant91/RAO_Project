@@ -18,6 +18,7 @@ using static Client_App.Commands.AsyncCommands.Import.ImportJson.ImportJsonMetho
 using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.Resources.CustomComparers;
+using Client_App.ViewModels;
 
 namespace Client_App.Commands.AsyncCommands.Import.ImportJson;
 
@@ -471,7 +472,14 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
             importSummaryShown = await ShowImportSummaryMessageIfAnyAsync();
         }
 
-        if (!AtLeastOneImportDone && !importSummaryShown)
+        if (AtLeastOneImportDone)
+        {
+            var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
+            mainWindowVM?.UpdateReportsCollection();
+            mainWindowVM?.UpdateOrgsPageInfo();
+            mainWindowVM?.UpdateTotalReportCount();
+        }
+        else if (!AtLeastOneImportDone && !importSummaryShown)
         {
             #region MessageImportCancel
 

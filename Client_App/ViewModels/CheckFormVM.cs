@@ -36,10 +36,25 @@ public class CheckFormVM : BaseVM, INotifyPropertyChanged
     private string _titleName;
     public string TitleName
     {
-        get => $"Проверка_формы_{ChangeOrCreateVM.Storages.Master_DB.RegNoRep.Value}_" +
-               $"{ChangeOrCreateVM.Storages.Master_DB.OkpoRep.Value}_" +
-               $"{ChangeOrCreateVM.Storage.FormNum_DB}_" +
-               ((ChangeOrCreateVM.Storage.FormNum_DB[..1] =="2")?$"{ChangeOrCreateVM.Storage.Year_DB}":$"{ChangeOrCreateVM.Storage.StartPeriod_DB}-{ChangeOrCreateVM.Storage.EndPeriod_DB}");
+        get
+        {
+            try
+            {
+                var org = ChangeOrCreateVM.Storages;
+                var master = org?.Master_DB;
+                var reg = master?.RegNoRep?.Value ?? "";
+                var okpo = master?.OkpoRep?.Value ?? "";
+                var storage = ChangeOrCreateVM.Storage;
+                var period = storage.FormNum_DB[..1] == "2"
+                    ? $"{storage.Year_DB}"
+                    : $"{storage.StartPeriod_DB}-{storage.EndPeriod_DB}";
+                return $"Проверка_формы_{reg}_{okpo}_{storage.FormNum_DB}_{period}";
+            }
+            catch
+            {
+                return $"Проверка_формы_{ChangeOrCreateVM.Storage?.FormNum_DB}";
+            }
+        }
         set
         {
             if (_titleName == value) return;

@@ -3,6 +3,7 @@ using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Logging;
 using Client_App.Resources.CustomComparers;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Messages;
 using Client_App.Views.Messages;
@@ -381,6 +382,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     private protected static void FillEmptyRegNo(ref Reports? reps)
     {
         if (reps is null) return;
+        OrgMatchQuery.EnsureTitleRowsLoaded(reps);
         if (reps.Master.Rows10.Count >= 2)
         {
             if (reps.Master.Rows10[0].RegNo_DB is "" && reps.Master.Rows10[1].RegNo_DB is not "" && reps.Master.Rows10[0].Okpo_DB is not "")
@@ -506,63 +508,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     /// </summary>
     /// <param name="reps">Импортируемая организация.</param>
     /// <returns>Соответствующая организация из БД.</returns>
-    private protected static Reports? GetReports11FromLocalEqual(Reports reps)
-    {
-        try
-        {
-            //if (!reps.Report_Collection.Any(x => x.FormNum_DB[0].Equals('1')) || reps.Master_DB.FormNum_DB is not "1.0")
-            if (reps.Master_DB.FormNum_DB is not "1.0")
-            {
-                return null;
-            }
-
-            return ReportsStorage.LocalReports.Reports_Collection10
-                       .FirstOrDefault(t =>
-
-                           // обособленные пусты и в базе и в импорте, то сверяем головное
-                           reps.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                           && reps.Master.Rows10[0].RegNo_DB == t.Master.Rows10[0].RegNo_DB
-                           && reps.Master.Rows10[1].Okpo_DB == ""
-                           && t.Master.Rows10[1].Okpo_DB == ""
-
-                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || reps.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                           && reps.Master.Rows10[0].RegNo_DB == t.Master.Rows10[1].RegNo_DB
-                           && reps.Master.Rows10[1].Okpo_DB == ""
-                           && t.Master.Rows10[1].Okpo_DB == ""
-
-                           // обособленные не пусты, их и сверяем
-                           || reps.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                           && reps.Master.Rows10[1].RegNo_DB == t.Master.Rows10[1].RegNo_DB
-                           && reps.Master.Rows10[1].Okpo_DB != ""
-
-                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || reps.Master.Rows10[1].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                           && reps.Master.Rows10[1].RegNo_DB == t.Master.Rows10[0].RegNo_DB
-                           && reps.Master.Rows10[1].Okpo_DB != ""
-                           && t.Master.Rows10[1].RegNo_DB == "")
-
-                   ?? ReportsStorage.LocalReports
-                       .Reports_Collection10 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
-                       .FirstOrDefault(t =>
-
-                           // юр лицо в базе совпадает с обособленным в импорте
-                           reps.Master.Rows10[1].Okpo_DB != ""
-                           && t.Master.Rows10[1].Okpo_DB == ""
-                           && reps.Master.Rows10[1].Okpo_DB == t.Master.Rows10[0].Okpo_DB
-                           && reps.Master.Rows10[1].RegNo_DB == t.Master.Rows10[0].RegNo_DB
-
-                           // юр лицо в импорте совпадает с обособленным в базе
-                           || reps.Master.Rows10[1].Okpo_DB == ""
-                           && t.Master.Rows10[1].Okpo_DB != ""
-                           && reps.Master.Rows10[0].Okpo_DB == t.Master.Rows10[1].Okpo_DB
-                           && reps.Master.Rows10[0].RegNo_DB == t.Master.Rows10[1].RegNo_DB);
-        }
-        catch
-        {
-            return null;
-        }
-    }
+    private protected static Reports? GetReports11FromLocalEqual(Reports reps) =>
+        OrgMatchQuery.FindForm10Equal(reps);
 
     #endregion
 
@@ -573,62 +520,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     /// </summary>
     /// <param name="reps">Импортируемая организация.</param>
     /// <returns>Соответствующая организация из БД.</returns>
-    private protected static Reports? GetReports21FromLocalEqual(Reports reps)
-    {
-        try
-        {
-            //if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('2')) || item.Master_DB.FormNum_DB is not "2.0")
-            if (reps.Master_DB.FormNum_DB is not "2.0")
-            {
-                return null;
-            }
-
-            return ReportsStorage.LocalReports.Reports_Collection20
-                       .FirstOrDefault(t =>
-
-                           // обособленные пусты и в базе и в импорте, то сверяем головное
-                           reps.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
-                           && reps.Master.Rows20[0].RegNo_DB == t.Master.Rows20[0].RegNo_DB
-                           && reps.Master.Rows20[1].Okpo_DB == ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
-
-                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || reps.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
-                           && reps.Master.Rows20[0].RegNo_DB == t.Master.Rows20[1].RegNo_DB
-                           && reps.Master.Rows20[1].Okpo_DB == ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
-
-                           // обособленные не пусты, их и сверяем
-                           || reps.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                           && reps.Master.Rows20[1].RegNo_DB == t.Master.Rows20[1].RegNo_DB
-                           && reps.Master.Rows20[1].Okpo_DB != ""
-
-                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                           || reps.Master.Rows20[1].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                           && reps.Master.Rows20[1].RegNo_DB == t.Master.Rows20[0].RegNo_DB
-                           && reps.Master.Rows20[1].Okpo_DB != ""
-                           && t.Master.Rows20[1].RegNo_DB == "")
-
-                   ?? ReportsStorage.LocalReports.Reports_Collection20 // если null, то ищем сбитый окпо (совпадение юр лица с обособленным)
-                       .FirstOrDefault(t =>
-
-                           // юр лицо в базе совпадает с обособленным в импорте
-                           reps.Master.Rows20[1].Okpo_DB != ""
-                           && t.Master.Rows20[1].Okpo_DB == ""
-                           && reps.Master.Rows20[1].Okpo_DB == t.Master.Rows20[0].Okpo_DB
-                           && reps.Master.Rows20[1].RegNo_DB == t.Master.Rows20[0].RegNo_DB
-
-                           // юр лицо в импорте совпадает с обособленным в базе
-                           || reps.Master.Rows20[1].Okpo_DB == ""
-                           && t.Master.Rows20[1].Okpo_DB != ""
-                           && reps.Master.Rows20[0].Okpo_DB == t.Master.Rows20[1].Okpo_DB
-                           && reps.Master.Rows20[0].RegNo_DB == t.Master.Rows20[1].RegNo_DB);
-        }
-        catch
-        {
-            return null;
-        }
-    }
+    private protected static Reports? GetReports21FromLocalEqual(Reports reps) =>
+        OrgMatchQuery.FindForm20Equal(reps);
 
     #endregion
 

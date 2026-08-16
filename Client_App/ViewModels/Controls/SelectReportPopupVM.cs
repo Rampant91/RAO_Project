@@ -1,13 +1,17 @@
 ﻿using Client_App.Commands.AsyncCommands.SwitchReport;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels.Forms;
 using Models.Collections;
+using Models.DBRealization;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Threading;
 
 namespace Client_App.ViewModels.Controls;
 
@@ -19,37 +23,50 @@ public class SelectReportPopupVM : INotifyPropertyChanged
     {
         _formVM = formVM;
 
-        _reportCollection = FormVM.Report.Reports.Report_Collection.ToList();
+        // Пока stubs не подгружены — только текущий отчёт (без блокировки UI).
+        _reportCollection = [Report];
+        _loadedForms.Add(Report.FormNum_DB);
 
         _selectedReport = Report;
         CurrentFormNum = Report.FormNum_DB;
 
-        OpenPopupCommand = ReactiveCommand.Create(() =>
+        OpenPopupCommand = ReactiveCommand.CreateFromTask(async () =>
         {
+            var opening = !PopupIsOpen;
             PopupIsOpen = !PopupIsOpen;
+            if (opening)
+                await EnsureFormShellsLoadedAsync(CurrentFormNum);
         });
-        SwitchNextReportCommand = ReactiveCommand.Create(() =>
+        SwitchNextReportCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            int index = ReportCollection.IndexOf(SelectedReport);
+            await EnsureFormShellsLoadedAsync(CurrentFormNum);
+            var list = ReportCollection;
+            var index = IndexOfReport(list, SelectedReport);
             if (index - 1 >= 0)
             {
-                SelectedReport = ReportCollection[index - 1];
-                new SwitchToSelectedReportAsyncCommand(formVM).AsyncExecute(SelectedReport);
+                SelectedReport = list[index - 1];
+                await new SwitchToSelectedReportAsyncCommand(formVM).AsyncExecute(SelectedReport);
             }
         });
-        SwitchPreviousReportCommand = ReactiveCommand.Create(() =>
+        SwitchPreviousReportCommand = ReactiveCommand.CreateFromTask(async () =>
         {
-            int index = ReportCollection.IndexOf(SelectedReport);
-            if (index + 1 < ReportCollection.Count)
+            await EnsureFormShellsLoadedAsync(CurrentFormNum);
+            var list = ReportCollection;
+            var index = IndexOfReport(list, SelectedReport);
+            if (index + 1 < list.Count)
             {
-                SelectedReport = ReportCollection[index + 1];
-                new SwitchToSelectedReportAsyncCommand(formVM).AsyncExecute(SelectedReport);
+                SelectedReport = list[index + 1];
+                await new SwitchToSelectedReportAsyncCommand(formVM).AsyncExecute(SelectedReport);
             }
         });
-        SetCurrentFormNum = ReactiveCommand.Create((string newFormNum) =>
+        SetCurrentFormNum = ReactiveCommand.CreateFromTask(async (string newFormNum) =>
         {
             CurrentFormNum = newFormNum;
+            await EnsureFormShellsLoadedAsync(newFormNum);
         });
+
+        // Фоновая подгрузка текущей формы сразу при открытии окна отчёта.
+        _ = PrefetchCurrentFormAsync();
     }
 
     #endregion
@@ -69,7 +86,7 @@ public class SelectReportPopupVM : INotifyPropertyChanged
     #region Properties
 
     #region PopupIsOpen
-    private bool _popupIsOpen = false;
+    private bool _popupIsOpen;
     public bool PopupIsOpen
     {
         get => _popupIsOpen;
@@ -84,10 +101,7 @@ public class SelectReportPopupVM : INotifyPropertyChanged
     private string _yearSearch;
     public string YearSearch
     {
-        get
-        {
-            return _yearSearch;
-        }
+        get => _yearSearch;
         set
         {
             _yearSearch = value;
@@ -102,37 +116,19 @@ public class SelectReportPopupVM : INotifyPropertyChanged
         get
         {
             var formType = FormVM.FormType;
-            if (formType[0] is '2' or '4')
-                return true;
-
-            return false;
+            return formType[0] is '2' or '4';
         }
     }
     #endregion
 
-    public bool IsForm1
-    {
-        get
-        {
-            return FormVM.FormType[0] is '1';
-        }
-    }
-    public bool IsForm2
-    {
-        get
-        {
-            return FormVM.FormType[0] is '2';
-        }
-    }
+    public bool IsForm1 => FormVM.FormType[0] is '1';
+    public bool IsForm2 => FormVM.FormType[0] is '2';
 
     #region CurrentFormNum
     private string _currentFormNum;
     public string CurrentFormNum
     {
-        get
-        {
-            return _currentFormNum;
-        }
+        get => _currentFormNum;
         set
         {
             _currentFormNum = value;
@@ -148,13 +144,9 @@ public class SelectReportPopupVM : INotifyPropertyChanged
     private Report _selectedReport;
     public Report SelectedReport
     {
-        get
-        {
-            return _selectedReport;
-        }
+        get => _selectedReport;
         set
         {
-
             _selectedReport = value;
             OnPropertyChanged();
         }
@@ -162,7 +154,7 @@ public class SelectReportPopupVM : INotifyPropertyChanged
     #endregion
 
     #region BaseFormVM
-    private BaseFormVM _formVM;
+    private readonly BaseFormVM _formVM;
     public BaseFormVM FormVM => _formVM;
     #endregion
 
@@ -172,6 +164,9 @@ public class SelectReportPopupVM : INotifyPropertyChanged
 
     #region ReportCollections
     private List<Report> _reportCollection;
+    private readonly HashSet<string> _loadedForms = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, List<Report>> _shellsByForm = new(StringComparer.Ordinal);
+    private readonly object _loadGate = new();
 
     public List<Report> ReportCollection
     {
@@ -180,7 +175,8 @@ public class SelectReportPopupVM : INotifyPropertyChanged
             var result = _reportCollection;
 
             if (!string.IsNullOrEmpty(CurrentFormNum))
-                result = result.FindAll(x => x.FormNum.Value == CurrentFormNum);
+                result = result.FindAll(x => x.FormNum_DB == CurrentFormNum
+                                            || (x.FormNum?.Value == CurrentFormNum));
 
             if (int.TryParse(YearSearch, out var year))
             {
@@ -188,7 +184,6 @@ public class SelectReportPopupVM : INotifyPropertyChanged
                     result = result.FindAll(x =>
                         int.TryParse(x.Year_DB, out _)
                         && int.Parse(x.Year_DB) == year);
-                        
                 else
                     result = result
                         .FindAll(x =>
@@ -197,7 +192,6 @@ public class SelectReportPopupVM : INotifyPropertyChanged
                         .FindAll(x =>
                             DateTime.TryParse(x.EndPeriod_DB, out _)
                             && DateTime.Parse(x.EndPeriod_DB).Year >= year);
-
             }
 
             return result;
@@ -208,6 +202,100 @@ public class SelectReportPopupVM : INotifyPropertyChanged
 
     #endregion
 
+    private async Task PrefetchCurrentFormAsync()
+    {
+        try
+        {
+            await EnsureFormShellsLoadedAsync(Report.FormNum_DB);
+        }
+        catch
+        {
+            // best-effort
+        }
+    }
+
+    /// <summary>
+    /// Подгружает только stubs нужной формы (из warm-cache или лёгкий SQL), без LoadReportsByIds.
+    /// </summary>
+    private async Task EnsureFormShellsLoadedAsync(string formNum)
+    {
+        if (string.IsNullOrEmpty(formNum))
+            return;
+
+        lock (_loadGate)
+        {
+            if (_shellsByForm.TryGetValue(formNum, out var cached))
+            {
+                ApplyCollection(cached, formNum);
+                return;
+            }
+        }
+
+        var orgId = FormVM.Reports?.Id ?? FormVM.Report.Reports?.Id ?? 0;
+        if (orgId == 0)
+            return;
+
+        var orderByYear = YearMode;
+        var prefer = Report;
+        var dbPath = StaticConfiguration.DBPath;
+
+        List<Report> shells = await Task.Run(() =>
+        {
+            List<ReportListStub> stubs;
+            if (Forms1WarmCache.Instance.TryGetReportStubs(orgId, out var warm)
+                && warm.Any(s => s.FormNum == formNum))
+            {
+                stubs = warm.Where(s => s.FormNum == formNum).ToList();
+            }
+            else
+            {
+                using var db = new DBModel(dbPath);
+                stubs = MainWindowListQuery.LoadReportStubsForForm(db, orgId, formNum);
+            }
+
+            return MainWindowListQuery.CreateReportShellsFromStubs(
+                stubs, formNum, orderByYear, prefer);
+        });
+
+        if (shells.Count == 0)
+            shells = [Report];
+
+        // Привязка к org — для последующего Switch / ChangeOrCreateVM.
+        var org = FormVM.Reports ?? FormVM.Report.Reports;
+        if (org != null)
+        {
+            foreach (var shell in shells)
+            {
+                if (shell.Reports is null)
+                    shell.Reports = org;
+            }
+        }
+
+        lock (_loadGate)
+        {
+            _shellsByForm[formNum] = shells;
+            _loadedForms.Add(formNum);
+        }
+
+        await Dispatcher.UIThread.InvokeAsync(() => ApplyCollection(shells, formNum));
+    }
+
+    private void ApplyCollection(List<Report> shells, string formNum)
+    {
+        if (!string.Equals(CurrentFormNum, formNum, StringComparison.Ordinal))
+            return;
+
+        _reportCollection = shells;
+        OnPropertyChanged(nameof(ReportCollection));
+    }
+
+    private static int IndexOfReport(List<Report> list, Report selected)
+    {
+        var index = list.IndexOf(selected);
+        if (index < 0)
+            index = list.FindIndex(r => r.Id == selected.Id);
+        return index;
+    }
 
     #region OnPropertyChanged
 

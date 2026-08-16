@@ -18,6 +18,7 @@ using Models.CheckForm;
 using System.Collections.Generic;
 using System.Reflection;
 using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels.ProgressBar;
 using static Client_App.Resources.StaticStringMethods;
 
@@ -55,6 +56,7 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
             par = (Reports)parameter;
         else return;
 
+        OrgMatchQuery.EnsureTitleRowsLoaded(par);
         var cts = new CancellationTokenSource();
         ExportType = $"Проверка_отчётов_{par.Master_DB.RegNoRep.Value}_{par.Master_DB.OkpoRep.Value}";
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
@@ -360,18 +362,25 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
     {
         await using var db = new DBModel(tmpDbPath);
         double progressBarDoubleValue = progressBarVM.ValueBar;
-        var repsWithRows = new Reports { Master = repsWithOutRows.Master };
-        foreach (var rep in repsWithOutRows.Report_Collection
-                     .OrderBy(x => x.FormNum_DB)
-                     .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
-                     .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue))
+
+        var orgFromDb = await OrgReportsQuery.LoadOrgWithReportShellsAsync(
+            db, repsWithOutRows.Id, cts.Token);
+        var reportShells = orgFromDb?.Report_Collection
+            .OrderBy(x => x.FormNum_DB)
+            .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
+            .ToList() ?? [];
+
+        var repsWithRows = new Reports { Master = orgFromDb?.Master ?? repsWithOutRows.Master };
+        var total = Math.Max(1, reportShells.Count);
+        foreach (var rep in reportShells)
         {
             var repWithRows = await GetReportWithRows(rep.Id, db, cts);
             repsWithRows.Report_Collection.Add(repWithRows);
-            progressBarDoubleValue += (double)30 / repsWithOutRows.Report_Collection.Count;
+            progressBarDoubleValue += (double)30 / total;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Загрузка отчёта {rep.FormNum_DB}_{rep.StartPeriod_DB}_{rep.EndPeriod_DB}",
-                $"Загрузка отчётов {repsWithOutRows.Master_DB.RegNoRep.Value}_{repsWithOutRows.Master_DB.OkpoRep.Value}");
+                $"Загрузка отчётов {repsWithRows.Master_DB.RegNoRep.Value}_{repsWithRows.Master_DB.OkpoRep.Value}");
         }
         return repsWithRows;
     }
