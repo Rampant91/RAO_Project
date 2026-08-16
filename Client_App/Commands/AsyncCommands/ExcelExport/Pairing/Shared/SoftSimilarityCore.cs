@@ -362,6 +362,19 @@ public static partial class SoftSimilarityCore
             return FieldSimilarity.Near(0.70);
         }
 
+        // Длинная база + короткий буквенный хвост через «-»/«.»/пробел (например модификатор в конце).
+        if (MatchesTypeOptionalLetterSuffix(leftKeep, rightKeep)
+            || MatchesTypeOptionalLetterSuffix(left, right)
+            || MatchesTypeOptionalLetterSuffix(
+                LightNormalizeTypeKeepingSeparators(leftRaw ?? string.Empty, mapDigitZeroToO: false),
+                LightNormalizeTypeKeepingSeparators(rightRaw ?? string.Empty, mapDigitZeroToO: false))
+            || MatchesTypeOptionalLetterSuffix(
+                LightNormalizeTypeKeepingSeparators(leftRaw ?? string.Empty, mapDigitZeroToO: true),
+                LightNormalizeTypeKeepingSeparators(rightRaw ?? string.Empty, mapDigitZeroToO: true)))
+        {
+            return FieldSimilarity.Near(TypeOptionalLetterSuffixNearScore);
+        }
+
         // Тире часто ставят или пропускают (пробел уже снят light-normalize).
         if (EqualIgnoringHyphens(left, right)
             || EqualIgnoringHyphens(leftCore, rightCore)
@@ -395,6 +408,92 @@ public static partial class SoftSimilarityCore
 
     /// <summary>Устаревший алиас для тестов типа; то же, что <see cref="OptionalDotTwoDigitNearScore"/>.</summary>
     public const double TypeOptionalDotTwoDigitNearScore = OptionalDotTwoDigitNearScore;
+
+    /// <summary>
+    /// Тип: длинная база + короткий буквенный хвост через разделитель — Near ниже 0.7.
+    /// </summary>
+    public const double TypeOptionalLetterSuffixNearScore = 0.65;
+
+    /// <summary>Минимальная длина базы типа для смягчения буквенного хвоста (строго больше 5).</summary>
+    public const int TypeOptionalLetterSuffixMinCoreLength = 6;
+
+    /// <summary>
+    /// True, если одна строка = другая + «-»/«.» + короткий буквенный хвост (1–4 знака, с буквы),
+    /// база длиннее 5 символов; тире в базе игнорируются.
+    /// </summary>
+    public static bool MatchesTypeOptionalLetterSuffix(string left, string right)
+    {
+        if (left.Length == 0 || right.Length == 0 || left.Length == right.Length)
+        {
+            return false;
+        }
+
+        if (TryStripTypeOptionalLetterSuffix(left, out var leftCore)
+            && TypeLetterSuffixCoreMatches(leftCore, right))
+        {
+            return true;
+        }
+
+        if (TryStripTypeOptionalLetterSuffix(right, out var rightCore)
+            && TypeLetterSuffixCoreMatches(rightCore, left))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static bool TryStripTypeOptionalLetterSuffix(string value, out string core)
+    {
+        core = value;
+        var match = TypeOptionalLetterSuffixRegex().Match(value);
+        if (!match.Success)
+        {
+            return false;
+        }
+
+        core = match.Groups[1].Value;
+        return core.Length >= TypeOptionalLetterSuffixMinCoreLength;
+    }
+
+    private static bool TypeLetterSuffixCoreMatches(string core, string other) =>
+        other.Length >= TypeOptionalLetterSuffixMinCoreLength
+        && (string.Equals(core, other, StringComparison.Ordinal)
+            || EqualIgnoringHyphens(core, other)
+            || EqualIgnoringTypeSeparators(core, other));
+
+    /// <summary>
+    /// Совпадение без тире и точек (в типе «02-000» и «02.000» — одна запись).
+    /// </summary>
+    public static bool EqualIgnoringTypeSeparators(string left, string right)
+    {
+        var leftBare = StripTypeSeparators(left);
+        var rightBare = StripTypeSeparators(right);
+        if (leftBare.Length == 0 || rightBare.Length == 0)
+        {
+            return false;
+        }
+
+        return string.Equals(leftBare, rightBare, StringComparison.Ordinal);
+    }
+
+    private static string StripTypeSeparators(string value) =>
+        StripHyphens(value).Replace(".", string.Empty, StringComparison.Ordinal);
+
+    /// <summary>
+    /// Как <see cref="LightNormalizeId"/>, но пробелы → «-», чтобы сохранить разделитель перед хвостом.
+    /// </summary>
+    public static string LightNormalizeTypeKeepingSeparators(string value, bool mapDigitZeroToO = false)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        return LightNormalizeId(
+            value.Replace(' ', '-'),
+            mapDigitZeroToO);
+    }
 
     /// <summary>
     /// True, если одна строка = другая + «.XX» (ровно две цифры).
@@ -1447,7 +1546,10 @@ public static partial class SoftSimilarityCore
 
     private static bool IsPrefixWithShortTail(string longer, string shorter)
     {
-        if (longer.Length <= shorter.Length || !longer.StartsWith(shorter, StringComparison.Ordinal))
+        // Короткое ядро (1–2 символа) слишком слабо: «1»↔«100» после снятия ведущих нулей.
+        if (shorter.Length < 3
+            || longer.Length <= shorter.Length
+            || !longer.StartsWith(shorter, StringComparison.Ordinal))
         {
             return false;
         }
@@ -1553,6 +1655,10 @@ public static partial class SoftSimilarityCore
     /// <summary>Тип: хвостовой модификатор «.» + 1–2 буквы/цифры.</summary>
     [GeneratedRegex(@"^\.[A-Za-z0-9]{1,2}$", RegexOptions.CultureInvariant)]
     private static partial Regex TypeOptionalDotShortSuffixRegex();
+
+    /// <summary>Тип: хвост «-»/«.» + 1–4 знака с буквы (модификатор вроде SFC).</summary>
+    [GeneratedRegex(@"^(.+)[-.]([A-Za-z][A-Za-z0-9]{0,3})$", RegexOptions.CultureInvariant)]
+    private static partial Regex TypeOptionalLetterSuffixRegex();
 
     [GeneratedRegex(@"\(([^()]*)\)")]
     private static partial Regex ParentheticalContentRegex();

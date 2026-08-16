@@ -379,6 +379,16 @@ public sealed class Pairing41SoftSimilarityTests
     }
 
     [Fact]
+    public void Type_LongBase_OptionalLetterSuffix_IsNear()
+    {
+        var level = Pairing41TestAccess.SimilarityLevel11To15ForTests(
+            Pairing11To15Field.Type,
+            new Pairing41Row { Id = 1, Type = "GM-232.02.000" },
+            new Pairing41Row { Id = 2, Type = "GM-232.02.000-SFC" });
+        Assert.Equal(FieldMatchLevel.Near, level);
+    }
+
+    [Fact]
     public void Activity_OrderOfMagnitude_IsNear()
     {
         var level = Pairing41TestAccess.SimilarityLevel11To15ForTests(

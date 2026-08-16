@@ -277,6 +277,36 @@ public sealed class TransferReceiveSoftSimilarityTests
         Assert.Equal(FieldMatchLevel.Near, level);
     }
 
+    [Theory]
+    [InlineData("GM-232.02.000", "GM-232.02.000-SFC")]
+    [InlineData("GM-232.02.000-SFC", "GM-232.02.000")]
+    [InlineData("GM232.02-000", "GM-232.02.000-SFC")]
+    [InlineData("GM232.02-000", "GM232.02-000-SFC")]
+    [InlineData("GM232.02-000", "GM232.02-000 SFC")]
+    public void Type_LongBase_OptionalLetterSuffix_IsNear(string left, string right)
+    {
+        var similarity = SoftSimilarityCore.SimilarityType(left, right);
+        Assert.Equal(FieldMatchLevel.Near, similarity.Level);
+        Assert.Equal(
+            SoftSimilarityCore.TypeOptionalLetterSuffixNearScore,
+            similarity.Score,
+            precision: 5);
+        Assert.True(SoftSimilarityCore.MatchesTypeOptionalLetterSuffix(
+            SoftSimilarityCore.LightNormalizeTypeKeepingSeparators(left, mapDigitZeroToO: false),
+            SoftSimilarityCore.LightNormalizeTypeKeepingSeparators(right, mapDigitZeroToO: false)));
+    }
+
+    [Theory]
+    [InlineData("ABC", "ABC-SFC")]
+    [InlineData("AB12", "AB12-SFC")]
+    public void Type_ShortBase_OptionalLetterSuffix_IsMismatch(string left, string right)
+    {
+        Assert.False(SoftSimilarityCore.MatchesTypeOptionalLetterSuffix(
+            SoftSimilarityCore.LightNormalizeTypeKeepingSeparators(left, mapDigitZeroToO: false),
+            SoftSimilarityCore.LightNormalizeTypeKeepingSeparators(right, mapDigitZeroToO: false)));
+        Assert.Equal(FieldMatchLevel.Mismatch, SoftSimilarityCore.SimilarityType(left, right).Level);
+    }
+
     [Fact]
     public void Type_WithYearSuffix_IsNear()
     {

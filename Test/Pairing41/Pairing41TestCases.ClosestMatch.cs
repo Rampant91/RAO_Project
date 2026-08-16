@@ -136,9 +136,9 @@ internal static partial class Pairing41TestCases
             Name = "H03. Closest 1.6: при soft-score выше у 1.3 — профиль Form13.",
             Form12 =
             [
-                // масса 1 — у 1.6 будет 9 → −1 к score12
-                Row12(2, opDate: opDate, documentNumber: doc, documentDate: opDate, packNumber: pack,
-                    massTon: "1", beta: beta, alpha: "-", activityMeasurementDate: opDate)
+                // Заведомо слабее 1.3: чужая масса и упаковка (иначе 1.2 обгоняет по Exact на датах/доке/УКТ).
+                Row12(2, opDate: opDate, documentNumber: doc, documentDate: opDate, packNumber: "УКТ-OTHER",
+                    massTon: "50", beta: beta, alpha: "-", activityMeasurementDate: opDate)
             ],
             Form13 =
             [
