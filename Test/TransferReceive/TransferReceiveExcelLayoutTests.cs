@@ -139,8 +139,8 @@ public sealed class TransferReceiveExcelLayoutTests
         Assert.Null(TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
             TransferReceiveField.FactoryNumber, TransferReceiveSheetLayout.Form14));
 
-        // 1.5: как 1.1 без ОКПО изготовителя (17 колонок).
-        Assert.Equal(17, TransferReceiveTestAccess.SourceColCountForLayoutForTests(TransferReceiveSheetLayout.Form15));
+        // 1.5: статус РАО после даты вып.; УКТ (наим./тип/номер); субсидия и ФЦП.
+        Assert.Equal(22, TransferReceiveTestAccess.SourceColCountForLayoutForTests(TransferReceiveSheetLayout.Form15));
         Assert.Equal(12, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
             TransferReceiveField.Quantity, TransferReceiveSheetLayout.Form15));
         Assert.Equal(13, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
@@ -148,9 +148,19 @@ public sealed class TransferReceiveExcelLayoutTests
         Assert.Equal(14, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
             TransferReceiveField.CreationDate, TransferReceiveSheetLayout.Form15));
         Assert.Equal(15, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
-            TransferReceiveField.ProviderOrRecieverOkpo, TransferReceiveSheetLayout.Form15));
+            TransferReceiveField.StatusRao, TransferReceiveSheetLayout.Form15));
         Assert.Equal(16, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.ProviderOrRecieverOkpo, TransferReceiveSheetLayout.Form15));
+        Assert.Equal(17, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.PackName, TransferReceiveSheetLayout.Form15));
+        Assert.Equal(18, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.PackType, TransferReceiveSheetLayout.Form15));
+        Assert.Equal(19, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
             TransferReceiveField.PackNumber, TransferReceiveSheetLayout.Form15));
+        Assert.Equal(20, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.Subsidy, TransferReceiveSheetLayout.Form15));
+        Assert.Equal(21, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.FcpNumber, TransferReceiveSheetLayout.Form15));
         Assert.Null(TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
             TransferReceiveField.CreatorOkpo, TransferReceiveSheetLayout.Form15));
     }
@@ -179,8 +189,10 @@ public sealed class TransferReceiveExcelLayoutTests
         Assert.Contains("±10%", text, StringComparison.Ordinal);
         Assert.Contains("диапазон", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("ведущ", text, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("1.5", text, StringComparison.Ordinal);
+        Assert.Contains("1.6", text, StringComparison.Ordinal);
         Assert.Contains("26", text, StringComparison.Ordinal);
+        Assert.Contains("1.4/1.6", text, StringComparison.Ordinal);
+        Assert.Contains("1.5 и 1.6", text, StringComparison.Ordinal);
         Assert.DoesNotContain("closest", text, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("lookalike", text, StringComparison.OrdinalIgnoreCase);
     }
@@ -221,21 +233,67 @@ public sealed class TransferReceiveExcelLayoutTests
         var sheet = package.Workbook.Worksheets["Форма 1.5"];
         Assert.NotNull(sheet);
 
-        Assert.Equal(17, TransferReceiveTestAccess.SourceColCountForLayoutForTests(TransferReceiveSheetLayout.Form15));
+        Assert.Equal(22, TransferReceiveTestAccess.SourceColCountForLayoutForTests(TransferReceiveSheetLayout.Form15));
         Assert.Equal("Количество, шт", sheet.Cells[2, 13].Text);
         Assert.Equal("Суммарная активность", sheet.Cells[2, 14].Text);
         Assert.Equal("Дата выпуска", sheet.Cells[2, 15].Text);
-        Assert.Equal("ОКПО поставщика или получателя", sheet.Cells[2, 16].Text);
-        Assert.Equal("Номер УКТ", sheet.Cells[2, 17].Text);
+        Assert.Equal("Статус РАО", sheet.Cells[2, 16].Text);
+        Assert.Equal("ОКПО поставщика или получателя", sheet.Cells[2, 17].Text);
+        Assert.Equal("Наименование УКТ", sheet.Cells[2, 18].Text);
+        Assert.Equal("Тип УКТ", sheet.Cells[2, 19].Text);
+        Assert.Equal("Номер УКТ", sheet.Cells[2, 20].Text);
+        Assert.Equal("Субсидия, %", sheet.Cells[2, 21].Text);
+        Assert.Equal("Номер мероприятия ФЦП", sheet.Cells[2, 22].Text);
 
-        var headerRow = string.Join('|', Enumerable.Range(1, 17).Select(c => sheet.Cells[2, c].Text));
+        var headerRow = string.Join('|', Enumerable.Range(1, 22).Select(c => sheet.Cells[2, c].Text));
         Assert.DoesNotContain("изготовителя", headerRow, StringComparison.OrdinalIgnoreCase);
 
         var closest = TransferReceiveTestAccess.ClosestStartColForLayoutForTests(TransferReceiveSheetLayout.Form15);
-        Assert.Equal("Количество, шт", sheet.Cells[2, closest + 12].Text);
-        Assert.Equal("ОКПО поставщика или получателя", sheet.Cells[2, closest + 15].Text);
-        Assert.Equal("Номер УКТ", sheet.Cells[2, closest + 16].Text);
+        Assert.Equal("Статус РАО", sheet.Cells[2, closest + 15].Text);
+        Assert.Equal("Номер мероприятия ФЦП", sheet.Cells[2, closest + 21].Text);
         Assert.Equal("Форма 1.5", sheet.Name);
+    }
+
+    [Fact]
+    public void DualBlock_LayoutConstants_AreConsistent_ForForm16()
+    {
+        Assert.Equal(24, TransferReceiveTestAccess.SourceColCountForLayoutForTests(TransferReceiveSheetLayout.Form16));
+        Assert.Equal(8, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.CodeRao, TransferReceiveSheetLayout.Form16));
+        Assert.Equal(9, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.StatusRao, TransferReceiveSheetLayout.Form16));
+        Assert.Equal(18, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.ActivityMeasurementDate, TransferReceiveSheetLayout.Form16));
+        Assert.Equal(21, TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.PackNumber, TransferReceiveSheetLayout.Form16));
+        Assert.Null(TransferReceiveTestAccess.GetComparableColumnOffsetForTests(
+            TransferReceiveField.PassportNumber, TransferReceiveSheetLayout.Form16));
+    }
+
+    [Fact]
+    public void Form16Sheet_HasFormOrderHeaders()
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        using var package = new ExcelPackage();
+        TransferReceiveTestAccess.CreateForm16SheetForTests(package);
+
+        var sheet = package.Workbook.Worksheets["Форма 1.6"];
+        Assert.NotNull(sheet);
+
+        Assert.Equal(24, TransferReceiveTestAccess.SourceColCountForLayoutForTests(TransferReceiveSheetLayout.Form16));
+        Assert.Equal("Код РАО", sheet.Cells[2, 9].Text);
+        Assert.Equal("Статус РАО", sheet.Cells[2, 10].Text);
+        Assert.Equal("Объём, куб. м", sheet.Cells[2, 11].Text);
+        Assert.Equal("Масса, т", sheet.Cells[2, 12].Text);
+        Assert.Equal("Количество ОЗИИИ, шт", sheet.Cells[2, 13].Text);
+        Assert.Equal("Тритий, Бк", sheet.Cells[2, 15].Text);
+        Assert.Equal("Дата измерения активности", sheet.Cells[2, 19].Text);
+        Assert.Equal("Тип УКТ", sheet.Cells[2, 21].Text);
+        Assert.Equal("Номер мероприятия ФЦП", sheet.Cells[2, 24].Text);
+
+        var closest = TransferReceiveTestAccess.ClosestStartColForLayoutForTests(TransferReceiveSheetLayout.Form16);
+        Assert.Equal("Код РАО", sheet.Cells[2, closest + 8].Text);
+        Assert.Equal("Форма 1.6", sheet.Name);
     }
 
     [Fact]

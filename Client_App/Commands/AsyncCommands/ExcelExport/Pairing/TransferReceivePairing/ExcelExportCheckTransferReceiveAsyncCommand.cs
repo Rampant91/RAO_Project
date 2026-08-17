@@ -19,7 +19,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceiveP
 
 /// <summary>
 /// Выгрузка в .xlsx непарных операций приёма/передачи.
-/// Реализованы формы 1.1–1.5 (листы 1.6–1.8 — заглушки); режимы: выбранная организация или вся БД.
+/// Реализованы формы 1.1–1.6 (листы 1.7–1.8 — заглушки); режимы: выбранная организация или вся БД.
 /// </summary>
 public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBaseAllAsyncCommand
 {
@@ -255,10 +255,36 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
             CheckActivity: vm.CheckActivity15,
             CheckCreatorOkpo: false,
             CheckCreationDate: vm.CheckCreationDate15,
+            CheckStatusRao: vm.CheckStatusRao15,
             CheckProviderOrRecieverOkpo: vm.CheckProviderOrRecieverOkpo15,
-            CheckPackNumber: vm.CheckPackNumber15);
+            CheckPackName: vm.CheckPackName15,
+            CheckPackType: vm.CheckPackType15,
+            CheckPackNumber: vm.CheckPackNumber15,
+            CheckSubsidy: vm.CheckSubsidy15,
+            CheckFcpNumber: vm.CheckFcpNumber15);
 
-        return TransferReceiveParamsSet.Create(form11, form12, form13, form14, form15);
+        var form16 = new TransferReceiveFormParams(
+            CheckOperationCode: vm.CheckOperationCode16,
+            CheckOperationDate: vm.CheckOperationDate16,
+            CheckRadionuclids: vm.CheckRadionuclids16,
+            CheckQuantity: vm.CheckQuantity16,
+            CheckMass: vm.CheckMass16,
+            CheckVolume: vm.CheckVolume16,
+            CheckActivityMeasurementDate: vm.CheckActivityMeasurementDate16,
+            CheckStatusRao: vm.CheckStatusRao16,
+            CheckProviderOrRecieverOkpo: vm.CheckProviderOrRecieverOkpo16,
+            CheckPackType: vm.CheckPackType16,
+            CheckPackNumber: vm.CheckPackNumber16,
+            CheckSubsidy: vm.CheckSubsidy16,
+            CheckFcpNumber: vm.CheckFcpNumber16,
+            CheckCodeRao: vm.CheckCodeRao16,
+            CheckTritiumActivity: vm.CheckTritiumActivity16,
+            CheckBetaGammaActivity: vm.CheckBetaGammaActivity16,
+            CheckAlphaActivity: vm.CheckAlphaActivity16,
+            CheckTransuraniumActivity: vm.CheckTransuraniumActivity16,
+            AllowEmptySerialQuantityDrain: false);
+
+        return TransferReceiveParamsSet.Create(form11, form12, form13, form14, form15, form16);
     }
 
     #endregion
@@ -419,8 +445,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
         bool wholeDatabase = false)
     {
         var contentMessage = wholeDatabase
-            ? "Непарные операции приёма/передачи по формам 1.1–1.5 по всей базе не обнаружены."
-            : "Непарные операции приёма/передачи по формам 1.1–1.5 у выбранной организации не обнаружены.";
+            ? "Непарные операции приёма/передачи по формам 1.1–1.6 по всей базе не обнаружены."
+            : "Непарные операции приёма/передачи по формам 1.1–1.6 у выбранной организации не обнаружены.";
 
         await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
@@ -445,7 +471,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
                 ContentTitle = "Проверка приёма-передачи",
                 ContentHeader = "Уведомление",
                 ContentMessage =
-                    "Не выбрано ни одного поля для форм 1.1–1.5. Отметьте параметры хотя бы для одной формы — иначе проверку выполнять нечего.",
+                    "Не выбрано ни одного поля для форм 1.1–1.6. Отметьте параметры хотя бы для одной формы — иначе проверку выполнять нечего.",
                 MinWidth = 420,
                 MinHeight = 160,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner

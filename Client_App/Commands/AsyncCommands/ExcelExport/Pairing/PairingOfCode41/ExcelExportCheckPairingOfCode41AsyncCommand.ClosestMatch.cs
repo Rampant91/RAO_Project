@@ -663,7 +663,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         public NumericNorm(string? raw)
         {
             Raw = raw ?? string.Empty;
-            Parsed = TryParseActivity(raw, out var value);
+            Parsed = SoftSimilarityCore.TryParseNumeric(raw, out var value);
             Value = value;
         }
 
@@ -716,21 +716,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     /// <summary>
     /// Эквивалент ActivityMatches / NumericWithTolerance на препарсенных значениях.
     /// </summary>
-    private static bool NumericTolerance(NumericNorm left, NumericNorm right)
-    {
-        if (left.Parsed && right.Parsed)
-        {
-            var scale = Math.Max(Math.Abs(left.Value), Math.Abs(right.Value));
-            if (scale <= double.Epsilon)
-            {
-                return true;
-            }
-
-            return Math.Abs(left.Value - right.Value) <= scale * 0.10;
-        }
-
-        return NumberComparer.Equals(left.Raw, right.Raw);
-    }
+    private static bool NumericTolerance(NumericNorm left, NumericNorm right) =>
+        SoftSimilarityCore.NumericMatchesWithTolerance(left.Raw, right.Raw, 0.10, NumberComparer.Equals);
 
     #endregion
 }

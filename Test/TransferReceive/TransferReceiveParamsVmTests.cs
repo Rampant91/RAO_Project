@@ -214,6 +214,42 @@ public class TransferReceiveParamsVmTests
         Assert.True(p.CheckFactoryNumber);
         Assert.False(p.CheckCreatorOkpo);
         Assert.True(p.CheckCreationDate);
+        Assert.True(p.CheckStatusRao);
+        Assert.True(p.CheckPackName);
+        Assert.True(p.CheckPackType);
         Assert.True(p.CheckPackNumber);
+        Assert.True(p.CheckSubsidy);
+        Assert.True(p.CheckFcpNumber);
+    }
+
+    [Fact]
+    public void CheckAll16_DefaultsToTrue_AndUncheckingOneField_MakesIndeterminate()
+    {
+        var vm = new GetTransferReceiveParamsVM();
+        Assert.True(vm.CheckAll16);
+        Assert.True(vm.CheckCodeRao16);
+
+        vm.CheckVolume16 = false;
+        Assert.Null(vm.CheckAll16);
+    }
+
+    [Fact]
+    public void DefaultForm16Params_IsEnabled_AndDisablesPassportTypeFactory()
+    {
+        var p = ExcelExportCheckTransferReceiveAsyncCommand.DefaultForm16Params();
+        Assert.True(ExcelExportCheckTransferReceiveAsyncCommand.IsFormCheckEnabled(p));
+        Assert.False(p.CheckPassportNumber);
+        Assert.False(p.CheckType);
+        Assert.False(p.CheckFactoryNumber);
+        Assert.False(p.CheckActivity);
+        Assert.False(p.CheckCreatorOkpo);
+        Assert.False(p.CheckCreationDate);
+        Assert.False(p.CheckPackName);
+        Assert.True(p.CheckCodeRao);
+        Assert.True(p.CheckTritiumActivity);
+        Assert.True(p.CheckBetaGammaActivity);
+        Assert.True(p.CheckAlphaActivity);
+        Assert.True(p.CheckTransuraniumActivity);
+        Assert.False(p.AllowEmptySerialQuantityDrain);
     }
 }

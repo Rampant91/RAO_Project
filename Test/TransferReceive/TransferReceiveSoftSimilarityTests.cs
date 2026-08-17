@@ -261,10 +261,25 @@ public sealed class TransferReceiveSoftSimilarityTests
     [InlineData("I", "1")]
     [InlineData("A1", "AI")]
     [InlineData("AI", "A1")]
-    public void Type_DigitOneVsLetterI_Short_IsMismatch(string left, string right)
+    [InlineData("УКТIIА", "УКТ11А")]
+    public void Type_DigitOneVsLetterI_IsExact(string left, string right)
     {
-        // Короткие обозначения: одна «похожая» пара символов не смягчается до Near.
-        Assert.Equal(FieldMatchLevel.Mismatch, SoftSimilarityCore.SimilarityType(left, right).Level);
+        Assert.Equal(FieldMatchLevel.Exact, SoftSimilarityCore.SimilarityType(left, right).Level);
+    }
+
+    [Fact]
+    public void Type_UktIiVs11_AndModelInflection_IsNear()
+    {
+        // I↔1 (два символа) + «модели»↔«модель» — lookalike + одна опечатка на длинной строке.
+        Assert.Equal(
+            FieldMatchLevel.Near,
+            SoftSimilarityCore.SimilarityType("УКТIIА модели 940", "УКТ11А модель 940").Level);
+        Assert.Equal(
+            FieldMatchLevel.Near,
+            TransferReceiveTestAccess.SimilarityLevelForTests(
+                TransferReceiveField.PackType,
+                new TransferReceiveRow { Id = 1, OpCode = "21", PackType = "УКТIIА модели 940", IsTransfer = true },
+                new TransferReceiveRow { Id = 2, OpCode = "31", PackType = "УКТ11А модель 940", IsTransfer = false }));
     }
 
     [Fact]
@@ -785,6 +800,58 @@ public sealed class TransferReceiveSoftSimilarityTests
             }));
     }
 
+    [Theory]
+    [InlineData("0", "-")]
+    [InlineData("0", "")]
+    [InlineData("0.0", "-")]
+    [InlineData("0", "0e+0")]
+    public void Activity_ZeroEqualsDashOrEmpty_IsExact(string left, string right)
+    {
+        Assert.Equal(FieldMatchLevel.Exact, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.Activity,
+            new TransferReceiveRow { Id = 1, OpCode = "21", Activity = left, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", Activity = right, IsTransfer = false }));
+
+        Assert.Equal(FieldMatchLevel.Exact, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.TritiumActivity,
+            new TransferReceiveRow { Id = 1, OpCode = "21", TritiumActivity = left, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", TritiumActivity = right, IsTransfer = false }));
+
+        Assert.Equal(FieldMatchLevel.Exact, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.BetaGammaActivity,
+            new TransferReceiveRow { Id = 1, OpCode = "21", BetaGammaActivity = left, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", BetaGammaActivity = right, IsTransfer = false }));
+
+        Assert.Equal(FieldMatchLevel.Exact, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.AlphaActivity,
+            new TransferReceiveRow { Id = 1, OpCode = "21", AlphaActivity = left, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", AlphaActivity = right, IsTransfer = false }));
+
+        Assert.Equal(FieldMatchLevel.Exact, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.TransuraniumActivity,
+            new TransferReceiveRow { Id = 1, OpCode = "21", TransuraniumActivity = left, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", TransuraniumActivity = right, IsTransfer = false }));
+    }
+
+    [Theory]
+    [InlineData("0", "-")]
+    [InlineData("0", "")]
+    [InlineData("0.0", "-")]
+    public void MassAndVolume_ZeroEqualsDashOrEmpty_IsExactAndPairs(string left, string right)
+    {
+        Assert.Equal(FieldMatchLevel.Exact, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.Mass,
+            new TransferReceiveRow { Id = 1, OpCode = "21", Mass = left, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", Mass = right, IsTransfer = false }));
+        Assert.True(TransferReceiveTestAccess.MassMatchesForTests(left, right));
+
+        Assert.Equal(FieldMatchLevel.Exact, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.Volume,
+            new TransferReceiveRow { Id = 1, OpCode = "21", Volume = left, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", Volume = right, IsTransfer = false }));
+        Assert.True(TransferReceiveTestAccess.VolumeMatchesForTests(left, right));
+    }
+
     [Fact]
     public void Activity_WithFactoryEnumeration_SumMatchesUnitTimesN_IsHighNear_BothWays()
     {
@@ -1020,6 +1087,9 @@ public sealed class TransferReceiveSoftSimilarityTests
     [InlineData("-", "без номера")]
     [InlineData("б.н.", "-")]
     [InlineData("н/д", "без номера")]
+    [InlineData("-", "_")]
+    [InlineData("неизвестен", "неизвестно")]
+    [InlineData("б.н.", "_")]
     public void Pack_EmptyMarkers_AreExact(string left, string right)
     {
         Assert.Equal(FieldMatchLevel.Exact, TransferReceiveTestAccess.SimilarityLevelForTests(
@@ -1079,5 +1149,29 @@ public sealed class TransferReceiveSoftSimilarityTests
             TransferReceiveField.CreationDate,
             new TransferReceiveRow { Id = 1, OpCode = "21", CreationDate = "01.08.1987", IsTransfer = true },
             new TransferReceiveRow { Id = 2, OpCode = "31", CreationDate = "01.08.1987", IsTransfer = false }));
+    }
+
+    [Theory]
+    [InlineData("50", "50", FieldMatchLevel.Exact)]
+    [InlineData("50", "55", FieldMatchLevel.Near)]
+    [InlineData("50", "70", FieldMatchLevel.Mismatch)]
+    [InlineData("0", "-", FieldMatchLevel.Exact)]
+    [InlineData("0", "", FieldMatchLevel.Exact)]
+    [InlineData("-", "", FieldMatchLevel.Exact)]
+    public void Subsidy_NumericTolerance(string left, string right, FieldMatchLevel expected)
+    {
+        Assert.Equal(expected, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.Subsidy,
+            new TransferReceiveRow { Id = 1, OpCode = "21", Subsidy = left, IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", Subsidy = right, IsTransfer = false }));
+    }
+
+    [Fact]
+    public void FcpNumber_BezNomera_vs_Underscore_IsExact()
+    {
+        Assert.Equal(FieldMatchLevel.Exact, TransferReceiveTestAccess.SimilarityLevelForTests(
+            TransferReceiveField.FcpNumber,
+            new TransferReceiveRow { Id = 1, OpCode = "21", FcpNumber = "без номера", IsTransfer = true },
+            new TransferReceiveRow { Id = 2, OpCode = "31", FcpNumber = "_", IsTransfer = false }));
     }
 }

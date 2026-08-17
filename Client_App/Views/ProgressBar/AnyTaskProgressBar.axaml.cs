@@ -1,3 +1,5 @@
+using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
@@ -15,7 +17,7 @@ namespace Client_App.Views.ProgressBar;
 public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
 {
     public AnyTaskProgressBarVM AnyTaskProgressBarVM { get; }
-    private CancellationTokenSource _cancellationTokenSource;
+    private readonly CancellationTokenSource? _cancellationTokenSource;
 
     public AnyTaskProgressBar()
     {
@@ -27,7 +29,7 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
 //#if DEBUG
 //        this.AttachDevTools();
 //#endif
-        
+        _cancellationTokenSource = cts;
         var vm = new AnyTaskProgressBarVM(this, cts, new BackgroundLoader());
         DataContext = vm;
         AnyTaskProgressBarVM = (DataContext as AnyTaskProgressBarVM)!;
@@ -89,6 +91,36 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
     #endregion
 
     #endregion
+
+    /// <summary>
+    /// Крестик, Escape и кнопка «Отмена» должны останавливать команду, а не только прятать окно.
+    /// </summary>
+    protected override void OnClosing(CancelEventArgs e)
+    {
+        TryCancelLinkedCommand();
+        base.OnClosing(e);
+    }
+
+    private void TryCancelLinkedCommand()
+    {
+        var cts = _cancellationTokenSource ?? AnyTaskProgressBarVM?.CancellationTokenSource;
+        if (cts is null)
+        {
+            return;
+        }
+
+        try
+        {
+            if (!cts.IsCancellationRequested)
+            {
+                cts.Cancel();
+            }
+        }
+        catch (ObjectDisposedException)
+        {
+            // Команда уже завершилась и освободила токен.
+        }
+    }
 
     public async Task CloseAsync()
     {

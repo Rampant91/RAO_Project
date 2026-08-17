@@ -18,6 +18,10 @@ public class TransferReceiveToleranceTests
     [InlineData("1000", "1E+3")]
     [InlineData("1000", "1е+3")]
     [InlineData("(1.5e+3)", "1500")]
+    [InlineData("0", "-")]
+    [InlineData("0", "")]
+    [InlineData("0.0", "-")]
+    [InlineData("0e+0", "-")]
     public void ActivityMatches_WithinTenPercent(string left, string right)
     {
         Assert.True(TransferReceiveScenarioRunner.ActivityMatches(left, right));
@@ -30,6 +34,33 @@ public class TransferReceiveToleranceTests
     public void ActivityMatches_OutsideTenPercent(string left, string right)
     {
         Assert.False(TransferReceiveScenarioRunner.ActivityMatches(left, right));
+    }
+
+    [Theory]
+    [InlineData("0", "-")]
+    [InlineData("0", "")]
+    [InlineData("0.0", "-")]
+    public void MassMatches_ZeroEqualsDashOrEmpty(string left, string right)
+    {
+        Assert.True(TransferReceiveScenarioRunner.MassMatches(left, right));
+    }
+
+    [Theory]
+    [InlineData("0", "-")]
+    [InlineData("0", "")]
+    [InlineData("0.0", "-")]
+    public void VolumeMatches_ZeroEqualsDashOrEmpty(string left, string right)
+    {
+        Assert.True(TransferReceiveScenarioRunner.VolumeMatches(left, right));
+    }
+
+    [Theory]
+    [InlineData("0", "-")]
+    [InlineData("0", "")]
+    [InlineData("-", "")]
+    public void SubsidyMatches_ZeroEqualsDashOrEmpty(string left, string right)
+    {
+        Assert.True(TransferReceiveScenarioRunner.SubsidyMatches(left, right));
     }
 
     [Fact]

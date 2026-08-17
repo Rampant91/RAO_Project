@@ -18,6 +18,8 @@ public class FormTextEqualityTests
     [InlineData("МАРКЕР", "MAPKEP")] // Похожие буквы кириллица/латиница в одном слове
     [InlineData("РОСАТОМ", "POCATOM")] // Смешение алфавитов даёт одинаковую нормализованную строку
     [InlineData("т0м", "том")] // Ноль и буква O считаются идентичными
+    [InlineData("УКТIIА", "УКТ11А")] // I и 1
+    [InlineData("I", "1")] // одиночные I и 1
     public void Equals_ReturnsTrue_WhenOnlyLookalikeAlphabetCharsDiffer(string left, string right)
     {
         Assert.True(FormTextEquality.Equals(left, right));

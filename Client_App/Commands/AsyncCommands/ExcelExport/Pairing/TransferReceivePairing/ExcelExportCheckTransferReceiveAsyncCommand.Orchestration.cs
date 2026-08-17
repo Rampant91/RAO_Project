@@ -539,7 +539,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             closestProgress.Status(
                 $"поиск ближайших совпадений {descriptor.FormNum}: 0 из {unpaired.Count}");
             _closestByForm[descriptor.Id] = BuildClosestMatchResults(
-                unpaired, opsByOrgOkpo, formOptions, closestProgress);
+                unpaired, opsByOrgOkpo, formOptions, closestProgress, layout: descriptor.Layout);
         }
 
         if (unpairedByForm.Values.All(list => list.Count == 0))
@@ -610,7 +610,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 formOptions,
                 closestProgress,
                 formIndexes?.Closest,
-                formIndexes?.Norms);
+                formIndexes?.Norms,
+                descriptor.Layout);
         }
 
         if (unpairedByForm.Values.All(list => list.Count == 0))
@@ -835,8 +836,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         TransferReceiveFormParams options,
         Action? onSourceDone = null)
     {
-        var withSerial = sources.Where(op => !SerialNumbersAreEmpty(op)).ToList();
-        var withoutSerial = sources.Where(SerialNumbersAreEmpty).ToList();
+        var withSerial = options.AllowEmptySerialQuantityDrain
+            ? sources.Where(op => !SerialNumbersAreEmpty(op)).ToList()
+            : sources;
+        var withoutSerial = options.AllowEmptySerialQuantityDrain
+            ? sources.Where(SerialNumbersAreEmpty).ToList()
+            : [];
 
         MatchWithSerial(withSerial, isSourceTransfer, index, usedCandidateIds, pairedOurIds, ourOkpoRaw, ourOkpoNorm, options, onSourceDone);
         MatchWithoutSerial(withoutSerial, isSourceTransfer, index, usedCandidateIds, pairedOurIds, ourOkpoRaw, ourOkpoNorm, options, onSourceDone);

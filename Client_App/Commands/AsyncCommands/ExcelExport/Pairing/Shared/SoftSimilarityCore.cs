@@ -16,6 +16,75 @@ public static partial class SoftSimilarityCore
     public static bool TryParseNumeric(string? value, out double result) =>
         FormExponentialEquality.TryParse(value, out result);
 
+    /// <summary>
+    /// Субсидия: прочерк/пусто/служебные маркеры или 0 %.
+    /// </summary>
+    public static bool IsSubsidyAbsentOrZero(string? raw)
+    {
+        if (Operation41PairingKeyComparer.IsEmptySerial(raw))
+        {
+            return true;
+        }
+
+        var trimmed = (raw ?? string.Empty).Trim();
+        return TryParseSubsidyPercent(trimmed, out var value) && value == 0;
+    }
+
+    /// <summary>
+    /// Числовое поле с экспоненциальным парсингом: ±10% или эквивалентность нуля и прочерка.
+    /// </summary>
+    public static bool NumericMatchesWithTolerance(
+        string? leftRaw,
+        string? rightRaw,
+        double relativeTolerance = 0.10,
+        Func<string?, string?, bool>? unparsableEquals = null)
+    {
+        if (FormExponentialEquality.IsAbsentOrZero(leftRaw)
+            && FormExponentialEquality.IsAbsentOrZero(rightRaw))
+        {
+            return true;
+        }
+
+        if (!TryParseNumeric(leftRaw, out var leftValue) || !TryParseNumeric(rightRaw, out var rightValue))
+        {
+            return unparsableEquals?.Invoke(leftRaw, rightRaw)
+                ?? string.Equals(leftRaw ?? string.Empty, rightRaw ?? string.Empty, StringComparison.Ordinal);
+        }
+
+        var scale = Math.Max(Math.Abs(leftValue), Math.Abs(rightValue));
+        if (scale <= double.Epsilon)
+        {
+            return true;
+        }
+
+        return Math.Abs(leftValue - rightValue) <= scale * relativeTolerance;
+    }
+
+    /// <summary>
+    /// Субсидия, %: 0 ↔ прочерк/пусто; иначе точное совпадение или |Δ| ≤ 10.
+    /// </summary>
+    public static bool SubsidyMatches(string? leftRaw, string? rightRaw)
+    {
+        if (IsSubsidyAbsentOrZero(leftRaw) && IsSubsidyAbsentOrZero(rightRaw))
+        {
+            return true;
+        }
+
+        var left = (leftRaw ?? string.Empty).Trim();
+        var right = (rightRaw ?? string.Empty).Trim();
+        if (string.Equals(left, right, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        if (TryParseSubsidyPercent(left, out var leftValue) && TryParseSubsidyPercent(right, out var rightValue))
+        {
+            return Math.Abs(leftValue - rightValue) <= 10;
+        }
+
+        return false;
+    }
+
     public static bool DatesEqualExact(string? left, string? right)
     {
         if (DateOnly.TryParse(left, out var leftDate) && DateOnly.TryParse(right, out var rightDate))
@@ -765,8 +834,18 @@ public static partial class SoftSimilarityCore
         string right,
         Func<string, string>? normalize = null)
     {
+        if (FormExponentialEquality.IsAbsentOrZero(left) && FormExponentialEquality.IsAbsentOrZero(right))
+        {
+            return FieldSimilarity.Exact;
+        }
+
         var leftValue = normalize is null ? left : normalize(left);
         var rightValue = normalize is null ? right : normalize(right);
+
+        if (FormExponentialEquality.IsAbsentOrZero(leftValue) && FormExponentialEquality.IsAbsentOrZero(rightValue))
+        {
+            return FieldSimilarity.Exact;
+        }
 
         if (!TryParseNumeric(leftValue, out var la) || !TryParseNumeric(rightValue, out var ra))
         {
@@ -910,6 +989,60 @@ public static partial class SoftSimilarityCore
         }
 
         return SimilarityByEditDistance(left, right);
+    }
+
+    /// <summary>
+    /// Субсидия, %: точное совпадение — Exact; оба числа 0–100, |Δ| ≤ 10 — Near с понижением по разнице.
+    /// </summary>
+    public static FieldSimilarity SimilaritySubsidy(string? leftRaw, string? rightRaw)
+    {
+        if (IsSubsidyAbsentOrZero(leftRaw) && IsSubsidyAbsentOrZero(rightRaw))
+        {
+            return FieldSimilarity.Exact;
+        }
+
+        var left = (leftRaw ?? string.Empty).Trim();
+        var right = (rightRaw ?? string.Empty).Trim();
+        if (string.Equals(left, right, StringComparison.OrdinalIgnoreCase))
+        {
+            return FieldSimilarity.Exact;
+        }
+
+        if (Operation41PairingKeyComparer.IsEmptySerial(left)
+            && Operation41PairingKeyComparer.IsEmptySerial(right))
+        {
+            return FieldSimilarity.Exact;
+        }
+
+        if (TryParseSubsidyPercent(left, out var leftValue) && TryParseSubsidyPercent(right, out var rightValue))
+        {
+            var diff = Math.Abs(leftValue - rightValue);
+            if (diff == 0)
+            {
+                return FieldSimilarity.Exact;
+            }
+
+            if (diff <= 10)
+            {
+                return FieldSimilarity.Near(Math.Max(0.55, 0.95 - diff * 0.04));
+            }
+
+            return FieldSimilarity.Mismatch(Math.Max(0.08, 0.35 - diff * 0.015));
+        }
+
+        return SimilarityByEditDistance(LightNormalizeId(left), LightNormalizeId(right));
+    }
+
+    private static bool TryParseSubsidyPercent(string raw, out int value)
+    {
+        value = 0;
+        if (string.IsNullOrWhiteSpace(raw) || raw is "-" or "прим.")
+        {
+            return false;
+        }
+
+        return int.TryParse(raw.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out value)
+               && value is >= 0 and <= 100;
     }
 
     public static FieldSimilarity SimilarityByEditDistance(string left, string right)
