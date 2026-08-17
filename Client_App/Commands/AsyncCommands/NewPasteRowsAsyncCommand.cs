@@ -214,8 +214,8 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             }
         }
         
-        var rows = Storage.Rows.ToList<Form>();
-        var start = rows.IndexOf(SelectedForm);
+        var formRows = Storage.Rows.ToList<Form>();
+        var start = formRows.IndexOf(SelectedForm);
         if (start < 0)
             start = Math.Max(0, SelectedForm.NumberInOrder_DB - 1);
 
