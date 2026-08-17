@@ -5,7 +5,7 @@ using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairi
 namespace Test.TransferReceive;
 
 /// <summary>
-/// Наборы тестовых сценариев проверки операций приёма-передачи (формы 1.1–1.5).
+/// Наборы тестовых сценариев проверки операций приёма-передачи (формы 1.1–1.6).
 /// <para>
 /// Группы:
 /// <list type="bullet">
@@ -22,6 +22,7 @@ namespace Test.TransferReceive;
 /// <item><b>F13</b> — форма 1.3 (агрегатное состояние, qty=1);</item>
 /// <item><b>F14</b> — форма 1.4 (вид, объём, дата изм. активности);</item>
 /// <item><b>F15</b> — форма 1.5 (как 1.1 без изготовителя; 26↔36).</item>
+/// <item><b>F16</b> — форма 1.6 (код РАО, 4 активности; без qty-drain).</item>
 /// </list>
 /// </para>
 /// <para>
@@ -53,6 +54,7 @@ internal static partial class TransferReceiveTestCases
             .Concat(Form13Cases())
             .Concat(Form14Cases())
             .Concat(Form15Cases())
+            .Concat(Form16Cases())
             .Select(testCase => new object[] { testCase.Name, testCase });
 
     public static IEnumerable<object[]> ClosestMatchOnly() =>
@@ -62,6 +64,7 @@ internal static partial class TransferReceiveTestCases
             .Concat(Form13ClosestMatchCases())
             .Concat(Form14ClosestMatchCases())
             .Concat(Form15ClosestMatchCases())
+            .Concat(Form16ClosestMatchCases())
             .Where(testCase => testCase.ExpectedClosest is not null
                                || testCase.ExpectedClosestLevels is not null
                                || testCase.ExpectedClosestCandidateIds is not null

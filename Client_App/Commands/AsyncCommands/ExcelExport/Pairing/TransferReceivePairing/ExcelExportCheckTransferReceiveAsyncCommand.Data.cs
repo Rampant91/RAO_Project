@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
 using Client_App.Resources.CustomComparers.SnkComparers;
 using Microsoft.EntityFrameworkCore;
 using Models.Comparers.FormContent;
@@ -189,6 +190,19 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     private static int GetQuantityForComparison(TransferReceiveDto row) =>
         row.Quantity is > 0 ? row.Quantity.Value : 1;
 
+    /// <summary>Количество ОЗИИИ (форма 1.6, строка): «-» / «прим.» / пусто — как отсутствие числа.</summary>
+    private static int? ParseQuantityOziii(string? raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw) || raw is "-" or "прим.")
+        {
+            return null;
+        }
+
+        return int.TryParse(raw.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)
+            ? value
+            : null;
+    }
+
     private static bool TryParseActivity(string? value, out double activity) =>
         FormExponentialEquality.TryParse(value, out activity);
 
@@ -199,10 +213,18 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             return true;
         }
 
-        return NumericWithinRelativeTolerance(left.Activity, right.Activity, relativeTolerance: 0.10);
+        return ActivityMatches(left.Activity, right.Activity, checkActivity);
     }
 
-    /// <summary>Масса (кг): для пары — тот же допуск ±10%, что и у активности.</summary>
+    private static bool ActivityMatches(string? leftRaw, string? rightRaw, bool checkActivity)
+    {
+        if (!checkActivity)
+        {
+            return true;
+        }
+
+        return NumericWithinRelativeTolerance(leftRaw, rightRaw, relativeTolerance: 0.10);
+    }
     private static bool MassMatches(TransferReceiveDto left, TransferReceiveDto right, bool checkMass)
     {
         if (!checkMass)
@@ -224,23 +246,53 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         return NumericWithinRelativeTolerance(left.Volume, right.Volume, relativeTolerance: 0.10);
     }
 
-    private static bool NumericWithinRelativeTolerance(string? leftRaw, string? rightRaw, double relativeTolerance)
-    {
-        if (!TryParseActivity(leftRaw, out var leftValue) || !TryParseActivity(rightRaw, out var rightValue))
-        {
-            return string.Equals(
-                NormalizeNumber(leftRaw),
-                NormalizeNumber(rightRaw),
-                StringComparison.Ordinal);
-        }
+    private static bool NumericWithinRelativeTolerance(string? leftRaw, string? rightRaw, double relativeTolerance) =>
+        SoftSimilarityCore.NumericMatchesWithTolerance(
+            leftRaw,
+            rightRaw,
+            relativeTolerance,
+            (left, right) => string.Equals(
+                NormalizeNumber(left),
+                NormalizeNumber(right),
+                StringComparison.Ordinal));
 
-        var scale = Math.Max(Math.Abs(leftValue), Math.Abs(rightValue));
-        if (scale <= double.Epsilon)
+    private static bool IsStatusRaoExemptOpCode(string? opCode) =>
+        opCode is "28" or "38";
+
+    private static bool SubsidyMatches(TransferReceiveDto left, TransferReceiveDto right, bool checkSubsidy)
+    {
+        if (!checkSubsidy)
         {
             return true;
         }
 
-        return Math.Abs(leftValue - rightValue) <= scale * relativeTolerance;
+        if (SoftSimilarityCore.IsSubsidyAbsentOrZero(left.Subsidy)
+            && SoftSimilarityCore.IsSubsidyAbsentOrZero(right.Subsidy))
+        {
+            return true;
+        }
+
+        var leftNorm = NormalizeNumber(left.Subsidy);
+        var rightNorm = NormalizeNumber(right.Subsidy);
+        if (string.Equals(leftNorm, rightNorm, StringComparison.Ordinal))
+        {
+            return true;
+        }
+
+        return SoftSimilarityCore.SubsidyMatches(left.Subsidy, right.Subsidy);
+    }
+
+    private static bool FcpNumberMatches(TransferReceiveDto left, TransferReceiveDto right, bool checkFcpNumber)
+    {
+        if (!checkFcpNumber)
+        {
+            return true;
+        }
+
+        return string.Equals(
+            NormalizeSerialNumber(left.FcpNumber),
+            NormalizeSerialNumber(right.FcpNumber),
+            StringComparison.Ordinal);
     }
 
     /// <summary>
@@ -259,8 +311,20 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         if (options.CheckType) parts.Add(NormalizeNumber(row.Type));
         if (options.CheckRadionuclids) parts.Add(NormalizeRads(row.Radionuclids));
         if (includeSerial && options.CheckFactoryNumber) parts.Add(NormalizeSerialNumber(row.FacNum));
+        if (options.CheckCodeRao) parts.Add(NormalizeNumber(row.CodeRao));
         if (options.CheckPackType) parts.Add(NormalizeNumber(row.PackType));
+        if (options.CheckPackName) parts.Add(NormalizeNumber(row.PackName));
         if (options.CheckPackNumber) parts.Add(NormalizeNumber(row.PackNumber));
+        if (options.CheckStatusRao && !IsStatusRaoExemptOpCode(row.OpCode))
+        {
+            parts.Add(NormalizeNumber(row.StatusRao));
+        }
+
+        if (options.CheckFcpNumber)
+        {
+            parts.Add(NormalizeSerialNumber(row.FcpNumber));
+        }
+
         if (options.CheckCreatorOkpo) parts.Add(NormalizeNumber(row.CreatorOkpo));
         if (options.CheckCreationDate) parts.Add(NormalizeDate(row.CreationDate));
         if (includeQuantity && options.CheckQuantity)
@@ -330,6 +394,40 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             return false;
         }
 
+        if (!ActivityMatches(
+                source.TritiumActivity, candidate.TritiumActivity, options.CheckTritiumActivity))
+        {
+            return false;
+        }
+
+        if (!ActivityMatches(
+                source.BetaGammaActivity, candidate.BetaGammaActivity, options.CheckBetaGammaActivity))
+        {
+            return false;
+        }
+
+        if (!ActivityMatches(
+                source.AlphaActivity, candidate.AlphaActivity, options.CheckAlphaActivity))
+        {
+            return false;
+        }
+
+        if (!ActivityMatches(
+                source.TransuraniumActivity, candidate.TransuraniumActivity, options.CheckTransuraniumActivity))
+        {
+            return false;
+        }
+
+        if (!SubsidyMatches(source, candidate, options.CheckSubsidy))
+        {
+            return false;
+        }
+
+        if (!FcpNumberMatches(source, candidate, options.CheckFcpNumber))
+        {
+            return false;
+        }
+
         if (options.CheckProviderOrRecieverOkpo)
         {
             // Кол.19 контрагента должна указывать на нас: полное совпадение или 8 ↔ голова 8_5.
@@ -377,6 +475,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             TransferReceiveFormId.Form13 => LoadAllForm13TransferReceiveAsync(db, orgTitles, cancellationToken),
             TransferReceiveFormId.Form14 => LoadAllForm14TransferReceiveAsync(db, orgTitles, cancellationToken),
             TransferReceiveFormId.Form15 => LoadAllForm15TransferReceiveAsync(db, orgTitles, cancellationToken),
+            TransferReceiveFormId.Form16 => LoadAllForm16TransferReceiveAsync(db, orgTitles, cancellationToken),
             _ => throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет bulk-загрузчика для формы.")
         };
 
@@ -394,6 +493,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             TransferReceiveFormId.Form13 => LoadForm13TransferReceiveForRepsAsync(db, repsId, orgOkpo, cancellationToken),
             TransferReceiveFormId.Form14 => LoadForm14TransferReceiveForRepsAsync(db, repsId, orgOkpo, cancellationToken),
             TransferReceiveFormId.Form15 => LoadForm15TransferReceiveForRepsAsync(db, repsId, orgOkpo, cancellationToken),
+            TransferReceiveFormId.Form16 => LoadForm16TransferReceiveForRepsAsync(db, repsId, orgOkpo, cancellationToken),
             _ => throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет загрузчика для формы.")
         };
 
@@ -433,6 +533,9 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             TransferReceiveFormId.Form15 => LoadForm15TransferReceiveForRepsIdsAsync(
                 db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
                 chunkSize, progressEntityLabel),
+            TransferReceiveFormId.Form16 => LoadForm16TransferReceiveForRepsIdsAsync(
+                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
+                chunkSize, progressEntityLabel),
             _ => throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет загрузчика для формы.")
         };
 
@@ -457,6 +560,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             TransferReceiveFormId.Form14 => LoadForm14TransferReceivePagedWholeDbAsync(
                 db, cancellationToken, progress, formNum),
             TransferReceiveFormId.Form15 => LoadForm15TransferReceivePagedWholeDbAsync(
+                db, cancellationToken, progress, formNum),
+            TransferReceiveFormId.Form16 => LoadForm16TransferReceivePagedWholeDbAsync(
                 db, cancellationToken, progress, formNum),
             _ => throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет paged-загрузчика для формы.")
         };
@@ -914,7 +1019,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                     FacNum = form.FactoryNumber_DB,
                     Type = form.Type_DB,
                     Radionuclids = form.Radionuclids_DB,
+                    StatusRao = form.StatusRAO_DB,
+                    PackName = form.PackName_DB,
+                    PackType = form.PackType_DB,
                     PackNumber = form.PackNumber_DB,
+                    Subsidy = form.Subsidy_DB,
+                    FcpNumber = form.FcpNumber_DB,
                     ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
                     Quantity = form.Quantity_DB,
                     Activity = form.Activity_DB,
@@ -937,27 +1047,13 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                     continue;
                 }
 
-                result.Add(new TransferReceiveDto
-                {
-                    Id = row.Id,
-                    RepsId = row.RepsId,
-                    ReportId = row.ReportId,
-                    NumberInOrder = row.NumberInOrder,
-                    OpCode = row.OpCode ?? string.Empty,
-                    OpDate = row.OpDate ?? string.Empty,
-                    PasNum = row.PasNum ?? string.Empty,
-                    FacNum = row.FacNum ?? string.Empty,
-                    Type = row.Type ?? string.Empty,
-                    Radionuclids = row.Radionuclids ?? string.Empty,
-                    PackNumber = row.PackNumber ?? string.Empty,
-                    ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
-                    Quantity = row.Quantity,
-                    Activity = row.Activity ?? string.Empty,
-                    CreationDate = row.CreationDate ?? string.Empty,
-                    StartPeriod = row.StartPeriod ?? string.Empty,
-                    EndPeriod = row.EndPeriod ?? string.Empty,
-                    IsTransfer = IsTransferCodeForm11(row.OpCode)
-                });
+                result.Add(MapForm15Row(
+                    row.Id, row.RepsId, row.ReportId, row.NumberInOrder,
+                    string.Empty, string.Empty, string.Empty,
+                    row.OpCode, row.OpDate, row.PasNum, row.FacNum, row.Type, row.Radionuclids,
+                    row.StatusRao, row.PackName, row.PackType, row.PackNumber, row.Subsidy, row.FcpNumber,
+                    row.ProviderOrRecieverOkpo, row.Quantity, row.Activity, row.CreationDate,
+                    row.StartPeriod, row.EndPeriod));
             }
 
             progress?.ReportNow(
@@ -2242,6 +2338,62 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     /// <summary>
     /// Один запрос: все операции приёма/передачи формы 1.5 по БД (без ОКПО изготовителя).
     /// </summary>
+    private static TransferReceiveDto MapForm15Row(
+        int id,
+        int repsId,
+        int reportId,
+        int numberInOrder,
+        string orgOkpo,
+        string orgRegNo,
+        string orgShortName,
+        string? opCode,
+        string? opDate,
+        string? pasNum,
+        string? facNum,
+        string? type,
+        string? radionuclids,
+        string? statusRao,
+        string? packName,
+        string? packType,
+        string? packNumber,
+        string? subsidy,
+        string? fcpNumber,
+        string? providerOrRecieverOkpo,
+        int? quantity,
+        string? activity,
+        string? creationDate,
+        string? startPeriod,
+        string? endPeriod) =>
+        new()
+        {
+            Id = id,
+            RepsId = repsId,
+            ReportId = reportId,
+            NumberInOrder = numberInOrder,
+            OrgOkpo = orgOkpo,
+            OrgRegNo = orgRegNo,
+            OrgShortName = orgShortName,
+            OpCode = opCode ?? string.Empty,
+            OpDate = opDate ?? string.Empty,
+            PasNum = pasNum ?? string.Empty,
+            FacNum = facNum ?? string.Empty,
+            Type = type ?? string.Empty,
+            Radionuclids = radionuclids ?? string.Empty,
+            StatusRao = statusRao ?? string.Empty,
+            PackName = packName ?? string.Empty,
+            PackType = packType ?? string.Empty,
+            PackNumber = packNumber ?? string.Empty,
+            Subsidy = subsidy ?? string.Empty,
+            FcpNumber = fcpNumber ?? string.Empty,
+            ProviderOrRecieverOkpo = providerOrRecieverOkpo ?? string.Empty,
+            Quantity = quantity,
+            Activity = activity ?? string.Empty,
+            CreationDate = creationDate ?? string.Empty,
+            StartPeriod = startPeriod ?? string.Empty,
+            EndPeriod = endPeriod ?? string.Empty,
+            IsTransfer = IsTransferCodeForm11(opCode)
+        };
+
     private static async Task<List<TransferReceiveDto>> LoadAllForm15TransferReceiveAsync(
         DBModel db,
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
@@ -2266,7 +2418,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 FacNum = form.FactoryNumber_DB,
                 Type = form.Type_DB,
                 Radionuclids = form.Radionuclids_DB,
+                StatusRao = form.StatusRAO_DB,
+                PackName = form.PackName_DB,
+                PackType = form.PackType_DB,
                 PackNumber = form.PackNumber_DB,
+                Subsidy = form.Subsidy_DB,
+                FcpNumber = form.FcpNumber_DB,
                 ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
                 Quantity = form.Quantity_DB,
                 Activity = form.Activity_DB,
@@ -2285,30 +2442,13 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             }
 
             orgTitles.TryGetValue(row.RepsId, out var title);
-            result.Add(new TransferReceiveDto
-            {
-                Id = row.Id,
-                RepsId = row.RepsId,
-                ReportId = row.ReportId,
-                NumberInOrder = row.NumberInOrder,
-                OrgOkpo = title?.Okpo ?? string.Empty,
-                OrgRegNo = title?.RegNo ?? string.Empty,
-                OrgShortName = title?.ShortName ?? string.Empty,
-                OpCode = row.OpCode ?? string.Empty,
-                OpDate = row.OpDate ?? string.Empty,
-                PasNum = row.PasNum ?? string.Empty,
-                FacNum = row.FacNum ?? string.Empty,
-                Type = row.Type ?? string.Empty,
-                Radionuclids = row.Radionuclids ?? string.Empty,
-                PackNumber = row.PackNumber ?? string.Empty,
-                ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
-                Quantity = row.Quantity,
-                Activity = row.Activity ?? string.Empty,
-                CreationDate = row.CreationDate ?? string.Empty,
-                StartPeriod = row.StartPeriod ?? string.Empty,
-                EndPeriod = row.EndPeriod ?? string.Empty,
-                IsTransfer = IsTransferCodeForm11(row.OpCode)
-            });
+            result.Add(MapForm15Row(
+                row.Id, row.RepsId, row.ReportId, row.NumberInOrder,
+                title?.Okpo ?? string.Empty, title?.RegNo ?? string.Empty, title?.ShortName ?? string.Empty,
+                row.OpCode, row.OpDate, row.PasNum, row.FacNum, row.Type, row.Radionuclids,
+                row.StatusRao, row.PackName, row.PackType, row.PackNumber, row.Subsidy, row.FcpNumber,
+                row.ProviderOrRecieverOkpo, row.Quantity, row.Activity, row.CreationDate,
+                row.StartPeriod, row.EndPeriod));
         }
 
         return result.OrderBy(row => row.Id).ToList();
@@ -2339,7 +2479,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 FacNum = form.FactoryNumber_DB,
                 Type = form.Type_DB,
                 Radionuclids = form.Radionuclids_DB,
+                StatusRao = form.StatusRAO_DB,
+                PackName = form.PackName_DB,
+                PackType = form.PackType_DB,
                 PackNumber = form.PackNumber_DB,
+                Subsidy = form.Subsidy_DB,
+                FcpNumber = form.FcpNumber_DB,
                 ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
                 Quantity = form.Quantity_DB,
                 Activity = form.Activity_DB,
@@ -2350,29 +2495,14 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             .ToListAsync(cancellationToken);
 
         return rows
-            .Select(row => new TransferReceiveDto
-            {
-                Id = row.Id,
-                RepsId = repsId,
-                ReportId = row.ReportId,
-                NumberInOrder = row.NumberInOrder,
-                OrgOkpo = orgOkpo,
-                OpCode = row.OpCode ?? string.Empty,
-                OpDate = row.OpDate ?? string.Empty,
-                PasNum = row.PasNum ?? string.Empty,
-                FacNum = row.FacNum ?? string.Empty,
-                Type = row.Type ?? string.Empty,
-                Radionuclids = row.Radionuclids ?? string.Empty,
-                PackNumber = row.PackNumber ?? string.Empty,
-                ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
-                Quantity = row.Quantity,
-                Activity = row.Activity ?? string.Empty,
-                CreationDate = row.CreationDate ?? string.Empty,
-                StartPeriod = row.StartPeriod ?? string.Empty,
-                EndPeriod = row.EndPeriod ?? string.Empty,
-                IsTransfer = IsTransferCodeForm11(row.OpCode)
-            })
             .Where(row => IsTransferOrReceiveCodeForm11(row.OpCode))
+            .Select(row => MapForm15Row(
+                row.Id, repsId, row.ReportId, row.NumberInOrder,
+                orgOkpo, string.Empty, string.Empty,
+                row.OpCode, row.OpDate, row.PasNum, row.FacNum, row.Type, row.Radionuclids,
+                row.StatusRao, row.PackName, row.PackType, row.PackNumber, row.Subsidy, row.FcpNumber,
+                row.ProviderOrRecieverOkpo, row.Quantity, row.Activity, row.CreationDate,
+                row.StartPeriod, row.EndPeriod))
             .OrderBy(row => row.Id)
             .ToList();
     }
@@ -2445,7 +2575,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                         FacNum = form.FactoryNumber_DB,
                         Type = form.Type_DB,
                         Radionuclids = form.Radionuclids_DB,
+                        StatusRao = form.StatusRAO_DB,
+                        PackName = form.PackName_DB,
+                        PackType = form.PackType_DB,
                         PackNumber = form.PackNumber_DB,
+                        Subsidy = form.Subsidy_DB,
+                        FcpNumber = form.FcpNumber_DB,
                         ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
                         Quantity = form.Quantity_DB,
                         Activity = form.Activity_DB,
@@ -2474,30 +2609,13 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                     }
 
                     orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
-                    result.Add(new TransferReceiveDto
-                    {
-                        Id = row.Id,
-                        RepsId = row.RepsId,
-                        ReportId = row.ReportId,
-                        NumberInOrder = row.NumberInOrder,
-                        OrgOkpo = title?.Okpo ?? string.Empty,
-                        OrgRegNo = title?.RegNo ?? string.Empty,
-                        OrgShortName = title?.ShortName ?? string.Empty,
-                        OpCode = row.OpCode ?? string.Empty,
-                        OpDate = row.OpDate ?? string.Empty,
-                        PasNum = row.PasNum ?? string.Empty,
-                        FacNum = row.FacNum ?? string.Empty,
-                        Type = row.Type ?? string.Empty,
-                        Radionuclids = row.Radionuclids ?? string.Empty,
-                        PackNumber = row.PackNumber ?? string.Empty,
-                        ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo ?? string.Empty,
-                        Quantity = row.Quantity,
-                        Activity = row.Activity ?? string.Empty,
-                        CreationDate = row.CreationDate ?? string.Empty,
-                        StartPeriod = row.StartPeriod ?? string.Empty,
-                        EndPeriod = row.EndPeriod ?? string.Empty,
-                        IsTransfer = IsTransferCodeForm11(row.OpCode)
-                    });
+                    result.Add(MapForm15Row(
+                        row.Id, row.RepsId, row.ReportId, row.NumberInOrder,
+                        title?.Okpo ?? string.Empty, title?.RegNo ?? string.Empty, title?.ShortName ?? string.Empty,
+                        row.OpCode, row.OpDate, row.PasNum, row.FacNum, row.Type, row.Radionuclids,
+                        row.StatusRao, row.PackName, row.PackType, row.PackNumber, row.Subsidy, row.FcpNumber,
+                        row.ProviderOrRecieverOkpo, row.Quantity, row.Activity, row.CreationDate,
+                        row.StartPeriod, row.EndPeriod));
                 }
 
                 lastRowId = rows[^1].Id;
@@ -2515,6 +2633,414 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         }
 
         return result.OrderBy(row => row.Id).ToList();
+    }
+
+    private static TransferReceiveDto MapForm16Row(
+        int id,
+        int repsId,
+        int reportId,
+        int numberInOrder,
+        string orgOkpo,
+        string orgRegNo,
+        string orgShortName,
+        string? opCode,
+        string? opDate,
+        string? codeRao,
+        string? statusRao,
+        string? volume,
+        string? mass,
+        string? quantityOziii,
+        string? radionuclids,
+        string? tritiumActivity,
+        string? betaGammaActivity,
+        string? alphaActivity,
+        string? transuraniumActivity,
+        string? activityMeasurementDate,
+        string? providerOrRecieverOkpo,
+        string? packType,
+        string? packNumber,
+        string? subsidy,
+        string? fcpNumber,
+        string? startPeriod,
+        string? endPeriod) =>
+        new()
+        {
+            Id = id,
+            RepsId = repsId,
+            ReportId = reportId,
+            NumberInOrder = numberInOrder,
+            OrgOkpo = orgOkpo,
+            OrgRegNo = orgRegNo,
+            OrgShortName = orgShortName,
+            OpCode = opCode ?? string.Empty,
+            OpDate = opDate ?? string.Empty,
+            CodeRao = codeRao ?? string.Empty,
+            StatusRao = statusRao ?? string.Empty,
+            Volume = volume ?? string.Empty,
+            Mass = mass ?? string.Empty,
+            Quantity = ParseQuantityOziii(quantityOziii),
+            Radionuclids = radionuclids ?? string.Empty,
+            TritiumActivity = tritiumActivity ?? string.Empty,
+            BetaGammaActivity = betaGammaActivity ?? string.Empty,
+            AlphaActivity = alphaActivity ?? string.Empty,
+            TransuraniumActivity = transuraniumActivity ?? string.Empty,
+            ActivityMeasurementDate = activityMeasurementDate ?? string.Empty,
+            ProviderOrRecieverOkpo = providerOrRecieverOkpo ?? string.Empty,
+            PackType = packType ?? string.Empty,
+            PackNumber = packNumber ?? string.Empty,
+            Subsidy = subsidy ?? string.Empty,
+            FcpNumber = fcpNumber ?? string.Empty,
+            StartPeriod = startPeriod ?? string.Empty,
+            EndPeriod = endPeriod ?? string.Empty,
+            IsTransfer = IsTransferCodeForm11(opCode)
+        };
+
+    private static async Task<List<TransferReceiveDto>> LoadAllForm16TransferReceiveAsync(
+        DBModel db,
+        IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
+        CancellationToken cancellationToken)
+    {
+        var codes = TransferReceiveOpCodesForm15;
+        var rows = await db.form_16
+            .AsNoTracking()
+            .Where(form => form.Report != null
+                           && form.Report.Reports != null
+                           && form.OperationCode_DB != null
+                           && codes.Contains(form.OperationCode_DB))
+            .Select(form => new
+            {
+                form.Id,
+                ReportId = form.ReportId ?? 0,
+                RepsId = form.Report!.Reports.Id,
+                NumberInOrder = form.NumberInOrder_DB,
+                OpCode = form.OperationCode_DB,
+                OpDate = form.OperationDate_DB,
+                CodeRao = form.CodeRAO_DB,
+                StatusRao = form.StatusRAO_DB,
+                Volume = form.Volume_DB,
+                Mass = form.Mass_DB,
+                QuantityOziii = form.QuantityOZIII_DB,
+                Radionuclids = form.MainRadionuclids_DB,
+                TritiumActivity = form.TritiumActivity_DB,
+                BetaGammaActivity = form.BetaGammaActivity_DB,
+                AlphaActivity = form.AlphaActivity_DB,
+                TransuraniumActivity = form.TransuraniumActivity_DB,
+                ActivityMeasurementDate = form.ActivityMeasurementDate_DB,
+                ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                PackType = form.PackType_DB,
+                PackNumber = form.PackNumber_DB,
+                Subsidy = form.Subsidy_DB,
+                FcpNumber = form.FcpNumber_DB,
+                StartPeriod = form.Report.StartPeriod_DB,
+                EndPeriod = form.Report.EndPeriod_DB
+            })
+            .ToListAsync(cancellationToken);
+
+        var result = new List<TransferReceiveDto>(rows.Count);
+        foreach (var row in rows)
+        {
+            if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+            {
+                continue;
+            }
+
+            orgTitles.TryGetValue(row.RepsId, out var title);
+            result.Add(MapForm16Row(
+                row.Id, row.RepsId, row.ReportId, row.NumberInOrder,
+                title?.Okpo ?? string.Empty, title?.RegNo ?? string.Empty, title?.ShortName ?? string.Empty,
+                row.OpCode, row.OpDate, row.CodeRao, row.StatusRao, row.Volume, row.Mass, row.QuantityOziii,
+                row.Radionuclids, row.TritiumActivity, row.BetaGammaActivity, row.AlphaActivity,
+                row.TransuraniumActivity, row.ActivityMeasurementDate, row.ProviderOrRecieverOkpo,
+                row.PackType, row.PackNumber, row.Subsidy, row.FcpNumber,
+                row.StartPeriod, row.EndPeriod));
+        }
+
+        return result.OrderBy(row => row.Id).ToList();
+    }
+
+    private static async Task<List<TransferReceiveDto>> LoadForm16TransferReceiveForRepsAsync(
+        DBModel db,
+        int repsId,
+        string orgOkpo,
+        CancellationToken cancellationToken)
+    {
+        var codes = TransferReceiveOpCodesForm15;
+        var rows = await db.form_16
+            .AsNoTracking()
+            .Where(form => form.Report != null
+                           && form.Report.Reports != null
+                           && form.Report.Reports.Id == repsId
+                           && form.OperationCode_DB != null
+                           && codes.Contains(form.OperationCode_DB))
+            .Select(form => new
+            {
+                form.Id,
+                ReportId = form.ReportId ?? 0,
+                NumberInOrder = form.NumberInOrder_DB,
+                OpCode = form.OperationCode_DB,
+                OpDate = form.OperationDate_DB,
+                CodeRao = form.CodeRAO_DB,
+                StatusRao = form.StatusRAO_DB,
+                Volume = form.Volume_DB,
+                Mass = form.Mass_DB,
+                QuantityOziii = form.QuantityOZIII_DB,
+                Radionuclids = form.MainRadionuclids_DB,
+                TritiumActivity = form.TritiumActivity_DB,
+                BetaGammaActivity = form.BetaGammaActivity_DB,
+                AlphaActivity = form.AlphaActivity_DB,
+                TransuraniumActivity = form.TransuraniumActivity_DB,
+                ActivityMeasurementDate = form.ActivityMeasurementDate_DB,
+                ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                PackType = form.PackType_DB,
+                PackNumber = form.PackNumber_DB,
+                Subsidy = form.Subsidy_DB,
+                FcpNumber = form.FcpNumber_DB,
+                StartPeriod = form.Report!.StartPeriod_DB,
+                EndPeriod = form.Report.EndPeriod_DB
+            })
+            .ToListAsync(cancellationToken);
+
+        return rows
+            .Where(row => IsTransferOrReceiveCodeForm11(row.OpCode))
+            .Select(row => MapForm16Row(
+                row.Id, repsId, row.ReportId, row.NumberInOrder,
+                orgOkpo, string.Empty, string.Empty,
+                row.OpCode, row.OpDate, row.CodeRao, row.StatusRao, row.Volume, row.Mass, row.QuantityOziii,
+                row.Radionuclids, row.TritiumActivity, row.BetaGammaActivity, row.AlphaActivity,
+                row.TransuraniumActivity, row.ActivityMeasurementDate, row.ProviderOrRecieverOkpo,
+                row.PackType, row.PackNumber, row.Subsidy, row.FcpNumber,
+                row.StartPeriod, row.EndPeriod))
+            .OrderBy(row => row.Id)
+            .ToList();
+    }
+
+    private static async Task<List<TransferReceiveDto>> LoadForm16TransferReceiveForRepsIdsAsync(
+        DBModel db,
+        IReadOnlyList<int> repsIds,
+        IReadOnlyDictionary<int, OrgTitleInfo> orgTitlesByRepsId,
+        CancellationToken cancellationToken,
+        ProgressReporter? progress = null,
+        IReadOnlyList<string>? providerOkpoRawVariants = null,
+        string? ourOkpoFilter = null,
+        int chunkSize = CounterpartOpsLoadChunkSize,
+        string progressEntityLabel = "1.6 контрагентов")
+    {
+        if (repsIds.Count == 0)
+        {
+            progress?.Report(0, 0, $"загрузка операций {progressEntityLabel}: нет организаций");
+            return [];
+        }
+
+        var codes = TransferReceiveOpCodesForm15;
+        var result = new List<TransferReceiveDto>();
+        var totalOrgs = repsIds.Count;
+        var orgsDone = 0;
+        var filterByProvider = providerOkpoRawVariants is { Count: > 0 };
+        var effectiveChunk = chunkSize > 0 ? chunkSize : CounterpartOpsLoadChunkSize;
+        progress?.ReportNow(0, totalOrgs, $"загрузка операций {progressEntityLabel}: 0 из {totalOrgs} орг.");
+
+        foreach (var idChunk in ChunkIds(repsIds, effectiveChunk))
+        {
+            var chunkFrom = orgsDone + 1;
+            var chunkTo = orgsDone + idChunk.Count;
+            progress?.ReportNow(
+                orgsDone,
+                totalOrgs,
+                $"загрузка операций {progressEntityLabel}: {orgsDone} из {totalOrgs} орг. (запрос {chunkFrom}–{chunkTo})…");
+
+            var query = db.form_16
+                .AsNoTracking()
+                .Where(form => form.Report != null
+                               && form.Report.Reports != null
+                               && idChunk.Contains(form.Report.Reports.Id)
+                               && form.OperationCode_DB != null
+                               && codes.Contains(form.OperationCode_DB));
+            if (filterByProvider)
+            {
+                query = query.Where(form => form.ProviderOrRecieverOKPO_DB != null
+                                           && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
+            }
+
+            var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
+            var lastRowId = 0;
+            while (true)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var rows = await query
+                    .Where(form => form.Id > lastRowId)
+                    .OrderBy(form => form.Id)
+                    .Take(pageSize)
+                    .Select(form => new
+                    {
+                        form.Id,
+                        ReportId = form.ReportId ?? 0,
+                        RepsId = form.Report!.Reports.Id,
+                        NumberInOrder = form.NumberInOrder_DB,
+                        OpCode = form.OperationCode_DB,
+                        OpDate = form.OperationDate_DB,
+                        CodeRao = form.CodeRAO_DB,
+                        StatusRao = form.StatusRAO_DB,
+                        Volume = form.Volume_DB,
+                        Mass = form.Mass_DB,
+                        QuantityOziii = form.QuantityOZIII_DB,
+                        Radionuclids = form.MainRadionuclids_DB,
+                        TritiumActivity = form.TritiumActivity_DB,
+                        BetaGammaActivity = form.BetaGammaActivity_DB,
+                        AlphaActivity = form.AlphaActivity_DB,
+                        TransuraniumActivity = form.TransuraniumActivity_DB,
+                        ActivityMeasurementDate = form.ActivityMeasurementDate_DB,
+                        ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                        PackType = form.PackType_DB,
+                        PackNumber = form.PackNumber_DB,
+                        Subsidy = form.Subsidy_DB,
+                        FcpNumber = form.FcpNumber_DB,
+                        StartPeriod = form.Report.StartPeriod_DB,
+                        EndPeriod = form.Report.EndPeriod_DB
+                    })
+                    .ToListAsync(cancellationToken);
+
+                if (rows.Count == 0)
+                {
+                    break;
+                }
+
+                foreach (var row in rows)
+                {
+                    if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                    {
+                        continue;
+                    }
+
+                    if (ourOkpoFilter is { Length: > 0 }
+                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
+                    {
+                        continue;
+                    }
+
+                    orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
+                    result.Add(MapForm16Row(
+                        row.Id, row.RepsId, row.ReportId, row.NumberInOrder,
+                        title?.Okpo ?? string.Empty, title?.RegNo ?? string.Empty, title?.ShortName ?? string.Empty,
+                        row.OpCode, row.OpDate, row.CodeRao, row.StatusRao, row.Volume, row.Mass, row.QuantityOziii,
+                        row.Radionuclids, row.TritiumActivity, row.BetaGammaActivity, row.AlphaActivity,
+                        row.TransuraniumActivity, row.ActivityMeasurementDate, row.ProviderOrRecieverOkpo,
+                        row.PackType, row.PackNumber, row.Subsidy, row.FcpNumber,
+                        row.StartPeriod, row.EndPeriod));
+                }
+
+                lastRowId = rows[^1].Id;
+                if (rows.Count < pageSize)
+                {
+                    break;
+                }
+            }
+
+            orgsDone += idChunk.Count;
+            progress?.ReportNow(
+                orgsDone,
+                totalOrgs,
+                $"загрузка операций {progressEntityLabel}: {orgsDone} из {totalOrgs} орг., строк: {result.Count}");
+        }
+
+        return result.OrderBy(row => row.Id).ToList();
+    }
+
+    private static async Task<List<TransferReceiveDto>> LoadForm16TransferReceivePagedWholeDbAsync(
+        DBModel db,
+        CancellationToken cancellationToken,
+        ProgressReporter? progress,
+        string formNum)
+    {
+        var codes = TransferReceiveOpCodesForm15;
+        var pageSize = WholeDbOpsPageSize > 0 ? WholeDbOpsPageSize : 5000;
+        var result = new List<TransferReceiveDto>();
+        var lastId = 0;
+        var page = 0;
+
+        progress?.ReportNow(0, 1, $"форма {formNum}: загрузка операций (страницами по {pageSize})…");
+
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            page++;
+            progress?.ReportNow(
+                result.Count,
+                result.Count + pageSize,
+                $"форма {formNum}: загружено {result.Count} строк, чтение пакета {page}…");
+
+            var rows = await db.form_16
+                .AsNoTracking()
+                .Where(form => form.Id > lastId
+                               && form.Report != null
+                               && form.Report.Reports != null
+                               && form.OperationCode_DB != null
+                               && codes.Contains(form.OperationCode_DB))
+                .OrderBy(form => form.Id)
+                .Take(pageSize)
+                .Select(form => new
+                {
+                    form.Id,
+                    ReportId = form.ReportId ?? 0,
+                    RepsId = form.Report!.Reports.Id,
+                    NumberInOrder = form.NumberInOrder_DB,
+                    OpCode = form.OperationCode_DB,
+                    OpDate = form.OperationDate_DB,
+                    CodeRao = form.CodeRAO_DB,
+                    StatusRao = form.StatusRAO_DB,
+                    Volume = form.Volume_DB,
+                    Mass = form.Mass_DB,
+                    QuantityOziii = form.QuantityOZIII_DB,
+                    Radionuclids = form.MainRadionuclids_DB,
+                    TritiumActivity = form.TritiumActivity_DB,
+                    BetaGammaActivity = form.BetaGammaActivity_DB,
+                    AlphaActivity = form.AlphaActivity_DB,
+                    TransuraniumActivity = form.TransuraniumActivity_DB,
+                    ActivityMeasurementDate = form.ActivityMeasurementDate_DB,
+                    ProviderOrRecieverOkpo = form.ProviderOrRecieverOKPO_DB,
+                    PackType = form.PackType_DB,
+                    PackNumber = form.PackNumber_DB,
+                    Subsidy = form.Subsidy_DB,
+                    FcpNumber = form.FcpNumber_DB,
+                    StartPeriod = form.Report.StartPeriod_DB,
+                    EndPeriod = form.Report.EndPeriod_DB
+                })
+                .ToListAsync(cancellationToken);
+
+            if (rows.Count == 0)
+            {
+                break;
+            }
+
+            lastId = rows[^1].Id;
+            foreach (var row in rows)
+            {
+                if (!IsTransferOrReceiveCodeForm11(row.OpCode))
+                {
+                    continue;
+                }
+
+                result.Add(MapForm16Row(
+                    row.Id, row.RepsId, row.ReportId, row.NumberInOrder,
+                    string.Empty, string.Empty, string.Empty,
+                    row.OpCode, row.OpDate, row.CodeRao, row.StatusRao, row.Volume, row.Mass, row.QuantityOziii,
+                    row.Radionuclids, row.TritiumActivity, row.BetaGammaActivity, row.AlphaActivity,
+                    row.TransuraniumActivity, row.ActivityMeasurementDate, row.ProviderOrRecieverOkpo,
+                    row.PackType, row.PackNumber, row.Subsidy, row.FcpNumber,
+                    row.StartPeriod, row.EndPeriod));
+            }
+
+            progress?.ReportNow(
+                result.Count,
+                rows.Count < pageSize ? result.Count : result.Count + pageSize,
+                $"форма {formNum}: загружено {result.Count} строк (пакет {page})");
+
+            if (rows.Count < pageSize)
+            {
+                break;
+            }
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -2935,8 +3461,17 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         public string Radionuclids { get; init; } = string.Empty;
         public string PackType { get; init; } = string.Empty;
         public string PackNumber { get; init; } = string.Empty;
+        public string StatusRao { get; init; } = string.Empty;
+        public string PackName { get; init; } = string.Empty;
+        public string Subsidy { get; init; } = string.Empty;
+        public string FcpNumber { get; init; } = string.Empty;
         public string ProviderOrRecieverOkpo { get; init; } = string.Empty;
         public string Activity { get; init; } = string.Empty;
+        public string TritiumActivity { get; init; } = string.Empty;
+        public string BetaGammaActivity { get; init; } = string.Empty;
+        public string AlphaActivity { get; init; } = string.Empty;
+        public string TransuraniumActivity { get; init; } = string.Empty;
+        public string CodeRao { get; init; } = string.Empty;
         /// <summary>Масса, кг (1.2 — обедн. U; 1.4 — общая).</summary>
         public string Mass { get; init; } = string.Empty;
         /// <summary>Объём, куб. м (форма 1.4).</summary>

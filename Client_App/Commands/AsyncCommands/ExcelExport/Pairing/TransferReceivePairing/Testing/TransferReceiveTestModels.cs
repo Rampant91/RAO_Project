@@ -22,8 +22,17 @@ public sealed class TransferReceiveRow
     public string Radionuclids { get; init; } = string.Empty;
     public string PackType { get; init; } = string.Empty;
     public string PackNumber { get; init; } = string.Empty;
+    public string StatusRao { get; init; } = string.Empty;
+    public string PackName { get; init; } = string.Empty;
+    public string Subsidy { get; init; } = string.Empty;
+    public string FcpNumber { get; init; } = string.Empty;
     public string ProviderOrRecieverOkpo { get; init; } = string.Empty;
     public string Activity { get; init; } = string.Empty;
+    public string TritiumActivity { get; init; } = string.Empty;
+    public string BetaGammaActivity { get; init; } = string.Empty;
+    public string AlphaActivity { get; init; } = string.Empty;
+    public string TransuraniumActivity { get; init; } = string.Empty;
+    public string CodeRao { get; init; } = string.Empty;
     public string Mass { get; init; } = string.Empty;
     public string Volume { get; init; } = string.Empty;
     public string ActivityMeasurementDate { get; init; } = string.Empty;
@@ -40,7 +49,7 @@ public sealed class TransferReceiveRow
 }
 
 /// <summary>
-/// Сценарий сверки приёма-передачи (формы 1.1–1.5) и ожидания.
+/// Сценарий сверки приёма-передачи (формы 1.1–1.6) и ожидания.
 /// Closest: null = не проверять; пустой словарь = ожидаем отсутствие карт; иначе частичное сравнение.
 /// </summary>
 public sealed class TransferReceiveTestCase

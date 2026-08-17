@@ -268,4 +268,72 @@ public sealed class TransferReceiveFormEnableTests
 
         Assert.Equal([15], unpaired);
     }
+
+    [Fact]
+    public void Form16Disabled_SkipsUnpairedEvenWhenOpsPresent()
+    {
+        var pairing = TransferReceiveParamsSet.Create(
+            DisabledFormParams(),
+            DisabledFormParams(),
+            DisabledFormParams(),
+            DisabledFormParams(),
+            DisabledFormParams(),
+            DisabledFormParams());
+
+        var our16 = new List<TransferReceiveRow>
+        {
+            new()
+            {
+                Id = 16,
+                OpCode = "21",
+                OpDate = OpDate,
+                CodeRao = "12345678901",
+                Radionuclids = "Cs-137",
+                PackNumber = "U",
+                ProviderOrRecieverOkpo = CounterpartOkpo,
+                TritiumActivity = "1e3",
+                Quantity = 1,
+                IsTransfer = true
+            }
+        };
+
+        var unpaired = TransferReceiveTestAccess.AnalyzeFormUnpairedIfEnabledForTests(
+            TransferReceiveFormId.Form16, OurOkpo, our16, [], pairing);
+
+        Assert.Empty(unpaired);
+    }
+
+    [Fact]
+    public void Form16Enabled_WithSameOps_ReportsUnpaired()
+    {
+        var pairing = TransferReceiveParamsSet.Create(
+            DisabledFormParams(),
+            DisabledFormParams(),
+            DisabledFormParams(),
+            DisabledFormParams(),
+            DisabledFormParams(),
+            DefaultForm16Params());
+
+        var our16 = new List<TransferReceiveRow>
+        {
+            new()
+            {
+                Id = 16,
+                OpCode = "21",
+                OpDate = OpDate,
+                CodeRao = "12345678901",
+                Radionuclids = "Cs-137",
+                PackNumber = "U",
+                ProviderOrRecieverOkpo = CounterpartOkpo,
+                TritiumActivity = "1e3",
+                Quantity = 1,
+                IsTransfer = true
+            }
+        };
+
+        var unpaired = TransferReceiveTestAccess.AnalyzeFormUnpairedIfEnabledForTests(
+            TransferReceiveFormId.Form16, OurOkpo, our16, [], pairing);
+
+        Assert.Equal([16], unpaired);
+    }
 }

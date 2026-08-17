@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
 using Client_App.Resources;
 using Client_App.Resources.CustomComparers.SnkComparers;
 using Microsoft.EntityFrameworkCore;
@@ -137,42 +138,11 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             return true;
         }
 
-        if (!TryParseActivity(left.Activity, out var leftActivity) || !TryParseActivity(right.Activity, out var rightActivity))
-        {
-            return NumberComparer.Equals(left.Activity, right.Activity);
-        }
-
-        var scale = Math.Max(Math.Abs(leftActivity), Math.Abs(rightActivity));
-        if (scale <= double.Epsilon)
-        {
-            return true;
-        }
-
-        return Math.Abs(leftActivity - rightActivity) <= scale * 0.10;
+        return NumericWithTolerance(left.Activity, right.Activity);
     }
 
-    private static bool TryParseActivity(string? value, out double activity)
-    {
-        activity = 0;
-        if (string.IsNullOrWhiteSpace(value))
-        {
-            return false;
-        }
-
-        var normalized = value.Trim().Replace(" ", string.Empty).Replace(',', '.');
-        return double.TryParse(normalized, NumberStyles.Float, CultureInfo.InvariantCulture, out activity);
-    }
-
-    private static bool NumericWithTolerance(string? left, string? right)
-    {
-        if (!TryParseActivity(left, out var leftNum) || !TryParseActivity(right, out var rightNum))
-        {
-            return NumberComparer.Equals(left, right);
-        }
-        var scale = Math.Max(Math.Abs(leftNum), Math.Abs(rightNum));
-        if (scale <= double.Epsilon) return true;
-        return Math.Abs(leftNum - rightNum) <= scale * 0.10;
-    }
+    private static bool NumericWithTolerance(string? left, string? right) =>
+        SoftSimilarityCore.NumericMatchesWithTolerance(left, right, 0.10, NumberComparer.Equals);
 
     private static string BuildPairingKey(
         Operation41PairingDto row,

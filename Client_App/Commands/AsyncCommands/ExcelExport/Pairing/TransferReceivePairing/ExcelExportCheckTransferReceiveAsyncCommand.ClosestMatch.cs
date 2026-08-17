@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing;
@@ -28,7 +29,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         TransferReceiveFormParams options,
         ProgressReporter? progress = null,
         ClosestCandidateIndex? prebuiltCandidateIndex = null,
-        ConcurrentDictionary<int, TransferReceiveNorm>? prebuiltNorms = null)
+        ConcurrentDictionary<int, TransferReceiveNorm>? prebuiltNorms = null,
+        TransferReceiveSheetLayout layout = TransferReceiveSheetLayout.Form11)
     {
         var fields = GetEnabledFields(options);
         if (unpaired.Count == 0 || fields.Count == 0)
@@ -82,7 +84,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
                 return set;
             },
-            (source, field, _) => GetFieldWeight(field, source),
+            (source, field, _) => GetFieldWeight(field, source, layout),
             (source, candidate, field, _) =>
             {
                 if (!norms.TryGetValue(source.Id, out var sourceNorm))
@@ -121,6 +123,11 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             OperationDateToleranceDays,
             applyBonus: (source, _, levels) =>
             {
+                if (layout == TransferReceiveSheetLayout.Form16)
+                {
+                    return (0, 0);
+                }
+
                 if (!SerialNumbersAreEmpty(source)
                     && pasIdx >= 0
                     && facIdx >= 0
@@ -163,17 +170,28 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 progress?.Report(done, count, $"поиск ближайших совпадений: {done} из {count}"));
 
         var result = new Dictionary<int, ClosestMatchResult>(matches.Count);
+        var sourceById = unpaired.ToDictionary(row => row.Id);
         foreach (var (id, match) in matches)
         {
-            var exactMap = new Dictionary<TransferReceiveField, bool>(fieldCount);
-            foreach (var (field, level) in match.FieldLevels)
+            var fieldLevels = match.FieldLevels;
+            if (sourceById.TryGetValue(id, out var sourceRow)
+                && (IsStatusRaoExemptOpCode(sourceRow.OpCode)
+                    || IsStatusRaoExemptOpCode(match.Candidate.OpCode)))
+            {
+                fieldLevels = fieldLevels
+                    .Where(kv => kv.Key != TransferReceiveField.StatusRao)
+                    .ToDictionary(kv => kv.Key, kv => kv.Value);
+            }
+
+            var exactMap = new Dictionary<TransferReceiveField, bool>(fieldLevels.Count);
+            foreach (var (field, level) in fieldLevels)
             {
                 exactMap[field] = level == FieldMatchLevel.Exact;
             }
 
             result[id] = new ClosestMatchResult(
                 match.Candidate,
-                match.FieldLevels,
+                fieldLevels,
                 exactMap,
                 match.ConfidencePercent,
                 match.RawScore);
@@ -340,6 +358,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var fields = new List<TransferReceiveField>(13);
         if (options.CheckOperationCode) fields.Add(TransferReceiveField.OperationCode);
         if (options.CheckOperationDate) fields.Add(TransferReceiveField.OperationDate);
+        if (options.CheckCodeRao) fields.Add(TransferReceiveField.CodeRao);
         if (options.CheckPassportNumber) fields.Add(TransferReceiveField.PassportNumber);
         if (options.CheckType) fields.Add(TransferReceiveField.Type);
         if (options.CheckRadionuclids) fields.Add(TransferReceiveField.Radionuclids);
@@ -348,6 +367,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         if (options.CheckAggregateState) fields.Add(TransferReceiveField.AggregateState);
         if (options.CheckSort) fields.Add(TransferReceiveField.Sort);
         if (options.CheckActivity) fields.Add(TransferReceiveField.Activity);
+        if (options.CheckTritiumActivity) fields.Add(TransferReceiveField.TritiumActivity);
+        if (options.CheckBetaGammaActivity) fields.Add(TransferReceiveField.BetaGammaActivity);
+        if (options.CheckAlphaActivity) fields.Add(TransferReceiveField.AlphaActivity);
+        if (options.CheckTransuraniumActivity) fields.Add(TransferReceiveField.TransuraniumActivity);
         if (options.CheckActivityMeasurementDate) fields.Add(TransferReceiveField.ActivityMeasurementDate);
         if (options.CheckMass) fields.Add(TransferReceiveField.Mass);
         if (options.CheckVolume) fields.Add(TransferReceiveField.Volume);
@@ -356,6 +379,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         if (options.CheckProviderOrRecieverOkpo) fields.Add(TransferReceiveField.ProviderOrRecieverOkpo);
         if (options.CheckPackType) fields.Add(TransferReceiveField.PackType);
         if (options.CheckPackNumber) fields.Add(TransferReceiveField.PackNumber);
+        if (options.CheckStatusRao) fields.Add(TransferReceiveField.StatusRao);
+        if (options.CheckPackName) fields.Add(TransferReceiveField.PackName);
+        if (options.CheckSubsidy) fields.Add(TransferReceiveField.Subsidy);
+        if (options.CheckFcpNumber) fields.Add(TransferReceiveField.FcpNumber);
         return fields;
     }
 
@@ -373,11 +400,20 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             Radionuclids = NormalizeRads(row.Radionuclids),
             PackType = NormalizeNumber(row.PackType),
             PackNumber = NormalizeNumber(row.PackNumber),
+            StatusRao = NormalizeNumber(row.StatusRao),
+            CodeRao = NormalizeNumber(row.CodeRao),
+            PackName = NormalizeNumber(row.PackName),
+            Subsidy = NormalizeNumber(row.Subsidy),
+            FcpNumber = NormalizeSerialNumber(row.FcpNumber),
             ProviderOrRecieverOkpo = NormalizeNumber(row.ProviderOrRecieverOkpo),
             OrgOkpo = NormalizeNumber(row.OrgOkpo),
             CreatorOkpo = NormalizeNumber(row.CreatorOkpo),
             CreationDate = NormalizeDate(row.CreationDate),
             Activity = row.Activity ?? string.Empty,
+            TritiumActivity = row.TritiumActivity ?? string.Empty,
+            BetaGammaActivity = row.BetaGammaActivity ?? string.Empty,
+            AlphaActivity = row.AlphaActivity ?? string.Empty,
+            TransuraniumActivity = row.TransuraniumActivity ?? string.Empty,
             Mass = row.Mass ?? string.Empty,
             Volume = row.Volume ?? string.Empty,
             ActivityMeasurementDate = NormalizeDate(row.ActivityMeasurementDate),
@@ -425,7 +461,16 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         CreationDate,
         PackType,
         PackNumber,
-        ProviderOrRecieverOkpo
+        ProviderOrRecieverOkpo,
+        StatusRao,
+        CodeRao,
+        PackName,
+        Subsidy,
+        FcpNumber,
+        TritiumActivity,
+        BetaGammaActivity,
+        AlphaActivity,
+        TransuraniumActivity
     }
 
     private sealed class TransferReceiveNorm
@@ -439,11 +484,20 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         public required string Radionuclids { get; init; }
         public required string PackType { get; init; }
         public required string PackNumber { get; init; }
+        public required string StatusRao { get; init; }
+        public required string CodeRao { get; init; }
+        public required string PackName { get; init; }
+        public required string Subsidy { get; init; }
+        public required string FcpNumber { get; init; }
         public required string ProviderOrRecieverOkpo { get; init; }
         public required string OrgOkpo { get; init; }
         public required string CreatorOkpo { get; init; }
         public required string CreationDate { get; init; }
         public required string Activity { get; init; }
+        public required string TritiumActivity { get; init; }
+        public required string BetaGammaActivity { get; init; }
+        public required string AlphaActivity { get; init; }
+        public required string TransuraniumActivity { get; init; }
         public required string Mass { get; init; }
         public required string Volume { get; init; }
         public required string ActivityMeasurementDate { get; init; }

@@ -24,6 +24,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
         public static TransferReceiveFormParams DefaultForm15ParamsForTests() => DefaultForm15Params();
 
+        public static TransferReceiveFormParams DefaultForm16ParamsForTests() => DefaultForm16Params();
+
         public static TransferReceiveParamsSet MapParamsFromDialogVmForTests(
             Client_App.ViewModels.Messages.GetTransferReceiveParamsVM vm) =>
             MapParamsFromDialogVm(vm);
@@ -95,6 +97,18 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 new TransferReceiveDto { Mass = rightMass ?? string.Empty, OpCode = "31", IsTransfer = false },
                 checkMass);
 
+        public static bool VolumeMatchesForTests(string? leftVolume, string? rightVolume, bool checkVolume = true) =>
+            VolumeMatches(
+                new TransferReceiveDto { Volume = leftVolume ?? string.Empty, OpCode = "21", IsTransfer = true },
+                new TransferReceiveDto { Volume = rightVolume ?? string.Empty, OpCode = "31", IsTransfer = false },
+                checkVolume);
+
+        public static bool SubsidyMatchesForTests(string? leftSubsidy, string? rightSubsidy, bool checkSubsidy = true) =>
+            SubsidyMatches(
+                new TransferReceiveDto { Subsidy = leftSubsidy ?? string.Empty, OpCode = "21", IsTransfer = true },
+                new TransferReceiveDto { Subsidy = rightSubsidy ?? string.Empty, OpCode = "31", IsTransfer = false },
+                checkSubsidy);
+
         public static void CreateLegendSheetForTests(OfficeOpenXml.ExcelPackage excelPackage) =>
             CreateLegendSheet(excelPackage);
 
@@ -132,6 +146,18 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             sheet.Cells[1, 1].Value = "Непарная операция выбранной организации";
             sheet.Cells[2, ConfidenceColFor(TransferReceiveSheetLayout.Form13)].Value = "Схожесть, %";
             sheet.Cells[2, ConfidenceColFor(TransferReceiveSheetLayout.Form13)].Style.Font.Bold = true;
+        }
+
+        /// <summary>Создаёт лист «Форма 1.6» с заголовками полей.</summary>
+        public static void CreateForm16SheetForTests(OfficeOpenXml.ExcelPackage excelPackage)
+        {
+            var sheet = excelPackage.Workbook.Worksheets.Add("Форма 1.6");
+            var closestStart = ClosestStartColFor(TransferReceiveSheetLayout.Form16);
+            WriteFieldHeadersToSheet(sheet, row: 2, startCol: 1, TransferReceiveSheetLayout.Form16);
+            WriteFieldHeadersToSheet(sheet, row: 2, startCol: closestStart, TransferReceiveSheetLayout.Form16);
+            sheet.Cells[1, 1].Value = "Непарная операция выбранной организации";
+            sheet.Cells[2, ConfidenceColFor(TransferReceiveSheetLayout.Form16)].Value = "Схожесть, %";
+            sheet.Cells[2, ConfidenceColFor(TransferReceiveSheetLayout.Form16)].Style.Font.Bold = true;
         }
 
         /// <summary>Создаёт лист «Форма 1.5» с заголовками (как 1.1 без ОКПО изготовителя).</summary>
@@ -293,7 +319,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var built = BuildClosestMatchResults(
                 unpaired, sharedPool, testCase.Params,
                 prebuiltCandidateIndex: indexes.Closest,
-                prebuiltNorms: indexes.Norms);
+                prebuiltNorms: indexes.Norms,
+                layout: LayoutForFormNum(testCase.FormNum));
 
             var exact = built.ToDictionary(
                 kv => kv.Key,
@@ -316,7 +343,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var (unpaired, opsByOrgOkpo) = AnalyzeFormForOrganization(
                 ourOps, counterpartOps, testCase.OurOkpo, testCase.Params, aliases);
 
-            var built = BuildClosestMatchResults(unpaired, opsByOrgOkpo, testCase.Params);
+            var built = BuildClosestMatchResults(
+                unpaired, opsByOrgOkpo, testCase.Params, layout: LayoutForFormNum(testCase.FormNum));
             var exact = built.ToDictionary(
                 kv => kv.Key,
                 kv => (IReadOnlyDictionary<TransferReceiveField, bool>)kv.Value.FieldMatches);
@@ -432,21 +460,43 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 FacNum = row.FacNum,
                 Type = row.Type,
                 Radionuclids = row.Radionuclids,
+                CodeRao = row.CodeRao,
                 PackType = row.PackType,
                 PackNumber = row.PackNumber,
+                StatusRao = row.StatusRao,
+                PackName = row.PackName,
+                Subsidy = row.Subsidy,
+                FcpNumber = row.FcpNumber,
                 ProviderOrRecieverOkpo = row.ProviderOrRecieverOkpo,
                 Activity = row.Activity,
+                TritiumActivity = row.TritiumActivity,
+                BetaGammaActivity = row.BetaGammaActivity,
+                AlphaActivity = row.AlphaActivity,
+                TransuraniumActivity = row.TransuraniumActivity,
                 Mass = row.Mass,
                 Volume = row.Volume,
                 ActivityMeasurementDate = row.ActivityMeasurementDate,
                 Sort = row.Sort,
                 CreatorOkpo = row.CreatorOkpo,
                 CreationDate = row.CreationDate,
-                Quantity = forceQtyOne ? 1 : row.Quantity,
+                Quantity = formNum == "1.6"
+                    ? row.Quantity
+                    : forceQtyOne ? 1 : row.Quantity,
                 AggregateState = row.AggregateState,
                 IsTransfer = isTransfer
             };
         }
+
+        private static TransferReceiveSheetLayout LayoutForFormNum(string formNum) =>
+            formNum switch
+            {
+                "1.2" => TransferReceiveSheetLayout.Form12,
+                "1.3" => TransferReceiveSheetLayout.Form13,
+                "1.4" => TransferReceiveSheetLayout.Form14,
+                "1.5" => TransferReceiveSheetLayout.Form15,
+                "1.6" => TransferReceiveSheetLayout.Form16,
+                _ => TransferReceiveSheetLayout.Form11
+            };
     }
 
     #endregion

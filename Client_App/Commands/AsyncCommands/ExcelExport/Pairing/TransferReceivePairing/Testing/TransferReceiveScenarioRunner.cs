@@ -33,6 +33,18 @@ public static class TransferReceiveScenarioRunner
         ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveTestAccess.ActivityMatchesForTests(
             leftActivity, rightActivity, checkActivity);
 
+    public static bool MassMatches(string? leftMass, string? rightMass, bool checkMass = true) =>
+        ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveTestAccess.MassMatchesForTests(
+            leftMass, rightMass, checkMass);
+
+    public static bool VolumeMatches(string? leftVolume, string? rightVolume, bool checkVolume = true) =>
+        ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveTestAccess.VolumeMatchesForTests(
+            leftVolume, rightVolume, checkVolume);
+
+    public static bool SubsidyMatches(string? leftSubsidy, string? rightSubsidy, bool checkSubsidy = true) =>
+        ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveTestAccess.SubsidyMatchesForTests(
+            leftSubsidy, rightSubsidy, checkSubsidy);
+
     public static ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveFormParams DefaultForm13Params() =>
         ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveTestAccess.DefaultForm13ParamsForTests();
 
@@ -44,6 +56,9 @@ public static class TransferReceiveScenarioRunner
 
     public static ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveFormParams DefaultForm15Params() =>
         ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveTestAccess.DefaultForm15ParamsForTests();
+
+    public static ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveFormParams DefaultForm16Params() =>
+        ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveTestAccess.DefaultForm16ParamsForTests();
 
     public static TransferReceiveScenarioResult Run(TransferReceiveTestCase testCase) =>
         ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveTestAccess.RunScenario(testCase);

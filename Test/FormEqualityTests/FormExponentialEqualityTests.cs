@@ -56,9 +56,26 @@ public class FormExponentialEqualityTests
     [InlineData("прим.", "прим.", true)] // Оба служебное примечание
     [InlineData("прим.", "-", false)] // Разные служебные значения
     [InlineData(null, "1e+3", false)] // Null не равен числу
+    [InlineData("0", "-", true)] // Ноль и прочерк
+    [InlineData("0", "", true)] // Ноль и пусто
+    [InlineData("0.0", "-", true)] // Десятичный ноль и прочерк
+    [InlineData("0e+0", "-", true)] // Экспоненциальный ноль и прочерк
     public void Equals_HandlesNullAndServiceValues(string? left, string? right, bool expected)
     {
         Assert.Equal(expected, FormExponentialEquality.Equals(left, right));
+    }
+
+    [Theory]
+    [InlineData("0", true)]
+    [InlineData("0.0", true)]
+    [InlineData("0e+0", true)]
+    [InlineData("-", true)]
+    [InlineData("", true)]
+    [InlineData(null, true)]
+    [InlineData("1e+3", false)]
+    public void IsAbsentOrZero_RecognizesZeroAndEmpty(string? input, bool expected)
+    {
+        Assert.Equal(expected, FormExponentialEquality.IsAbsentOrZero(input));
     }
 
     [Theory]

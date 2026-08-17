@@ -27,13 +27,14 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
     /// <summary>
     /// Число колонок блока полей (левый/правый). Зависит от формы:
-    /// 1.1/1.3 — 18, 1.2/1.5 — 17, 1.4 — 19.
+    /// 1.1/1.3 — 18, 1.2 — 17, 1.5 — 22, 1.4 — 19.
     /// </summary>
     private static int SourceColCountFor(TransferReceiveSheetLayout layout) =>
         layout switch
         {
             TransferReceiveSheetLayout.Form12 => 17,
-            TransferReceiveSheetLayout.Form15 => 17,
+            TransferReceiveSheetLayout.Form15 => 22,
+            TransferReceiveSheetLayout.Form16 => 24,
             TransferReceiveSheetLayout.Form14 => 19,
             _ => 18
         };
@@ -164,7 +165,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Title("Проверка операций приёма-передачи — как читать отчёт");
         Blank();
 
-        Section("Структура листов «Форма 1.1»–«Форма 1.5»");
+        Section("Структура листов «Форма 1.1»–«Форма 1.6»");
         Body("Слева — непарная операция выбранной организации. Справа после тёмной разделительной колонки — наиболее похожая операция у контрагента (жёлтый заголовок «Ближайшее совпадение у контрагента»).");
         Bullet("Голубой заголовок слева — исходная (непарная) операция.");
         Bullet("Жёлтый заголовок справа — наиболее похожая операция у контрагента.");
@@ -172,14 +173,16 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Bullet("Форма 1.2: наименование изделия, тип УКТ, масса обеднённого урана (кг); количество всегда считается равным 1.");
         Bullet("Форма 1.3: количество всегда считается равным 1.");
         Bullet("Форма 1.4: наименование, вид, объём, дата измерения активности, масса (кг), агрегатное состояние; без зав.№ и изготовителя; количество = 1.");
-        Bullet("Форма 1.5: как 1.1 (тип, радионуклиды, количество, активность), без ОКПО изготовителя; коды включают 26↔36.");
+        Bullet("Форма 1.5: как 1.1 (тип, радионуклиды, количество, активность), без ОКПО изготовителя; коды включают 26↔36; статус РАО, УКТ (наим./тип/номер), субсидия, ФЦП.");
+        Bullet("Форма 1.6: код РАО, статус, объём, масса (т), количество ОЗИИИ, радионуклиды, четыре активности, дата изм. активности, ОКПО пост./пол., тип/номер УКТ, субсидия, ФЦП; без паспорта/зав.№; построчное сопоставление (без суммирования партий).");
+        Bullet("Статус РАО (1.5/1.6): для кодов 28 и 38 различие ожидаемо — колонка выводится, но без подсветки и без влияния на «Схожесть, %».");
         Blank();
 
         Section("Что такое «ближайшее совпадение»");
         Body("«Ближайшее совпадение» — это не найденная пара (иначе строка не попала бы в отчёт), а подсказка: какая операция у контрагента больше всего похожа на непарную строку.");
         Bullet("Программа ищет среди операций контрагента противоположной стороны (передача и приём) с датой операции в пределах ±15 дней.");
         Bullet("Насколько строки похожи, оценивается по выбранным в параметрах полям. Важнее всего паспорт и заводской номер; код операции влияет слабее.");
-        Bullet("Учитываются обычные различия в записи: опечатка в одном знаке, похожие на вид символы (например, 0 и буква О, цифра 3 и буква З), разные написания одного и того же номера или типа, варианты УКТ и т.п.");
+        Bullet("Учитываются обычные различия в записи: опечатка в одном знаке, похожие на вид символы (0 и О, 1 и I/l, 3 и З), разные написания одного и того же номера или типа, варианты УКТ и т.п.");
         Bullet("Справа показывается самая похожая строка. Цвета ячеек: зелёный — совпало, жёлтый — небольшое отличие, красный — сильное отличие.");
         Bullet("Колонка «Схожесть, %» показывает, насколько правая строка близка к левой (от 0 до 99). Это ориентир для чтения отчёта, а не точная вероятность; 100 не используется — справа ближайшее совпадение, а не подтверждённая пара.");
         Body("Частый случай — у контрагента нет парной операции: справа окажется просто наиболее похожая из имеющихся («чужая» строка). Цвета тогда могут вводить в заблуждение: дело в отсутствии пары, а не в опечатках.");
@@ -201,7 +204,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Blank();
 
         Section("Пустые паспорт, заводской номер и номер УКТ");
-        Body("Если паспорт и заводской номер пустые (или вместо них стоят «-», «б.н.», «без номера», «н.д.», «н/д», «нет данных» и т.п.), несколько строк могут относиться к одной партии: при поиске пары сравнивается суммарное количество. В подсветке ближайшего совпадения одинаковые пустые значения и заглушки (оба «-», «-» и «без номера», оба «б.н.») у паспорта, зав.№ и номера УКТ — зелёные; «пусто напротив заполненного» — красные.");
+        Body("Если паспорт и заводской номер пустые (или вместо них стоят «-», «_», «б.н.», «без номера», «н.д.», «н/д», «нет данных», «неизвест*» и т.п.), несколько строк могут относиться к одной партии: при поиске пары сравнивается суммарное количество. В подсветке ближайшего совпадения одинаковые пустые значения и заглушки (оба «-», «-» и «_», «-» и «без номера», оба «б.н.») у паспорта, зав.№ и номера УКТ — зелёные; «пусто напротив заполненного» — красные.");
         Bullet("Количество в правой части сравнивается по каждой строке отдельно (одинаковые числа — зелёные), кроме случая диапазона зав.№ ниже.");
         Blank();
 
@@ -209,7 +212,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Bullet("Паспорт, зав.№, номер УКТ: ведущие нули в начале номера, пропущенное тире в номере, перестановка двух соседних знаков, дата в конце номера, дописанный хвост №/No/номер с цифрами, две цифры через точку после номера (в т.ч. вместе с ведущими нулями) — жёлтый.");
         Bullet("Паспорт: «Акт №…» и развёрнутое название того же акта, либо акт с одной стороны и только его номер с другой — жёлтый (очень близко).");
         Bullet("Тип / тип УКТ: одно и то же наименование, но у одной стороны добавлено уточнение в скобках — жёлтый.");
-        Bullet("Тип / тип УКТ: пропущенное или лишнее тире (пробел вместо тире), а также одна опечатка в достаточно длинном обозначении (в т.ч. цифра 1 и буква I) — жёлтый; короткие пары вроде одной-двух букв так не смягчаются.");
+        Bullet("Тип / тип УКТ: пропущенное или лишнее тире (пробел вместо тире), а также одна опечатка в достаточно длинном обозначении — жёлтый; короткие пары вроде одной-двух букв так не смягчаются.");
+        Bullet("Похожие на вид символы (0 и О, 1 и I/l, 3 и З и т.п.) в типе, номере и УКТ считаются одним и тем же знаком.");
         Bullet("Тип: к совпадающему обозначению после точки дописаны одна-две буквы или цифры (модификатор в конце) — жёлтый, совпадение не гарантировано.");
         Bullet("Тип: у достаточно длинного обозначения дописан короткий буквенный хвост через тире, точку или пробел — жёлтый (слабее обычного «почти совпало»).");
         Bullet("Зав.№ (не паспорт): если с одной стороны перечислены несколько номеров (список или диапазон через тире), а с другой — один номер из этого перечисления, и количество совпадает с числом номеров в перечислении — жёлтый у зав.№ и количества. Обычное тире в номере без такого совпадения количества перечислением не считается.");
@@ -217,15 +221,18 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Blank();
 
         Section("Параметры сравнения");
-        Body("Перед выгрузкой выбираются поля сопоставления отдельно для форм 1.1, 1.2, 1.3, 1.4 и 1.5.");
+        Body("Перед выгрузкой выбираются поля сопоставления отдельно для форм 1.1, 1.2, 1.3, 1.4, 1.5 и 1.6.");
         Bullet("ОКПО поставщика или получателя: полное совпадение — зелёный. Если у организации ОКПО вида «8 цифр_5 цифр», а контрагент указал только первые 8 цифр — для пары это допустимо (почти не ошибка); справа в отчёте — жёлтый. У длинного ОКПО несколько опечаток в цифрах — тоже жёлтый; у короткого (около 8 цифр) такие отличия остаются красными.");
-        Bullet("Активность (1.1/1.3/1.4/1.5): допуск ±10% для пары и зелёной подсветки; отличие примерно на порядок обычно жёлтое.");
-        Bullet("Масса (1.2/1.4) и объём (1.4): тот же допуск ±10%; путаница кг и тонн (ровно в 1000 раз) — жёлтый.");
-        Bullet("Дата операции и дата измерения активности (1.4): для пары нужна одна и та же дата. Окно ±15 дней только ограничивает поиск похожих строк; отличие в несколько дней справа — жёлтый.");
+        Bullet("Активность (1.1/1.3/1.4/1.5) и четыре активности (1.6): допуск ±10% для пары и зелёной подсветки; 0, прочерк и пусто считаются одним и тем же (зелёный); отличие примерно на порядок обычно жёлтое.");
+        Bullet("Масса (1.2/1.4 — кг; 1.6 — т) и объём (1.4/1.6): тот же допуск ±10%; путаница кг и тонн (ровно в 1000 раз) — жёлтый.");
+        Bullet("Дата операции и дата измерения активности (1.4/1.6): для пары нужна одна и та же дата. Окно ±15 дней только ограничивает поиск похожих строк; отличие в несколько дней справа — жёлтый.");
         Bullet("Дата выпуска: для пары нужна одна и та же дата; в ближайшем совпадении отличие в пределах ±15 дней — жёлтый (чем дальше, тем слабее совпадение).");
-        Bullet("Код операции: для пары нужны соответствующие коды приёма и передачи (например, 21 и 31; на 1.5 также 26 и 36). Непарный код из того же набора справа — жёлтый.");
-        Bullet("Радионуклиды (1.1/1.3/1.4/1.5): порядок в списке не важен; если нуклида нет у одной из сторон — красный.");
+        Bullet("Код операции: для пары нужны соответствующие коды приёма и передачи (например, 21 и 31; на 1.5 и 1.6 также 26 и 36). Непарный код из того же набора справа — жёлтый.");
+        Bullet("Радионуклиды (1.1/1.3/1.4/1.5/1.6): порядок в списке не важен; если нуклида нет у одной из сторон — красный.");
         Bullet("Тип УКТ (1.2): сравнивается как обычное текстовое поле, но сильнее влияет на «Схожесть, %», чем большинство других полей.");
+        Bullet("Субсидия, % (1.5/1.6): 0, прочерк и пусто — зелёный; точное совпадение чисел — зелёный; оба числа 0–100, разница до 10 п.п. — жёлтый (чем больше разница, тем ниже % схожести).");
+        Bullet("Номер ФЦП (1.5/1.6): общие правила номеров и заглушек («без номера», «-», «_» и т.п.).");
+        Bullet("Код РАО (1.6): входит в ключ пары; при расхождении — непарная операция.");
         Bullet("Агрегатное состояние (1.3/1.4) и вид (1.4): значения должны совпасть.");
         Blank();
 
@@ -271,6 +278,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         else if (formNum == "1.5")
         {
             SetupForm15Headers();
+        }
+        else if (formNum == "1.6")
+        {
+            SetupForm16Headers();
         }
         else
         {
@@ -472,6 +483,11 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         SetupSharedFormHeaders(TransferReceiveSheetLayout.Form15);
     }
 
+    private void SetupForm16Headers()
+    {
+        SetupSharedFormHeaders(TransferReceiveSheetLayout.Form16);
+    }
+
     private void SetupSharedFormHeaders(TransferReceiveSheetLayout layout)
     {
         var sheet = Worksheet;
@@ -604,8 +620,33 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 70, 90, 210, 110, 110, 50, 50, 110,
                 140, 80, 130, 120, 80, 120,
                 110, // дата вып.
+                90,  // статус РАО
                 130, // ОКПО пост/пол.
-                100  // номер УКТ
+                120, // наим. УКТ
+                100, // тип УКТ
+                100, // номер УКТ
+                80,  // субсидия
+                110  // номер ФЦП
+            ],
+            TransferReceiveSheetLayout.Form16 =>
+            [
+                70, 90, 210, 110, 110, 50, 50, 110,
+                110, // код РАО
+                90,  // статус РАО
+                100, // объём
+                100, // масса, т
+                80,  // кол-во ОЗИИИ
+                150, // радионуклиды
+                110, // тритий
+                130, // бета-гамма
+                130, // альфа
+                130, // трансурановые
+                120, // дата изм. акт.
+                130, // ОКПО пост/пол.
+                100, // тип УКТ
+                100, // номер УКТ
+                80,  // субсидия
+                110  // номер ФЦП
             ],
             _ => // Form11
             [
@@ -723,8 +764,40 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 "Количество, шт",
                 "Суммарная активность",
                 "Дата выпуска",
+                "Статус РАО",
                 "ОКПО поставщика или получателя",
-                "Номер УКТ"
+                "Наименование УКТ",
+                "Тип УКТ",
+                "Номер УКТ",
+                "Субсидия, %",
+                "Номер мероприятия ФЦП"
+            ],
+            TransferReceiveSheetLayout.Form16 =>
+            [
+                "Рег.№",
+                "ОКПО",
+                "Сокращенное наименование",
+                "Дата начала периода",
+                "Дата конца периода",
+                "№ п/п",
+                "Код",
+                "Дата",
+                "Код РАО",
+                "Статус РАО",
+                "Объём, куб. м",
+                "Масса, т",
+                "Количество ОЗИИИ, шт",
+                "Основные радионуклиды",
+                "Тритий, Бк",
+                "Бета-, гамма- (кроме трития), Бк",
+                "Альфа- (кроме трансурановых), Бк",
+                "Трансурановые, Бк",
+                "Дата измерения активности",
+                "ОКПО поставщика или получателя",
+                "Тип УКТ",
+                "Номер УКТ",
+                "Субсидия, %",
+                "Номер мероприятия ФЦП"
             ],
             _ =>
             [
@@ -798,9 +871,27 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Worksheet.Cells[CurrentRow, c++].Value = op.NumberInOrder;
         Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.OpCode);
         WriteDate(c++, op.OpDate);
-        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PasNum);
 
-        if (layout == TransferReceiveSheetLayout.Form12)
+        if (layout == TransferReceiveSheetLayout.Form16)
+        {
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.CodeRao);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.StatusRao);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Volume);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Mass);
+            Worksheet.Cells[CurrentRow, c++].Value = op.Quantity is null ? "-" : op.Quantity;
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.TritiumActivity);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.BetaGammaActivity);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.AlphaActivity);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.TransuraniumActivity);
+            WriteDate(c++, op.ActivityMeasurementDate);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackType);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackNumber);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Subsidy);
+            Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.FcpNumber);
+        }
+        else if (layout == TransferReceiveSheetLayout.Form12)
         {
             // Форма 1.2: Наименование → зав.№ → масса → … → тип УКТ → номер УКТ (без пустых колонок).
             Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Type);
@@ -841,15 +932,20 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         }
         else if (layout == TransferReceiveSheetLayout.Form15)
         {
-            // Форма 1.5: как 1.1 без ОКПО изготовителя.
+            // Форма 1.5: как 1.1 без ОКПО изготовителя + статус РАО, УКТ, субсидия, ФЦП.
             Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Type);
             Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
             Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.FacNum);
             Worksheet.Cells[CurrentRow, c++].Value = op.Quantity is null ? "-" : op.Quantity;
             Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Activity);
             WriteDate(c++, op.CreationDate);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.StatusRao);
             Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
-            Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.PackNumber);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackName);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackType);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackNumber);
+            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Subsidy);
+            Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.FcpNumber);
         }
         else
         {
@@ -883,6 +979,13 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
         foreach (var (field, level) in highlightSource.FieldLevels)
         {
+            if (field == TransferReceiveField.StatusRao
+                && (IsStatusRaoExemptOpCode(op.OpCode)
+                    || IsStatusRaoExemptOpCode(highlightSource.Candidate.OpCode)))
+            {
+                continue;
+            }
+
             if (GetComparableColumnOffset(field, layout) is int offset)
             {
                 Worksheet.Cells[CurrentRow, startCol + offset].Style.Fill.SetBackground(
@@ -968,8 +1071,35 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 TransferReceiveField.Quantity => 12,
                 TransferReceiveField.Activity => 13,
                 TransferReceiveField.CreationDate => 14,
-                TransferReceiveField.ProviderOrRecieverOkpo => 15,
-                TransferReceiveField.PackNumber => 16,
+                TransferReceiveField.StatusRao => 15,
+                TransferReceiveField.ProviderOrRecieverOkpo => 16,
+                TransferReceiveField.PackName => 17,
+                TransferReceiveField.PackType => 18,
+                TransferReceiveField.PackNumber => 19,
+                TransferReceiveField.Subsidy => 20,
+                TransferReceiveField.FcpNumber => 21,
+                _ => null
+            },
+            TransferReceiveSheetLayout.Form16 => field switch
+            {
+                TransferReceiveField.OperationCode => 6,
+                TransferReceiveField.OperationDate => 7,
+                TransferReceiveField.CodeRao => 8,
+                TransferReceiveField.StatusRao => 9,
+                TransferReceiveField.Volume => 10,
+                TransferReceiveField.Mass => 11,
+                TransferReceiveField.Quantity => 12,
+                TransferReceiveField.Radionuclids => 13,
+                TransferReceiveField.TritiumActivity => 14,
+                TransferReceiveField.BetaGammaActivity => 15,
+                TransferReceiveField.AlphaActivity => 16,
+                TransferReceiveField.TransuraniumActivity => 17,
+                TransferReceiveField.ActivityMeasurementDate => 18,
+                TransferReceiveField.ProviderOrRecieverOkpo => 19,
+                TransferReceiveField.PackType => 20,
+                TransferReceiveField.PackNumber => 21,
+                TransferReceiveField.Subsidy => 22,
+                TransferReceiveField.FcpNumber => 23,
                 _ => null
             },
             _ => field switch

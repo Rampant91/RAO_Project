@@ -66,6 +66,22 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             TransferReceiveField.CreationDate => SimilarityCalendarDate(source.CreationDate, candidate.CreationDate),
             TransferReceiveField.PackType => SimilarityType(source.PackType, candidate.PackType),
             TransferReceiveField.PackNumber => SimilarityPackNumber(source.PackNumber, candidate.PackNumber),
+            TransferReceiveField.StatusRao => SimilarityTextNormalized(
+                sourceNorm.StatusRao, candidateNorm.StatusRao),
+            TransferReceiveField.CodeRao => SimilarityTextNormalized(
+                sourceNorm.CodeRao, candidateNorm.CodeRao),
+            TransferReceiveField.PackName => SimilarityType(source.PackName, candidate.PackName),
+            TransferReceiveField.Subsidy => SimilaritySubsidy(source.Subsidy, candidate.Subsidy),
+            TransferReceiveField.FcpNumber => SimilarityPassportOrFactory(
+                source.FcpNumber, candidate.FcpNumber, isFactory: false),
+            TransferReceiveField.TritiumActivity => SimilarityNumericWithTolerance(
+                sourceNorm.TritiumActivity, candidateNorm.TritiumActivity),
+            TransferReceiveField.BetaGammaActivity => SimilarityNumericWithTolerance(
+                sourceNorm.BetaGammaActivity, candidateNorm.BetaGammaActivity),
+            TransferReceiveField.AlphaActivity => SimilarityNumericWithTolerance(
+                sourceNorm.AlphaActivity, candidateNorm.AlphaActivity),
+            TransferReceiveField.TransuraniumActivity => SimilarityNumericWithTolerance(
+                sourceNorm.TransuraniumActivity, candidateNorm.TransuraniumActivity),
             TransferReceiveField.ProviderOrRecieverOkpo => SimilarityProviderOkpo(
                 candidate.ProviderOrRecieverOkpo, source.OrgOkpo, sourceOrgOkpo),
             _ => FieldSimilarity.Mismatch(0)
@@ -191,9 +207,67 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         return false;
     }
 
-    private static double GetFieldWeight(TransferReceiveField field, TransferReceiveDto source)
+    private static double GetFieldWeight(
+        TransferReceiveField field,
+        TransferReceiveDto source,
+        TransferReceiveSheetLayout layout = TransferReceiveSheetLayout.Form11)
     {
+        if (field == TransferReceiveField.StatusRao && IsStatusRaoExemptOpCode(source.OpCode))
+        {
+            return 0;
+        }
+
         var serialsEmpty = SerialNumbersAreEmpty(source);
+        if (layout == TransferReceiveSheetLayout.Form16)
+        {
+            return field switch
+            {
+                TransferReceiveField.PackNumber => 8.0,
+                TransferReceiveField.CodeRao => 6.0,
+                TransferReceiveField.Radionuclids => 6.0,
+                TransferReceiveField.ProviderOrRecieverOkpo => 5.0,
+                TransferReceiveField.Volume => 3.5,
+                TransferReceiveField.Mass => 3.5,
+                TransferReceiveField.TritiumActivity => 3.0,
+                TransferReceiveField.BetaGammaActivity => 3.0,
+                TransferReceiveField.AlphaActivity => 3.0,
+                TransferReceiveField.TransuraniumActivity => 3.0,
+                TransferReceiveField.Quantity => 3.0,
+                TransferReceiveField.StatusRao => 3.0,
+                TransferReceiveField.OperationDate => 2.5,
+                TransferReceiveField.ActivityMeasurementDate => 2.5,
+                TransferReceiveField.PackType => 2.0,
+                TransferReceiveField.Subsidy => 2.0,
+                TransferReceiveField.FcpNumber => 2.0,
+                TransferReceiveField.OperationCode => 1.5,
+                _ => 1.0
+            };
+        }
+
+        if (layout == TransferReceiveSheetLayout.Form15)
+        {
+            return field switch
+            {
+                TransferReceiveField.PassportNumber => serialsEmpty ? 2.0 : 12.0,
+                TransferReceiveField.FactoryNumber => serialsEmpty ? 2.0 : 12.0,
+                TransferReceiveField.OperationCode => 1.5,
+                TransferReceiveField.OperationDate => 2.0,
+                TransferReceiveField.Type => 3.0,
+                TransferReceiveField.Radionuclids => 4.5,
+                TransferReceiveField.Activity => 2.5,
+                TransferReceiveField.CreationDate => 2.0,
+                TransferReceiveField.StatusRao => 3.0,
+                TransferReceiveField.ProviderOrRecieverOkpo => 4.0,
+                TransferReceiveField.PackName => 2.0,
+                TransferReceiveField.PackType => 2.0,
+                TransferReceiveField.PackNumber => 2.0,
+                TransferReceiveField.Subsidy => 2.0,
+                TransferReceiveField.FcpNumber => 2.0,
+                TransferReceiveField.Quantity => 2.0,
+                _ => 1.0
+            };
+        }
+
         return field switch
         {
             TransferReceiveField.PassportNumber => serialsEmpty ? 2.0 : 12.0,
@@ -217,8 +291,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             _ => 1.0
         };
     }
-
-    /// <summary>Бонус, если оба ключевых идентификатора совпали точно (и не пустые).</summary>
     private const double BothIdentifiersExactBonus = 10.0;
 
     #endregion

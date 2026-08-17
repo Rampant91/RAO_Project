@@ -229,7 +229,7 @@
                     <Border Grid.Row="1" Grid.Column="0" Classes="formCard">
                         <StackPanel Spacing="4">
                             <TextBlock Classes="sectionHeader" Text="Форма 1.5"/>
-                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                                 <CheckBox Grid.Row="0" Grid.Column="0" IsThreeState="True" IsChecked="{Binding CheckAll15, Mode=TwoWay}" Margin="0,0,6,0"/>
                                 <TextBlock Classes="selectAllCaption" Grid.Row="0" Grid.Column="1" Text="Выбрать всё"/>
                                 <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding CheckOperationCode15, Mode=TwoWay}" Margin="0,1,6,1"/>
@@ -250,18 +250,67 @@
                                 <TextBlock Classes="fieldCaption" Grid.Row="8" Grid.Column="1" Text="Суммарная активность"/>
                                 <CheckBox Grid.Row="9" Grid.Column="0" IsChecked="{Binding CheckCreationDate15, Mode=TwoWay}" Margin="0,1,6,1"/>
                                 <TextBlock Classes="fieldCaption" Grid.Row="9" Grid.Column="1" Text="Дата выпуска"/>
-                                <CheckBox Grid.Row="10" Grid.Column="0" IsChecked="{Binding CheckProviderOrRecieverOkpo15, Mode=TwoWay}" Margin="0,1,6,1"/>
-                                <TextBlock Classes="fieldCaption" Grid.Row="10" Grid.Column="1" Text="ОКПО поставщика/получателя"/>
-                                <CheckBox Grid.Row="11" Grid.Column="0" IsChecked="{Binding CheckPackNumber15, Mode=TwoWay}" Margin="0,1,6,1"/>
-                                <TextBlock Classes="fieldCaption" Grid.Row="11" Grid.Column="1" Text="Номер УКТ"/>
+                                <CheckBox Grid.Row="10" Grid.Column="0" IsChecked="{Binding CheckStatusRao15, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="10" Grid.Column="1" Text="Статус РАО (28/38 — без подсветки)"/>
+                                <CheckBox Grid.Row="11" Grid.Column="0" IsChecked="{Binding CheckProviderOrRecieverOkpo15, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="11" Grid.Column="1" Text="ОКПО поставщика/получателя"/>
+                                <CheckBox Grid.Row="12" Grid.Column="0" IsChecked="{Binding CheckPackName15, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="12" Grid.Column="1" Text="Наименование УКТ"/>
+                                <CheckBox Grid.Row="13" Grid.Column="0" IsChecked="{Binding CheckPackType15, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="13" Grid.Column="1" Text="Тип УКТ"/>
+                                <CheckBox Grid.Row="14" Grid.Column="0" IsChecked="{Binding CheckPackNumber15, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="14" Grid.Column="1" Text="Номер УКТ"/>
+                                <CheckBox Grid.Row="15" Grid.Column="0" IsChecked="{Binding CheckSubsidy15, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="15" Grid.Column="1" Text="Субсидия, %"/>
+                                <CheckBox Grid.Row="16" Grid.Column="0" IsChecked="{Binding CheckFcpNumber15, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="16" Grid.Column="1" Text="Номер мероприятия ФЦП"/>
                             </Grid>
                         </StackPanel>
                     </Border>
 
-                    <Border Grid.Row="1" Grid.Column="1" Classes="formCardPlaceholder">
-                        <StackPanel>
+                    <Border Grid.Row="1" Grid.Column="1" Classes="formCard">
+                        <StackPanel Spacing="4">
                             <TextBlock Classes="sectionHeader" Text="Форма 1.6"/>
-                            <TextBlock Classes="placeholderNote" Text="Сверка для этой формы будет добавлена позже."/>
+                            <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                                <CheckBox Grid.Row="0" Grid.Column="0" IsThreeState="True" IsChecked="{Binding CheckAll16, Mode=TwoWay}" Margin="0,0,6,0"/>
+                                <TextBlock Classes="selectAllCaption" Grid.Row="0" Grid.Column="1" Text="Выбрать всё"/>
+                                <CheckBox Grid.Row="1" Grid.Column="0" IsChecked="{Binding CheckOperationCode16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="1" Grid.Column="1" Text="Код операции (парность 21↔31, 26↔36 и т.д.)"/>
+                                <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding CheckOperationDate16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="2" Grid.Column="1" Text="Дата операции"/>
+                                <CheckBox Grid.Row="3" Grid.Column="0" IsChecked="{Binding CheckCodeRao16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="3" Grid.Column="1" Text="Код РАО"/>
+                                <CheckBox Grid.Row="4" Grid.Column="0" IsChecked="{Binding CheckStatusRao16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="4" Grid.Column="1" Text="Статус РАО (28/38 — без подсветки)"/>
+                                <CheckBox Grid.Row="5" Grid.Column="0" IsChecked="{Binding CheckVolume16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="5" Grid.Column="1" Text="Объём, куб. м"/>
+                                <CheckBox Grid.Row="6" Grid.Column="0" IsChecked="{Binding CheckMass16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="6" Grid.Column="1" Text="Масса, т"/>
+                                <CheckBox Grid.Row="7" Grid.Column="0" IsChecked="{Binding CheckQuantity16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="7" Grid.Column="1" Text="Количество ОЗИИИ, шт"/>
+                                <CheckBox Grid.Row="8" Grid.Column="0" IsChecked="{Binding CheckRadionuclids16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="8" Grid.Column="1" Text="Основные радионуклиды"/>
+                                <CheckBox Grid.Row="9" Grid.Column="0" IsChecked="{Binding CheckTritiumActivity16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="9" Grid.Column="1" Text="Активность трития, Бк"/>
+                                <CheckBox Grid.Row="10" Grid.Column="0" IsChecked="{Binding CheckBetaGammaActivity16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="10" Grid.Column="1" Text="Активность бета-, гамма-, Бк"/>
+                                <CheckBox Grid.Row="11" Grid.Column="0" IsChecked="{Binding CheckAlphaActivity16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="11" Grid.Column="1" Text="Активность альфа-, Бк"/>
+                                <CheckBox Grid.Row="12" Grid.Column="0" IsChecked="{Binding CheckTransuraniumActivity16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="12" Grid.Column="1" Text="Активность трансурановых, Бк"/>
+                                <CheckBox Grid.Row="13" Grid.Column="0" IsChecked="{Binding CheckActivityMeasurementDate16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="13" Grid.Column="1" Text="Дата измерения активности"/>
+                                <CheckBox Grid.Row="14" Grid.Column="0" IsChecked="{Binding CheckProviderOrRecieverOkpo16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="14" Grid.Column="1" Text="ОКПО поставщика/получателя"/>
+                                <CheckBox Grid.Row="15" Grid.Column="0" IsChecked="{Binding CheckPackType16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="15" Grid.Column="1" Text="Тип УКТ"/>
+                                <CheckBox Grid.Row="16" Grid.Column="0" IsChecked="{Binding CheckPackNumber16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="16" Grid.Column="1" Text="Номер УКТ"/>
+                                <CheckBox Grid.Row="17" Grid.Column="0" IsChecked="{Binding CheckSubsidy16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="17" Grid.Column="1" Text="Субсидия, %"/>
+                                <CheckBox Grid.Row="18" Grid.Column="0" IsChecked="{Binding CheckFcpNumber16, Mode=TwoWay}" Margin="0,1,6,1"/>
+                                <TextBlock Classes="fieldCaption" Grid.Row="18" Grid.Column="1" Text="Номер мероприятия ФЦП"/>
+                            </Grid>
                         </StackPanel>
                     </Border>
 
