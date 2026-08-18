@@ -63,6 +63,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         var importSummaryShown = false;
         try
         {
+            SkipNewOrg = false;
             SkipInter = false;
             SkipReplace = false;
             HasMultipleReport = false;
@@ -241,36 +242,108 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     }
                     else if (baseReps11 == null && baseReps21 == null && baseReps41 == null && baseReps51 == null)
                     {
-                        ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
-                        AtLeastOneImportDone = true;
+                        #region AddNewOrg
 
-                        #region LoggerImport
-
-                        var sortedRepList = impReps.Report_Collection
-                            .OrderBy(x => x.FormNum_DB)
-                            .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
-                            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
-                            .ToList();
-                        foreach (var rep in sortedRepList)
+                        var an = "Добавить";
+                        if (!SkipNewOrg)
                         {
-                            ImpRepCorNum = rep.CorrectionNumber_DB;
-                            if(rep.Rows!=null)
-                                ImpRepFormCount = rep.Rows.Count;
-                            ImpRepFormNum = rep.FormNum_DB;
-                            ImpRepStartPeriod = rep.StartPeriod_DB;
-                            ImpRepEndPeriod = rep.EndPeriod_DB;
-                            Act = "\t\t\t";
-                            LoggerImportDTO = new LoggerImportDTO
+                            if (answer.Length > 1 || repsList.Count > 1)
                             {
-                                Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
-                                FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
-                                Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
-                                ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
-                            };
-                            ServiceExtension.LoggerManager.Import(LoggerImportDTO);
-                            RecordImportedReport(impReps);
-                            IsFirstLogLine = false;
-                            CurrentLogLine++;
+                                #region MessageNewOrg
+
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                    {
+                                        ButtonDefinitions =
+                                        [
+                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                            new ButtonDefinition { Name = "Да для всех" },
+                                            new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                        ],
+                                        ContentTitle = "Импорт из .raodb",
+                                        ContentHeader = "Уведомление",
+                                        ContentMessage =
+                                            $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
+                                            $"{Environment.NewLine}" +
+                                            $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                                            $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                            $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                            $"{Environment.NewLine}" +
+                                            $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
+                                            $"{Environment.NewLine}импортировать все новые организации.",
+                                        MinWidth = 400,
+                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    })
+                                    .ShowDialog(Desktop.MainWindow));
+
+                                #endregion
+
+                                if (an is "Да для всех") SkipNewOrg = true;
+                            }
+                            else
+                            {
+                                #region MessageNewOrg
+
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                    {
+                                        ButtonDefinitions =
+                                        [
+                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                            new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                        ],
+                                        ContentTitle = "Импорт из .raodb",
+                                        ContentHeader = "Уведомление",
+                                        ContentMessage =
+                                            $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
+                                            $"{Environment.NewLine}" +
+                                            $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                                            $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                            $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
+                                        MinWidth = 400,
+                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    })
+                                    .ShowDialog(Desktop.MainWindow));
+
+                                #endregion
+                            }
+                        }
+
+                        if (an is "Добавить" or "Да для всех")
+                        {
+                            ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
+                            AtLeastOneImportDone = true;
+
+                            #region LoggerImport
+
+                            var sortedRepList = impReps.Report_Collection
+                                .OrderBy(x => x.FormNum_DB)
+                                .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+                                .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
+                                .ToList();
+                            foreach (var rep in sortedRepList)
+                            {
+                                ImpRepCorNum = rep.CorrectionNumber_DB;
+                                if(rep.Rows!=null)
+                                    ImpRepFormCount = rep.Rows.Count;
+                                ImpRepFormNum = rep.FormNum_DB;
+                                ImpRepStartPeriod = rep.StartPeriod_DB;
+                                ImpRepEndPeriod = rep.EndPeriod_DB;
+                                Act = "\t\t\t";
+                                LoggerImportDTO = new LoggerImportDTO
+                                {
+                                    Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
+                                    FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
+                                    Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
+                                    ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
+                                };
+                                ServiceExtension.LoggerManager.Import(LoggerImportDTO);
+                                RecordImportedReport(impReps);
+                                IsFirstLogLine = false;
+                                CurrentLogLine++;
+                            }
+
+                            #endregion
                         }
 
                         #endregion

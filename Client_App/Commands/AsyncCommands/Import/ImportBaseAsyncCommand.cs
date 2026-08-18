@@ -32,6 +32,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 {
     private protected LoggerImportDTO? LoggerImportDTO;
 
+    private protected bool SkipNewOrg;              // Пропустить уведомления о добавлении новой организации
     private protected bool SkipInter;               // Пропускать уведомления и отменять импорт при пересечении дат
     private protected bool SkipReplace;             // Пропускать уведомления о замене форм
     private protected bool HasMultipleReport;       // Имеет множество форм
