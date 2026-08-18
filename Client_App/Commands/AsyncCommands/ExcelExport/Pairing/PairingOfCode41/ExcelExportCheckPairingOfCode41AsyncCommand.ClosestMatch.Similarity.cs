@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
+using Client_App.Resources;
 using Client_App.Resources.CustomComparers.SnkComparers;
 using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared.SoftSimilarityCore;
 
@@ -82,7 +83,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             Pairing12To16Field.PackName => SimilarityTextNormalized(sourceNorm.PackName, candidateNorm.PackName),
             Pairing12To16Field.PackType => SimilarityType(source.PackType, candidate.PackType),
             Pairing12To16Field.PackNumber => SimilarityPackNumber(source.PackNumber, candidate.PackNumber),
-            Pairing12To16Field.CodeRao => SimilarityTextNormalized(sourceNorm.CodeRao, candidateNorm.CodeRao),
+            Pairing12To16Field.CodeRao => SimilarityCalculatedCodeRao(source, candidate),
             _ => Shared.FieldSimilarity.Mismatch(0)
         };
 
@@ -114,7 +115,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             Pairing13To16Field.PackName => SimilarityTextNormalized(sourceNorm.PackName, candidateNorm.PackName),
             Pairing13To16Field.PackType => SimilarityType(source.PackType, candidate.PackType),
             Pairing13To16Field.PackNumber => SimilarityPackNumber(source.PackNumber, candidate.PackNumber),
-            Pairing13To16Field.CodeRao => SimilarityTextNormalized(sourceNorm.CodeRao, candidateNorm.CodeRao),
+            Pairing13To16Field.CodeRao => SimilarityCalculatedCodeRao(source, candidate),
             _ => Shared.FieldSimilarity.Mismatch(0)
         };
 
@@ -148,9 +149,17 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             Pairing14To16Field.PackName => SimilarityTextNormalized(sourceNorm.PackName, candidateNorm.PackName),
             Pairing14To16Field.PackType => SimilarityType(source.PackType, candidate.PackType),
             Pairing14To16Field.PackNumber => SimilarityPackNumber(source.PackNumber, candidate.PackNumber),
-            Pairing14To16Field.CodeRao => SimilarityTextNormalized(sourceNorm.CodeRao, candidateNorm.CodeRao),
+            Pairing14To16Field.CodeRao => SimilarityCalculatedCodeRao(source, candidate),
             _ => Shared.FieldSimilarity.Mismatch(0)
         };
+
+    private static Shared.FieldSimilarity SimilarityCalculatedCodeRao(
+        Operation41PairingDto rvSide,
+        Operation41PairingDto raoSide) =>
+        RaoCodeHelper.CodeRaoPairingMatches(
+            rvSide.FormNum, rvSide.CodeRao, rvSide.Radionuclids, rvSide.MainRadionuclids, rvSide.AggregateState, raoSide.CodeRao)
+            ? Shared.FieldSimilarity.Exact
+            : Shared.FieldSimilarity.Mismatch(0);
 
     private static Shared.FieldSimilarity SimilarityOperationCode41(string left, string right)
     {

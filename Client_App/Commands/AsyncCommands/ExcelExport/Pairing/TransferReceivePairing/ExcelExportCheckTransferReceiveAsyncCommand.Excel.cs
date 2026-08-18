@@ -380,14 +380,14 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
         foreach (var row in OrderForExport(unpaired))
         {
-            WriteOperationBlock(row, startCol: 1, applyHighlight: true, isSource: true,
+            WriteOperationBlock(Worksheet, CurrentRow, row, startCol: 1, applyHighlight: true, isSource: true,
                 closestMatches: closestMatches, layout: layout);
             Worksheet.Cells[CurrentRow, sepCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
 
             if (closestMatches.TryGetValue(row.Id, out var closest))
             {
                 WriteConfidenceCell(confCol, closest.ConfidencePercent);
-                WriteOperationBlock(closest.Candidate, startCol: closestStart, applyHighlight: true, isSource: false,
+                WriteOperationBlock(Worksheet, CurrentRow, closest.Candidate, startCol: closestStart, applyHighlight: true, isSource: false,
                     closestMatches: closestMatches,
                     layout: layout,
                     closest: closest);
@@ -850,7 +850,9 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 ? PairingFieldNearFill
                 : PairingFieldMismatchFill;
 
-    private void WriteOperationBlock(
+    private static void WriteOperationBlock(
+        ExcelWorksheet sheet,
+        int currentRow,
         TransferReceiveDto op,
         int startCol,
         bool applyHighlight,
@@ -860,105 +862,111 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         ClosestMatchResult? closest = null)
     {
         void WriteDate(int col, string? value) =>
-            Worksheet.Cells[CurrentRow, col].Value = ConvertToExcelDate(value, Worksheet, CurrentRow, col);
+            sheet.Cells[currentRow, col].Value = ConvertToExcelDate(value, sheet, currentRow, col);
 
         var c = startCol;
-        Worksheet.Cells[CurrentRow, c++].Value = op.OrgRegNo;
-        Worksheet.Cells[CurrentRow, c++].Value = op.OrgOkpo;
-        Worksheet.Cells[CurrentRow, c++].Value = op.OrgShortName;
+        sheet.Cells[currentRow, c++].Value = op.OrgRegNo;
+        sheet.Cells[currentRow, c++].Value = op.OrgOkpo;
+        sheet.Cells[currentRow, c++].Value = op.OrgShortName;
         WriteDate(c++, op.StartPeriod);
         WriteDate(c++, op.EndPeriod);
-        Worksheet.Cells[CurrentRow, c++].Value = op.NumberInOrder;
-        Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.OpCode);
+        sheet.Cells[currentRow, c++].Value = op.NumberInOrder;
+        sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.OpCode);
         WriteDate(c++, op.OpDate);
+
+        // 1.1–1.5: колонка «Номер паспорта» есть в шапке и в карте подсветки.
+        if (layout != TransferReceiveSheetLayout.Form16)
+        {
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.PasNum);
+        }
 
         if (layout == TransferReceiveSheetLayout.Form16)
         {
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.CodeRao);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.StatusRao);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Volume);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Mass);
-            Worksheet.Cells[CurrentRow, c++].Value = op.Quantity is null ? "-" : op.Quantity;
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.TritiumActivity);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.BetaGammaActivity);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.AlphaActivity);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.TransuraniumActivity);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.CodeRao);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.StatusRao);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelDouble(op.Volume);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelDouble(op.Mass);
+            sheet.Cells[currentRow, c++].Value = op.Quantity is null ? "-" : op.Quantity;
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelDouble(op.TritiumActivity);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelDouble(op.BetaGammaActivity);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelDouble(op.AlphaActivity);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelDouble(op.TransuraniumActivity);
             WriteDate(c++, op.ActivityMeasurementDate);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackType);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackNumber);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Subsidy);
-            Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.FcpNumber);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.PackType);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.PackNumber);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.Subsidy);
+            sheet.Cells[currentRow, c].Value = ConvertToExcelString(op.FcpNumber);
         }
         else if (layout == TransferReceiveSheetLayout.Form12)
         {
             // Форма 1.2: Наименование → зав.№ → масса → … → тип УКТ → номер УКТ (без пустых колонок).
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Type);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.FacNum);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Mass);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.CreatorOkpo);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.Type);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.FacNum);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelDouble(op.Mass);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.CreatorOkpo);
             WriteDate(c++, op.CreationDate);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackType);
-            Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.PackNumber);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.PackType);
+            sheet.Cells[currentRow, c].Value = ConvertToExcelString(op.PackNumber);
         }
         else if (layout == TransferReceiveSheetLayout.Form13)
         {
             // Форма 1.3: … зав.№ → акт. → изг. → дата вып. → агр. → пост/пол. → номер УКТ.
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Type);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.FacNum);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Activity);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.CreatorOkpo);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.Type);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.FacNum);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelDouble(op.Activity);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.CreatorOkpo);
             WriteDate(c++, op.CreationDate);
-            Worksheet.Cells[CurrentRow, c++].Value = op.AggregateState is null ? "-" : op.AggregateState;
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
-            Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.PackNumber);
+            sheet.Cells[currentRow, c++].Value = op.AggregateState is null ? "-" : op.AggregateState;
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
+            sheet.Cells[currentRow, c].Value = ConvertToExcelString(op.PackNumber);
         }
         else if (layout == TransferReceiveSheetLayout.Form14)
         {
             // Форма 1.4: наименование → вид → рад. → акт. → дата изм. → объём → масса → агр. → ОКПО → УКТ.
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Type);
-            Worksheet.Cells[CurrentRow, c++].Value = op.Sort is null ? "-" : op.Sort;
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Activity);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.Type);
+            sheet.Cells[currentRow, c++].Value = op.Sort is null ? "-" : op.Sort;
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelDouble(op.Activity);
             WriteDate(c++, op.ActivityMeasurementDate);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Volume);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Mass);
-            Worksheet.Cells[CurrentRow, c++].Value = op.AggregateState is null ? "-" : op.AggregateState;
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
-            Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.PackNumber);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelDouble(op.Volume);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelDouble(op.Mass);
+            sheet.Cells[currentRow, c++].Value = op.AggregateState is null ? "-" : op.AggregateState;
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
+            sheet.Cells[currentRow, c].Value = ConvertToExcelString(op.PackNumber);
         }
         else if (layout == TransferReceiveSheetLayout.Form15)
         {
             // Форма 1.5: как 1.1 без ОКПО изготовителя + статус РАО, УКТ, субсидия, ФЦП.
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Type);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.FacNum);
-            Worksheet.Cells[CurrentRow, c++].Value = op.Quantity is null ? "-" : op.Quantity;
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Activity);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.Type);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.FacNum);
+            sheet.Cells[currentRow, c++].Value = op.Quantity is null ? "-" : op.Quantity;
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelDouble(op.Activity);
             WriteDate(c++, op.CreationDate);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.StatusRao);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackName);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackType);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.PackNumber);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Subsidy);
-            Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.FcpNumber);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.StatusRao);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.PackName);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.PackType);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.PackNumber);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.Subsidy);
+            sheet.Cells[currentRow, c].Value = ConvertToExcelString(op.FcpNumber);
         }
         else
         {
             // Форма 1.1: … зав.№ → кол-во → акт. → изг. → дата вып. → пост/пол. → номер УКТ.
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Type);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.FacNum);
-            Worksheet.Cells[CurrentRow, c++].Value = op.Quantity is null ? "-" : op.Quantity;
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Activity);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.CreatorOkpo);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.Type);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.Radionuclids);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.FacNum);
+            sheet.Cells[currentRow, c++].Value = op.Quantity is null ? "-" : op.Quantity;
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelDouble(op.Activity);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.CreatorOkpo);
             WriteDate(c++, op.CreationDate);
-            Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
-            Worksheet.Cells[CurrentRow, c].Value = ConvertToExcelString(op.PackNumber);
+            sheet.Cells[currentRow, c++].Value = ConvertToExcelString(op.ProviderOrRecieverOkpo);
+            sheet.Cells[currentRow, c].Value = ConvertToExcelString(op.PackNumber);
         }
 
         if (!applyHighlight)
@@ -988,7 +996,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
             if (GetComparableColumnOffset(field, layout) is int offset)
             {
-                Worksheet.Cells[CurrentRow, startCol + offset].Style.Fill.SetBackground(
+                sheet.Cells[currentRow, startCol + offset].Style.Fill.SetBackground(
                     FillForMatchLevel(level),
                     ExcelFillStyle.Solid);
             }

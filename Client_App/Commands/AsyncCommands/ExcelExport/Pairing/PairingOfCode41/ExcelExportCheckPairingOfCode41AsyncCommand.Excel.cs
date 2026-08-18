@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Client_App.Resources;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels.ProgressBar;
 using OfficeOpenXml;
@@ -90,7 +91,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         "Наименование упаковки",
         "Тип УКТ",
         "Номер УКТ",
-        "Код РАО"
+        RaoCodeHelper.CalculatedCodeRaoColumnHeader
     ];
 
     private static readonly string[] Form13DataHeaders =
@@ -109,7 +110,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         "Наименование упаковки",
         "Тип УКТ",
         "Номер УКТ",
-        "Код РАО"
+        RaoCodeHelper.CalculatedCodeRaoColumnHeader
     ];
 
     private static readonly string[] Form14DataHeaders =
@@ -130,13 +131,13 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         "Наименование упаковки",
         "Тип УКТ",
         "Номер УКТ",
-        "Код РАО"
+        RaoCodeHelper.CalculatedCodeRaoColumnHeader
     ];
 
     private static readonly string[] Form16DataHeaders =
     [
         "Дата",
-        "Код РАО",
+        RaoCodeHelper.FullCodeRaoColumnHeader,
         "Объём, м³",
         "Масса, т",
         "Основные радионуклиды",
@@ -158,11 +159,19 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
     {
         CreatePairingLegendSheet(excelPackage);
         CreateEmptyPairingSheet(excelPackage, "Форма 1.1", Layout1115, Form1115DataHeaders);
-        CreateEmptyPairingSheet(excelPackage, "Форма 1.2", Layout12, Form12DataHeaders);
-        CreateEmptyPairingSheet(excelPackage, "Форма 1.3", Layout13, Form13DataHeaders);
-        CreateEmptyPairingSheet(excelPackage, "Форма 1.4", Layout14, Form14DataHeaders);
+        CreateEmptyPairingSheet(
+            excelPackage, "Форма 1.2", Layout12, Form12DataHeaders,
+            WithCodeRaoHeader(Form12DataHeaders, codeRaoIndex: 11, RaoCodeHelper.FullCodeRaoColumnHeader));
+        CreateEmptyPairingSheet(
+            excelPackage, "Форма 1.3", Layout13, Form13DataHeaders,
+            WithCodeRaoHeader(Form13DataHeaders, codeRaoIndex: 14, RaoCodeHelper.FullCodeRaoColumnHeader));
+        CreateEmptyPairingSheet(
+            excelPackage, "Форма 1.4", Layout14, Form14DataHeaders,
+            WithCodeRaoHeader(Form14DataHeaders, codeRaoIndex: 16, RaoCodeHelper.FullCodeRaoColumnHeader));
         CreateEmptyPairingSheet(excelPackage, "Форма 1.5", Layout1115, Form1115DataHeaders);
-        CreateEmptyPairingSheet(excelPackage, "Форма 1.6", Layout16, Form16DataHeaders);
+        CreateEmptyPairingSheet(
+            excelPackage, "Форма 1.6", Layout16, Form16DataHeaders,
+            WithCodeRaoHeader(Form16DataHeaders, codeRaoIndex: 1, RaoCodeHelper.CalculatedCodeRaoColumnHeader));
     }
 
     /// <summary>Первый лист книги: пояснения для пользователя (структура блоков, цвета, пары форм, допуски).</summary>
@@ -346,7 +355,9 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         Blank();
 
         Section("Агрегатное состояние и код РАО");
-        Body("На листах 1.3 и 1.4 колонка «Агрегатное состояние» подсвечивается отдельно: зелёным, если её значение совпадает с первой цифрой кода РАО ближайшего совпадения на 1.6, красным — если не совпадает. На листе 1.6, если ближайшее совпадение найдено среди 1.3/1.4, этим же правилом подсвечивается колонка «Код РАО».");
+        Body("На листах 1.2–1.4 колонка «Рассчётный код РАО в 1.6» показывает шаблон, вычисленный по данным строки (неизвестные символы — «_»). В блоке ближайшего совпадения на тех же листах выводится полный «Код РАО» из формы 1.6. Сравнение и подсветка зелёным выполняются по всем рассчитанным позициям шаблона: если они совпадают с полным кодом 1.6 на тех же местах, ячейка зелёная.");
+        Body("На листах 1.3 и 1.4 колонка «Агрегатное состояние» дополнительно подсвечивается отдельно: зелёным, если её значение совпадает с первой цифрой полного кода РАО ближайшего совпадения на 1.6, красным — если не совпадает.");
+        Body("На листе 1.6 слева — полный «Код РАО» из формы; справа в колонке «Рассчётный код РАО в 1.6» — шаблон, восстановленный по данным кандидата из 1.2, 1.3 или 1.4. Подсветка кода РАО на обеих сторонах следует тому же правилу частичного совпадения.");
         Blank();
 
         Section("Какие формы сравниваются");
@@ -413,10 +424,22 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         return Math.Min(72, 16 + lines * 14);
     }
 
-    private void CreateEmptyPairingSheet(ExcelPackage excelPackage, string sheetName, SheetLayout layout, string[] dataHeaders)
+    private void CreateEmptyPairingSheet(
+        ExcelPackage excelPackage,
+        string sheetName,
+        SheetLayout layout,
+        string[] sourceDataHeaders,
+        string[]? closestDataHeaders = null)
     {
         Worksheet = excelPackage.Workbook.Worksheets.Add(sheetName);
-        SetupPairingFormHeaders(layout, dataHeaders);
+        SetupPairingFormHeaders(layout, sourceDataHeaders, closestDataHeaders);
+    }
+
+    private static string[] WithCodeRaoHeader(string[] headers, int codeRaoIndex, string headerText)
+    {
+        var copy = (string[])headers.Clone();
+        copy[codeRaoIndex] = headerText;
+        return copy;
     }
 
     /// <summary>
@@ -518,9 +541,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
     #region Headers / column sizing
 
-    private void SetupPairingFormHeaders(SheetLayout layout, string[] dataHeaders)
+    private void SetupPairingFormHeaders(SheetLayout layout, string[] sourceDataHeaders, string[]? closestDataHeaders = null)
     {
         var sheet = Worksheet;
+        closestDataHeaders ??= sourceDataHeaders;
 
         sheet.Cells[1, 1, 1, layout.SourceColCount].Merge = true;
         sheet.Cells[1, 1].Value = "Непарная операция";
@@ -542,8 +566,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         sheet.Cells[1, layout.ClosestStartCol, 1, layout.TotalColCount].Style.Fill.SetBackground(ClosestSectionFill, ExcelFillStyle.Solid);
         sheet.Cells[1, layout.ClosestStartCol].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
-        WriteFieldHeaders(2, 1, dataHeaders);
-        WriteFieldHeaders(2, layout.ClosestStartCol, dataHeaders);
+        WriteFieldHeaders(2, 1, sourceDataHeaders);
+        WriteFieldHeaders(2, layout.ClosestStartCol, closestDataHeaders);
 
         sheet.Cells[2, layout.SeparatorCol].Style.Fill.SetBackground(SeparatorFill, ExcelFillStyle.Solid);
         sheet.Cells[2, layout.ConfidenceCol].Value = "Схожесть, %";
@@ -1062,7 +1086,6 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         void WriteDate(int col, string? value) => Worksheet.Cells[CurrentRow, col].Value = ConvertToExcelDate(value, Worksheet, CurrentRow, col);
 
         WriteDate(c++, op.OpDate);
-        var codeRaoCol = c;
         Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelString(op.CodeRao);
         Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Volume);
         Worksheet.Cells[CurrentRow, c++].Value = ConvertToExcelDouble(op.Mass);
@@ -1118,12 +1141,6 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 }
 
                 break;
-        }
-
-        // Для профилей 1.3/1.4 совпадение агрегатного состояния важнее формального совпадения кода РАО.
-        if (ToAggregateStateHighlightLevel(highlight.AggregateStateMatchesCodeRao) is { } codeRaoLevel)
-        {
-            ApplyPairingComparisonCellFill(CurrentRow, codeRaoCol, codeRaoLevel);
         }
     }
 

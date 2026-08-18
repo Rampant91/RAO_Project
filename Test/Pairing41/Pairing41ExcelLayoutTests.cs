@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Client_App.Resources;
 using OfficeOpenXml;
 using Xunit;
 using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
@@ -48,7 +49,7 @@ public sealed class Pairing41ExcelLayoutTests
         var info = Pairing41TestAccess.InfoColCountForTests;
         var headers = Pairing41TestAccess.Form16DataHeadersForTests;
 
-        Assert.Equal("Код РАО", headers[1]);
+        Assert.Equal(RaoCodeHelper.FullCodeRaoColumnHeader, headers[1]);
         Assert.Equal("Объём, м³", headers[2]);
         Assert.Equal("Масса, т", headers[3]);
         Assert.Equal("Основные радионуклиды", headers[4]);
@@ -154,6 +155,18 @@ public sealed class Pairing41ExcelLayoutTests
     }
 
     [Fact]
+    public void Form12To14_SourceHeadersUseCalculatedCodeRaoLabel()
+    {
+        var form12 = Pairing41TestAccess.Form12DataHeadersForTests;
+        var form13 = Pairing41TestAccess.Form13DataHeadersForTests;
+        var form14 = Pairing41TestAccess.Form14DataHeadersForTests;
+
+        Assert.Equal(RaoCodeHelper.CalculatedCodeRaoColumnHeader, form12[^1]);
+        Assert.Equal(RaoCodeHelper.CalculatedCodeRaoColumnHeader, form13[^1]);
+        Assert.Equal(RaoCodeHelper.CalculatedCodeRaoColumnHeader, form14[^1]);
+    }
+
+    [Fact]
     public void LegendSheet_ExplainsClosestMatchAndForm16WhiteCells()
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -166,6 +179,7 @@ public sealed class Pairing41ExcelLayoutTests
         var text = string.Join('\n', Enumerable.Range(1, sheet.Dimension?.End.Row ?? 0)
             .Select(r => sheet.Cells[r, 1].Text + " " + sheet.Cells[r, 2].Text));
 
+        Assert.Contains("Рассчётный код РАО в 1.6", text, StringComparison.Ordinal);
         Assert.Contains("ближайшее совпадение", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("предположение", text, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("похожая", text, StringComparison.OrdinalIgnoreCase);

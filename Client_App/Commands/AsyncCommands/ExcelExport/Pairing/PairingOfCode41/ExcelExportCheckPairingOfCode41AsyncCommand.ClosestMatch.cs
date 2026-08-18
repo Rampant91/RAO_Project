@@ -276,7 +276,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         Pairing12To16Field.PackName => left.PackName == right.PackName,
         Pairing12To16Field.PackType => left.PackType == right.PackType,
         Pairing12To16Field.PackNumber => left.PackNumber == right.PackNumber,
-        Pairing12To16Field.CodeRao => left.CodeRao == right.CodeRao,
+        Pairing12To16Field.CodeRao => RaoCodeHelper.CodeRaoPairingMatches(
+            left.FormNum, left.CodeRao, left.Radionuclids, left.MainRadionuclids, left.AggregateState, right.CodeRao),
         _ => false
     };
 
@@ -295,7 +296,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         Pairing13To16Field.PackName => left.PackName == right.PackName,
         Pairing13To16Field.PackType => left.PackType == right.PackType,
         Pairing13To16Field.PackNumber => left.PackNumber == right.PackNumber,
-        Pairing13To16Field.CodeRao => left.CodeRao == right.CodeRao,
+        Pairing13To16Field.CodeRao => RaoCodeHelper.CodeRaoPairingMatches(
+            left.FormNum, left.CodeRao, left.Radionuclids, left.MainRadionuclids, left.AggregateState, right.CodeRao),
         _ => false
     };
 
@@ -316,7 +318,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         Pairing14To16Field.PackName => left.PackName == right.PackName,
         Pairing14To16Field.PackType => left.PackType == right.PackType,
         Pairing14To16Field.PackNumber => left.PackNumber == right.PackNumber,
-        Pairing14To16Field.CodeRao => left.CodeRao == right.CodeRao,
+        Pairing14To16Field.CodeRao => RaoCodeHelper.CodeRaoPairingMatches(
+            left.FormNum, left.CodeRao, left.Radionuclids, left.MainRadionuclids, left.AggregateState, right.CodeRao),
         _ => false
     };
 
@@ -647,6 +650,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         public required string PackNumber { get; init; }
         public required string MainRadionuclids { get; init; }
         public required string CodeRao { get; init; }
+        public required string FormNum { get; init; }
+        public byte? AggregateState { get; init; }
         public required string ActivityMeasurementDate { get; init; }
         public required int Quantity { get; init; }
         public required NumericNorm Activity { get; init; }
@@ -701,7 +706,9 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         PackType = NormalizeNumber(row.PackType),
         PackNumber = NormalizeNumber(row.PackNumber),
         MainRadionuclids = NormalizeRads(row.MainRadionuclids),
-        CodeRao = NormalizeNumber(row.CodeRao),
+        CodeRao = row.CodeRao ?? string.Empty,
+        FormNum = row.FormNum,
+        AggregateState = row.AggregateState,
         ActivityMeasurementDate = NormalizeDate(row.ActivityMeasurementDate),
         Quantity = GetQuantityForComparison(row, true),
         Activity = new NumericNorm(row.Activity),

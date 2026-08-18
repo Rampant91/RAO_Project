@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.Testing;
+using Client_App.Resources;
 using Client_App.Resources.CustomComparers.SnkComparers;
 using OfficeOpenXml;
 
@@ -293,8 +294,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             Pairing11To15Params? options = null)
         {
             options ??= new Pairing11To15Params();
-            var source = ToDtoList(form11);
-            var reference = ToDtoList(form15);
+            var source = ToDtoList(form11, "1.1");
+            var reference = ToDtoList(form15, "1.5");
             var unpaired = GetUnpairedOperations11To15(source, reference, options);
             var closest = BuildClosestMatchHighlights(unpaired, reference, options);
             return closest.ToDictionary(
@@ -308,7 +309,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             Pairing11To15Params? options = null)
         {
             options ??= new Pairing11To15Params();
-            return GetUnpairedOperations11To15(ToDtoList(source), ToDtoList(reference), options)
+            return GetUnpairedOperations11To15(ToDtoList(source, "1.1"), ToDtoList(reference, "1.5"), options)
                 .Select(row => row.Id)
                 .OrderBy(id => id)
                 .ToList();
@@ -320,7 +321,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             Pairing12To16Params? options = null)
         {
             options ??= new Pairing12To16Params();
-            return GetUnpairedOperations12To16(ToDtoList(source), ToDtoList(reference), options)
+            return GetUnpairedOperations12To16(ToDtoList(source, "1.2"), ToDtoList(reference, "1.6"), options)
                 .Select(row => row.Id)
                 .OrderBy(id => id)
                 .ToList();
@@ -340,10 +341,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             pairing14To16Params ??= new Pairing14To16Params();
 
             return GetUnpairedForm16(
-                    ToDtoList(form16),
-                    ToDtoList(form12),
-                    ToDtoList(form13),
-                    ToDtoList(form14),
+                    ToDtoList(form16, "1.6"),
+                    ToDtoList(form12, "1.2"),
+                    ToDtoList(form13, "1.3"),
+                    ToDtoList(form14, "1.4"),
                     pairing12To16Params,
                     pairing13To16Params,
                     pairing14To16Params)
@@ -354,12 +355,12 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
         public static Pairing41ScenarioResult RunScenario(Pairing41TestCase testCase)
         {
-            var form11 = ToDtoList(testCase.Form11);
-            var form12 = ToDtoList(testCase.Form12);
-            var form13 = ToDtoList(testCase.Form13);
-            var form14 = ToDtoList(testCase.Form14);
-            var form15 = ToDtoList(testCase.Form15);
-            var form16 = ToDtoList(testCase.Form16);
+            var form11 = ToDtoList(testCase.Form11, "1.1");
+            var form12 = ToDtoList(testCase.Form12, "1.2");
+            var form13 = ToDtoList(testCase.Form13, "1.3");
+            var form14 = ToDtoList(testCase.Form14, "1.4");
+            var form15 = ToDtoList(testCase.Form15, "1.5");
+            var form16 = ToDtoList(testCase.Form16, "1.6");
 
             var unpaired = ComputeOrganizationUnpaired(
                 form11, form12, form13, form14, form15, form16,
@@ -380,12 +381,12 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
         public static Pairing41ClosestMatchResult RunClosestMatches(Pairing41TestCase testCase)
         {
-            var form11 = ToDtoList(testCase.Form11);
-            var form12 = ToDtoList(testCase.Form12);
-            var form13 = ToDtoList(testCase.Form13);
-            var form14 = ToDtoList(testCase.Form14);
-            var form15 = ToDtoList(testCase.Form15);
-            var form16 = ToDtoList(testCase.Form16);
+            var form11 = ToDtoList(testCase.Form11, "1.1");
+            var form12 = ToDtoList(testCase.Form12, "1.2");
+            var form13 = ToDtoList(testCase.Form13, "1.3");
+            var form14 = ToDtoList(testCase.Form14, "1.4");
+            var form15 = ToDtoList(testCase.Form15, "1.5");
+            var form16 = ToDtoList(testCase.Form16, "1.6");
 
             var unpaired = ComputeOrganizationUnpaired(
                 form11, form12, form13, form14, form15, form16,
@@ -453,16 +454,16 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
                 closest13Candidates, closest14Candidates, closest16Candidates);
         }
 
-        private static List<Operation41PairingDto> ToDtoList(IEnumerable<Pairing41Row> rows) =>
-            rows.Select(ToDto).ToList();
+        private static List<Operation41PairingDto> ToDtoList(IEnumerable<Pairing41Row> rows, string defaultFormNum) =>
+            rows.Select(row => ToDto(row, defaultFormNum)).ToList();
 
         public static Shared.FieldMatchLevel SimilarityLevel11To15ForTests(
             Pairing11To15Field field,
             Pairing41Row left,
             Pairing41Row right)
         {
-            var leftDto = ToDto(left);
-            var rightDto = ToDto(right);
+            var leftDto = ToDto(left, string.IsNullOrEmpty(left.FormNum) ? "1.1" : left.FormNum);
+            var rightDto = ToDto(right, string.IsNullOrEmpty(right.FormNum) ? "1.5" : right.FormNum);
             var leftNorm = CreatePairingNorm(leftDto);
             var rightNorm = CreatePairingNorm(rightDto);
             return FieldSimilarity11To15(leftDto, rightDto, leftNorm, rightNorm, field).Level;
@@ -473,8 +474,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             Pairing41Row left,
             Pairing41Row right)
         {
-            var leftDto = ToDto(left);
-            var rightDto = ToDto(right);
+            var leftDto = ToDto(left, string.IsNullOrEmpty(left.FormNum) ? "1.2" : left.FormNum);
+            var rightDto = ToDto(right, string.IsNullOrEmpty(right.FormNum) ? "1.6" : right.FormNum);
             var leftNorm = CreatePairingNorm(leftDto);
             var rightNorm = CreatePairingNorm(rightDto);
             return FieldSimilarity12To16(leftDto, rightDto, leftNorm, rightNorm, field).Level;
@@ -485,8 +486,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             Pairing41Row left,
             Pairing41Row right)
         {
-            var leftDto = ToDto(left);
-            var rightDto = ToDto(right);
+            var leftDto = ToDto(left, string.IsNullOrEmpty(left.FormNum) ? "1.3" : left.FormNum);
+            var rightDto = ToDto(right, string.IsNullOrEmpty(right.FormNum) ? "1.6" : right.FormNum);
             var leftNorm = CreatePairingNorm(leftDto);
             var rightNorm = CreatePairingNorm(rightDto);
             return FieldSimilarity13To16(leftDto, rightDto, leftNorm, rightNorm, field).Level;
@@ -497,15 +498,18 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             Pairing41Row left,
             Pairing41Row right)
         {
-            var leftDto = ToDto(left);
-            var rightDto = ToDto(right);
+            var leftDto = ToDto(left, string.IsNullOrEmpty(left.FormNum) ? "1.4" : left.FormNum);
+            var rightDto = ToDto(right, string.IsNullOrEmpty(right.FormNum) ? "1.6" : right.FormNum);
             var leftNorm = CreatePairingNorm(leftDto);
             var rightNorm = CreatePairingNorm(rightDto);
             return FieldSimilarity14To16(leftDto, rightDto, leftNorm, rightNorm, field).Level;
         }
 
-        private static Operation41PairingDto ToDto(Pairing41Row row) => new()
+        private static Operation41PairingDto ToDto(Pairing41Row row, string defaultFormNum)
         {
+            var formNum = string.IsNullOrEmpty(row.FormNum) ? defaultFormNum : row.FormNum;
+            return new Operation41PairingDto
+            {
             Id = row.Id,
             RepsId = row.RepsId,
             ReportId = row.ReportId,
@@ -534,11 +538,44 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
             Volume = row.Volume,
             ActivityMeasurementDate = row.ActivityMeasurementDate,
             Quantity = row.Quantity,
-            FormNum = row.FormNum,
-            CodeRao = row.CodeRao,
+            FormNum = formNum,
+            CodeRao = ResolveCodeRaoForTestRow(row, formNum),
             AggregateState = row.AggregateState,
             OrgRegNo = row.OrgRegNo
-        };
+            };
+        }
+
+        private static string ResolveCodeRaoForTestRow(Pairing41Row row, string formNum)
+        {
+            if (!string.IsNullOrEmpty(row.CodeRao))
+            {
+                return row.CodeRao;
+            }
+
+            if (formNum is "1.2" or "1.3" or "1.4")
+            {
+                return RaoCodeHelper.GetCalculatedCodeRaoTemplate(
+                    formNum, row.CodeRao, row.Radionuclids, row.MainRadionuclids, row.AggregateState);
+            }
+
+            if (formNum != "1.6")
+            {
+                return string.Empty;
+            }
+
+            var template = formNum switch
+            {
+                _ when !string.IsNullOrEmpty(row.Volume) && row.Volume != "-" =>
+                    RaoCodeHelper.GetCalculatedCodeRaoTemplate(
+                        "1.4", null, row.MainRadionuclids, row.MainRadionuclids, row.AggregateState),
+                _ when !string.IsNullOrEmpty(row.MainRadionuclids) =>
+                    RaoCodeHelper.GetCalculatedCodeRaoTemplate(
+                        "1.3", null, row.MainRadionuclids, row.MainRadionuclids, row.AggregateState),
+                _ => RaoCodeHelper.Form12CodeRao
+            };
+
+            return RaoCodeHelper.ExpandCalculatedTemplateToFull(template);
+        }
     }
 
     #endregion

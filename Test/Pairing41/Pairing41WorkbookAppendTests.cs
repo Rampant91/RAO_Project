@@ -177,6 +177,21 @@ public sealed class RaoCodeHelperTests
     }
 
     [Fact]
+    public void CalculatedCodeRaoMatchesFull_IgnoresUnderscorePositions()
+    {
+        Assert.True(RaoCodeHelper.CalculatedCodeRaoMatchesFull("1_3_5__", "1134567890"));
+        Assert.False(RaoCodeHelper.CalculatedCodeRaoMatchesFull("1_3_5__", "2134567890"));
+    }
+
+    [Fact]
+    public void CalculatedCodeRaoMatchesFull_ReturnsFalse_WhenInputMissing()
+    {
+        Assert.False(RaoCodeHelper.CalculatedCodeRaoMatchesFull(null, "123"));
+        Assert.False(RaoCodeHelper.CalculatedCodeRaoMatchesFull("1_2_", null));
+        Assert.False(RaoCodeHelper.CalculatedCodeRaoMatchesFull("", "123"));
+    }
+
+    [Fact]
     public void GetAggregateStateDigitFromCodeRao_ReturnsFirstChar()
     {
         Assert.Equal("2", RaoCodeHelper.GetAggregateStateDigitFromCodeRao("2_410084_"));

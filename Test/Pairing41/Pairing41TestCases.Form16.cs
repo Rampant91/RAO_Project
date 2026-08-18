@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.Testing;
+using Client_App.Resources;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
 
 namespace Test.Pairing41;
 
@@ -85,7 +87,8 @@ internal static partial class Pairing41TestCases
                     DocumentDate = docDate,
                     PackName = "Упаковка",
                     PackType = "ТипУКТ",
-                    PackNumber = pack
+                    PackNumber = pack,
+                    CodeRao = RaoCodeHelper.Form12CodeRao
                 },
                 // Id=902: масса не подходит под 1.2, подходит под 1.3
                 new Pairing41Row
@@ -104,7 +107,8 @@ internal static partial class Pairing41TestCases
                     DocumentDate = docDate,
                     PackName = "Упаковка",
                     PackType = "ТипУКТ",
-                    PackNumber = pack
+                    PackNumber = pack,
+                    CodeRao = Pairing41TestCases.ExpandedCodeRaoFrom13()
                 }
             ],
             ExpectedUnpaired12 = [],
@@ -187,7 +191,8 @@ internal static partial class Pairing41TestCases
                     DocumentDate = docDate,
                     PackName = "Упаковка",
                     PackType = "ТипУКТ",
-                    PackNumber = pack
+                    PackNumber = pack,
+                    CodeRao = RaoCodeHelper.Form12CodeRao
                 }
             ],
             ExpectedUnpaired12 = [],
@@ -239,7 +244,8 @@ internal static partial class Pairing41TestCases
                     DocumentDate = opDate,
                     PackName = "Упаковка",
                     PackType = "ТипУКТ",
-                    PackNumber = pack
+                    PackNumber = pack,
+                    CodeRao = RaoCodeHelper.Form12CodeRao
                 }
             ],
             ExpectedUnpaired12 = [],
@@ -291,7 +297,8 @@ internal static partial class Pairing41TestCases
                     DocumentDate = opDate,
                     PackName = "Упаковка",
                     PackType = "ТипУКТ",
-                    PackNumber = pack
+                    PackNumber = pack,
+                    CodeRao = Pairing41TestCases.ExpandedCodeRaoFrom13()
                 }
             ],
             ExpectedUnpaired13 = [],

@@ -196,6 +196,65 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         }
 
         /// <summary>
+        /// Пишет source и closest через тот же WriteOperationBlock, что и выгрузка.
+        /// Подсветка — по переданной карте (на обеих сторонах).
+        /// </summary>
+        public static void WriteOperationRowPairForTests(
+            OfficeOpenXml.ExcelWorksheet sheet,
+            TransferReceiveSheetLayout layout,
+            int dataRow,
+            TransferReceiveRow source,
+            TransferReceiveRow closest,
+            IReadOnlyDictionary<TransferReceiveField, FieldMatchLevel>? fieldLevels = null)
+        {
+            var formNum = FormNumForLayout(layout);
+            var sourceDto = ToDto(source, fallbackOrgOkpo: source.OrgOkpo, formNum);
+            var closestDto = ToDto(closest, fallbackOrgOkpo: closest.OrgOkpo, formNum);
+            var levels = fieldLevels ?? new Dictionary<TransferReceiveField, FieldMatchLevel>();
+            var exact = levels.ToDictionary(kv => kv.Key, kv => kv.Value == FieldMatchLevel.Exact);
+            var highlight = new ClosestMatchResult(closestDto, levels, exact, confidencePercent: 80, rawScore: 1);
+            var closestMatches = new Dictionary<int, ClosestMatchResult> { [sourceDto.Id] = highlight };
+
+            WriteOperationBlock(
+                sheet, dataRow, sourceDto, startCol: 1, applyHighlight: levels.Count > 0, isSource: true,
+                closestMatches, layout);
+            WriteOperationBlock(
+                sheet, dataRow, closestDto, startCol: ClosestStartColFor(layout),
+                applyHighlight: levels.Count > 0, isSource: false,
+                closestMatches, layout, highlight);
+        }
+
+        public static string FormNumForLayoutForTests(TransferReceiveSheetLayout layout) =>
+            FormNumForLayout(layout);
+
+        public static string PairingExactFillRgbForTests => "FFC6EFCE";
+
+        public static string PairingMismatchFillRgbForTests => "FFFFCDD2";
+
+        private static string FormNumForLayout(TransferReceiveSheetLayout layout) =>
+            layout switch
+            {
+                TransferReceiveSheetLayout.Form12 => "1.2",
+                TransferReceiveSheetLayout.Form13 => "1.3",
+                TransferReceiveSheetLayout.Form14 => "1.4",
+                TransferReceiveSheetLayout.Form15 => "1.5",
+                TransferReceiveSheetLayout.Form16 => "1.6",
+                _ => "1.1"
+            };
+
+        /// <summary>Создаёт лист «Форма 1.4» с заголовками полей.</summary>
+        public static void CreateForm14SheetForTests(OfficeOpenXml.ExcelPackage excelPackage)
+        {
+            var sheet = excelPackage.Workbook.Worksheets.Add("Форма 1.4");
+            var closestStart = ClosestStartColFor(TransferReceiveSheetLayout.Form14);
+            WriteFieldHeadersToSheet(sheet, row: 2, startCol: 1, TransferReceiveSheetLayout.Form14);
+            WriteFieldHeadersToSheet(sheet, row: 2, startCol: closestStart, TransferReceiveSheetLayout.Form14);
+            sheet.Cells[1, 1].Value = "Непарная операция выбранной организации";
+            sheet.Cells[2, ConfidenceColFor(TransferReceiveSheetLayout.Form14)].Value = "Схожесть, %";
+            sheet.Cells[2, ConfidenceColFor(TransferReceiveSheetLayout.Form14)].Style.Font.Bold = true;
+        }
+
+        /// <summary>
         /// Smoke записи строки: код операции слева, closest справа, жирный % схожести.
         /// </summary>
         public static void WriteUnpairedSmokeRowForTests(

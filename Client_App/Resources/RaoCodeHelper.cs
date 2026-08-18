@@ -17,6 +17,12 @@ public static class RaoCodeHelper
     /// <summary>Код РАО для формы 1.2 (изделия из природного урана) — всегда один и тот же.</summary>
     public const string Form12CodeRao = "22511300522";
 
+    /// <summary>Заголовок колонки с полным кодом РАО из формы 1.6.</summary>
+    public const string FullCodeRaoColumnHeader = "Код РАО";
+
+    /// <summary>Заголовок колонки с рассчитанным по данным 1.2/1.3/1.4 шаблоном кода РАО для 1.6.</summary>
+    public const string CalculatedCodeRaoColumnHeader = "Рассчётный код РАО в 1.6";
+
     private static List<Dictionary<string, string>> R = [];
 
     #region R.xlsx
@@ -90,6 +96,41 @@ public static class RaoCodeHelper
 
         return $"{agrState}_{thirdSymbolCodeRao}1{fifthSymbolCodeRao}_00{ninthTenthSymbols}_";
     }
+
+    /// <summary>Шаблон кода РАО для строки 1.2/1.3/1.4 — как после Load (пустой CodeRao пересчитывается).</summary>
+    public static string GetCalculatedCodeRaoTemplate(
+        string formNum,
+        string? codeRao,
+        string? radionuclids,
+        string? mainRadionuclids,
+        byte? aggregateState) =>
+        formNum switch
+        {
+            "1.2" => string.IsNullOrEmpty(codeRao) ? Form12CodeRao : codeRao,
+            "1.3" => string.IsNullOrEmpty(codeRao)
+                ? ComputeCodeRaoFromForm13(radionuclids ?? mainRadionuclids, aggregateState)
+                : codeRao,
+            "1.4" => string.IsNullOrEmpty(codeRao)
+                ? ComputeCodeRaoFromForm14(radionuclids ?? mainRadionuclids, aggregateState)
+                : codeRao,
+            _ => codeRao ?? string.Empty
+        };
+
+    /// <summary>Сравнение шаблона 1.2/1.3/1.4 с полным кодом РАО строки 1.6.</summary>
+    public static bool CodeRaoPairingMatches(
+        string rvFormNum,
+        string? rvCodeRao,
+        string? rvRadionuclids,
+        string? rvMainRadionuclids,
+        byte? rvAggregateState,
+        string? form16CodeRao) =>
+        CalculatedCodeRaoMatchesFull(
+            GetCalculatedCodeRaoTemplate(rvFormNum, rvCodeRao, rvRadionuclids, rvMainRadionuclids, rvAggregateState),
+            form16CodeRao ?? string.Empty);
+
+    /// <summary>Для тестовых строк 1.6 без CodeRao: заполнить «_» нулями, чтобы получить полный код из шаблона.</summary>
+    public static string ExpandCalculatedTemplateToFull(string calculatedTemplate) =>
+        calculatedTemplate.Replace('_', '0');
 
     private static string GetThirdSymbolCodeRao(string[] nuclidTypeArray)
     {
@@ -171,6 +212,37 @@ public static class RaoCodeHelper
         return maxPeriod > 31
             ? "1"
             : "2";
+    }
+
+    #endregion
+
+    #region Partial match (шаблон ↔ полный код 1.6)
+
+    /// <summary>
+    /// Совпадают ли все рассчитанные символы шаблона (не «_») с полным кодом РАО 1.6 на тех же позициях.
+    /// </summary>
+    public static bool CalculatedCodeRaoMatchesFull(string? calculatedTemplate, string? fullCode)
+    {
+        if (string.IsNullOrEmpty(calculatedTemplate) || string.IsNullOrEmpty(fullCode))
+        {
+            return false;
+        }
+
+        for (var i = 0; i < calculatedTemplate.Length; i++)
+        {
+            var templateChar = calculatedTemplate[i];
+            if (templateChar == '_')
+            {
+                continue;
+            }
+
+            if (i >= fullCode.Length || fullCode[i] != templateChar)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     #endregion
