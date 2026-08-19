@@ -57,13 +57,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         mainWindowViewModel.OnStartProgressBar = 15;
         await ProcessDataBaseCreate(onStartProgressBarVm);
 
-        onStartProgressBarVm.LoadStatus = "Очистка";
-        mainWindowViewModel.OnStartProgressBar = 17;
-        await CleanUpMasterRep();
-
-        onStartProgressBarVm.LoadStatus = "Создание резервной копии БД";
-        mainWindowViewModel.OnStartProgressBar = 18;
-        await ProcessDataBaseBackup();
+        EnsureDatabaseBackupScheduleInitialized();
 
         onStartProgressBarVm.LoadStatus = "Загрузка таблиц";
         mainWindowViewModel.OnStartProgressBar = 20;
@@ -95,7 +89,9 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
         mainWindowViewModel.OnStartProgressBar = 74;
-        await dbm.ReportsCollectionDbSet.LoadAsync();
+        await dbm.ReportsCollectionDbSet
+            .Include(r => r.Master_DB)
+            .LoadAsync();
 
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
         mainWindowViewModel.OnStartProgressBar = 76;
@@ -128,7 +124,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
         onStartProgressBarVm.LoadStatus = "Сохранение";
         mainWindowViewModel.OnStartProgressBar = 90;
-        await dbm.SaveChangesAsync();
+        if (dbm.ChangeTracker.HasChanges())
+            await dbm.SaveChangesAsync();
         ReportsStorage.LocalReports.PropertyChanged += Local_ReportsChanged;
 
         mainWindowViewModel.OnStartProgressBar = 100;
@@ -141,6 +138,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             "1.0", "2.0", "4.0", "5.0");
 
         mainWindowViewModel.Forms1TabControlVM.ActivateTab();
+
+        ScheduleBackgroundTitleCleanup();
 
         //new CountRowsInAllReportByRegionAndYearCommand().AsyncExecute(null);
 
@@ -240,44 +239,54 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     private const int RegularBackupRemindDays = 30;
 
     /// <summary>
-    /// Создание резервной копии БД: первый раз — через неделю после установки/сброса настроек, далее — раз в месяц.
+    /// Первый запуск: инициализация даты бэкапа в настройках (без диалога).
     /// </summary>
-    private static async Task ProcessDataBaseBackup()
+    public static void EnsureDatabaseBackupScheduleInitialized()
     {
-        //Settings.Default.LastDbBackupDate = DateTime.MinValue;    //Сброс даты для тестирования
-        //Settings.Default.IsFirstAppRun = true;
-        //Settings.Default.Save();
-
         if (Settings.Default.AppStartupParameters != string.Empty)
-        {
             return;
-        }
 
         var lastBackupDate = Settings.Default.LastDbBackupDate;
         var isUnsetBackupDate = lastBackupDate == default || lastBackupDate == DateTime.MinValue;
-
-        // Первый запуск или нет даты бэкапа: стартуем отсчёт до первого напоминания (через неделю).
-        if (isUnsetBackupDate)
-        {
-            Settings.Default.LastDbBackupDate = DateTime.Now;
-            Settings.Default.IsFirstAppRun = true;
-            Settings.Default.Save();
+        if (!isUnsetBackupDate)
             return;
-        }
 
-        // IsFirstAppRun: ещё не показывали диалог — ждём неделю; после первого раза — месяц.
+        Settings.Default.LastDbBackupDate = DateTime.Now;
+        Settings.Default.IsFirstAppRun = true;
+        Settings.Default.Save();
+    }
+
+    /// <summary>
+    /// Диалог резервного копирования после открытия главного окна (не блокирует splash).
+    /// </summary>
+    public static async Task ShowDatabaseBackupPromptIfDueAsync()
+    {
+        if (!IsDatabaseBackupPromptDue())
+            return;
+
+        await ShowDatabaseBackupPromptAsync();
+    }
+
+    private static bool IsDatabaseBackupPromptDue()
+    {
+        if (Settings.Default.AppStartupParameters != string.Empty)
+            return false;
+
+        var lastBackupDate = Settings.Default.LastDbBackupDate;
+        if (lastBackupDate == default || lastBackupDate == DateTime.MinValue)
+            return false;
+
         var remindAfterDays = Settings.Default.IsFirstAppRun
             ? FirstBackupRemindDays
             : RegularBackupRemindDays;
 
-        if ((DateTime.Now - lastBackupDate).TotalDays < remindAfterDays)
-        {
-            return;
-        }
+        return (DateTime.Now - lastBackupDate).TotalDays >= remindAfterDays;
+    }
 
-        #region MessageInputCategoryNums
-
+    private static async Task ShowDatabaseBackupPromptAsync()
+    {
         var isFirstPrompt = Settings.Default.IsFirstAppRun;
+        var lastBackupDate = Settings.Default.LastDbBackupDate;
         var lastBackupTime = isFirstPrompt
             ? string.Empty
             : $" ({lastBackupDate})";
@@ -287,7 +296,11 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             : $"Последняя резервная копия базы данных создавалась более месяца назад{lastBackupTime}." +
               $"{Environment.NewLine}Хотите выполнить резервное копирование?";
 
-        var res = Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+        var owner = Desktop.MainWindow ?? Desktop.Windows.FirstOrDefault();
+        if (owner is null)
+            return;
+
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxInputParams
             {
                 ButtonDefinitions =
@@ -305,15 +318,13 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
             })
-            .ShowDialog(Desktop.Windows[0])).GetAwaiter().GetResult();
-
-        #endregion
+            .ShowDialog(owner));
 
         switch (res)
         {
             case "Сохранить в папку по умолчанию":
             {
-                var count = 0; 
+                var count = 0;
                 string reserveDbPath;
                 do
                 {
@@ -335,7 +346,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             case "Выбрать папку и сохранить":
             {
                 OpenFolderDialog dial = new() { Directory = ReserveDirectory };
-                var folderPath = dial.ShowAsync(Desktop.Windows[0]).GetAwaiter().GetResult();
+                var folderPath = await dial.ShowAsync(owner);
                 if (folderPath is not null)
                 {
                     var count = 0;
@@ -360,7 +371,6 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             }
         }
 
-        // После первого показа — дальше раз в месяц (в т.ч. при «Не сохранять»).
         Settings.Default.LastDbBackupDate = DateTime.Now;
         Settings.Default.IsFirstAppRun = false;
         Settings.Default.Save();
@@ -370,96 +380,81 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
     #region CleanUpMasterRep
 
-    private static async Task CleanUpMasterRep()
+    private static void LogStartupKostylError(string stage, Exception ex)
     {
-        await using var db = new DBModel(StaticConfiguration.DBPath);
-
-        var masterRepRows10List = db.ReportsCollectionDbSet
-            .Include(x => x.DBObservable)
-            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
-            .Where(x => x.DBObservable != null)
-            .SelectMany(x => x.Master_DB.Rows10)
-            .ToList();
-
-        var masterRepRows20List = db.ReportsCollectionDbSet
-            .Include(x => x.DBObservable)
-            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
-            .Where(x => x.DBObservable != null)
-            .SelectMany(x => x.Master_DB.Rows20)
-            .ToList();
-
-        foreach (var form10 in masterRepRows10List)
-        {
-            form10.RegNo_DB = CustomTrim(form10.RegNo_DB);
-            form10.OrganUprav_DB = CustomTrim(form10.OrganUprav_DB);
-            form10.SubjectRF_DB = CustomTrim(form10.SubjectRF_DB);
-            form10.JurLico_DB = CustomTrim(form10.JurLico_DB);
-            form10.ShortJurLico_DB = CustomTrim(form10.ShortJurLico_DB);
-            form10.JurLicoAddress_DB = CustomTrim(form10.JurLicoAddress_DB);
-            form10.JurLicoFactAddress_DB = CustomTrim(form10.JurLicoFactAddress_DB);
-            form10.GradeFIO_DB = CustomTrim(form10.GradeFIO_DB);
-            form10.Telephone_DB = CustomTrim(form10.Telephone_DB);
-            form10.Fax_DB = CustomTrim(form10.Fax_DB);
-            form10.Email_DB = CustomTrim(form10.Email_DB);
-            form10.Okpo_DB = CustomTrim(form10.Okpo_DB);
-            form10.Okved_DB = CustomTrim(form10.Okved_DB);
-            form10.Okogu_DB = CustomTrim(form10.Okogu_DB);
-            form10.Oktmo_DB = CustomTrim(form10.Oktmo_DB);
-            form10.Inn_DB = CustomTrim(form10.Inn_DB);
-            form10.Kpp_DB = CustomTrim(form10.Kpp_DB);
-            form10.Okopf_DB = CustomTrim(form10.Okopf_DB);
-            form10.Okfs_DB = CustomTrim(form10.Okfs_DB);
-        }
-        foreach (var form20 in masterRepRows20List)
-        {
-            form20.RegNo_DB = CustomTrim(form20.RegNo_DB);
-            form20.OrganUprav_DB = CustomTrim(form20.OrganUprav_DB);
-            form20.SubjectRF_DB = CustomTrim(form20.SubjectRF_DB);
-            form20.JurLico_DB = CustomTrim(form20.JurLico_DB);
-            form20.ShortJurLico_DB = CustomTrim(form20.ShortJurLico_DB);
-            form20.JurLicoAddress_DB = CustomTrim(form20.JurLicoAddress_DB);
-            form20.JurLicoFactAddress_DB = CustomTrim(form20.JurLicoFactAddress_DB);
-            form20.GradeFIO_DB = CustomTrim(form20.GradeFIO_DB);
-            form20.Telephone_DB = CustomTrim(form20.Telephone_DB);
-            form20.Fax_DB = CustomTrim(form20.Fax_DB);
-            form20.Email_DB = CustomTrim(form20.Email_DB);
-            form20.Okpo_DB = CustomTrim(form20.Okpo_DB);
-            form20.Okved_DB = CustomTrim(form20.Okved_DB);
-            form20.Okogu_DB = CustomTrim(form20.Okogu_DB);
-            form20.Oktmo_DB = CustomTrim(form20.Oktmo_DB);
-            form20.Inn_DB = CustomTrim(form20.Inn_DB);
-            form20.Kpp_DB = CustomTrim(form20.Kpp_DB);
-            form20.Okopf_DB = CustomTrim(form20.Okopf_DB);
-            form20.Okfs_DB = CustomTrim(form20.Okfs_DB);
-        }
-        await db.SaveChangesAsync();
+        var msg = $"Ошибка на этапе «{stage}» при инициализации (продолжаем запуск)." +
+                  $"{Environment.NewLine}Message: {ex.Message}" +
+                  $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+        ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
     }
 
-    private static string CustomTrim(string? str)
+    /// <summary>
+    /// Фоновая санитизация титулов 1.0/2.0 после открытия главного окна.
+    /// При изменениях в БД — сброс кэшей, пересортировка коллекции, обновление org-гридов.
+    /// </summary>
+    private void ScheduleBackgroundTitleCleanup()
     {
-        if (string.IsNullOrEmpty(str)) return string.Empty;
-
-        // Use Span to avoid allocations
-        var span = str.AsSpan();
-
-        // Trim leading and trailing whitespace
-        span = span.Trim();
-
-        // Allocate a buffer to build the result
-        var buffer = new char[span.Length];
-        var bufferIndex = 0;
-
-        // Iterate through the span and skip newline characters
-        foreach (var currentChar in span)
+        var dbPath = StaticConfiguration.DBPath;
+        _ = Task.Run(async () =>
         {
-            if (currentChar != '\r' && currentChar != '\n')
+            var anyChanged = false;
+            try
             {
-                buffer[bufferIndex++] = currentChar;
+                anyChanged = await TitleRowSanitizer.CleanUpAsync(dbPath);
             }
-        }
+            catch (Exception ex)
+            {
+                LogStartupKostylError("Очистка (фон)", ex);
+                return;
+            }
 
-        // Return the new string with the correct length
-        return new string(buffer, 0, bufferIndex);
+            if (!anyChanged)
+                return;
+
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                Forms1WarmCache.Instance.InvalidateAll();
+                ResortLocalReportsCollection();
+                mainWindowViewModel.RefreshAllTabsAfterTitleSanitizer();
+            });
+        });
+    }
+
+    /// <summary>
+    /// Пересортировка org в <see cref="ReportsStorage.LocalReports"/> по актуальным ключам из БД.
+    /// </summary>
+    public static void ResortLocalReportsCollection()
+    {
+        if (ReportsStorage.LocalReports == null)
+            return;
+
+        MainWindowListQuery.InvalidateAllOrgKeysCaches();
+
+        var comparator = new CustomReportsComparer();
+        var sortKeys = MainWindowListQuery.GetForm10DisplayKeys(StaticConfiguration.DBModel);
+
+        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+        ReportsStorage.LocalReports.Reports_Collection.Clear();
+        ReportsStorage.LocalReports.Reports_Collection
+            .AddRange(tmpReportsList
+                .OrderBy(x => GetSortRegNo(x, sortKeys), comparator)
+                .ThenBy(x => GetSortOkpo(x, sortKeys), comparator));
+    }
+
+    private static string GetSortRegNo(
+        Reports x, IReadOnlyDictionary<int, Form10TitleSelector.TitleFields> form10Keys)
+    {
+        if (x.Master_DB?.FormNum_DB == "1.0" && form10Keys.TryGetValue(x.Id, out var t))
+            return t.RegNo;
+        return x.Master_DB?.RegNoRep?.Value ?? "";
+    }
+
+    private static string GetSortOkpo(
+        Reports x, IReadOnlyDictionary<int, Form10TitleSelector.TitleFields> form10Keys)
+    {
+        if (x.Master_DB?.FormNum_DB == "1.0" && form10Keys.TryGetValue(x.Id, out var t))
+            return t.Okpo;
+        return x.Master_DB?.OkpoRep?.Value ?? "";
     }
 
     #endregion
@@ -728,33 +723,46 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     /// <returns></returns>
     public static async Task ProcessDataBaseFillEmpty(DataContext dbm)
     {
+        try
+        {
+            await ProcessDataBaseFillEmptyCore(dbm);
+        }
+        catch (Exception ex)
+        {
+            LogStartupKostylError("Сортировка организаций", ex);
+        }
+    }
+
+    private static async Task ProcessDataBaseFillEmptyCore(DataContext dbm)
+    {
         if (!dbm.DBObservableDbSet.Any()) dbm.DBObservableDbSet.Add(new DBObservable());
 
-        // Title-строки 1.0/2.0/4.0/5.0 при старте не preload'ятся — нельзя смотреть только local Count.
-        var masterIdsWithForm10 = dbm.form_10
-            .AsNoTracking()
-            .Where(f => f.ReportId != null)
-            .Select(f => f.ReportId!.Value)
-            .Distinct()
-            .ToHashSet();
-        var masterIdsWithForm20 = dbm.form_20
-            .AsNoTracking()
-            .Where(f => f.ReportId != null)
-            .Select(f => f.ReportId!.Value)
-            .Distinct()
-            .ToHashSet();
-        var masterIdsWithForm40 = dbm.form_40
-            .AsNoTracking()
-            .Where(f => f.ReportId != null)
-            .Select(f => f.ReportId!.Value)
-            .Distinct()
-            .ToHashSet();
-        var masterIdsWithForm50 = dbm.form_50
-            .AsNoTracking()
-            .Where(f => f.ReportId != null)
-            .Select(f => f.ReportId!.Value)
-            .Distinct()
-            .ToHashSet();
+        var masterIds10 = new List<int>();
+        var masterIds20 = new List<int>();
+        var masterIds40 = new List<int>();
+        var masterIds50 = new List<int>();
+
+        foreach (var item in dbm.DBObservableDbSet)
+        {
+            foreach (var key in item.Reports_Collection)
+            {
+                var it = (Reports)key;
+                if (it.Master_DB is null) continue;
+                switch (it.Master_DB.FormNum_DB)
+                {
+                    case "1.0": masterIds10.Add(it.Master_DB.Id); break;
+                    case "2.0": masterIds20.Add(it.Master_DB.Id); break;
+                    case "4.0": masterIds40.Add(it.Master_DB.Id); break;
+                    case "5.0": masterIds50.Add(it.Master_DB.Id); break;
+                }
+            }
+        }
+
+        // Только master-id org из коллекции — без полного DISTINCT по form_*.
+        var masterIdsWithForm10 = LoadExistingTitleMasterIds(dbm, masterIds10, formNum: 10);
+        var masterIdsWithForm20 = LoadExistingTitleMasterIds(dbm, masterIds20, formNum: 20);
+        var masterIdsWithForm40 = LoadExistingTitleMasterIds(dbm, masterIds40, formNum: 40);
+        var masterIdsWithForm50 = LoadExistingTitleMasterIds(dbm, masterIds50, formNum: 50);
 
         foreach (var item in dbm.DBObservableDbSet)
         {
@@ -820,6 +828,45 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         }
     }
 
+    private static HashSet<int> LoadExistingTitleMasterIds(DataContext dbm, List<int> masterIds, int formNum)
+    {
+        if (masterIds.Count == 0)
+            return [];
+
+        var distinct = masterIds.Distinct().ToList();
+        var db = (DBModel)dbm;
+        var result = new HashSet<int>();
+
+        foreach (var batch in FirebirdInClause.Chunk(distinct))
+        {
+            List<int> batchIds = formNum switch
+            {
+                10 => db.form_10.AsNoTracking()
+                    .Where(f => f.ReportId != null && batch.Contains(f.ReportId.Value))
+                    .Select(f => f.ReportId!.Value)
+                    .ToList(),
+                20 => db.form_20.AsNoTracking()
+                    .Where(f => f.ReportId != null && batch.Contains(f.ReportId.Value))
+                    .Select(f => f.ReportId!.Value)
+                    .ToList(),
+                40 => db.form_40.AsNoTracking()
+                    .Where(f => f.ReportId != null && batch.Contains(f.ReportId.Value))
+                    .Select(f => f.ReportId!.Value)
+                    .ToList(),
+                50 => db.form_50.AsNoTracking()
+                    .Where(f => f.ReportId != null && batch.Contains(f.ReportId.Value))
+                    .Select(f => f.ReportId!.Value)
+                    .ToList(),
+                _ => []
+            };
+
+            foreach (var id in batchIds)
+                result.Add(id);
+        }
+
+        return result;
+    }
+
     #endregion
 
     #region ProcessDataBaseFillNullOrder
@@ -829,6 +876,18 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     /// </summary>
     /// <returns></returns>
     private static async Task ProcessDataBaseFillNullOrder()
+    {
+        try
+        {
+            await ProcessDataBaseFillNullOrderCore();
+        }
+        catch (Exception ex)
+        {
+            LogStartupKostylError("Сортировка примечаний", ex);
+        }
+    }
+
+    private static async Task ProcessDataBaseFillNullOrderCore()
     {
         var db = StaticConfiguration.DBModel;
         var zeroOrderNotes = await db.notes
@@ -853,34 +912,9 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     maxMap[note.ReportId!.Value] = next;
                 }
             }
+
+            ResortLocalReportsCollection();
         }
-
-        // form_10 не в Local — RegNoRep/OkpoRep для 1.0 недоступны. Сортируем по проекции из БД.
-        var comparator = new CustomReportsComparer();
-        var sortKeys = MainWindowListQuery.GetForm10DisplayKeys(StaticConfiguration.DBModel);
-
-        var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-        ReportsStorage.LocalReports.Reports_Collection.Clear();
-        ReportsStorage.LocalReports.Reports_Collection
-            .AddRange(tmpReportsList
-                .OrderBy(x => GetSortRegNo(x, sortKeys), comparator)
-                .ThenBy(x => GetSortOkpo(x, sortKeys), comparator));
-    }
-
-    private static string GetSortRegNo(
-        Reports x, IReadOnlyDictionary<int, Form10TitleSelector.TitleFields> form10Keys)
-    {
-        if (x.Master_DB?.FormNum_DB == "1.0" && form10Keys.TryGetValue(x.Id, out var t))
-            return t.RegNo;
-        return x.Master_DB?.RegNoRep?.Value ?? "";
-    }
-
-    private static string GetSortOkpo(
-        Reports x, IReadOnlyDictionary<int, Form10TitleSelector.TitleFields> form10Keys)
-    {
-        if (x.Master_DB?.FormNum_DB == "1.0" && form10Keys.TryGetValue(x.Id, out var t))
-            return t.Okpo;
-        return x.Master_DB?.OkpoRep?.Value ?? "";
     }
 
     #endregion

@@ -11,6 +11,7 @@ using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 using Client_App.Interfaces.BackgroundLoader;
 using Client_App.Interfaces.Logger;
+using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Properties;
 using Avalonia.Threading;
 
@@ -43,11 +44,18 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
                 {
                     if (t.IsFaulted)
                     {
+                        var ex = t.Exception?.GetBaseException() ?? t.Exception;
+                        var msg = $"Критическая ошибка при запуске программы." +
+                                  $"{Environment.NewLine}Message: {ex?.Message}" +
+                                  $"{Environment.NewLine}StackTrace: {ex?.StackTrace}";
+                        ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
                         Environment.Exit(1);
                         return;
                     }
 
                     await ShowDialog.Handle(MainWindowVM);
+
+                    _ = InitializationAsyncCommand.ShowDatabaseBackupPromptIfDueAsync();
                 });
             }, TaskContinuationOptions.None);
         });

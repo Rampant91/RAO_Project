@@ -246,6 +246,17 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public void UpdateTotalReportsCount() =>
         GetTabVm(SelectedReportType)?.UpdateTotalReportsCount();
 
+    /// <summary>
+    /// После фоновой санитизации титулов — обновить org-гриды всех вкладок 1/2/4/5.
+    /// </summary>
+    public void RefreshAllTabsAfterTitleSanitizer()
+    {
+        Forms1TabControlVM.UpdateOrgsPageInfo();
+        Forms2TabControlVM.UpdateOrgsPageInfo();
+        Forms4TabControlVM.UpdateOrgsPageInfo();
+        Forms5TabControlVM.UpdateOrgsPageInfo();
+    }
+
     #region OnStartProgressBar
 
     private double _OnStartProgressBar;

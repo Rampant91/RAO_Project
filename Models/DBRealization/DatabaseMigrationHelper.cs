@@ -135,18 +135,60 @@ public static class DatabaseMigrationHelper
     #region Public API — use these instead of Database.Migrate*
 
     /// <summary>
-    /// Чинит history при необходимости, затем применяет pending-миграции.
+    /// Чинит history при необходимости, затем применяет pending-миграции (если есть).
     /// </summary>
-    public static void Migrate(DatabaseFacade database)
+    public static void Migrate(DatabaseFacade database) => MigrateIfPending(database);
+
+    /// <inheritdoc cref="Migrate"/>
+    public static Task MigrateAsync(DatabaseFacade database, CancellationToken cancellationToken = default) =>
+        MigrateIfPendingAsync(database, cancellationToken);
+
+    /// <summary>
+    /// Repair history + Migrate только если есть pending-миграции.
+    /// </summary>
+    public static async Task MigrateIfPendingAsync(
+        DatabaseFacade database,
+        CancellationToken cancellationToken = default)
+    {
+        await RepairMigrationHistoryAsync(database, cancellationToken).ConfigureAwait(false);
+        var pending = await database.GetPendingMigrationsAsync(cancellationToken).ConfigureAwait(false);
+        if (!pending.Any())
+            return;
+
+#pragma warning disable RS0030
+        await database.MigrateAsync(cancellationToken).ConfigureAwait(false);
+#pragma warning restore RS0030
+    }
+
+    /// <inheritdoc cref="MigrateIfPendingAsync"/>
+    public static void MigrateIfPending(DatabaseFacade database)
     {
         RepairMigrationHistory(database);
-#pragma warning disable RS0030 // единственное место, где разрешён прямой Migrate
+        if (!database.GetPendingMigrations().Any())
+            return;
+
+#pragma warning disable RS0030
         database.Migrate();
 #pragma warning restore RS0030
     }
 
-    /// <inheritdoc cref="Migrate"/>
-    public static async Task MigrateAsync(DatabaseFacade database, CancellationToken cancellationToken = default)
+    #endregion
+
+    #region Legacy full migrate API
+
+    /// <summary>
+    /// Чинит history и всегда вызывает Migrate (для сценариев, где нужен полный проход EF).
+    /// </summary>
+    public static void MigrateFull(DatabaseFacade database)
+    {
+        RepairMigrationHistory(database);
+#pragma warning disable RS0030
+        database.Migrate();
+#pragma warning restore RS0030
+    }
+
+    /// <inheritdoc cref="MigrateFull"/>
+    public static async Task MigrateFullAsync(DatabaseFacade database, CancellationToken cancellationToken = default)
     {
         await RepairMigrationHistoryAsync(database, cancellationToken).ConfigureAwait(false);
 #pragma warning disable RS0030

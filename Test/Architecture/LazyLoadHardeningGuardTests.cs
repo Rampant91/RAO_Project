@@ -88,6 +88,54 @@ public class LazyLoadHardeningGuardTests
     }
 
     [Fact]
+    public void CleanUpMasterRep_LoadsFormTablesDirectly()
+    {
+        var src = ReadClient("Services", "DataAccess", "TitleRowSanitizer.cs");
+        Assert.Contains("db.form_10", src);
+        Assert.Contains("db.form_20", src);
+        Assert.Contains("AsNoTracking()", src);
+        Assert.Contains("FormNum_DB == \"1.0\"", src);
+        Assert.Contains("FormNum_DB == \"2.0\"", src);
+        Assert.Contains("AttachForm10Updates", src);
+    }
+
+    [Fact]
+    public void Initialization_SchedulesBackgroundTitleCleanup()
+    {
+        var src = ReadClient("Commands", "AsyncCommands", "InitializationAsyncCommand.cs");
+        Assert.Contains("ScheduleBackgroundTitleCleanup", src);
+        Assert.Contains("TitleRowSanitizer.CleanUpAsync", src);
+        Assert.Contains("RefreshAllTabsAfterTitleSanitizer", src);
+        Assert.Contains("ResortLocalReportsCollection", src);
+        Assert.DoesNotContain("await CleanUpMasterRep", src);
+        Assert.DoesNotContain("LoadStatus = \"Очистка\"", src);
+    }
+
+    [Fact]
+    public void Initialization_StartupSafeOptimizations()
+    {
+        var init = ReadClient("Commands", "AsyncCommands", "InitializationAsyncCommand.cs");
+        Assert.Contains("EnsureDatabaseBackupScheduleInitialized", init);
+        Assert.Contains("ShowDatabaseBackupPromptIfDueAsync", init);
+        Assert.DoesNotContain("await ProcessDataBaseBackup", init);
+        Assert.Contains(".Include(r => r.Master_DB)", init);
+        Assert.Contains("ChangeTracker.HasChanges()", init);
+        Assert.Contains("LoadExistingTitleMasterIds", init);
+
+        var startVm = ReadClient("ViewModels", "OnStartProgressBarVM.cs");
+        Assert.Contains("ShowDatabaseBackupPromptIfDueAsync", startVm);
+    }
+
+    [Fact]
+    public void StartupKostylSteps_LogErrorsAndContinue()
+    {
+        var src = ReadClient("Commands", "AsyncCommands", "InitializationAsyncCommand.cs");
+        Assert.Contains("LogStartupKostylError(\"Сортировка организаций\"", src);
+        Assert.Contains("LogStartupKostylError(\"Сортировка примечаний\"", src);
+        Assert.Contains("ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase)", src);
+    }
+
+    [Fact]
     public void ImportBase_DoesNotDoubleInvalidateOrgKeys()
     {
         var src = ReadClient("Commands", "AsyncCommands", "Import", "ImportBaseAsyncCommand.cs");
