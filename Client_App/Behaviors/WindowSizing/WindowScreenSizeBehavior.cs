@@ -47,6 +47,11 @@ public static class WindowScreenSizeBehavior
         element.SetValue(HeightRatioProperty, value);
     }
 
+    /// <summary>
+    /// Пересчитывает Width/Height по ratio (с fallback для Linux, если ScreenFromWindow недоступен).
+    /// </summary>
+    public static void RefreshWindowSize(Window window) => UpdateWindowSize(window);
+
     private static void OnWidthRatioChanged(Window window, AvaloniaPropertyChangedEventArgs e)
     {
         if (e.NewValue is double and > 0)

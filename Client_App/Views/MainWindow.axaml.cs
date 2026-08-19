@@ -418,4 +418,15 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
     }
 
     #endregion
+
+    #region ReportOpeningOverlay
+
+    public void SetReportOpeningOverlay(bool visible)
+    {
+        var overlay = this.FindControl<Border>("ReportOpeningOverlay");
+        if (overlay != null)
+            overlay.IsVisible = visible;
+    }
+
+    #endregion
 }

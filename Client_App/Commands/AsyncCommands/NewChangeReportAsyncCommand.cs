@@ -73,13 +73,25 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
 
     private static async Task OpenReport(object? parameter)
     {
-        if (parameter is Report report)
+        if (parameter is not Report report)
+            return;
+
+        var owner = Desktop.MainWindow as MainWindow;
+        owner?.SetReportOpeningOverlay(true);
+        try
         {
+            await OpenReportCore(report, owner);
+        }
+        finally
+        {
+            owner?.SetReportOpeningOverlay(false);
+        }
+    }
 
-            var t = Desktop.MainWindow as MainWindow;
-
-            var numForm = report.FormNum.Value;
-            var dBModel = StaticConfiguration.DBModel;
+    private static async Task OpenReportCore(Report report, MainWindow? owner)
+    {
+        var numForm = report.FormNum.Value;
+        var dBModel = StaticConfiguration.DBModel;
 
             var queryWithNotes = dBModel.ReportCollectionDbSet
                 .AsSplitQuery()
@@ -95,39 +107,39 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
             switch (numForm)
             {
                 case "1.1":
-                    await OpenForm1xPagedAsync(t, report, dBModel, "1.1",
+                    await OpenForm1xPagedAsync(owner, report, dBModel, "1.1",
                         r => new Form_11VM(r), vm => new Form_11(vm));
                     break;
                 case "1.2":
-                    await OpenForm1xPagedAsync(t, report, dBModel, "1.2",
+                    await OpenForm1xPagedAsync(owner, report, dBModel, "1.2",
                         r => new Form_12VM(r), vm => new Form_12(vm));
                     break;
                 case "1.3":
-                    await OpenForm1xPagedAsync(t, report, dBModel, "1.3",
+                    await OpenForm1xPagedAsync(owner, report, dBModel, "1.3",
                         r => new Form_13VM(r), vm => new Form_13(vm));
                     break;
                 case "1.4":
-                    await OpenForm1xPagedAsync(t, report, dBModel, "1.4",
+                    await OpenForm1xPagedAsync(owner, report, dBModel, "1.4",
                         r => new Form_14VM(r), vm => new Form_14(vm));
                     break;
                 case "1.5":
-                    await OpenForm1xPagedAsync(t, report, dBModel, "1.5",
+                    await OpenForm1xPagedAsync(owner, report, dBModel, "1.5",
                         r => new Form_15VM(r), vm => new Form_15(vm));
                     break;
                 case "1.6":
-                    await OpenForm1xPagedAsync(t, report, dBModel, "1.6",
+                    await OpenForm1xPagedAsync(owner, report, dBModel, "1.6",
                         r => new Form_16VM(r), vm => new Form_16(vm));
                     break;
                 case "1.7":
-                    await OpenForm1xPagedAsync(t, report, dBModel, "1.7",
+                    await OpenForm1xPagedAsync(owner, report, dBModel, "1.7",
                         r => new Form_17VM(r), vm => new Form_17(vm));
                     break;
                 case "1.8":
-                    await OpenForm1xPagedAsync(t, report, dBModel, "1.8",
+                    await OpenForm1xPagedAsync(owner, report, dBModel, "1.8",
                         r => new Form_18VM(r), vm => new Form_18(vm));
                     break;
                 case "1.9":
-                    await OpenForm1xPagedAsync(t, report, dBModel, "1.9",
+                    await OpenForm1xPagedAsync(owner, report, dBModel, "1.9",
                         r => new Form_19VM(r), vm => new Form_19(vm));
                     break;
                 case "2.1":
@@ -139,7 +151,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows21 = dbReport.Rows21;
                     var form21VM = new Form_21VM(report);
                     var window = new Form_21(form21VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "2.2":
@@ -151,7 +163,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows22 = dbReport.Rows22;
                     var form22VM = new Form_22VM(report);
                     var window = new Form_22(form22VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "2.3":
@@ -163,7 +175,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows23 = dbReport.Rows23;
                     var form23VM = new Form_23VM(report);
                     var window = new Form_23(form23VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "2.4":
@@ -175,7 +187,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows24 = dbReport.Rows24;
                     var form24VM = new Form_24VM(report);
                     var window = new Form_24(form24VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "2.5":
@@ -187,7 +199,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows25 = dbReport.Rows25;
                     var form25VM = new Form_25VM(report);
                     var window = new Form_25(form25VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "2.6":
@@ -199,7 +211,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows26 = dbReport.Rows26;
                     var form26VM = new Form_26VM(report);
                     var window = new Form_26(form26VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "2.7":
@@ -211,7 +223,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows27 = dbReport.Rows27;
                     var form27VM = new Form_27VM(report);
                     var window = new Form_27(form27VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "2.8":
@@ -223,7 +235,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows28 = dbReport.Rows28;
                     var form28VM = new Form_28VM(report);
                     var window = new Form_28(form28VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "2.9":
@@ -235,7 +247,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows29 = dbReport.Rows29;
                     var form29VM = new Form_29VM(report);
                     var window = new Form_29(form29VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "2.10":
@@ -247,7 +259,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows210 = dbReport.Rows210;
                     var form210VM = new Form_210VM(report);
                     var window = new Form_210(form210VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "2.11":
@@ -259,7 +271,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows211 = dbReport.Rows211;
                     var form211VM = new Form_211VM(report);
                     var window = new Form_211(form211VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "2.12":
@@ -271,7 +283,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows212 = dbReport.Rows212;
                     var form212VM = new Form_212VM(report);
                     var window = new Form_212(form212VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "4.1":
@@ -283,7 +295,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows41 = dbReport.Rows41;
                     var form41VM = new Form_41VM(report);
                     var window = new Form_41(form41VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "5.1":
@@ -295,7 +307,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows51 = dbReport.Rows51;
                     var form51VM = new Form_51VM(report);
                     var window = new Form_51(form51VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "5.2":
@@ -307,7 +319,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows52 = dbReport.Rows52;
                     var form52VM = new Form_52VM(report);
                     var window = new Form_52(form52VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "5.3":
@@ -319,7 +331,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows53 = dbReport.Rows53;
                     var form53VM = new Form_53VM(report);
                     var window = new Form_53(form53VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "5.4":
@@ -331,7 +343,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows54 = dbReport.Rows54;
                     var form54VM = new Form_54VM(report);
                     var window = new Form_54(form54VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "5.5":
@@ -343,7 +355,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows55 = dbReport.Rows55;
                     var form55VM = new Form_55VM(report);
                     var window = new Form_55(form55VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "5.6":
@@ -355,7 +367,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows56 = dbReport.Rows56;
                     var form56VM = new Form_56VM(report);
                     var window = new Form_56(form56VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
                 case "5.7":
@@ -367,16 +379,22 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                     report.Rows57 = dbReport.Rows57;
                     var form57VM = new Form_57VM(report);
                     var window = new Form_57(form57VM);
-                    await window.ShowDialog(t);
+                    await ShowFormDialogAsync(window, owner);
                     break;
                 }
             }
+    }
 
-        }
+    private static async Task ShowFormDialogAsync(Window window, MainWindow? owner)
+    {
+        if (window is IFormDialogHost host)
+            await host.ShowFormDialogAsync(owner);
+        else if (owner != null)
+            await window.ShowDialog(owner);
     }
 
     private static async Task OpenForm1xPagedAsync<TVm>(
-        MainWindow owner,
+        MainWindow? owner,
         Report report,
         DBModel db,
         string formNum,
@@ -432,7 +450,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
         vm.UpdatePageInfo();
 
         var window = createWindow(vm);
-        await window.ShowDialog(owner);
+        await ShowFormDialogAsync(window, owner);
     }
 
     #endregion

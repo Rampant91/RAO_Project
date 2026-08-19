@@ -4,6 +4,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform;
 using Avalonia.ReactiveUI;
 using Avalonia.Threading;
+using Client_App.Behaviors.WindowSizing;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels;
 using System;
@@ -13,36 +14,108 @@ using System.Threading.Tasks;
 
 namespace Client_App.Views;
 
-public abstract class BaseWindow<T> : ReactiveWindow<BaseVM> where T : class
+public interface IFormDialogHost
+{
+    Task ShowFormDialogAsync(Window? owner);
+}
+
+public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost where T : class
 {
     public T? VM => DataContext as T;
     public WindowState OwnerPrevState;
 
     protected virtual bool IsFullScreenWindow => false;
+
+    /// <summary>
+    /// Задаёт финальный размер/состояние до показа окна, чтобы избежать «прыжка» layout.
+    /// </summary>
+    public void PrepareBeforeShow(Window? owner = null)
+    {
+        if (owner != null)
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
+        if (IsFullScreenWindow)
+        {
+            WindowState = WindowState.Maximized;
+            return;
+        }
+
+        if (WindowState is WindowState.Maximized or WindowState.FullScreen)
+            return;
+
+        // WindowScreenSizeBehavior (Form_10/Form_20 и др.) уже мог выставить размер при загрузке XAML.
+        if (Width > 0 && !double.IsNaN(Width) && Height > 0 && !double.IsNaN(Height))
+            return;
+
+        // Пересчёт через behavior: учитывает WorkingArea, PixelDensity и Linux-fallback.
+        WindowScreenSizeBehavior.RefreshWindowSize(this);
+
+        if (Width > 0 && !double.IsNaN(Width) && Height > 0 && !double.IsNaN(Height))
+            return;
+
+        if (Width <= 0 || double.IsNaN(Width))
+            Width = MinWidth > 0 ? MinWidth : 800;
+
+        if (Height <= 0 || double.IsNaN(Height))
+            Height = MinHeight > 0 ? MinHeight : 600;
+    }
+
+    public async Task ShowFormDialogAsync(Window? owner)
+    {
+        PrepareBeforeShow(owner);
+        AttachFullscreenFallback();
+        AttachRevealOnOpen();
+        if (owner is MainWindow mainWindow)
+            mainWindow.SetReportOpeningOverlay(false);
+
+        if (owner != null)
+            await ShowDialog(owner);
+    }
+
+    private void AttachRevealOnOpen()
+    {
+        Opacity = 0;
+        Opened += OnRevealAfterOpen;
+    }
+
+    /// <summary>
+    /// На части Linux/Wayland WM Maximized до Show() не применяется — дублируем в Opened (как было раньше).
+    /// </summary>
+    private void AttachFullscreenFallback()
+    {
+        if (!IsFullScreenWindow)
+            return;
+
+        Opened += OnEnsureMaximizedOnOpen;
+    }
+
+    private void OnEnsureMaximizedOnOpen(object? sender, EventArgs e)
+    {
+        Opened -= OnEnsureMaximizedOnOpen;
+        if (WindowState != WindowState.Maximized)
+            WindowState = WindowState.Maximized;
+    }
+
+    private void OnRevealAfterOpen(object? sender, EventArgs e)
+    {
+        Opened -= OnRevealAfterOpen;
+        Opacity = 1;
+    }
+
     public override async void Show()
     {
+        PrepareBeforeShow();
+        AttachFullscreenFallback();
+        AttachRevealOnOpen();
         base.Show();
-        Opened += OnOpenedForBase;
         await Task.Delay(1).ContinueWith(_ =>
         {
             Dispatcher.UIThread.Post(() =>
             {
                 if (!IsFullScreenWindow)
-                {
                     PositionWindowOnOwnerScreen();
-                }
             });
         });
-    }
-
-    private void OnOpenedForBase(object? sender, EventArgs e)
-    {
-        if (IsFullScreenWindow)
-        {
-            // здесь единая логика разворота на весь экран (Maximized/FullScreen)
-            WindowState = WindowState.Maximized; // или FullScreen
-        }
-        Opened -= OnOpenedForBase;
     }
 
     #region PositionWindowOnOwnerScreen
@@ -81,9 +154,16 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM> where T : class
 
             if (ownerScreen != null)
             {
-                // Get DPI scaling factor
-                var scale = ownerScreen.PixelDensity;
-                if (scale <= 0) scale = 1.0;
+                var scale = 1.0;
+                try
+                {
+                    scale = ownerScreen.PixelDensity;
+                    if (scale <= 0) scale = 1.0;
+                }
+                catch
+                {
+                    // Fallback for Linux if PixelDensity access fails
+                }
 
                 var windowWidth = Width;
                 var windowHeight = Height;

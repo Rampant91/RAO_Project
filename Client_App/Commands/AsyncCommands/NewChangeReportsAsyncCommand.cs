@@ -50,6 +50,19 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
 
         if (mainWindowVM.SelectedReports is null) return;
 
+        mainWindow.SetReportOpeningOverlay(true);
+        try
+        {
+            await OpenOrganizationFormAsync(mainWindow, mainWindowVM);
+        }
+        finally
+        {
+            mainWindow.SetReportOpeningOverlay(false);
+        }
+    }
+
+    private static async Task OpenOrganizationFormAsync(MainWindow mainWindow, MainWindowVM mainWindowVM)
+    {
         var report = mainWindowVM.SelectedReports.Master;
         var formNum = report.FormNum.Value;
         var refreshOrgListAfterTitle = false;
@@ -65,7 +78,7 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
                     IsSeparateDivision = !string.IsNullOrWhiteSpace(report.Rows10[1].Okpo.Value)
                 };
                 var window = new Form_10(form10VM) { DataContext = form10VM };
-                await window.ShowDialog(mainWindow);
+                await window.ShowFormDialogAsync(mainWindow);
 
                 // Не InvalidateOrgKeys / не InvalidateOrg: полный rebuild ключей и сброс report-кэша
                 // давали заметный лаг на UI до выбора следующей org.
@@ -89,7 +102,7 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
                     IsSeparateDivision = !string.IsNullOrWhiteSpace(report.Rows20[1].Okpo.Value)
                 };
                 var window = new Form_20(form20VM) { DataContext = form20VM };
-                await window.ShowDialog(mainWindow);
+                await window.ShowFormDialogAsync(mainWindow);
 
                 var titleAfter = SnapshotForm20Title(report);
                 if (titleBefore != titleAfter)
@@ -106,14 +119,14 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
             {
                 var form40VM = new Form_40VM(formNum, report);
                 var window = new Form_40(form40VM) { DataContext = form40VM };
-                await window.ShowDialog(mainWindow);
+                await window.ShowFormDialogAsync(mainWindow);
                 break;
             }
             case "5.0":
             {
                 var form50VM = new Form_50VM(formNum, report);
                 var window = new Form_50(form50VM) { DataContext = form50VM };
-                await window.ShowDialog(mainWindow);
+                await window.ShowFormDialogAsync(mainWindow);
                 break;
             }
         }
