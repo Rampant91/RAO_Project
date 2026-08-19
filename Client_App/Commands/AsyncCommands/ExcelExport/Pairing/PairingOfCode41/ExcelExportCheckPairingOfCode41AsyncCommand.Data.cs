@@ -473,7 +473,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         && (!options.CheckPackName || rv.PackName == rao.PackName)
         && (!options.CheckPackType || rv.PackType == rao.PackType)
         && (!options.CheckPackNumber || rv.PackNumber == rao.PackNumber)
-        && (!options.CheckCodeRao || rv.CodeRao == rao.CodeRao);
+        && (!options.CheckCodeRao || RaoCodeHelper.CodeRaoPairingMatches(
+            rv.FormNum, rv.CodeRao, rv.Radionuclids, rv.MainRadionuclids, rv.AggregateState, rao.CodeRao));
 
     private static bool Matches13To16Norm(PairingNorm rv, PairingNorm rao, Pairing13To16Params options) =>
         (!options.CheckOperationDate || rv.OpDate == rao.OpDate)
@@ -489,7 +490,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         && (!options.CheckPackName || rv.PackName == rao.PackName)
         && (!options.CheckPackType || rv.PackType == rao.PackType)
         && (!options.CheckPackNumber || rv.PackNumber == rao.PackNumber)
-        && (!options.CheckCodeRao || rv.CodeRao == rao.CodeRao);
+        && (!options.CheckCodeRao || RaoCodeHelper.CodeRaoPairingMatches(
+            rv.FormNum, rv.CodeRao, rv.Radionuclids, rv.MainRadionuclids, rv.AggregateState, rao.CodeRao));
 
     private static bool Matches14To16Norm(PairingNorm rv, PairingNorm rao, Pairing14To16Params options) =>
         (!options.CheckOperationDate || rv.OpDate == rao.OpDate)
@@ -507,7 +509,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
         && (!options.CheckPackName || rv.PackName == rao.PackName)
         && (!options.CheckPackType || rv.PackType == rao.PackType)
         && (!options.CheckPackNumber || rv.PackNumber == rao.PackNumber)
-        && (!options.CheckCodeRao || rv.CodeRao == rao.CodeRao);
+        && (!options.CheckCodeRao || RaoCodeHelper.CodeRaoPairingMatches(
+            rv.FormNum, rv.CodeRao, rv.Radionuclids, rv.MainRadionuclids, rv.AggregateState, rao.CodeRao));
 
     #endregion
 

@@ -1,9 +1,11 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using Client_App.Properties;
 using Client_App.Services.Updates;
 using Client_App.Views.Messages;
 using MessageBox.Avalonia.DTO;
@@ -30,6 +32,12 @@ public class UpdateService
     {
         try
         {
+            // Фоновый запуск с -p/-y: без UI, диалог обновления блокировал бы автовыгрузки.
+            if (IsUnattendedStartup())
+            {
+                return;
+            }
+
             // Updater можно подтянуть при каждом старте (дёшево, без диалога),
             // даже если полная проверка обновлений отложена на сутки.
             if (isNoraoMode)
@@ -55,6 +63,17 @@ public class UpdateService
         {
             System.Diagnostics.Debug.WriteLine($"Update service error: {ex.Message}");
         }
+    }
+
+    /// <summary>
+    /// Запуск с ключами оперативной/годовой автовыгрузки (-p / -y).
+    /// </summary>
+    private static bool IsUnattendedStartup()
+    {
+        return Settings.Default.AppStartupParameters
+            .Trim()
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Any(x => x is "-p" or "-y");
     }
 
     /// <summary>

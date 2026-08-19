@@ -64,7 +64,7 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
         var chosenBaseName = Path.GetFileNameWithoutExtension(chosenPath);
 
         var needSplit = false;
-        if (!forSelectedOrg && IsForm1Number(formNum))
+        if (Form1SheetSplitEnabled && !forSelectedOrg && IsForm1Number(formNum))
         {
             progressBarVM.SetProgressBar(16, "Подсчёт строк формы");
             needSplit = await CountForm1RowsAsync(db, formNum, selectedReportsId: null, cts.Token)

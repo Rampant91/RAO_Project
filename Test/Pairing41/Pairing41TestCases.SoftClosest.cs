@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
 using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.Testing;
+using Client_App.Resources;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
 using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
 
 namespace Test.Pairing41;
@@ -86,7 +88,8 @@ internal static partial class Pairing41TestCases
                     DocumentDate = opDate,
                     PackName = "Упаковка",
                     PackType = "ТипУКТ",
-                    PackNumber = pack
+                    PackNumber = pack,
+                    CodeRao = RaoCodeHelper.Form12CodeRao
                 }
             ],
             ExpectedUnpaired12 = [2],

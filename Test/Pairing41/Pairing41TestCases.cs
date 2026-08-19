@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.Testing;
+using Client_App.Resources;
 
 namespace Test.Pairing41;
 
@@ -141,6 +142,12 @@ internal static partial class Pairing41TestCases
     internal static Pairing41Row CreateRow16From12ForScale(int id, string massTon) =>
         Row16From12(id, massTon: massTon);
 
+    internal static string ExpandedCodeRaoFrom13(string mainRads = "кобальт-60", byte? aggregateState = null) =>
+        RaoCodeHelper.ExpandCalculatedTemplateToFull(RaoCodeHelper.ComputeCodeRaoFromForm13(mainRads, aggregateState));
+
+    internal static string ExpandedCodeRaoFrom14(string mainRads = "цезий-137", byte? aggregateState = null) =>
+        RaoCodeHelper.ExpandCalculatedTemplateToFull(RaoCodeHelper.ComputeCodeRaoFromForm14(mainRads, aggregateState));
+
     private static Pairing41Row Row12(
         int id,
         string massTon = "1",
@@ -197,7 +204,7 @@ internal static partial class Pairing41TestCases
             PackType = "ТипУКТ",
             PackNumber = packNumber,
             MainRadionuclids = "уран-238; торий-234; протактиний-234м; уран-234",
-            CodeRao = codeRao
+            CodeRao = string.IsNullOrEmpty(codeRao) ? RaoCodeHelper.Form12CodeRao : codeRao
         };
 
     /// <summary>Строка 1.3 после расчёта активностей по типу нуклида (как LoadForm13).</summary>
@@ -251,7 +258,8 @@ internal static partial class Pairing41TestCases
         string documentNumber = "DOC-13",
         string documentDate = Form13OpDate,
         string packNumber = "УКТ-13",
-        string codeRao = "") =>
+        string codeRao = "",
+        byte? aggregateState = null) =>
         new()
         {
             Id = id,
@@ -268,7 +276,10 @@ internal static partial class Pairing41TestCases
             PackName = "Упаковка",
             PackType = "ТипУКТ",
             PackNumber = packNumber,
-            CodeRao = codeRao
+            CodeRao = string.IsNullOrEmpty(codeRao)
+                ? RaoCodeHelper.ExpandCalculatedTemplateToFull(
+                    RaoCodeHelper.ComputeCodeRaoFromForm13(mainRads, aggregateState))
+                : codeRao
         };
 
     /// <summary>Строка 1.4 после ToMassTon и расчёта активностей (как LoadForm14).</summary>
@@ -324,7 +335,8 @@ internal static partial class Pairing41TestCases
         string activityMeasurementDate = "2024-03-15",
         string documentNumber = "DOC-14",
         string packNumber = "УКТ-14",
-        string codeRao = "") =>
+        string codeRao = "",
+        byte? aggregateState = null) =>
         new()
         {
             Id = id,
@@ -343,6 +355,9 @@ internal static partial class Pairing41TestCases
             PackName = "Упаковка",
             PackType = "ТипУКТ",
             PackNumber = packNumber,
-            CodeRao = codeRao
+            CodeRao = string.IsNullOrEmpty(codeRao)
+                ? RaoCodeHelper.ExpandCalculatedTemplateToFull(
+                    RaoCodeHelper.ComputeCodeRaoFromForm14(mainRads, aggregateState))
+                : codeRao
         };
 }
