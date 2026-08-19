@@ -15,7 +15,6 @@ using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.Forms;
-using Models.Forms.Form3;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +22,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.Forms.Form3;
 
 namespace Client_App.Views.Forms.Forms3;
 
@@ -242,7 +242,7 @@ public partial class Form_32 : BaseWindow<Form_32VM>
             var db = StaticConfiguration.DBModel;
 
             var modifiedEntities = db.ChangeTracker.Entries()
-                .Where(x => x.State != EntityState.Unchanged);
+                .Where(x => x.State != EntityState.Unchanged).ToList();
 
             if (modifiedEntities.All(x => x.Entity is Report rep && rep.FormNum_DB != vm.FormType)
                 || !db.ChangeTracker.HasChanges() || vm.SkipChangeTacking)

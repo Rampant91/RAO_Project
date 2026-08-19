@@ -356,7 +356,7 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                 case "3.1":
                     {
                         var dbReport = queryWithNotes
-                            .Include(rep => rep.Rows31One)
+                            .Include(rep => rep.Rows31One).ThenInclude(form31 => form31.ExportedZriOziiiInfoCollection)
                             .FirstOrDefault(x => x.Id == report.Id);
 
                         report.Rows31One = dbReport.Rows31One;
@@ -368,7 +368,9 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                 case "3.2":
                     {
                         var dbReport = queryWithNotes
-                            .Include(rep => rep.Rows32One)
+                            .Include(rep => rep.Rows32One).ThenInclude(form32 => form32.ExportedZriInfoCollection)
+                            .Include(rep => rep.Rows32One).ThenInclude(form32 => form32.ContainersInfoCollection)
+                            .Include(rep => rep.Rows32One).ThenInclude(form32 => form32.IdentificatorsCollection)
                             .FirstOrDefault(x => x.Id == report.Id);
 
                         report.Rows32One = dbReport.Rows32One;

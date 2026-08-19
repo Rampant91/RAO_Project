@@ -207,16 +207,9 @@ public class AddReportAsyncCommand : BaseAsyncCommand
                     }
                 case "3.1":
                     {
-                        try
-                        {
-                            var form31Window = new Form_31(new Form_31VM(selectedReports));
-                            await form31Window.ShowDialog(mainWindow);
-                            await selectedReports.Report_Collection.QuickSortAsync();
-                        }
-                        catch(Exception ex)
-                        {
-                            throw ex;
-                        }
+                        var form31Window = new Form_31(new Form_31VM(selectedReports));
+                        await form31Window.ShowDialog(mainWindow);
+                        await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                 case "3.2":

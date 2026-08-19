@@ -15,7 +15,7 @@ using Spravochniki;
 
 namespace Models.Forms;
 
-public abstract partial class Form : IKey, IDataGridColumn
+public abstract partial class Form : IKey, IDataGridColumn, ICopiable
 {
     #region Properties
 

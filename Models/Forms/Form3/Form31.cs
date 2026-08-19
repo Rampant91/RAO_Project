@@ -4,12 +4,14 @@ using Models.Forms.DataAccess;
 using Models.Passports;
 using OfficeOpenXml;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -804,7 +806,7 @@ namespace Models.Forms.Form3
         #endregion
 
         #region Характеристика экспортируемых ЗРИ/ОЗИИИ (8)
-        public ObservableCollection<ExportedZriOziiiInfo> ExportedZriOziiiInfoCollection { get; set; } = new();
+        public ObservableCollection<Form31ExportedZriOziiiInfo> ExportedZriOziiiInfoCollection { get; set; } = new();
         #endregion
         #endregion
 
@@ -833,193 +835,5 @@ namespace Models.Forms.Form3
 
     }
 
-    [Serializable]
-    [Table(name: "form_31_table")]
-    public class ExportedZriOziiiInfo : Form
-    {
-        #region ForeignKey Form31Id
-        public int Form31Id { get; set; }
-
-        private Form31 _form31;
-
-        [ForeignKey(nameof(Form31Id))]
-        public Form31 Form31
-        {
-            get
-            {
-                return _form31;
-            }
-            private set
-            {
-                _form31 = value;
-                OnPropertyChanged();
-            }
-        }
-        #endregion
-
-        #region Properties
-
-        #region RadionuclidComposition
-
-        [MaxLength(64)]
-        [Column(TypeName = "varchar(64)")]
-        public string RadionuclidComposition_DB { get; set; } = "";
-
-        [NotMapped]
-        public RamAccess<string> RadionuclidComposition
-        {
-            get
-            {
-                if (Dictionary.TryGetValue(nameof(RadionuclidComposition), out var value))
-                {
-                    ((RamAccess<string>)value).Value = RadionuclidComposition_DB;
-                    return (RamAccess<string>)value;
-                }
-                var rm = new RamAccess<string>(RadionuclidComposition_Validation, RadionuclidComposition_DB);
-                rm.PropertyChanged += RadionuclidComposition_ValueChanged;
-                Dictionary.Add(nameof(RadionuclidComposition), rm);
-                return (RamAccess<string>)Dictionary[nameof(RadionuclidComposition)];
-            }
-            set
-            {
-                RadionuclidComposition_DB = value.Value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void RadionuclidComposition_ValueChanged(object value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName != "Value") return;
-
-            var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
-            if (RadionuclidComposition_DB != value1)
-            {
-                RadionuclidComposition_DB = value1;
-            }
-        }
-
-        protected static bool RadionuclidComposition_Validation(RamAccess<string> value)//Ready
-        {
-            value.ClearErrors();
-            if (string.IsNullOrEmpty(value.Value))
-            {
-                value.AddError("Поле не заполнено");
-                return false;
-            }
-            return true;
-        }
-
-        #endregion
-
-        #region Count
-        public int? Count_DB { get; set; } = 0;
-
-        [NotMapped]
-        public RamAccess<int?> Count
-        {
-            get
-            {
-                if (Dictionary.TryGetValue(nameof(Count), out var value))
-                {
-                    ((RamAccess<int?>)value).Value = Count_DB;
-                    return (RamAccess<int?>)value;
-                }
-                var rm = new RamAccess<int?>(Count_Validation, Count_DB);
-                rm.PropertyChanged += Count_ValueChanged;
-                Dictionary.Add(nameof(Count), rm);
-                return (RamAccess<int?>)Dictionary[nameof(Count)];
-            }
-            set
-            {
-                Count_DB = value.Value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void Count_ValueChanged(object value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName != "Value") return;
-            var value1 = ((RamAccess<int?>)value).Value;
-            if (Count_DB != value1)
-            {
-                Count_DB = value1;
-            }
-        }
-
-        private bool Count_Validation(RamAccess<int?> value)
-        {
-            value.ClearErrors();
-            return true;
-        }
-
-        #endregion
-
-        #region TotalActivity
-        public double? TotalActivity_DB { get; set; } = 0;
-
-        [NotMapped]
-        public RamAccess<double?> TotalActivity
-        {
-            get
-            {
-                if (Dictionary.TryGetValue(nameof(TotalActivity), out var value))
-                {
-                    ((RamAccess<double?>)value).Value = TotalActivity_DB;
-                    return (RamAccess<double?>)value;
-                }
-                var rm = new RamAccess<double?>(TotalActivity_Validation, TotalActivity_DB);
-                rm.PropertyChanged += TotalActivity_ValueChanged;
-                Dictionary.Add(nameof(TotalActivity), rm);
-                return (RamAccess<double?>)Dictionary[nameof(TotalActivity)];
-            }
-            set
-            {
-                TotalActivity_DB = value.Value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void TotalActivity_ValueChanged(object value, PropertyChangedEventArgs args)
-        {
-            if (args.PropertyName != "Value") return;
-            var value1 = ((RamAccess<double?>)value).Value;
-            if (TotalActivity_DB != value1)
-            {
-                TotalActivity_DB = value1;
-            }
-        }
-
-        private bool TotalActivity_Validation(RamAccess<double?> value)
-        {
-            value.ClearErrors();
-            return true;
-        }
-
-        #endregion
-
-        #endregion
-
-        #region InheritedMethods
-        public override string ConvertToTSVstring()
-        {
-            throw new NotImplementedException();
-        }
-        public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
-        {
-            throw new NotImplementedException();
-        }
-        public override bool Object_Validation()
-        {
-            throw new NotImplementedException();
-        }
-        public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
-        {
-            throw new NotImplementedException();
-        }
-        public override bool IsContentEqual(Form other)
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
-    }
+    
 }

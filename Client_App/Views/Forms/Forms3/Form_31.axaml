@@ -6,7 +6,7 @@
         xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:forms="clr-namespace:Models.Forms;assembly=Models"
-        xmlns:forms3="clr-namespace:Models.Forms.Form3;assembly=Models"
+		xmlns:forms3="clr-namespace:Models.Forms.Form3;assembly=Models"
         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
         xmlns:local="using:Client_App.Behaviors"
         xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
@@ -26,7 +26,7 @@
         KeyUp="DataGrid_KeyUp"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
-
+	
 	<Window.Resources>
 		<converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter" />
 		<converter:NullToStringConverter x:Key="NullToStringConverter" />
@@ -34,6 +34,7 @@
 		<converter:ByteNullableToStringConverter x:Key="ByteNullableToStringConverter" />
 		<converter:ByteNullableOrDashToStringConverter x:Key="ByteNullableOrDashToStringConverter" />
 		<converter:DateConverter x:Key="DateConverter" />
+		<converter:DateOnlyToStringConverter x:Key="DateOnlyToStringConverter"/>
 		<converter:IsOperation41AndSingleSelectionConverter x:Key="Op41AndOneSelectedConverter" />
 	</Window.Resources>
 
@@ -223,7 +224,8 @@
 						 VerticalAlignment="Center"
 						 Text="Наименование"/>
 				<TextBox Grid.Row="1"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows31One.RecipientName.Value}"/>
 
 				<TextBlock Grid.Row="2"
 						 Grid.Column="0"
@@ -236,7 +238,8 @@
 						 VerticalAlignment="Center"
 						 Text="Адрес юридического лица"/>
 				<TextBox Grid.Row="2"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows31One.RecipientJurLicoAddress.Value}"/>
 
 				<TextBlock Grid.Row="3"
 						 Grid.Column="0"
@@ -249,7 +252,8 @@
 						 VerticalAlignment="Center"
 						 Text="Адрес места осуществления деятельности"/>
 				<TextBox Grid.Row="3"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows31One.RecipientWorkplaceAddress.Value}"/>
 
 				<TextBlock Grid.Row="5"
 						 Grid.Column="0"
@@ -262,7 +266,8 @@
 						 VerticalAlignment="Center"
 						 Text="Номер лицензии (разрешения)"/>
 				<TextBox Grid.Row="5"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows31One.LicenseNum.Value}"/>
 
 				<TextBlock Grid.Row="6"
 						 Grid.Column="0"
@@ -275,7 +280,8 @@
 						 VerticalAlignment="Center"
 						 Text="Срок действия лицензии (разрешения)"/>
 				<TextBox Grid.Row="6"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows31One.ValidityPeriod.Value, Converter={StaticResource DateOnlyToStringConverter}}"/>
 
 				<TextBlock Grid.Row="7"
 						 Grid.Column="0"
@@ -288,7 +294,8 @@
 						 VerticalAlignment="Center"
 						 Text="Предполагаемый срок для принятия решения по  запросу"/>
 				<TextBox Grid.Row="7"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows31One.ExpectedDecisionTimeframe.Value, Converter={StaticResource DateOnlyToStringConverter}}"/>
 
 				<TextBlock Grid.Row="8"
 						 Grid.Column="0"
@@ -313,7 +320,8 @@
 						 VerticalAlignment="Center"
 						 Text="Наименование"/>
 				<TextBox Grid.Row="9"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows31One.FinalUserName.Value}"/>
 
 				<TextBlock Grid.Row="10"
 						 Grid.Column="0"
@@ -326,7 +334,8 @@
 						 VerticalAlignment="Center"
 						 Text="Адрес юридического лица"/>
 				<TextBox Grid.Row="10"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows31One.FinalUserJurLicoAddress.Value}"/>
 
 				<TextBlock Grid.Row="11"
 						 Grid.Column="0"
@@ -339,7 +348,8 @@
 						 VerticalAlignment="Center"
 						 Text="Адрес места осуществления деятельности"/>
 				<TextBox Grid.Row="11"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows31One.FinalUserWorkplaceAddress.Value}"/>
 
 				<TextBlock Grid.Row="12"
 						 Grid.Column="0"
@@ -352,7 +362,8 @@
 						 VerticalAlignment="Center"
 						 Text="Телефон, факс"/>
 				<TextBox Grid.Row="12"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows31One.FinalUserTelephone.Value}"/>
 
 				<TextBlock Grid.Row="13"
 						 Grid.Column="0"
@@ -363,9 +374,10 @@
 						 Grid.Column="1"
 						 TextWrapping="WrapWithOverflow"
 						 VerticalAlignment="Center"
-						 Text="Адрес электронный почты (при наличии)"/>
+						 Text="Адрес электронной почты (при наличии)"/>
 				<TextBox Grid.Row="13"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows31One.FinalUserEmail.Value}"/>
 
 				<TextBlock Grid.Row="15"
 						 Grid.Column="0"
@@ -378,7 +390,8 @@
 						 VerticalAlignment="Center"
 						 Text="Область применения ЗРИ"/>
 				<TextBox Grid.Row="15"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows31One.ApplicationScope.Value}"/>
 
 				<TextBlock Grid.Row="17"
 						 Grid.Column="0"
@@ -404,7 +417,8 @@
 						 VerticalAlignment="Center"
 						 Text="Номер"/>
 				<TextBox Grid.Row="18"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows31One.ContractNum.Value}"/>
 
 				<TextBlock Grid.Row="19"
 						 Grid.Column="0"
@@ -417,7 +431,8 @@
 						 VerticalAlignment="Center"
 						 Text="Дата"/>
 				<TextBox Grid.Row="19"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows31One.ContractDate.Value, Converter={StaticResource DateOnlyToStringConverter}}"/>
 
 				<TextBlock Grid.Row="20"
 						 Grid.Column="0"
@@ -430,7 +445,8 @@
 						 VerticalAlignment="Center"
 						 Text="Страна-изготовитель ЗРИ (в соответствии с ОКСМ)"/>
 				<TextBox Grid.Row="20"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows31One.ManufacturerOksm.Value}"/>
 				
 				<TextBlock Grid.Row="21"
 						 Grid.Column="0"
@@ -443,26 +459,107 @@
 						 VerticalAlignment="Center"
 						 Grid.ColumnSpan="2"
 						 Text="Характеристика экспортируемых ЗРИ/ОЗИИИ:"/>
-				
+
+					
 				<DataGrid x:Name="dataGrid" 
+						  Classes="table"
 						  Grid.Row="22"
 						  Grid.Column="0"
-                          Classes="table"
+						  Grid.ColumnSpan="3"
 						  MinHeight="150"
 						  MaxHeight="250"
 						  RowHeight="25"
 						  Margin="0,10,0,0"
+						  Items="{Binding Report.Rows31One.ExportedZriOziiiInfoCollection}"
+						  SelectedItem="{Binding SelectedInfo}"
 						  HorizontalScrollBarVisibility="Auto"
-						  VerticalScrollBarVisibility ="Auto"
-						  Grid.ColumnSpan="3">
+						  VerticalScrollBarVisibility ="Auto">
+
+					<DataGrid.Styles>
+						<!-- Находим ScrollViewer внутри DataGrid -->
+						<Style Selector="DataGrid /template/ ScrollViewer#PART_ScrollViewer">
+							<Setter Property="interactivity:Interaction.Behaviors">
+								<Setter.Value>
+									<interactivity:BehaviorCollection>
+										<local:ChainingScrollViewerBehavior/>
+									</interactivity:BehaviorCollection>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</DataGrid.Styles>
+					
+					<DataGrid.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Добавить информацию об импортированных ЗРИ/ОЗИИИ"
+									  Command="{Binding AddExportedZriOziiiInfo}"/>
+							<MenuItem Header="Удалить информацию об импортированных ЗРИ/ОЗИИИ"
+									  Command="{Binding DeleteExportedZriOziiiInfo}"
+									  CommandParameter="{Binding SelectedInfo}"/>
+						</ContextMenu>
+					</DataGrid.ContextMenu>
+					
+					<interactivity:Interaction.Behaviors>
+						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="3.1Table1" />
+						<dgBehaviors:DataGridPointerBehavior />
+						<dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedInfoCollection, Mode=TwoWay}" />
+						<dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
+						<dgBehaviors:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
+						<dgBehaviors:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
+					</interactivity:Interaction.Behaviors>
+					
 					<DataGrid.Columns>
-						<DataGridTextColumn Header="Радионуклидный состав" Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Количество, шт."  Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Суммарная активность, Бк"  Width="*"></DataGridTextColumn>
+						<DataGridTemplateColumn Width="300">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Радионуклидный состав" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding RadionuclidComposition, Mode=TwoWay}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+					
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Количество, шт." />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding Count, Mode=TwoWay}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Суммарная активность, Бк" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding TotalActivity, Mode=TwoWay}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 					</DataGrid.Columns>
 				</DataGrid>
-
-
+				
 			</Grid>
 
 		</ScrollViewer>

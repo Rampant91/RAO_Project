@@ -1,0 +1,212 @@
+﻿using Models.Forms.DataAccess;
+using Models.Interfaces;
+using Models.Passports;
+using OfficeOpenXml;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.AccessControl;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Models.Forms.Form3
+{
+    [Serializable]
+    [Table(name: "form_32_table_2")]
+    public class Form32ContainerInfo : INotifyPropertyChanged, INotifyDataErrorInfo, ICopiable
+    {
+        #region Constructor
+        public Form32ContainerInfo()
+        {
+        }
+        public Form32ContainerInfo(Form32 form32)
+        {
+            _form32 = form32;
+        }
+        #endregion
+        [Key]
+        public int Id { get; set; }
+
+        #region ForeignKey Form32Id
+        public int Form32Id { get; set; }
+
+        private Form32 _form32;
+
+        [ForeignKey(nameof(Form32Id))]
+        public Form32 Form32
+        {
+            get
+            {
+                return _form32;
+            }
+            private set
+            {
+                _form32 = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region Name (9.1)
+        private string _name;
+
+        [MaxLength(64)]
+        [Column(TypeName = "varchar(64)")]
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                _name = value ?? string.Empty;
+                ValidateString(nameof(Name), _name);
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+
+        #region Type (9.2)
+        private string _type;
+
+        [MaxLength(64)]
+        [Column(TypeName = "varchar(64)")]
+        public string Type
+        {
+            get => _type;
+            set
+            {
+                _type = value ?? string.Empty;
+                ValidateString(nameof(Type), _type);
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region IdNum (9.3)
+        private string _idNum;
+
+        [MaxLength(64)]
+        [Column(TypeName = "varchar(64)")]
+        public string IdNum
+        {
+            get => _idNum;
+            set
+            {
+                _idNum = value ?? string.Empty;
+                ValidateString(nameof(IdNum), _idNum);
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region ReleaseYear (9.4)
+        private int? _releaseYear = null;
+        public int? ReleaseYear
+        {
+            get => _releaseYear;
+            set
+            {
+                _releaseYear = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region DepletedUraniumMass (9.5)
+        private double? _depletedUraniumMass = null;
+        public double? DepletedUraniumMass
+        {
+            get => _depletedUraniumMass;
+            set
+            {
+                _depletedUraniumMass = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region ConvertToTSVstring
+
+        /// <summary>
+        /// </summary>
+        /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+        public string ConvertToTSVstring()
+        {
+            // Создаем текстовое представление (TSV - tab-separated values)
+            var str =
+                $"{Name}\t" +
+                $"{Type}\t" +
+                $"{IdNum}\t" +
+                $"{ReleaseYear}\t" +
+                $"{DepletedUraniumMass}";
+            return str;
+        }
+
+        #endregion
+
+        #region Validation
+        private void ValidateString(string propertyName, string str)
+        {
+            ClearErrors(propertyName);
+            if (string.IsNullOrEmpty(str))
+                AddError(propertyName, "Поле не заполнено");
+        }
+        #endregion
+
+        #region NotifyDataError
+        private readonly Dictionary<string, List<string>> _errors = new();
+
+        // Добавление ошибки
+        private void AddError(string propertyName, string error)
+        {
+            if (!_errors.ContainsKey(propertyName))
+                _errors[propertyName] = new List<string>();
+
+            if (!_errors[propertyName].Contains(error))
+            {
+                _errors[propertyName].Add(error);
+                OnErrorsChanged(propertyName);
+            }
+        }
+
+        // Очистка ошибок свойства
+        private void ClearErrors(string propertyName)
+        {
+            if (_errors.Remove(propertyName))
+                OnErrorsChanged(propertyName);
+        }
+
+        // INotifyDataErrorInfo
+        public bool HasErrors => _errors.Any();
+
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
+
+        protected virtual void OnErrorsChanged(string propertyName)
+        {
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        }
+
+        public IEnumerable GetErrors(string? propertyName)
+        {
+            if (string.IsNullOrEmpty(propertyName))
+                return _errors.SelectMany(x => x.Value);
+
+            return _errors.TryGetValue(propertyName, out var errors) ? errors : Enumerable.Empty<string>();
+        }
+        #endregion
+
+        #region OnPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
+    }
+}

@@ -1,9 +1,21 @@
-﻿using Models.Collections;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Threading;
+using MessageBox.Avalonia.DTO;
+using Models.Collections;
+using Models.DBRealization;
+using Models.Forms.Form3;
+using Models.Interfaces;
+using Models.Passports;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Client_App.ViewModels.Forms.Forms3
 {
@@ -16,9 +28,16 @@ namespace Client_App.ViewModels.Forms.Forms3
                 return "3.1";
             }
         }
-        public Form_31VM() { }
+        #region Constructors
+        public Form_31VM()
+        {
+            InitializeCommands();
+        }
 
-        public Form_31VM(Report report) : base(report) { }
+        public Form_31VM(Report report) : base(report)
+        {
+            InitializeCommands();
+        }
 
         public Form_31VM(in Reports reps)
         {
@@ -35,37 +54,58 @@ namespace Client_App.ViewModels.Forms.Forms3
             };
 
             InitializeUserControls();
+            InitializeCommands();
             Reports = reps;
 
+            StaticConfiguration.DBModel.ReportCollectionDbSet.Add(Report);
         }
+        #endregion
 
-        public override int RowCount
+        #region Properties
+
+        Form31ExportedZriOziiiInfo _selectedInfo;
+        public Form31ExportedZriOziiiInfo SelectedInfo
         {
-            get => _rowCount; 
-            set
-            { 
-                _rowCount = value;
-                OnPropertyChanged();
-            }
-        }
-        public override int CurrentPage
-        {
-            get => _rowCount;
+            get => _selectedInfo;
             set
             {
-                _rowCount = value;
+                _selectedInfo = value;
                 OnPropertyChanged();
             }
         }
-        public override int TotalPages
+        ObservableCollection<Form31ExportedZriOziiiInfo> _selectedInfoCollection;
+        public ObservableCollection<Form31ExportedZriOziiiInfo> SelectedInfoCollection
         {
-            get => _rowCount;
-        }
-        public override int TotalRows
-        {
-            get => _rowCount;
+            get => _selectedInfoCollection;
+            set
+            {
+                _selectedInfoCollection = value;
+                OnPropertyChanged();
+            }
         }
 
 
+        #endregion
+
+        #region Commands
+        public ICommand AddExportedZriOziiiInfo { get; set; }
+        public ICommand DeleteExportedZriOziiiInfo { get; set; }
+
+        public ICommand PasteRows { get; set; }
+        #endregion
+
+        #region InitializeCommands
+        private void InitializeCommands()
+        {
+            AddExportedZriOziiiInfo = ReactiveCommand.Create(() =>
+            {
+                Report.Rows31One.ExportedZriOziiiInfoCollection.Add(new Form31ExportedZriOziiiInfo(Report.Rows31One));
+            });
+            DeleteExportedZriOziiiInfo = ReactiveCommand.Create<Form31ExportedZriOziiiInfo>(info =>
+            {
+                info.Form31?.ExportedZriOziiiInfoCollection.Remove(info);
+            });
+        }
+        #endregion
     }
 }

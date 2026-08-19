@@ -1,9 +1,14 @@
 ﻿using Models.Collections;
+using Models.DBRealization;
+using Models.Forms.Form3;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Client_App.ViewModels.Forms.Forms3
 {
@@ -16,9 +21,10 @@ namespace Client_App.ViewModels.Forms.Forms3
                 return "3.2";
             }
         }
-        public Form_32VM() { }
+        #region Constructors
+        public Form_32VM() { InitializeCommands(); }
 
-        public Form_32VM(Report report) : base(report) { }
+        public Form_32VM(Report report) : base(report) { InitializeCommands(); }
 
         public Form_32VM(in Reports reps)
         {
@@ -38,10 +44,120 @@ namespace Client_App.ViewModels.Forms.Forms3
             };
 
             InitializeUserControls();
+            InitializeCommands();
             Reports = reps;
 
+            StaticConfiguration.DBModel.ReportCollectionDbSet.Add(Report);
+
+        }
+        #endregion
+
+        #region Properties
+        Form32ExportedZriInfo _selectedZriInfo;
+        public Form32ExportedZriInfo SelectedZriInfo
+        {
+            get => _selectedZriInfo;
+            set
+            {
+                _selectedZriInfo = value;
+                OnPropertyChanged();
+            }
+        }
+        ObservableCollection<Form32ExportedZriInfo> _selectedZriInfoCollection;
+        public ObservableCollection<Form32ExportedZriInfo> SelectedZriInfoCollection
+        {
+            get => _selectedZriInfoCollection;
+            set
+            {
+                _selectedZriInfoCollection = value;
+                OnPropertyChanged();
+            }
         }
 
+        Form32ContainerInfo _selectedContainerInfo;
+        public Form32ContainerInfo SelectedContainerInfo
+        {
+            get => _selectedContainerInfo;
+            set
+            {
+                _selectedContainerInfo = value;
+                OnPropertyChanged();
+            }
+        }
+        ObservableCollection<Form32ContainerInfo> _selectedContainerInfoCollection;
+        public ObservableCollection<Form32ContainerInfo> SelectedContainerInfoCollection
+        {
+            get => _selectedContainerInfoCollection;
+            set
+            {
+                _selectedContainerInfoCollection = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        Form32Identificator _selectedIdentificator;
+        public Form32Identificator SelectedIdentificator
+        {
+            get => _selectedIdentificator;
+            set
+            {
+                _selectedIdentificator = value;
+                OnPropertyChanged();
+            }
+        }
+        ObservableCollection<Form32Identificator> _selectedIdentificatorCollection;
+        public ObservableCollection<Form32Identificator> SelectedIdentificatorCollection
+        {
+            get => _selectedIdentificatorCollection;
+            set
+            {
+                _selectedIdentificatorCollection = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        #region Commands
+        public ICommand AddExportedZriInfo { get; set; }
+        public ICommand DeleteExportedZriInfo { get; set; }
+        public ICommand AddContainerInfo { get; set; }
+        public ICommand DeleteContainerInfo { get; set; }
+        public ICommand AddIdentificator { get; set; }
+        public ICommand DeleteIdentificator { get; set; }
+        #endregion
+
+        #region InitializeCommands
+        private void InitializeCommands()
+        {
+            AddExportedZriInfo = ReactiveCommand.Create(() =>
+            {
+                Report.Rows32One.ExportedZriInfoCollection.Add(new Form32ExportedZriInfo(Report.Rows32One));
+            });
+            DeleteExportedZriInfo = ReactiveCommand.Create<Form32ExportedZriInfo>(info =>
+            {
+                info.Form32?.ExportedZriInfoCollection.Remove(info);
+            });
+
+            AddContainerInfo = ReactiveCommand.Create(() =>
+            {
+                Report.Rows32One.ContainersInfoCollection.Add(new Form32ContainerInfo(Report.Rows32One));
+            });
+            DeleteContainerInfo = ReactiveCommand.Create<Form32ContainerInfo>(container =>
+            {
+                container.Form32?.ContainersInfoCollection.Remove(container);
+            });
+
+            AddIdentificator = ReactiveCommand.Create(() =>
+            {
+                Report.Rows32One.IdentificatorsCollection.Add(new Form32Identificator(Report.Rows32One));
+            });
+            DeleteIdentificator = ReactiveCommand.Create<Form32Identificator>(identificator =>
+            {
+                identificator.Form32?.IdentificatorsCollection.Remove(identificator);
+            });
+        }
+        #endregion
 
     }
 }

@@ -88,11 +88,11 @@ public class DataContext : DbContext
 
     public DbSet<Form30> form_30 { get; set; }
     public DbSet<Form31> form_31 { get; set; }
-    public DbSet<ExportedZriOziiiInfo> form_31_table { get; set; }
+    public DbSet<Form31ExportedZriOziiiInfo> form_31_table { get; set; }
     public DbSet<Form32> form_32 { get; set; }
-    public DbSet<ExportedZriInfo> form_32_table_1 { get; set; }
-    public DbSet<ContainerInfo> form_32_table_2 { get; set; }
-    public DbSet<Identificator> form_32_table_3 { get; set; }
+    public DbSet<Form32ExportedZriInfo> form_32_table_1 { get; set; }
+    public DbSet<Form32ContainerInfo> form_32_table_2 { get; set; }
+    public DbSet<Form32Identificator> form_32_table_3 { get; set; }
 
     public  DbSet<Form40> form_40 { get; set; }
     public DbSet<Form41> form_41 { get; set; }

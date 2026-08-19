@@ -6,7 +6,7 @@
         xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:forms="clr-namespace:Models.Forms;assembly=Models"
-        xmlns:forms3="clr-namespace:Models.Forms.Form3;assembly=Models"
+        xmlns:forms32="clr-namespace:Models.Forms.Form3.Form32;assembly=Models"
         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
         xmlns:local="using:Client_App.Behaviors"
         xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
@@ -34,6 +34,7 @@
 		<converter:ByteNullableToStringConverter x:Key="ByteNullableToStringConverter" />
 		<converter:ByteNullableOrDashToStringConverter x:Key="ByteNullableOrDashToStringConverter" />
 		<converter:DateConverter x:Key="DateConverter" />
+		<converter:DateOnlyToStringConverter x:Key="DateOnlyToStringConverter"/>
 		<converter:IsOperation41AndSingleSelectionConverter x:Key="Op41AndOneSelectedConverter" />
 	</Window.Resources>
 
@@ -210,7 +211,8 @@
 					     VerticalAlignment="Center"
 						 Text="Уникальный идентификационный номер согласия"/>
 				<TextBox Grid.Row="0"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows32One.AgreementIdNum.Value}"/>
 
 				<TextBlock Grid.Row="1"
 						 Grid.Column="0"
@@ -223,7 +225,8 @@
 					     VerticalAlignment="Center"
 						 Text="Дата поставки (первого этапа поставки)"/>
 				<TextBox Grid.Row="1"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows32One.DeliveryDay.Value, Converter={StaticResource DateOnlyToStringConverter}}"/>
 
 				<TextBlock Grid.Row="2"
 						 Grid.Column="0"
@@ -240,7 +243,7 @@
 
 				<TextBlock Grid.Row="3"
 						 Grid.Column="0"
-						 Margin="5,0,5,0"
+						 Margin="15,0,5,0"
 						 VerticalAlignment="Center"
 						 Text="3.1"/>
 				<TextBlock Grid.Row="3"
@@ -249,7 +252,8 @@
 					  VerticalAlignment="Center"
 						 Text="Наименование"/>
 				<TextBox Grid.Row="3"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows32One.RecipientName.Value}"/>
 
 				<TextBlock Grid.Row="5"
 						 Grid.Column="0"
@@ -261,8 +265,28 @@
 						 TextWrapping="WrapWithOverflow"
 						 VerticalAlignment="Center"
 						 Text="Вид деятельности, виды работ (услуг), выполняемых (оказываемых) а составе вида деятельности"/>
-				<TextBox Grid.Row="5"
-						 Grid.Column="2"/>
+				<StackPanel Grid.Row="5"
+						 Grid.Column="2">
+					<TextBlock Text="Обращение с радиоактивными веществами при"/>
+					<CheckBox Content="производстве" 
+							  IsChecked="{Binding Report.Rows32One.IsRvProduction.Value}"></CheckBox>
+					<CheckBox Content="транспортировании"
+							  IsChecked="{Binding Report.Rows32One.IsRvTransportation.Value}"></CheckBox>
+					<CheckBox Content="использовании"
+							  IsChecked="{Binding Report.Rows32One.IsRvExploitation.Value}"></CheckBox>
+					<CheckBox Content="хранении"
+							  IsChecked="{Binding Report.Rows32One.IsRvStoring.Value}"></CheckBox>
+					<CheckBox Content="переработке"
+							  IsChecked="{Binding Report.Rows32One.IsRvRecycling.Value}"></CheckBox>
+
+					<TextBlock Text="Обращение с радиоактивными отходами при"/>
+					<CheckBox Content="транспортировании"
+							  IsChecked="{Binding Report.Rows32One.IsRaoTransportation.Value}"></CheckBox>
+					<CheckBox Content="хранении"
+							  IsChecked="{Binding Report.Rows32One.IsRaoStoring.Value}"></CheckBox>
+					<CheckBox Content="переработке"
+							  IsChecked="{Binding Report.Rows32One.IsRaoRecycling.Value}"></CheckBox>
+				</StackPanel>
 
 				<TextBlock Grid.Row="6"
 						 Grid.Column="0"
@@ -288,7 +312,8 @@
 					  VerticalAlignment="Center"
 						 Text="На обращение с радиоактивными веществами"/>
 				<TextBox Grid.Row="7"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows32One.LicenseNumRv.Value}"/>
 
 				<TextBlock Grid.Row="8"
 						 Grid.Column="0"
@@ -301,7 +326,8 @@
 					  VerticalAlignment="Center"
 						 Text="На обращение с радиоактивными отходами"/>
 				<TextBox Grid.Row="8"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows32One.LicenseNumRao.Value}"/>
 
 				<TextBlock Grid.Row="9"
 						 Grid.Column="0"
@@ -327,7 +353,8 @@
 						 VerticalAlignment="Center"
 						 Text="На обращение с радиоактивными веществами"/>
 				<TextBox Grid.Row="10"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows32One.LicenseExpirationDateRv.Value, Converter={StaticResource DateOnlyToStringConverter}}"/>
 
 				<TextBlock Grid.Row="11"
 						 Grid.Column="0"
@@ -340,7 +367,8 @@
 						 VerticalAlignment="Center"
 						 Text="на обращение с радиоактивными отходами"/>
 				<TextBox Grid.Row="11"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows32One.LicenseExpirationDateRao.Value, Converter={StaticResource DateOnlyToStringConverter}}"/>
 
 				<TextBlock Grid.Row="12"
 						 Grid.Column="0"
@@ -353,7 +381,8 @@
 					  VerticalAlignment="Center"
 						 Text="Адрес поставки"/>
 				<TextBox Grid.Row="12"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows32One.DeliveryAddress.Value}"/>
 
 				<TextBlock Grid.Row="13"
 						 Grid.Column="0"
@@ -366,7 +395,8 @@
 						 VerticalAlignment="Center"
 						 Text="Радионуклидный состав ЗРИ"/>
 				<TextBox Grid.Row="13"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows32One.RadionuclidCompositionZri.Value}"/>
 
 				<TextBlock Grid.Row="14"
 						 Grid.Column="0"
@@ -379,7 +409,8 @@
 						 VerticalAlignment="Center"
 						 Text="Суммарная активность, Бк"/>
 				<TextBox Grid.Row="14"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows32One.TotalActivity.Value}"/>
 
 				<TextBlock Grid.Row="15"
 						 Grid.Column="0"
@@ -392,7 +423,8 @@
 						 VerticalAlignment="Center"
 						 Text="Общее количество ЗРИ, шт."/>
 				<TextBox Grid.Row="15"
-						 Grid.Column="2"/>
+						 Grid.Column="2"
+						 Text="{Binding Report.Rows32One.TotalCount.Value}"/>
 				
 				<TextBlock Grid.Row="16"
 						 Grid.Column="0"
@@ -408,28 +440,248 @@
 						 Text="Сведения о поставляемых ЗРИ:"/>
 
 				<DataGrid x:Name="dataGrid1"
+						  Classes="table"
 						  Grid.Row="17"
 						  Grid.Column="0"
-                          Classes="table"
+						  Grid.ColumnSpan="3"
 						  MinHeight="150"
 						  MaxHeight="250"
 						  RowHeight="25"
 						  Margin="0,10,0,0"
+						  Items="{Binding Report.Rows32One.ExportedZriInfoCollection}"
+						  SelectedItem="{Binding SelectedZriInfo}"
 						  HorizontalScrollBarVisibility="Auto"
-						  VerticalScrollBarVisibility ="Auto"
-						  Grid.ColumnSpan="3">
+						  VerticalScrollBarVisibility ="Auto">
+
+					<DataGrid.Styles>
+						<!-- Находим ScrollViewer внутри DataGrid -->
+						<Style Selector="DataGrid /template/ ScrollViewer#PART_ScrollViewer">
+							<Setter Property="interactivity:Interaction.Behaviors">
+								<Setter.Value>
+									<interactivity:BehaviorCollection>
+										<local:ChainingScrollViewerBehavior/>
+									</interactivity:BehaviorCollection>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</DataGrid.Styles>
+					
+					<interactivity:Interaction.Behaviors>
+						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="3.2Table1" />
+						<dgBehaviors:DataGridPointerBehavior />
+						<dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedZriInfoCollection, Mode=TwoWay}" />
+						<dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
+						<dgBehaviors:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
+						<dgBehaviors:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
+					</interactivity:Interaction.Behaviors>
+
+					<DataGrid.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Добавить сведения о поставляемых ЗРИ"
+									  Command="{Binding AddExportedZriInfo}"/>
+							<MenuItem Header="Удалить сведения о поставляемых ЗРИ"
+									  Command="{Binding DeleteExportedZriInfo}"
+									  CommandParameter="{Binding SelectedInfo}"/>
+						</ContextMenu>
+					</DataGrid.ContextMenu>
 					<DataGrid.Columns>
-						<DataGridTextColumn Header="Номер паспорта (сертификата)" Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Тип (модель, тип капсулы)"  Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Заводской номер"  Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Радионуклидный состав"  Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Дата выпуска"  Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Активность на дату выпуска, Бк"  Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Содержание ядерных материалов, г"  Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Категория"  Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Код ОКПО изготовителя (краткое наименование государства в соответствии с ОКСМ)"  Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Номер сертификата-разрешения на РВ особого вида"  Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Срок действия сертификата-разрешения на рВ особого вида"  Width="*"></DataGridTextColumn>
+						<!-- 1. Номер паспорта (сертификата) -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Номер паспорта (сертификата)" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding PassportNum}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<!-- 2. Тип (модель, тип капсулы) -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Тип (модель, тип капсулы)" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding Type}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<!-- 3. Заводской номер -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Заводской номер" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding FactoryNum}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<!-- 4. Радионуклидный состав -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Радионуклидный состав" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding RadionuclidComposition}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<!-- 5. Дата выпуска -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Дата выпуска" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding ReleaseDate, Converter={StaticResource DateOnlyToStringConverter}}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<!-- 6. Активность на дату выпуска, Бк -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Активность на дату выпуска, Бк" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding ActivityOnRealeseDate}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<!-- 7. Содержание ядерных материалов, г -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Содержание ядерных материалов, г" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding NuclearMaterials}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<!-- 8. Категория -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Категория" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding Category}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<!-- 9. Код ОКПО изготовителя (краткое наименование государства в соответствии с ОКСМ) -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Код ОКПО изготовителя (краткое наименование государства в соответствии с ОКСМ)" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding ManufacturerOksm}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<!-- 10. Номер сертификата-разрешения на РВ особого вида -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Номер сертификата-разрешения на РВ особого вида" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding CertificateNum}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<!-- 11. Срок действия сертификата-разрешения на РВ особого вида -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Срок действия сертификата-разрешения на РВ особого вида" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding CertificateExpirationDate, Converter={StaticResource DateOnlyToStringConverter}}"/>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 					</DataGrid.Columns>
 				</DataGrid>
 
@@ -446,24 +698,141 @@
 						 Grid.ColumnSpan="2"
 						 Text="Сведения о контейнере, приборе, установке"/>
 
-				<DataGrid x:Name="dataGrid"
+				<DataGrid x:Name="dataGrid2"
+						  Classes="table"
 						  Grid.Row="19"
 						  Grid.Column="0"
-                          Classes="table"
+						  Grid.ColumnSpan="3"
 						  MinHeight="150"
 						  MaxHeight="250"
 						  RowHeight="25"
 						  Margin="0,10,0,0"
+						  Items="{Binding Report.Rows32One.ContainersInfoCollection}"
+						  SelectedItem="{Binding SelectedZriInfo}"
 						  HorizontalScrollBarVisibility="Auto"
-						  VerticalScrollBarVisibility ="Auto"
-						  Grid.ColumnSpan="3">
+						  VerticalScrollBarVisibility ="Auto">
+
+					<DataGrid.Styles>
+						<!-- Находим ScrollViewer внутри DataGrid -->
+						<Style Selector="DataGrid /template/ ScrollViewer#PART_ScrollViewer">
+							<Setter Property="interactivity:Interaction.Behaviors">
+								<Setter.Value>
+									<interactivity:BehaviorCollection>
+										<local:ChainingScrollViewerBehavior/>
+									</interactivity:BehaviorCollection>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</DataGrid.Styles>
+
+					<interactivity:Interaction.Behaviors>
+						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="3.2Table2" />
+						<dgBehaviors:DataGridPointerBehavior />
+						<dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedZriInfoCollection, Mode=TwoWay}" />
+						<dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
+						<dgBehaviors:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
+						<dgBehaviors:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
+					</interactivity:Interaction.Behaviors>
+
+					<DataGrid.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Добавить информацию о контейнере, приборе, установке"
+									  Command="{Binding AddContainerInfo}"/>
+							<MenuItem Header="Удалить информацию о контейнере, приборе, установке"
+									  Command="{Binding DeleteContainerInfo}"
+									  CommandParameter="{Binding SelectedInfo}"/>
+						</ContextMenu>
+					</DataGrid.ContextMenu>
 					<DataGrid.Columns>
-						<DataGridTextColumn Header="Наименование" Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Тип"  Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Идентификационный номер"  Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Год выпуска"  Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Дата выпуска"  Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Масса обедненного урана в конструкции, кг"  Width="*"></DataGridTextColumn>
+						<!-- 1. Наименование -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Наименование" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding Name}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<!-- 2. Тип -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Тип" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding Type}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<!-- 3. Идентификационный номер -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Идентификационный номер" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding IdNum}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<!-- 4. Год выпуска -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Год выпуска" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding ReleaseYear}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<!-- 5. Масса обедненного урана в конструкции, кг -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Масса обедненного урана в конструкции, кг" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding DepletedUraniumMass}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 					</DataGrid.Columns>
 				</DataGrid>
 
@@ -481,19 +850,86 @@
 						 Text="Идентификаторы"/>
 
 				<DataGrid x:Name="dataGrid3"
+						  Classes="table"
 						  Grid.Row="21"
 						  Grid.Column="0"
-                          Classes="table"
+						  Grid.ColumnSpan="3"
 						  MinHeight="150"
 						  MaxHeight="250"
 						  RowHeight="25"
 						  Margin="0,10,0,0"
+						  Items="{Binding Report.Rows32One.IdentificatorsCollection}"
+						  SelectedItem="{Binding SelectedContainerInfo}"
 						  HorizontalScrollBarVisibility="Auto"
-						  VerticalScrollBarVisibility ="Auto"
-						  Grid.ColumnSpan="3">
+						  VerticalScrollBarVisibility ="Auto">
+
+					<DataGrid.Styles>
+						<!-- Находим ScrollViewer внутри DataGrid -->
+						<Style Selector="DataGrid /template/ ScrollViewer#PART_ScrollViewer">
+							<Setter Property="interactivity:Interaction.Behaviors">
+								<Setter.Value>
+									<interactivity:BehaviorCollection>
+										<local:ChainingScrollViewerBehavior/>
+									</interactivity:BehaviorCollection>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</DataGrid.Styles>
+
+					<interactivity:Interaction.Behaviors>
+						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="3.2Table3" />
+						<dgBehaviors:DataGridPointerBehavior />
+						<dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedContainerInfoCollection , Mode=TwoWay}" />
+						<dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
+						<dgBehaviors:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
+						<dgBehaviors:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
+					</interactivity:Interaction.Behaviors>
+
+					<DataGrid.ContextMenu>
+						<ContextMenu>
+							<MenuItem Header="Добавить идентификатор"
+									  Command="{Binding AddIdentificator}"/>
+							<MenuItem Header="Удалить идентификатор"
+									  Command="{Binding DeleteExportedZriOziiiInfo}"
+									  CommandParameter="{Binding DeleteIdentificator}"/>
+						</ContextMenu>
+					</DataGrid.ContextMenu>
 					<DataGrid.Columns>
-						<DataGridTextColumn Header="Наименование идентификатора" Width="*"></DataGridTextColumn>
-						<DataGridTextColumn Header="Значение"  Width="*"></DataGridTextColumn>
+						<!-- Наименование идентификатора -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Наименование идентификатора" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding IdName}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+
+						<!-- Значение -->
+						<DataGridTemplateColumn Width="150">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="Значение" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox Text="{Binding IdValue}" />
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
 					</DataGrid.Columns>
 				</DataGrid>
 			</Grid>

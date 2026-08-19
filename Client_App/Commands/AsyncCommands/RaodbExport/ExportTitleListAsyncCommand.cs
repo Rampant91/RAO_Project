@@ -206,7 +206,7 @@ public class ExportTitleListAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #endregion
 
-        await tempDb.Database.MigrateAsync(cancellationToken: cts.Token);
+        await DatabaseMigrationHelper.MigrateAsync(tempDb.Database,cancellationToken: cts.Token);
 
         #region Progress = 60
 

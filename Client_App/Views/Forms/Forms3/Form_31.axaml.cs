@@ -15,7 +15,6 @@ using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.Forms;
-using Models.Forms.Form3;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,6 +22,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.Forms.Form3;
 
 namespace Client_App.Views.Forms.Forms3;
 

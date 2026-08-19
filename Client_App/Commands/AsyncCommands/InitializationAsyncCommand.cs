@@ -19,6 +19,7 @@ using Models.Forms.Form3;
 using Models.Forms.Form4;
 using Models.Forms.Form5;
 using Models.Interfaces;
+using ReactiveUI;
 using Spravochniki;
 using System;
 using System.Collections;
@@ -40,113 +41,120 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 {
     public override async Task AsyncExecute(object? parameter)
     {
-        var onStartProgressBarVm = parameter as OnStartProgressBarVM;
-        onStartProgressBarVm!.LoadStatus = "Поиск системной директории";
-        mainWindowViewModel.OnStartProgressBar = 1;
-        await GetSystemDirectory();
-
-        onStartProgressBarVm.LoadStatus = "Создание временных файлов";
-        mainWindowViewModel.OnStartProgressBar = 5;
-        await ProcessRaoDirectory();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка справочников";
-        mainWindowViewModel.OnStartProgressBar = 10;
-        await ProcessSpravochniks();
-
-        onStartProgressBarVm.LoadStatus = "Создание базы данных";
-        mainWindowViewModel.OnStartProgressBar = 15;
-        await ProcessDataBaseCreate();
-
-        onStartProgressBarVm.LoadStatus = "Очистка";
-        mainWindowViewModel.OnStartProgressBar = 17;
-        await CleanUpMasterRep();
-
-        onStartProgressBarVm.LoadStatus = "Создание резервной копии БД";
-        mainWindowViewModel.OnStartProgressBar = 18;
-        await ProcessDataBaseBackup();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка таблиц";
-        mainWindowViewModel.OnStartProgressBar = 20;
-        var dbm = StaticConfiguration.DBModel;
-
-        #region LoadTables
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 1.0";
-        mainWindowViewModel.OnStartProgressBar = 25;
-        await dbm.form_10.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.0";
-        mainWindowViewModel.OnStartProgressBar = 35;
-        await dbm.form_20.LoadAsync();
-
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 3.0";
-        mainWindowViewModel.OnStartProgressBar = 45;
-        await dbm.form_30.LoadAsync();
-
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 4.0";
-        mainWindowViewModel.OnStartProgressBar = 55;
-        await dbm.form_40.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 5.0";
-        mainWindowViewModel.OnStartProgressBar = 65;
-        await dbm.form_50.LoadAsync();
-
         try
         {
-            onStartProgressBarVm.LoadStatus = "Загрузка коллекций отчетов";
-            mainWindowViewModel.OnStartProgressBar = 77;
-            await dbm.ReportCollectionDbSet.LoadAsync();
+            var onStartProgressBarVm = parameter as OnStartProgressBarVM;
+            onStartProgressBarVm!.LoadStatus = "Поиск системной директории";
+            mainWindowViewModel.OnStartProgressBar = 1;
+            await GetSystemDirectory();
+
+            onStartProgressBarVm.LoadStatus = "Создание временных файлов";
+            mainWindowViewModel.OnStartProgressBar = 5;
+            await ProcessRaoDirectory();
+
+            onStartProgressBarVm.LoadStatus = "Загрузка справочников";
+            mainWindowViewModel.OnStartProgressBar = 10;
+            await ProcessSpravochniks();
+
+            onStartProgressBarVm.LoadStatus = "Создание базы данных";
+            mainWindowViewModel.OnStartProgressBar = 15;
+            await ProcessDataBaseCreate();
+
+            onStartProgressBarVm.LoadStatus = "Очистка";
+            mainWindowViewModel.OnStartProgressBar = 17;
+            await CleanUpMasterRep();
+
+            onStartProgressBarVm.LoadStatus = "Создание резервной копии БД";
+            mainWindowViewModel.OnStartProgressBar = 18;
+            await ProcessDataBaseBackup();
+
+            onStartProgressBarVm.LoadStatus = "Загрузка таблиц";
+            mainWindowViewModel.OnStartProgressBar = 20;
+            var dbm = StaticConfiguration.DBModel;
+
+            #region LoadTables
+
+            onStartProgressBarVm.LoadStatus = "Загрузка форм 1.0";
+            mainWindowViewModel.OnStartProgressBar = 25;
+            await dbm.form_10.LoadAsync();
+
+            onStartProgressBarVm.LoadStatus = "Загрузка форм 2.0";
+            mainWindowViewModel.OnStartProgressBar = 35;
+            await dbm.form_20.LoadAsync();
+
+
+            onStartProgressBarVm.LoadStatus = "Загрузка форм 3.0";
+            mainWindowViewModel.OnStartProgressBar = 45;
+            await dbm.form_30.LoadAsync();
+
+
+            onStartProgressBarVm.LoadStatus = "Загрузка форм 4.0";
+            mainWindowViewModel.OnStartProgressBar = 55;
+            await dbm.form_40.LoadAsync();
+
+            onStartProgressBarVm.LoadStatus = "Загрузка форм 5.0";
+            mainWindowViewModel.OnStartProgressBar = 65;
+            await dbm.form_50.LoadAsync();
+
+            try
+            {
+                onStartProgressBarVm.LoadStatus = "Загрузка коллекций отчетов";
+                mainWindowViewModel.OnStartProgressBar = 77;
+                await dbm.ReportCollectionDbSet.LoadAsync();
+            }
+            catch (Exception ex)
+            {
+                var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                          $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                ServiceExtension.LoggerManager.Error(msg);
+            }
+
+            onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
+            mainWindowViewModel.OnStartProgressBar = 79;
+            await dbm.ReportsCollectionDbSet.LoadAsync();
+
+            onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
+            mainWindowViewModel.OnStartProgressBar = 81;
+            if (!dbm.DBObservableDbSet.Any())
+            {
+                dbm.DBObservableDbSet.Add(new DBObservable());
+                dbm.DBObservableDbSet.Local.First().Reports_Collection.AddRange(dbm.ReportsCollectionDbSet);
+            }
+
+            var removedReports = dbm.ReportsCollectionDbSet.Where(reps => reps.DBObservable == null);
+
+            foreach (var reports in removedReports)
+            {
+                dbm.ReportsCollectionDbSet.Remove(reports);
+            }
+
+            await dbm.DBObservableDbSet.LoadAsync();
+
+            #endregion
+
+            onStartProgressBarVm.LoadStatus = "Сортировка организаций";
+            mainWindowViewModel.OnStartProgressBar = 85;
+            await ProcessDataBaseFillEmpty(dbm);
+
+            onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
+            mainWindowViewModel.OnStartProgressBar = 90;
+            ReportsStorage.LocalReports = dbm.DBObservableDbSet.Local.First();
+
+            await ProcessDataBaseFillNullOrder();
+
+            onStartProgressBarVm.LoadStatus = "Сохранение";
+            mainWindowViewModel.OnStartProgressBar = 95;
+            await dbm.SaveChangesAsync();
+            ReportsStorage.LocalReports.PropertyChanged += Local_ReportsChanged;
+
+            mainWindowViewModel.OnStartProgressBar = 100;
+
+            //new CountRowsInAllReportByRegionAndYearCommand().AsyncExecute(null);
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
-            var msg = $"{Environment.NewLine}Message: {ex.Message}" + 
-                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-            ServiceExtension.LoggerManager.Error(msg);
+            throw ex;
         }
-
-        onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
-        mainWindowViewModel.OnStartProgressBar = 79;
-        await dbm.ReportsCollectionDbSet.LoadAsync();
-
-        onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
-        mainWindowViewModel.OnStartProgressBar = 81;
-        if (!dbm.DBObservableDbSet.Any())
-        {
-            dbm.DBObservableDbSet.Add(new DBObservable());
-            dbm.DBObservableDbSet.Local.First().Reports_Collection.AddRange(dbm.ReportsCollectionDbSet);
-        }
-
-        var removedReports = dbm.ReportsCollectionDbSet.Where(reps => reps.DBObservable == null);
-
-        foreach (var reports in removedReports)
-        {
-            dbm.ReportsCollectionDbSet.Remove(reports);
-        }
-
-        await dbm.DBObservableDbSet.LoadAsync();
-
-        #endregion
-
-        onStartProgressBarVm.LoadStatus = "Сортировка организаций";
-        mainWindowViewModel.OnStartProgressBar = 85;
-        await ProcessDataBaseFillEmpty(dbm);
-
-        onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
-        mainWindowViewModel.OnStartProgressBar = 90;
-        ReportsStorage.LocalReports = dbm.DBObservableDbSet.Local.First();
-
-        await ProcessDataBaseFillNullOrder();
-
-        onStartProgressBarVm.LoadStatus = "Сохранение";
-        mainWindowViewModel.OnStartProgressBar = 95;
-        await dbm.SaveChangesAsync();
-        ReportsStorage.LocalReports.PropertyChanged += Local_ReportsChanged;
-
-        mainWindowViewModel.OnStartProgressBar = 100;
-
-        //new CountRowsInAllReportByRegionAndYearCommand().AsyncExecute(null);
 
     }
 
