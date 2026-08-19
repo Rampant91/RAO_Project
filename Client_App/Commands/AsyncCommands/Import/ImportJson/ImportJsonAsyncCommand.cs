@@ -19,6 +19,7 @@ using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels;
+using Client_App.Services.DataAccess;
 
 namespace Client_App.Commands.AsyncCommands.Import.ImportJson;
 
@@ -347,18 +348,20 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                     if (baseReps11 != null)
                     {
                         baseReps11.Master_DB.ReportChangedDate = dateTime;
-                        foreach (var report in baseReps11.Report_Collection)
+                        foreach (var id in await OrgReportsQuery.GetReportIdsAsync(
+                                     StaticConfiguration.DBModel, baseReps11.Id))
                         {
-                            await ReportsStorage.GetReportAsync(report.Id);
+                            await ReportsStorage.GetReportAsync(id);
                         }
                         await ProcessIfHasReports11(baseReps11, impReps, impRepsReportList);
                     }
                     else if (baseReps21 != null)
                     {
                         baseReps21.Master_DB.ReportChangedDate = dateTime;
-                        foreach (var report in baseReps21.Report_Collection)
+                        foreach (var id in await OrgReportsQuery.GetReportIdsAsync(
+                                     StaticConfiguration.DBModel, baseReps21.Id))
                         {
-                            await ReportsStorage.GetReportAsync(report.Id);
+                            await ReportsStorage.GetReportAsync(id);
                         }
                         await ProcessIfHasReports21(baseReps21, impReps, impRepsReportList);
                     }
@@ -474,6 +477,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
         if (AtLeastOneImportDone)
         {
+            InvalidateMainWindowCachesAfterImport();
             var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
             mainWindowVM?.UpdateReportsCollection();
             mainWindowVM?.UpdateOrgsPageInfo();

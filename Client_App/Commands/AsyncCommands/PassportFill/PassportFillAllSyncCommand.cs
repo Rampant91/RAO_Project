@@ -9,6 +9,7 @@ public class PassportFillAllSyncCommand(ChangeOrCreateVM changeOrCreateViewModel
 {
     public override async Task AsyncExecute(object? parameter)
     {
+        await EnsureRowsAndTitleAsync();
         Collection = Storage.Rows17.ToList<Form17>();
         ApplicableOperationCodes = ["11","55"];
         MsgTitle = "Паспорта для всех упаковок";

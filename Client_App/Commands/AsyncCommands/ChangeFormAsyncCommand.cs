@@ -72,26 +72,20 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
 
         if (report.Reports is null)
         {
-            report.Reports = ReportsStorage.LocalReports.Reports_Collection
-                .FirstOrDefault(r => r.Report_Collection.Any(x => x.Id == report.Id));
-
-            if (report.Reports is null)
+            var orgId = await StaticConfiguration.DBModel.ReportCollectionDbSet
+                .AsNoTracking()
+                .Where(r => r.Id == report.Id)
+                .Select(r => r.Reports != null ? r.Reports.Id : 0)
+                .FirstOrDefaultAsync();
+            if (orgId != 0)
             {
-                var orgId = await StaticConfiguration.DBModel.ReportCollectionDbSet
-                    .AsNoTracking()
-                    .Where(r => r.Id == report.Id)
-                    .Select(r => r.Reports != null ? r.Reports.Id : 0)
-                    .FirstOrDefaultAsync();
-                if (orgId != 0)
-                {
-                    report.Reports = ReportsStorage.LocalReports.Reports_Collection
-                                        .FirstOrDefault(r => r.Id == orgId)
-                                    ?? await StaticConfiguration.DBModel.ReportsCollectionDbSet
-                                        .AsNoTracking()
-                                        .Include(x => x.Master_DB).ThenInclude(m => m.Rows10)
-                                        .Include(x => x.Master_DB).ThenInclude(m => m.Rows20)
-                                        .FirstOrDefaultAsync(x => x.Id == orgId);
-                }
+                report.Reports = ReportsStorage.LocalReports.Reports_Collection
+                                    .FirstOrDefault(r => r.Id == orgId)
+                                ?? await StaticConfiguration.DBModel.ReportsCollectionDbSet
+                                    .AsNoTracking()
+                                    .Include(x => x.Master_DB).ThenInclude(m => m.Rows10)
+                                    .Include(x => x.Master_DB).ThenInclude(m => m.Rows20)
+                                    .FirstOrDefaultAsync(x => x.Id == orgId);
             }
         }
 

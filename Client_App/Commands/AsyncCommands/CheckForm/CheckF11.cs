@@ -868,9 +868,7 @@ public abstract partial class CheckF11 : CheckBase
             return result;
         }
 
-        var repCollection = rep.Reports.Report_Collection.ToList().FindAll(x => x.FormNum_DB == rep.FormNum_DB);
-        var repIndex = repCollection.IndexOf(rep);
-        var previousRepExist = repIndex + 1 < repCollection.Count;
+        var previousRepExist = HasEarlierSiblingReport(rep);
 
         if (opDate == pStart && previousRepExist)
         {

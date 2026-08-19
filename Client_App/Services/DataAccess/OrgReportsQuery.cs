@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -88,5 +89,60 @@ public static class OrgReportsQuery
         query = query.Include(x => x.Report_Collection.Where(rep => rep.FormNum_DB == formNum));
 
         return await query.FirstOrDefaultAsync(ct);
+    }
+
+    /// <summary>
+    /// Последний EndPeriod отчётов данной формы у организации (для StartPeriod новой формы).
+    /// </summary>
+    public static string GetLatestEndPeriod(DBModel db, int reportsId, string formNum)
+    {
+        var periods = db.ReportCollectionDbSet
+            .AsNoTracking()
+            .Where(r => r.Reports != null && r.Reports.Id == reportsId && r.FormNum_DB == formNum)
+            .Select(r => r.EndPeriod_DB)
+            .ToList();
+        return periods
+            .Where(x => DateOnly.TryParse(x, out _))
+            .OrderBy(x => DateOnly.Parse(x!))
+            .LastOrDefault() ?? "";
+    }
+
+    public static int ResolveOrgId(DBModel db, Report rep)
+    {
+        if (rep.Reports?.Id > 0)
+            return rep.Reports.Id;
+        return db.ReportCollectionDbSet
+            .AsNoTracking()
+            .Where(r => r.Id == rep.Id && r.Reports != null)
+            .Select(r => r.Reports!.Id)
+            .FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Оболочки отчётов организации (без строк форм). formNum=null — все формы.
+    /// </summary>
+    public static List<Report> LoadReportShells(DBModel db, int reportsId, string? formNum = null)
+    {
+        var q = db.ReportCollectionDbSet
+            .AsNoTracking()
+            .Where(r => r.Reports != null && r.Reports.Id == reportsId);
+        if (!string.IsNullOrEmpty(formNum))
+            q = q.Where(r => r.FormNum_DB == formNum);
+        return q.ToList();
+    }
+
+    /// <summary>
+    /// Есть ли у организации более ранний отчёт той же формы (для Check_023).
+    /// </summary>
+    public static bool HasEarlierSiblingReport(DBModel db, Report rep)
+    {
+        var orgId = ResolveOrgId(db, rep);
+        if (orgId <= 0 || string.IsNullOrEmpty(rep.FormNum_DB))
+            return false;
+
+        DateOnly.TryParse(rep.StartPeriod_DB, out var thisStart);
+        return LoadReportShells(db, orgId, rep.FormNum_DB)
+            .Where(r => r.Id != rep.Id)
+            .Any(r => DateOnly.TryParse(r.StartPeriod_DB, out var other) && other < thisStart);
     }
 }

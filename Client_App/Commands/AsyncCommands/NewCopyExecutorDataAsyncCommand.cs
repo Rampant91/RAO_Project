@@ -1,10 +1,12 @@
 ﻿using Client_App.Resources;
+using Client_App.Services.DataAccess;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Models.Collections;
+using Models.DBRealization;
 using Avalonia.Threading;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels.Forms;
@@ -22,9 +24,9 @@ public class NewCopyExecutorDataAsyncCommand(BaseFormVM formVM) : BaseAsyncComma
     public override async Task AsyncExecute(object? parameter)
     {
         var comparator = new CustomStringDateComparer(StringComparer.CurrentCulture);
-        var lastReportWithExecutor = Storages.Report_Collection
-            .Where(rep => rep.FormNum_DB == FormType
-                          && !rep.Equals(Storage)
+        var shells = OrgReportsQuery.LoadReportShells(StaticConfiguration.DBModel, Storages.Id, FormType);
+        var lastReportWithExecutor = shells
+            .Where(rep => rep.Id != Storage.Id
                           && (rep.FIOexecutor_DB is not (null or "" or "-")
                               || rep.ExecEmail_DB is not (null or "" or "-")
                               || rep.ExecPhone_DB is not (null or "" or "-")
@@ -35,8 +37,8 @@ public class NewCopyExecutorDataAsyncCommand(BaseFormVM formVM) : BaseAsyncComma
             #region ShowMessageMissingExecutorData
 
             var orgName = "данной организации";
-            var lastReport = Storages.Report_Collection
-                .Where(rep => rep.FormNum_DB.Equals(FormType) && !rep.Equals(Storage))
+            var lastReport = shells
+                .Where(rep => rep.Id != Storage.Id)
                 .MaxBy(rep => rep.EndPeriod_DB, comparator);
             if (FormType.ToCharArray()[0] == '1')
             {

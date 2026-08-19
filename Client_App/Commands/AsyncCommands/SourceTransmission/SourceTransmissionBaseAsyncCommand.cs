@@ -1,4 +1,5 @@
 ﻿using Client_App.Resources;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms;
 using Client_App.Views;
@@ -843,22 +844,46 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     #region GetNewReport
 
+    private protected List<Report> FindTargetReportsInRange(string sourceFormNum, DateOnly opDate)
+    {
+        var targetForm = sourceFormNum == "1.1" ? "1.5" : "1.6";
+        var shells = OrgReportsQuery.LoadReportShells(
+            StaticConfiguration.DBModel, SelectedReports.Id, targetForm);
+        var inRange = shells
+            .Where(rep =>
+                DateOnly.TryParse(rep.StartPeriod_DB, out var repStartDate)
+                && (DateOnly.TryParse(rep.EndPeriod_DB, out var repEndDate)
+                    && opDate > repStartDate && opDate <= repEndDate
+                    || !DateOnly.TryParse(rep.EndPeriod_DB, out _)
+                    && opDate > repStartDate))
+            .OrderBy(x => x.EndPeriod_DB)
+            .ToList();
+        if (inRange.Count == 2
+            && !DateOnly.TryParse(inRange[0].EndPeriod_DB, out _)
+            && DateOnly.TryParse(inRange[1].EndPeriod_DB, out _))
+        {
+            inRange.RemoveAt(0);
+        }
+
+        return inRange;
+    }
+
     private Report GetNewReport(DateOnly opDate, string formNum)
     {
         var relevantFormNum = formNum == "1.1"
             ? "1.5"
             : "1.6";
+        var shells = OrgReportsQuery.LoadReportShells(
+            StaticConfiguration.DBModel, SelectedReports.Id, relevantFormNum);
 
         #region GetDates
 
-        var startDateList = SelectedReports.Report_Collection
-            .Where(x => x.FormNum_DB == relevantFormNum)
+        var startDateList = shells
             .Select(x => DateOnly.TryParse(x.StartPeriod_DB, out var startDate)
                 ? startDate
                 : DateOnly.MinValue)
             .ToList();
-        var endDateList = SelectedReports.Report_Collection
-            .Where(x => x.FormNum_DB == relevantFormNum)
+        var endDateList = shells
             .Select(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate)
                 ? endDate
                 : DateOnly.MinValue)
@@ -873,19 +898,15 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
                 .Where(x => x < opDate)
                 .Max()
             : DateOnly.MinValue;
-        var firstRepStartDate = SelectedReports.Report_Collection
-            .Any(x => x.FormNum_DB == relevantFormNum)
-            ? SelectedReports.Report_Collection
-                .Where(x => x.FormNum_DB == relevantFormNum)
+        var firstRepStartDate = shells.Count > 0
+            ? shells
                 .Select(x => DateOnly.TryParse(x.StartPeriod_DB, out var startDate)
                     ? startDate
                     : DateOnly.MaxValue)
                 .Min()
             : DateOnly.MaxValue;
-        var lastRepEndDate = SelectedReports.Report_Collection
-            .Any(x => x.FormNum_DB == relevantFormNum)
-            ? SelectedReports.Report_Collection
-                .Where(x => x.FormNum_DB == relevantFormNum)
+        var lastRepEndDate = shells.Count > 0
+            ? shells
                 .Select(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate)
                     ? endDate
                     : DateOnly.MinValue)
@@ -903,7 +924,7 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
             GradeExecutor_DB = SelectedReport.GradeExecutor_DB,
             FIOexecutor_DB = SelectedReport.FIOexecutor_DB
         };
-        if (SelectedReports.Report_Collection.All(x => x.FormNum_DB != relevantFormNum)
+        if (shells.Count == 0
             || firstRepStartDate == DateOnly.MaxValue)  //Форм нет или не парсится ни одна дата начала
         {
             newRep.StartPeriod_DB = $"01.01.{opDate.Year}";
@@ -984,22 +1005,8 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
 
     private protected void EnsureReportVisibleInMainWindow(Report report)
     {
-        if (Desktop.MainWindow is not MainWindow mainWindow
-            || mainWindow.DataContext is not MainWindowVM mainWindowVM)
-        {
-            return;
-        }
-
-        var orgInMainWindow = mainWindowVM.Forms1TabControlVM.SelectedReports;
-        if (orgInMainWindow is null || orgInMainWindow.Id != SelectedReports.Id)
-        {
-            return;
-        }
-
-        if (orgInMainWindow.Report_Collection.All(r => r.Id != report.Id))
-        {
-            orgInMainWindow.Report_Collection.Add(report);
-        }
+        Forms1WarmCache.Instance.InvalidateOrg(SelectedReports.Id);
+        RefreshMainWindowReportList();
     }
 
     private protected static void RefreshMainWindowReportList()

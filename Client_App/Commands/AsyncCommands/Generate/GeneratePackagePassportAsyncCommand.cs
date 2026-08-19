@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.ViewModels.Forms;
+using Client_App.Services.DataAccess;
 using Client_App.Views;
 using DynamicData;
 using MessageBox.Avalonia.DTO;
@@ -51,6 +52,8 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
             
 
+            await formVM.EnsureAllRowsForMutationAsync();
+
             var codeOperationRegex = new Regex("^\\d{2}$");
 
             var selectedForm17List = forms17Collection.Cast<Form17>().ToList();
@@ -79,11 +82,13 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 lastIndex++;
             }
             //Определяем отчитывающуюся организацию
-            var master = first.Report.Reports.Master_DB;
-            
-            if (master.Rows10[1] is not null)
+            var master = first.Report.Reports?.Master_DB;
+            if (master != null)
+                OrgMatchQuery.EnsureMasterReportTitleRows(master);
+
+            if (master?.Rows10 is { Count: > 1 })
                 reportingOrganizationInfo = master.Rows10[1];
-            else
+            else if (master?.Rows10 is { Count: > 0 })
                 reportingOrganizationInfo = master.Rows10[0];
 
             //ссылка на нужный список радионуклидов

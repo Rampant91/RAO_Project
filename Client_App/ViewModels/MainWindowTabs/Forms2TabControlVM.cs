@@ -10,7 +10,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Add;
 
 namespace Client_App.ViewModels.MainWindowTabs;
@@ -24,6 +26,13 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
     private protected override byte DefaultOrgsPerPage => 8;
 
     private protected override char FormNum => '2';
+
+    private readonly ObservableCollection<Report> _reportCollection = new();
+    private readonly ObservableCollection<Reports> _orgsCollection = new();
+    private readonly Forms1WarmCache _cache = Forms1WarmCache.Instance;
+    private int _reportLoadGeneration;
+    private int _orgLoadGeneration;
+    private const string MasterFormNum = "2.0";
 
     #endregion
 
@@ -102,11 +111,8 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
         if (string.IsNullOrEmpty(FormNumWhiteList) || SelectedReports == null)
             return;
 
-        var hasMatchingReports = OrgReportsQuery.HasFormNumAsync(
-                StaticConfiguration.DBModel, SelectedReports.Id, FormNumWhiteList)
-            .GetAwaiter().GetResult();
-
-        if (!hasMatchingReports)
+        var has = _cache.TryHasFormNum(SelectedReports.Id, FormNumWhiteList);
+        if (has == false)
             FormNumWhiteList = string.Empty;
     }
 
@@ -125,35 +131,14 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
 
     #endregion
 
-    private protected override ObservableCollection<Report> ReportCollection
-    {
-        get
-        {
-            if (SelectedReports is null) return null;
-
-            var page = MainWindowListQuery.GetReportPage(
-                StaticConfiguration.DBModel,
-                SelectedReports.Id,
-                FormNumWhiteList,
-                CurrentPageForms,
-                RowsCountForms,
-                orderByYear: true);
-
-            return new ObservableCollection<Report>(page);
-        }
-    }
+    private protected override ObservableCollection<Report> ReportCollection => _reportCollection;
 
     private protected override ObservableCollection<Reports> ReportsCollection
     {
         get
         {
-            var page = MainWindowListQuery.GetOrgPageForm12(
-                StaticConfiguration.DBModel,
-                "2.0",
-                SearchText,
-                CurrentPageOrgs,
-                RowsCountOrgs);
-            return new ObservableCollection<Reports>(page.Items);
+            SyncOrgsCollection();
+            return _orgsCollection;
         }
     }
 
@@ -207,16 +192,129 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
         {
             if (SelectedReports is null) return 0;
 
-            return MainWindowListQuery.CountReports(
-                StaticConfiguration.DBModel,
-                SelectedReports.Id,
-                string.IsNullOrEmpty(FormNumWhiteList) ? null : FormNumWhiteList);
+            var filter = string.IsNullOrEmpty(FormNumWhiteList) ? null : FormNumWhiteList;
+            if (_cache.TryCountReports(SelectedReports.Id, filter, out var count))
+                return count;
+            return _reportCollection.Count;
         }
     }
 
     #endregion
 
     #region Functions
+
+    public override void UpdateReportCollection()
+    {
+        if (SelectedReports is null)
+        {
+            if (_reportCollection.Count > 0)
+                _reportCollection.Clear();
+            OnPropertyChanged(nameof(ReportCollection));
+            return;
+        }
+
+        var orgId = SelectedReports.Id;
+        var filter = string.IsNullOrEmpty(FormNumWhiteList) ? null : FormNumWhiteList;
+        var page = CurrentPageForms;
+        var pageSize = RowsCountForms;
+
+        if (_cache.TryGetReportPage(orgId, filter, page, pageSize, out var cached))
+        {
+            ReplaceCollection(_reportCollection, cached, r => r.Id);
+            OnPropertyChanged(nameof(ReportCollection));
+            OnPropertyChanged(nameof(TotalRowsForms));
+            OnPropertyChanged(nameof(TotalPagesForms));
+            OnPropertyChanged(nameof(SelectedReports));
+            WarmSelectedOrgAndPrefetchReports();
+            return;
+        }
+
+        var generation = Interlocked.Increment(ref _reportLoadGeneration);
+        if (_reportCollection.Count > 0)
+            _reportCollection.Clear();
+        OnPropertyChanged(nameof(ReportCollection));
+
+        var dbPath = StaticConfiguration.DBPath;
+        _ = Task.Run(() =>
+        {
+            try
+            {
+                using var db = new DBModel(dbPath);
+                var items = _cache.GetReportPage(db, orgId, filter, page, pageSize);
+                Dispatcher.UIThread.Post(() =>
+                {
+                    if (generation != _reportLoadGeneration || SelectedReports?.Id != orgId)
+                        return;
+                    ReplaceCollection(_reportCollection, items, r => r.Id);
+                    OnPropertyChanged(nameof(ReportCollection));
+                    OnPropertyChanged(nameof(TotalRowsForms));
+                    OnPropertyChanged(nameof(TotalPagesForms));
+                    OnPropertyChanged(nameof(SelectedReports));
+                    WarmSelectedOrgAndPrefetchReports();
+                });
+            }
+            catch { /* retry on next select */ }
+        });
+    }
+
+    private void SyncOrgsCollection()
+    {
+        var search = SearchText;
+        var pageNum = CurrentPageOrgs;
+        var pageSize = RowsCountOrgs;
+
+        if (_cache.TryGetOrgPage(search, pageNum, pageSize, out var cached, MasterFormNum))
+        {
+            ReplaceCollection(_orgsCollection, cached.Items, r => r.Id);
+            _cache.PrefetchAdjacentOrgPages(
+                StaticConfiguration.DBPath, search, pageNum, pageSize, TotalPagesOrgs, MasterFormNum);
+            return;
+        }
+
+        var generation = Interlocked.Increment(ref _orgLoadGeneration);
+        try
+        {
+            var page = _cache.GetOrgPage(StaticConfiguration.DBModel, search, pageNum, pageSize, MasterFormNum);
+            if (generation != _orgLoadGeneration) return;
+            ReplaceCollection(_orgsCollection, page.Items, r => r.Id);
+            _cache.PrefetchAdjacentOrgPages(
+                StaticConfiguration.DBPath, search, pageNum, pageSize, TotalPagesOrgs, MasterFormNum);
+        }
+        catch { /* keep previous page */ }
+    }
+
+    private void WarmSelectedOrgAndPrefetchReports()
+    {
+        if (SelectedReports is null) return;
+        var filter = string.IsNullOrEmpty(FormNumWhiteList) ? null : FormNumWhiteList;
+        _cache.OnOrgSelected(
+            StaticConfiguration.DBPath, SelectedReports.Id, filter, CurrentPageForms, RowsCountForms);
+        _cache.PrefetchAdjacentReportPages(
+            StaticConfiguration.DBPath, SelectedReports.Id, filter,
+            CurrentPageForms, RowsCountForms, TotalPagesForms);
+    }
+
+    private static void ReplaceCollection<T>(
+        ObservableCollection<T> target, IReadOnlyList<T> source, Func<T, int> idSelector)
+    {
+        if (target.Count == source.Count)
+        {
+            var same = true;
+            for (var i = 0; i < source.Count; i++)
+            {
+                if (idSelector(target[i]) != idSelector(source[i]))
+                {
+                    same = false;
+                    break;
+                }
+            }
+            if (same) return;
+        }
+
+        target.Clear();
+        foreach (var item in source)
+            target.Add(item);
+    }
 
     /// <summary>
     /// Возвращает количество строчек форм у отчёта.
@@ -304,6 +402,7 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
 
     private protected override void NotifySearchTextChanged()
     {
+        SyncOrgsCollection();
         OnPropertyChanged(nameof(ReportsCollection));
         OnPropertyChanged(nameof(FilteredRowsOrgs));
         OnPropertyChanged(nameof(TotalPagesOrgs));
@@ -311,10 +410,13 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
 
     public void UpdateOrgsPageInfo()
     {
+        SyncOrgsCollection();
         OnPropertyChanged(nameof(TotalRowsOrgs));
         OnPropertyChanged(nameof(TotalPagesOrgs));
-        UpdateTotalReportCount();
+        OnPropertyChanged(nameof(ReportsCollection));
         UpdateTotalReportsCount();
+        if (SelectedReports != null)
+            UpdateReportCollection();
     }
 
     #endregion

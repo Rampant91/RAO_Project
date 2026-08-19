@@ -134,10 +134,11 @@ public sealed class Forms1WarmCache
     }
 
     public bool TryGetOrgPage(
-        string? searchText, int page, int pageSize, out PagedResult<Reports> result)
+        string? searchText, int page, int pageSize, out PagedResult<Reports> result,
+        string masterFormNum = "1.0")
     {
         var (safePage, safePageSize, _) = PagingHelper.Normalize(page, pageSize);
-        var key = OrgPageKey(searchText, safePage, safePageSize);
+        var key = OrgPageKey(masterFormNum, searchText, safePage, safePageSize);
         lock (_gate)
         {
             if (_orgPages.TryGetValue(key, out var cached))
@@ -223,10 +224,10 @@ public sealed class Forms1WarmCache
     }
 
     public PagedResult<Reports> GetOrgPage(
-        DBModel db, string? searchText, int page, int pageSize)
+        DBModel db, string? searchText, int page, int pageSize, string masterFormNum = "1.0")
     {
         var (safePage, safePageSize, _) = PagingHelper.Normalize(page, pageSize);
-        var key = OrgPageKey(searchText, safePage, safePageSize);
+        var key = OrgPageKey(masterFormNum, searchText, safePage, safePageSize);
 
         lock (_gate)
         {
@@ -243,7 +244,12 @@ public sealed class Forms1WarmCache
             }
         }
 
-        var result = MainWindowListQuery.GetOrgPageForm12(db, "1.0", searchText, safePage, safePageSize);
+        var result = masterFormNum switch
+        {
+            "4.0" => MainWindowListQuery.GetOrgPageForm40(db, searchText, safePage, safePageSize),
+            "5.0" => MainWindowListQuery.GetOrgPageForm50(db, searchText, safePage, safePageSize),
+            _ => MainWindowListQuery.GetOrgPageForm12(db, masterFormNum, searchText, safePage, safePageSize)
+        };
         PutOrgPage(key, result.Items.ToList(), result.TotalCount);
         return result;
     }
@@ -322,7 +328,8 @@ public sealed class Forms1WarmCache
     }
 
     public void PrefetchAdjacentOrgPages(
-        string dbPath, string? searchText, int currentPage, int pageSize, int totalPages)
+        string dbPath, string? searchText, int currentPage, int pageSize, int totalPages,
+        string masterFormNum = "1.0")
     {
         CancelPrefetchOrgsOnly();
         var cts = new CancellationTokenSource();
@@ -337,7 +344,7 @@ public sealed class Forms1WarmCache
                 foreach (var p in NeighborPages(currentPage, radius: 2))
                 {
                     if (cts.IsCancellationRequested || p < 1 || p > totalPages) continue;
-                    GetOrgPage(db, search, p, pageSize);
+                    GetOrgPage(db, search, p, pageSize, masterFormNum);
                 }
             }
             catch
@@ -345,6 +352,41 @@ public sealed class Forms1WarmCache
                 // best-effort
             }
         }, cts.Token);
+    }
+
+    /// <summary>
+    /// Фоновый прогрев первой страницы организаций и отчётов первой org для вкладки.
+    /// </summary>
+    public void PrefetchTab(string dbPath, string masterFormNum, int orgPageSize, int reportPageSize)
+    {
+        PrefetchTabs(dbPath, orgPageSize, reportPageSize, masterFormNum);
+    }
+
+    /// <summary>
+    /// Один фоновый DBModel: прогрев вкладок 1/2/4/5 подряд (Firebird embedded не любит пачку соединений).
+    /// </summary>
+    public void PrefetchTabs(string dbPath, int orgPageSize, int reportPageSize, params string[] masterFormNums)
+    {
+        if (masterFormNums.Length == 0) return;
+        _ = Task.Run(async () =>
+        {
+            try
+            {
+                await using var db = new DBModel(dbPath);
+                foreach (var masterFormNum in masterFormNums)
+                {
+                    var orgs = GetOrgPage(db, searchText: null, page: 1, orgPageSize, masterFormNum);
+                    var first = orgs.Items.FirstOrDefault();
+                    if (first == null) continue;
+                    GetOrLoadStubs(db, first.Id);
+                    GetReportPage(db, first.Id, formNumWhiteList: null, page: 1, reportPageSize);
+                }
+            }
+            catch
+            {
+                // best-effort
+            }
+        });
     }
 
     private static IEnumerable<int> NeighborPages(int current, int radius)
@@ -473,6 +515,6 @@ public sealed class Forms1WarmCache
     private static string ReportPageKey(int orgId, string? filter, int page, int pageSize) =>
         $"{orgId}|{filter ?? ""}|{page}|{pageSize}";
 
-    private static string OrgPageKey(string? search, int page, int pageSize) =>
-        $"{search ?? ""}|{page}|{pageSize}";
+    private static string OrgPageKey(string masterFormNum, string? search, int page, int pageSize) =>
+        $"{masterFormNum}|{search ?? ""}|{page}|{pageSize}";
 }

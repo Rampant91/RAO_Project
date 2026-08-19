@@ -542,8 +542,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 return null;
             }
 
-            return ReportsStorage.LocalReports.Reports_Collection40
-                       .FirstOrDefault(t => t.Master_DB.Rows40[0].CodeSubjectRF_DB == reps.Master_DB.Rows40[0].CodeSubjectRF_DB);
+            return OrgMatchQuery.FindForm40Equal(reps);
         }
         catch
         {
@@ -570,8 +569,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 return null;
             }
 
-            return ReportsStorage.LocalReports.Reports_Collection50
-                       .FirstOrDefault(t => t.Master_DB.Rows50[0].Name_DB == reps.Master_DB.Rows50[0].Name_DB);
+            return OrgMatchQuery.FindForm50Equal(reps);
         }
         catch
         {
@@ -651,6 +649,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         BaseRepsOkpo = baseReps.Master.OkpoRep.Value;
         BaseRepsRegNum = baseReps.Master.RegNoRep.Value;
         BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;
+        var baseReports = await GetBaseOrgReportShellsAsync(baseReps);
 
         foreach (var impRep in impRepList) //Для каждого импортируемого отчета
         {
@@ -663,9 +662,9 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
-            foreach (var key1 in baseReps.Report_Collection) //Для каждого отчета соответствующей организации в базе ищем совпадение
+            foreach (var baseRepItem in baseReports) //Для каждого отчета соответствующей организации в базе ищем совпадение
             {
-                var baseRep = (Report)key1;
+                var baseRep = baseRepItem;
                 BaseRepFormNum = baseRep.FormNum_DB;
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
                 BaseRepFormCount = Math.Max(await ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
@@ -1035,6 +1034,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         BaseRepsOkpo = baseReps.Master.OkpoRep.Value;
         BaseRepsRegNum = baseReps.Master.RegNoRep.Value;
         BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;
+        var baseReports = await GetBaseOrgReportShellsAsync(baseReps);
 
         foreach (var impRep in impRepList) //Для каждой импортируемой формы
         {
@@ -1046,9 +1046,9 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
-            foreach (var key1 in baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе
+            foreach (var baseRepItem in baseReports) //Для каждой формы соответствующей организации в базе
             {
-                var baseRep = (Report)key1;
+                var baseRep = baseRepItem;
                 BaseRepFormNum = baseRep.FormNum_DB;
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
                 BaseRepFormCount = Math.Max(await ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
@@ -1202,6 +1202,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     /// <returns>Сообщение пользователю, логирование и сохранение изменений.</returns>
     private protected async Task ProcessIfHasReports41(Reports baseReps, Reports impReps, List<Report> impRepList)
     {
+        OrgMatchQuery.EnsureTitleRowsLoaded(baseReps);
         switch (baseReps.Master.FormNum_DB)
         {
             case "4.0":
@@ -1209,6 +1210,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 break;
         }
 
+        var baseReports = await GetBaseOrgReportShellsAsync(baseReps);
         foreach (var impRep in impRepList) //Для каждой импортируемой формы
         {
             ImpRepFormNum = impRep.FormNum_DB;
@@ -1219,9 +1221,9 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
-            foreach (var key1 in baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе
+            foreach (var baseRepItem in baseReports) //Для каждой формы соответствующей организации в базе
             {
-                var baseRep = (Report)key1;
+                var baseRep = baseRepItem;
                 BaseRepFormNum = baseRep.FormNum_DB;
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
                 BaseRepFormCount = Math.Max(await ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
@@ -1378,6 +1380,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     /// <returns>Сообщение пользователю, логирование и сохранение изменений.</returns>
     private protected async Task ProcessIfHasReports51(Reports baseReps, Reports impReps, List<Report> impRepList)
     {
+        OrgMatchQuery.EnsureTitleRowsLoaded(baseReps);
         switch (baseReps.Master.FormNum_DB)
         {
             case "5.0":
@@ -1385,6 +1388,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 break;
         }
 
+        var baseReports = await GetBaseOrgReportShellsAsync(baseReps);
         foreach (var impRep in impRepList) //Для каждой импортируемой формы
         {
             ImpRepFormNum = impRep.FormNum_DB;
@@ -1395,9 +1399,9 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
-            foreach (var key1 in baseReps.Report_Collection) //Для каждой формы соответствующей организации в базе
+            foreach (var baseRepItem in baseReports) //Для каждой формы соответствующей организации в базе
             {
-                var baseRep = (Report)key1;
+                var baseRep = baseRepItem;
                 BaseRepFormNum = baseRep.FormNum_DB;
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
                 BaseRepFormCount = Math.Max(await ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
@@ -1606,6 +1610,21 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     //#endregion
 
     #region FillReportWithFormsInReports
+
+    private static async Task<List<Report>> GetBaseOrgReportShellsAsync(Reports baseReps)
+    {
+        var db = StaticConfiguration.DBModel;
+        var shells = await OrgReportsQuery.LoadOrgWithReportShellsAsync(db, baseReps.Id);
+        if (shells?.Report_Collection is { Count: > 0 })
+            return shells.Report_Collection.ToList<Report>();
+        return baseReps.Report_Collection.ToList<Report>();
+    }
+
+    private protected static void InvalidateMainWindowCachesAfterImport()
+    {
+        Forms1WarmCache.Instance.InvalidateAll();
+        MainWindowListQuery.InvalidateOrgKeysCacheForm10();
+    }
 
     /// <summary>
     /// Находит организацию и отчёт в БД и заменяет его в локальном хранилище.

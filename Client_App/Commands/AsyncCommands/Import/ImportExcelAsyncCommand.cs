@@ -269,26 +269,13 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                             }
                         }
 
-                        baseReps = ReportsStorage.LocalReports.Reports_Collection40
-                            .FirstOrDefault(reports => reports.Master_DB.Rows40[0].CodeSubjectRF_DB == codeSubjectRF);
+                        baseReps = OrgMatchQuery.FindForm40ByCode(codeSubjectRF);
                         break;
                     }
                     case "Форма 5.0":
                     {
                         var name = Convert.ToString(worksheet0.Cells["B20"].Value);
-                        try
-                        {
-                            baseReps = StaticConfiguration.DBModel.ReportsCollectionDbSet
-                                .Include(reps => reps.Report_Collection)
-                                .Include(reps => reps.Master_DB)
-                                .ThenInclude(reps => reps.Rows50)
-                                .AsEnumerable()
-                                .FirstOrDefault(reports => reports.Master_DB.Rows50[0].Name_DB == name);
-                        }
-                        catch(Exception ex)
-                        {
-                            throw ex;
-                        }
+                        baseReps = OrgMatchQuery.FindForm50ByName(name);
 
                         break;
                     }
@@ -486,6 +473,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
         if (AtLeastOneImportDone && readAnyExcel)
         {
+            InvalidateMainWindowCachesAfterImport();
             var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
             mainWindowVM.UpdateReportsCollection();
             mainWindowVM.UpdateOrgsPageInfo();

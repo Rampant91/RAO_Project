@@ -76,17 +76,17 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         // form_10 больше не грузим целиком: грид 1.0 берёт RegNo/Okpo/Short через
         // MainWindowListQuery (+ Include Rows10 только для текущей страницы).
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 2.0";
+        onStartProgressBarVm.LoadStatus = "Пропуск полной загрузки форм 2.0 (страницы из БД)";
         mainWindowViewModel.OnStartProgressBar = 35;
-        await dbm.form_20.LoadAsync();
+        // form_20: org-грид 2.0 через MainWindowListQuery.GetOrgPageForm12.
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 4.0";
+        onStartProgressBarVm.LoadStatus = "Пропуск полной загрузки форм 4.0 (страницы из БД)";
         mainWindowViewModel.OnStartProgressBar = 45;
-        await dbm.form_40.LoadAsync();
+        // form_40: org-грид 4.0 через MainWindowListQuery.GetOrgPageForm40.
 
-        onStartProgressBarVm.LoadStatus = "Загрузка форм 5.0";
+        onStartProgressBarVm.LoadStatus = "Пропуск полной загрузки форм 5.0 (страницы из БД)";
         mainWindowViewModel.OnStartProgressBar = 55;
-        await dbm.form_50.LoadAsync();
+        // form_50: org-грид 5.0 через MainWindowListQuery.GetOrgPageForm50.
 
         // Оболочки отчётов 1.x/2.x/... больше не грузим целиком при старте —
         // главный экран подгружает страницы через MainWindowListQuery.
@@ -132,6 +132,10 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         ReportsStorage.LocalReports.PropertyChanged += Local_ReportsChanged;
 
         mainWindowViewModel.OnStartProgressBar = 100;
+
+        var dbPath = StaticConfiguration.DBPath;
+        Forms1WarmCache.Instance.PrefetchTabs(
+            dbPath, orgPageSize: 8, reportPageSize: 10, "1.0", "2.0", "4.0", "5.0");
 
         //new CountRowsInAllReportByRegionAndYearCommand().AsyncExecute(null);
 
@@ -721,8 +725,26 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     {
         if (!dbm.DBObservableDbSet.Any()) dbm.DBObservableDbSet.Add(new DBObservable());
 
-        // form_10 при старте не preload'ится — нельзя смотреть только local Count (==0 у всех).
+        // Title-строки 1.0/2.0/4.0/5.0 при старте не preload'ятся — нельзя смотреть только local Count.
         var masterIdsWithForm10 = dbm.form_10
+            .AsNoTracking()
+            .Where(f => f.ReportId != null)
+            .Select(f => f.ReportId!.Value)
+            .Distinct()
+            .ToHashSet();
+        var masterIdsWithForm20 = dbm.form_20
+            .AsNoTracking()
+            .Where(f => f.ReportId != null)
+            .Select(f => f.ReportId!.Value)
+            .Distinct()
+            .ToHashSet();
+        var masterIdsWithForm40 = dbm.form_40
+            .AsNoTracking()
+            .Where(f => f.ReportId != null)
+            .Select(f => f.ReportId!.Value)
+            .Distinct()
+            .ToHashSet();
+        var masterIdsWithForm50 = dbm.form_50
             .AsNoTracking()
             .Where(f => f.ReportId != null)
             .Select(f => f.ReportId!.Value)
@@ -750,6 +772,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 }
 
                 if (it.Master_DB.FormNum_DB == "2.0"
+                    && !masterIdsWithForm20.Contains(it.Master_DB.Id)
                     && it.Master_DB.Rows20.Count == 0)
                 {
                     var ty1 = (Form20)FormCreator.Create("2.0");
@@ -760,6 +783,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     it.Master_DB.Rows20.Add(ty2);
                 }
                 if (it.Master_DB.FormNum_DB == "4.0"
+                    && !masterIdsWithForm40.Contains(it.Master_DB.Id)
                     && it.Master_DB.Rows40.Count == 0)
                 {
                     var ty = (Form40)FormCreator.Create("4.0");
@@ -767,6 +791,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     it.Master_DB.Rows40.Add(ty);
                 }
                 if (it.Master_DB.FormNum_DB == "5.0"
+                    && !masterIdsWithForm50.Contains(it.Master_DB.Id)
                     && it.Master_DB.Rows50.Count == 0)
                 {
                     var ty = (Form50)FormCreator.Create("5.0");
@@ -800,23 +825,29 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     /// <returns></returns>
     private static async Task ProcessDataBaseFillNullOrder()
     {
-        foreach (var key in ReportsStorage.LocalReports.Reports_Collection)
+        var db = StaticConfiguration.DBModel;
+        var zeroOrderNotes = await db.notes
+            .Where(n => n.Order == 0 && n.ReportId != null)
+            .ToListAsync();
+
+        if (zeroOrderNotes.Count > 0)
         {
-            var item = (Reports)key;
-            foreach (var key1 in item.Report_Collection)
+            var reportIds = zeroOrderNotes.Select(n => n.ReportId!.Value).Distinct().ToList();
+            foreach (var batch in FirebirdInClause.Chunk(reportIds))
             {
-                var it = (Report)key1;
-                foreach (var key2 in it.Notes)
+                var maxOrders = await db.notes
+                    .Where(n => n.ReportId != null && batch.Contains(n.ReportId.Value))
+                    .GroupBy(n => n.ReportId!.Value)
+                    .Select(g => new { ReportId = g.Key, MaxOrder = g.Max(x => x.Order) })
+                    .ToListAsync();
+                var maxMap = maxOrders.ToDictionary(x => x.ReportId, x => x.MaxOrder);
+                foreach (var note in zeroOrderNotes.Where(n => batch.Contains(n.ReportId!.Value)))
                 {
-                    var i = (Note)key2;
-                    if (i.Order == 0)
-                    {
-                        i.Order = GetNumberInOrder(it.Notes);
-                    }
+                    var next = maxMap.GetValueOrDefault(note.ReportId!.Value, 0) + 1;
+                    note.Order = next;
+                    maxMap[note.ReportId!.Value] = next;
                 }
             }
-
-            await item.SortAsync();
         }
 
         // form_10 не в Local — RegNoRep/OkpoRep для 1.0 недоступны. Сортируем по проекции из БД.

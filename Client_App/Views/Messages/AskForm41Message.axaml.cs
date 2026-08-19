@@ -1,3 +1,4 @@
+using Client_App.Services.DataAccess;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -62,7 +63,12 @@ public partial class AskForm41Message : Window, INotifyPropertyChanged
     public AskForm41Message(Report report)
     {
         Reports = report.Reports;
-        ReportList = new ObservableCollection<Report>(Reports.Report_Collection
+        var orgId = Reports?.Id ?? 0;
+        var shells = orgId > 0
+            ? OrgReportsQuery.LoadReportShells(StaticConfiguration.DBModel, orgId)
+            : [];
+        ReportList = new ObservableCollection<Report>(shells
+                .Where(x => x.Id != report.Id)
                 .OrderBy(x => x.FormNum_DB)
                 .ThenByDescending(x =>
                 x.Year_DB == null
@@ -70,7 +76,6 @@ public partial class AskForm41Message : Window, INotifyPropertyChanged
                 ? int.MaxValue
                 : int.Parse(x.Year_DB))
                 .ThenByDescending(rep => rep.CorrectionNumber_DB));
-        ReportList.Remove(report);
 
         DataContext = this;
         AvaloniaXamlLoader.Load(this);

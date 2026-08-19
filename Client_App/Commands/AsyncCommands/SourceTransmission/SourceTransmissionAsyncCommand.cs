@@ -11,6 +11,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Services.DataAccess;
 
 namespace Client_App.Commands.AsyncCommands.SourceTransmission;
 
@@ -133,25 +134,7 @@ public class SourceTransmissionAsyncCommand : SourceTransmissionBaseAsyncCommand
             ServiceExtension.LoggerManager.Error(msg);
         }
 
-        var repInRange = SelectedReports.Report_Collection
-            .Where(rep => (form.FormNum_DB == "1.1" && rep.FormNum_DB == "1.5"
-                           || form.FormNum_DB == "1.2" && rep.FormNum_DB == "1.6"
-                           || form.FormNum_DB == "1.3" && rep.FormNum_DB == "1.6"
-                           || form.FormNum_DB == "1.4" && rep.FormNum_DB == "1.6")
-                          && (DateOnly.TryParse(rep.StartPeriod_DB, out var repStartDate)
-                              && DateOnly.TryParse(rep.EndPeriod_DB, out var repEndDate)
-                              && opDate > repStartDate && opDate <= repEndDate
-                              || DateOnly.TryParse(rep.StartPeriod_DB, out repStartDate)
-                              && !DateOnly.TryParse(rep.EndPeriod_DB, out _)
-                              && opDate > repStartDate))
-            .OrderBy(x => x.EndPeriod_DB)
-            .ToList();
-        if (repInRange.Count == 2
-            && !DateOnly.TryParse(repInRange[0].EndPeriod_DB, out _)
-            && DateOnly.TryParse(repInRange[1].EndPeriod_DB, out _))
-        {
-            repInRange.Remove(repInRange[0]);
-        }
+        var repInRange = FindTargetReportsInRange(form.FormNum_DB, opDate);
 
         await using var db = new DBModel(StaticConfiguration.DBPath);
         var repFormNum = form.FormNum_DB switch
@@ -261,10 +244,7 @@ public class SourceTransmissionAsyncCommand : SourceTransmissionBaseAsyncCommand
                 await db.SaveChangesAsync();
                 var report = await ReportsStorage.GetReportAsync(rep.Id);
                 report.Reports ??= SelectedReports;
-                if (!SelectedReports.Report_Collection.Contains(report))
-                {
-                    SelectedReports.Report_Collection.Add(report);
-                }
+                Forms1WarmCache.Instance.InvalidateOrg(SelectedReports.Id);
                 await CloseWindowAndOpenNew(report);
                 break;
             }

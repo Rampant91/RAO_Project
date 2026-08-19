@@ -67,6 +67,98 @@ public static class OrgMatchQuery
         }
     }
 
+    public static Reports? FindForm40Equal(Reports impReps)
+    {
+        if (impReps.Master_DB?.FormNum_DB is not "4.0")
+            return null;
+        try
+        {
+            EnsureTitleRowsLoaded(impReps);
+            var code = impReps.Master_DB.Rows40.Count > 0
+                ? impReps.Master_DB.Rows40[0].CodeSubjectRF_DB
+                : null;
+            return FindForm40ByCode(code);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public static Reports? FindForm50Equal(Reports impReps)
+    {
+        if (impReps.Master_DB?.FormNum_DB is not "5.0")
+            return null;
+        try
+        {
+            EnsureTitleRowsLoaded(impReps);
+            var name = impReps.Master_DB.Rows50.Count > 0
+                ? impReps.Master_DB.Rows50[0].Name_DB
+                : null;
+            return FindForm50ByName(name);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public static Reports? FindForm40ByCode(string? codeSubjectRf)
+    {
+        if (string.IsNullOrWhiteSpace(codeSubjectRf))
+            return null;
+        try
+        {
+            var id = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                .AsNoTracking()
+                .Where(x => x.DBObservableId != null && x.Master_DB.FormNum_DB == "4.0")
+                .Select(x => new
+                {
+                    x.Id,
+                    Code = x.Master_DB.Rows40
+                        .OrderBy(r => r.NumberInOrder_DB)
+                        .Select(r => r.CodeSubjectRF_DB)
+                        .FirstOrDefault()
+                })
+                .AsEnumerable()
+                .FirstOrDefault(x => x.Code == codeSubjectRf)
+                ?.Id;
+            return id is null ? null : ResolveLocalOrg(id.Value);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public static Reports? FindForm50ByName(string? name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return null;
+        try
+        {
+            var id = StaticConfiguration.DBModel.ReportsCollectionDbSet
+                .AsNoTracking()
+                .Where(x => x.DBObservableId != null && x.Master_DB.FormNum_DB == "5.0")
+                .Select(x => new
+                {
+                    x.Id,
+                    Name = x.Master_DB.Rows50
+                        .OrderBy(r => r.NumberInOrder_DB)
+                        .Select(r => r.Name_DB)
+                        .FirstOrDefault()
+                })
+                .AsEnumerable()
+                .FirstOrDefault(x => x.Name == name)
+                ?.Id;
+            return id is null ? null : ResolveLocalOrg(id.Value);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     /// <summary>Matching для Excel-листа 1.0 / 2.0 по ячейкам OKPO/RegNo.</summary>
     public static Reports? FindByExcelTitleFields(
         string formNum, string? excelOkpo0, string? excelOkpo1, string? excelRegNo)

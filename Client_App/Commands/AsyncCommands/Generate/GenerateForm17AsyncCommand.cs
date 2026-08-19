@@ -1,7 +1,9 @@
 ﻿using Avalonia.Controls;
 using Client_App.ViewModels.Forms;
+using Client_App.Services.DataAccess;
 using Client_App.Views;
 using Models.Collections;
+using Models.DBRealization;
 using Models.Forms.Form1;
 using Models.Passports;
 using Spravochniki;
@@ -29,8 +31,15 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 passportCollection.Count <= 0) return;
 
             int index = 0;
-            if (Report.Rows17.Count > 0)
+            if (formVM.UseDbPaging && Report.Id > 0)
+            {
+                index = await FormRowsPageLoader.GetMaxNumberInOrderAsync(
+                    StaticConfiguration.DBModel, Report.Id, "1.7");
+            }
+            else if (Report.Rows17.Count > 0)
+            {
                 index = Report.Rows17.Max(form => form.NumberInOrder_DB);
+            }
 
             foreach (var passport in passportCollection)
             {

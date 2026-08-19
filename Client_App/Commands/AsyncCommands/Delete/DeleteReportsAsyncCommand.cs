@@ -2,6 +2,7 @@
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using Client_App.Views;
 using MessageBox.Avalonia.DTO;
@@ -78,19 +79,22 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
             var db = StaticConfiguration.DBModel;
 
-            //await ReportDeletionLogger.LogDeletionAsync(masterRep);
-
-            foreach (var item in reps.Report_Collection)
+            var reportIds = await OrgReportsQuery.GetReportIdsAsync(db, reps.Id);
+            foreach (var batch in FirebirdInClause.Chunk(reportIds))
             {
-                var report = (Report)item;
-                db.ReportCollectionDbSet.Remove(report);
-                //await ReportDeletionLogger.LogDeletionAsync(report);
+                var toRemove = db.ReportCollectionDbSet
+                    .Where(r => batch.Contains(r.Id))
+                    .ToList();
+                db.ReportCollectionDbSet.RemoveRange(toRemove);
             }
 
             db.ReportCollectionDbSet.Remove(masterRep);
             
             db.ReportsCollectionDbSet.Remove(reps);
             await db.SaveChangesAsync();
+
+            Forms1WarmCache.Instance.InvalidateOrg(reps.Id);
+            Forms1WarmCache.Instance.InvalidateOrgPages();
 
             await ProcessDataBaseFillEmpty(db);
 

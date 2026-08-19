@@ -1,4 +1,6 @@
-﻿using Client_App.Commands.AsyncCommands.SourceTransmission;
+﻿using Client_App.Services.DataAccess;
+using Models.DBRealization;
+using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.ViewModels.Controls;
 using CommunityToolkit.Mvvm.Input;
 using Models.Collections;
@@ -143,11 +145,8 @@ public class Form_14VM : BaseFormVM
             FormNum_DB = formNum,
             StartPeriod =
             {
-                Value = reps.Report_Collection
-                    .Where(x => x.FormNum_DB == formNum && DateOnly.TryParse(x.EndPeriod_DB, out _))
-                    .OrderBy(x => DateOnly.Parse(x.EndPeriod_DB))
-                    .Select(x => x.EndPeriod_DB)
-                    .LastOrDefault() ?? ""
+                Value = OrgReportsQuery.GetLatestEndPeriod(
+                    StaticConfiguration.DBModel, reps.Id, formNum)
             },
             Reports = reps
         };

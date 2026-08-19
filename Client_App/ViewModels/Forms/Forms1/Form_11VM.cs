@@ -1,3 +1,5 @@
+using Client_App.Services.DataAccess;
+using Models.DBRealization;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.ExcelExport;
@@ -173,11 +175,8 @@ public class Form_11VM : BaseFormVM
             FormNum_DB = formNum,
             StartPeriod =
             {
-                Value = reps.Report_Collection
-                    .Where(x => x.FormNum_DB == formNum && DateOnly.TryParse(x.EndPeriod_DB, out _))
-                    .OrderBy(x => DateOnly.Parse(x.EndPeriod_DB))
-                    .Select(x => x.EndPeriod_DB)
-                    .LastOrDefault() ?? ""
+                Value = OrgReportsQuery.GetLatestEndPeriod(
+                    StaticConfiguration.DBModel, reps.Id, formNum)
             },
             Reports = reps
         };

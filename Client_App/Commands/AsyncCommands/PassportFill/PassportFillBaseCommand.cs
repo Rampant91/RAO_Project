@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -23,8 +24,16 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
     protected string? MsgTitle;
     protected string? MsgQuestionOverride;
     protected string? ErrOpsNotFound;
+    protected async Task EnsureRowsAndTitleAsync()
+    {
+        await FormRowsEnsureService.EnsureAllRowsLoadedAsync(Storage);
+        if (Storage.Reports != null)
+            OrgMatchQuery.EnsureTitleRowsLoaded(Storage.Reports);
+    }
+
     protected async Task PassportFillAction()
     {
+        await EnsureRowsAndTitleAsync();
         if (Collection.Count == 0) return;
         Dictionary<string, List<int>> packageData = [];
         List<Dictionary<string, string>> R;
@@ -159,7 +168,7 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
 
                 #region Setup file
 
-                var fileName = $"{Storage.Reports.Master.RegNoRep.Value}_{package.Key}.xlsx".Replace('/', '_');
+                var fileName = $"{Storage.Reports?.Master?.RegNoRep?.Value}_{package.Key}.xlsx".Replace('/', '_');
                 var fullPath = Path.Combine(folderPath, fileName);
                 if (string.IsNullOrEmpty(fullPath)) return;
                 if (File.Exists(fullPath))
@@ -254,7 +263,7 @@ public abstract class PassportFillBaseCommand(ChangeOrCreateVM changeOrCreateVie
                     }
                 }
                 excelPackage.Workbook.Worksheets[0].Cells[$"O{39 + rowShift}"].Value = entry.FormingDate_DB;
-                excelPackage.Workbook.Worksheets[0].Cells["G13"].Value = $"{Storage.Reports.Master.ShortJurLicoRep.Value} ОКПО {entry.ProviderOrRecieverOKPO_DB}";
+                excelPackage.Workbook.Worksheets[0].Cells["G13"].Value = $"{Storage.Reports?.Master?.ShortJurLicoRep?.Value} ОКПО {entry.ProviderOrRecieverOKPO_DB}";
                 excelPackage.Workbook.Worksheets[0].Cells["C31"].Value = entry.CodeRAO_DB;
                 excelPackage.Workbook.Worksheets[0].Cells["C7"].Value = entry.StatusRAO_DB;
                 excelPackage.Workbook.Worksheets[0].Cells["M24"].Value = $"({(TryParseDoubleExtended(entry.VolumeOutOfPack_DB, out var volumeOutOfPack) 

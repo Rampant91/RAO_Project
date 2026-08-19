@@ -295,12 +295,11 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
 
     public void UpdateOrgsPageInfo()
     {
-        _cache.InvalidateAll();
+        // Не InvalidateAll: при переключении вкладок кэш должен остаться.
         SyncOrgsCollection();
         OnPropertyChanged(nameof(TotalRowsOrgs));
         OnPropertyChanged(nameof(TotalPagesOrgs));
         OnPropertyChanged(nameof(ReportsCollection));
-        UpdateTotalReportCount();
         UpdateTotalReportsCount();
         if (SelectedReports != null)
             UpdateReportCollection();

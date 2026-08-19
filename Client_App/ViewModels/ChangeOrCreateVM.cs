@@ -270,11 +270,8 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
                 {
                     FormType = formNum;
 
-                    Storage.StartPeriod.Value = reps.Report_Collection
-                        .Where(x => x.FormNum_DB == formNum && DateOnly.TryParse(x.EndPeriod_DB, out _))
-                        .OrderBy(x => DateOnly.Parse(x.EndPeriod_DB))
-                        .Select(x => x.EndPeriod_DB)
-                        .LastOrDefault() ?? "";
+                    Storage.StartPeriod.Value = OrgReportsQuery.GetLatestEndPeriod(
+                        StaticConfiguration.DBModel, reps.Id, formNum);
                 }
                 break;
             }

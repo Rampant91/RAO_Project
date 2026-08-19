@@ -1,4 +1,6 @@
 ﻿using Client_App.ViewModels.Forms;
+using Client_App.Services.DataAccess;
+using Models.DBRealization;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,14 +20,16 @@ public class SelectExecutorPopupVM : INotifyPropertyChanged
     public SelectExecutorPopupVM(BaseFormVM formVM)
     {
         _formVM = formVM;
-        _executorDataCollection = FormVM.Report.Reports.Report_Collection
-            .Where(x => x.FormNum_DB == formVM.FormType)
-            .Select(x => new ExecutorDataDTO() 
-            { 
-                Name = x.FIOexecutor_DB, Grade = x.GradeExecutor_DB, Phone = x.ExecPhone_DB, Email = x.ExecEmail_DB
-            })
-            .Distinct()
-            .ToList();
+        var orgId = formVM.Report?.Reports?.Id ?? 0;
+        _executorDataCollection = orgId > 0
+            ? OrgReportsQuery.LoadReportShells(StaticConfiguration.DBModel, orgId, formVM.FormType)
+                .Select(x => new ExecutorDataDTO()
+                {
+                    Name = x.FIOexecutor_DB, Grade = x.GradeExecutor_DB, Phone = x.ExecPhone_DB, Email = x.ExecEmail_DB
+                })
+                .Distinct()
+                .ToList()
+            : [];
         OpenPopupCommand = ReactiveCommand.Create(() =>
         {
             PopupIsOpen = !PopupIsOpen;

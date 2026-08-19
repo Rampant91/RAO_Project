@@ -373,6 +373,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
         if (AtLeastOneImportDone)
         {
+            InvalidateMainWindowCachesAfterImport();
             var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
             mainWindowVM.UpdateReportsCollection();
             mainWindowVM.UpdateOrgsPageInfo();

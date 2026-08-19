@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels.Forms;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -138,25 +139,7 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
         foreach (var f in formsWithCode41)
         {
             var opDate = DateOnly.Parse(f.OperationDate_DB);
-            var repInRange = SelectedReports.Report_Collection
-                .Where(rep => (f.FormNum_DB == "1.1" && rep.FormNum_DB == "1.5"
-                               || f.FormNum_DB == "1.2" && rep.FormNum_DB == "1.6"
-                               || f.FormNum_DB == "1.3" && rep.FormNum_DB == "1.6"
-                               || f.FormNum_DB == "1.4" && rep.FormNum_DB == "1.6")
-                              && (DateOnly.TryParse(rep.StartPeriod_DB, out var repStartDate)
-                                  && DateOnly.TryParse(rep.EndPeriod_DB, out var repEndDate)
-                                  && opDate > repStartDate && opDate <= repEndDate
-                                  || DateOnly.TryParse(rep.StartPeriod_DB, out repStartDate)
-                                      && !DateOnly.TryParse(rep.EndPeriod_DB, out _)
-                                      && opDate > repStartDate))
-                .OrderBy(x => x.EndPeriod_DB)
-                .ToList();
-            if (repInRange.Count == 2
-                && !DateOnly.TryParse(repInRange[0].EndPeriod_DB, out _)
-                && DateOnly.TryParse(repInRange[1].EndPeriod_DB, out _))
-            {
-                repInRange.Remove(repInRange[0]);
-            }
+            var repInRange = FindTargetReportsInRange(f.FormNum_DB, opDate);
             if (repInRange.Count > 1)
             {
                 #region MessageSourceTransmissionFailed
@@ -235,10 +218,7 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
                     await db.SaveChangesAsync();
                     var report = await ReportsStorage.GetReportAsync(rep.Id);
                     report.Reports ??= SelectedReports;
-                    if (!SelectedReports.Report_Collection.Contains(report))
-                    {
-                        SelectedReports.Report_Collection.Add(report);
-                    }
+                    Forms1WarmCache.Instance.InvalidateOrg(SelectedReports.Id);
                     if (DateOnly.TryParse(report.StartPeriod_DB, out var date)
                         && DateOnly.TryParse(repToOpen.StartPeriod_DB, out var maxDate)
                         && date > maxDate)

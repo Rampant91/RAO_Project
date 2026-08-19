@@ -215,7 +215,7 @@ public class SelectReportPopupVM : INotifyPropertyChanged
     }
 
     /// <summary>
-    /// Подгружает только stubs нужной формы (из warm-cache или лёгкий SQL), без LoadReportsByIds.
+    /// Подгружает только stubs нужной формы (из warm-cache или лёгкий SQL), без полной загрузки строк.
     /// </summary>
     private async Task EnsureFormShellsLoadedAsync(string formNum)
     {

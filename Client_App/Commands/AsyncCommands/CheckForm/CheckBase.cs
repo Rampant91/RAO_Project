@@ -9,7 +9,9 @@ using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Helpers;
+using Models.DBRealization;
 using OfficeOpenXml;
+using Client_App.Services.DataAccess;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -18,6 +20,9 @@ public abstract class CheckBase : BaseAsyncCommand
     #region Properties
     
     protected static bool checkNumPrint = false;
+
+    protected static bool HasEarlierSiblingReport(Report rep) =>
+        OrgReportsQuery.HasEarlierSiblingReport(StaticConfiguration.DBModel, rep);
 
     private protected static List<Dictionary<string, string>> OKSM = new();
 
