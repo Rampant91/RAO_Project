@@ -20,40 +20,22 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
 {
     #region Fields
 
-    private protected override byte DefaultFormsPerPage => 10;
+    private protected override byte DefaultFormsPerPage => MainWindowPagingDefaults.DefaultFormsPerPage;
 
-    private protected override byte DefaultOrgsPerPage => 8;
+    private protected override byte DefaultOrgsPerPage => MainWindowPagingDefaults.DefaultOrgsPerPage;
 
     private protected override char FormNum => '1';
 
     private readonly ObservableCollection<Report> _reportCollection = new();
-    private readonly ObservableCollection<Reports> _orgsCollection = new();
-    private readonly Forms1WarmCache _cache = Forms1WarmCache.Instance;
     private int _reportLoadGeneration;
-    private int _orgLoadGeneration;
 
     #endregion
 
     #region Commands
 
-    /// <summary>
-    /// Проверить выбранный отчёт из главного окна
-    /// </summary>
     public ICommand CheckReportFromMain { get; private set; }
-
-    /// <summary>
-    /// Выбранная форма -> Выгрузка Excel -> Для анализа
-    /// </summary>
     public ICommand ExcelExportFormAnalysis { get; private set; }
-
-    /// <summary>
-    /// Выбранная организация -> Импортировать отчёт в организацию -> Из Excel
-    /// </summary>
     public ICommand ImportExcel { get; private set; }
-
-    /// <summary>
-    /// Выбранная организация -> Импортировать отчёт в организацию -> Из Raodb
-    /// </summary>
     public ICommand ImportRaodb { get; private set; }
     
     #endregion
@@ -82,18 +64,6 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
 
     #region Properties
 
-    /// <summary>
-    /// Всего организаций с учётом фильтра.
-    /// </summary>
-    private protected override int FilteredRowsOrgs
-    {
-        get
-        {
-            return MainWindowListQuery.CountOrgsForm12(
-                StaticConfiguration.DBModel, "1.0", SearchText);
-        }
-    }
-
     protected override bool GetAdditionalSearchConditions(Reports reps, string search)
     {
         return reps.Master_DB.Rows10[0].ShortJurLico_DB.Contains(search, StringComparison.CurrentCultureIgnoreCase)
@@ -105,11 +75,15 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
         if (string.IsNullOrEmpty(FormNumWhiteList) || SelectedReports == null)
             return;
 
-        // Не блокируем UI загрузкой stubs: сбрасываем только если stubs уже есть и формы нет.
         var has = _cache.TryHasFormNum(SelectedReports.Id, FormNumWhiteList);
         if (has == false)
             FormNumWhiteList = string.Empty;
     }
+
+    protected override string? GetReportFormFilter() =>
+        string.IsNullOrEmpty(FormNumWhiteList) ? null : FormNumWhiteList;
+
+    protected override bool NotifySelectedReportsOnReportPageUpdate => true;
 
     #region FormNumWhiteList
 
@@ -126,23 +100,7 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
 
     #endregion
 
-    private protected override ObservableCollection<Report> ReportCollection
-    {
-        get
-        {
-            // Коллекция обновляется явно (UpdateReportCollection / async); getter без Sync.
-            return _reportCollection;
-        }
-    }
-
-    private protected override ObservableCollection<Reports> ReportsCollection
-    {
-        get
-        {
-            SyncOrgsCollection();
-            return _orgsCollection;
-        }
-    }
+    private protected override ObservableCollection<Report> ReportCollection => _reportCollection;
 
     private protected override Dictionary<string, Func<IQueryable<Report>, IQueryable<object>>> RowSelectors
     {
@@ -163,39 +121,16 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
         }
     }
 
-    private protected override int TotalPagesForms
-    {
-        get
-        {
-            var result = TotalRowsForms / RowsCountForms;
-            if (TotalRowsForms % RowsCountForms > 0)
-                result++;
-            return result;
-        }
-    }
-
-    private protected override int TotalPagesOrgs
-    {
-        get
-        {
-            var result = FilteredRowsOrgs / RowsCountOrgs;
-            if (FilteredRowsOrgs % RowsCountOrgs > 0)
-                result++;
-            return result;
-        }
-    }
-
     private protected override int TotalRowsForms
     {
         get
         {
             if (SelectedReports is null) return 0;
 
-            var filter = string.IsNullOrEmpty(FormNumWhiteList) ? null : FormNumWhiteList;
+            var filter = GetReportFormFilter();
             if (_cache.TryCountReports(SelectedReports.Id, filter, out var count))
                 return count;
 
-            // Пока stubs грузятся фоном — не блокируем UI.
             return _reportCollection.Count;
         }
     }
@@ -215,18 +150,18 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
         }
 
         var orgId = SelectedReports.Id;
-        var filter = string.IsNullOrEmpty(FormNumWhiteList) ? null : FormNumWhiteList;
-        var page = CurrentPageForms;
+        var filter = GetReportFormFilter();
+        var page = CurrentPageFormsValue;
         var pageSize = RowsCountForms;
 
-        // Cache hit — мгновенно; иначе не блокируем UI, грузим фоном.
         if (_cache.TryGetReportPage(orgId, filter, page, pageSize, out var cached))
         {
             ReplaceCollection(_reportCollection, cached, r => r.Id);
             OnPropertyChanged(nameof(ReportCollection));
             OnPropertyChanged(nameof(TotalRowsForms));
             OnPropertyChanged(nameof(TotalPagesForms));
-            OnPropertyChanged(nameof(SelectedReports)); // обновить IsEnabled кнопок фильтра
+            if (NotifySelectedReportsOnReportPageUpdate)
+                OnPropertyChanged(nameof(SelectedReports));
             WarmSelectedOrgAndPrefetchReports();
             return;
         }
@@ -243,7 +178,6 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
             {
                 using var db = new DBModel(dbPath);
                 var items = _cache.GetReportPage(db, orgId, filter, page, pageSize);
-                var total = _cache.CountReports(db, orgId, filter);
                 var hasFilter = string.IsNullOrEmpty(FormNumWhiteList)
                     || _cache.HasFormNum(db, orgId, FormNumWhiteList);
 
@@ -259,7 +193,8 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
                     OnPropertyChanged(nameof(ReportCollection));
                     OnPropertyChanged(nameof(TotalRowsForms));
                     OnPropertyChanged(nameof(TotalPagesForms));
-                    OnPropertyChanged(nameof(SelectedReports));
+                    if (NotifySelectedReportsOnReportPageUpdate)
+                        OnPropertyChanged(nameof(SelectedReports));
                     WarmSelectedOrgAndPrefetchReports();
                 });
             }
@@ -284,56 +219,9 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
         UpdateFormsPageInfo();
     }
 
-    private protected override void NotifySearchTextChanged()
-    {
-        SyncOrgsCollection();
-        OnPropertyChanged(nameof(ReportsCollection));
-        OnPropertyChanged(nameof(FilteredRowsOrgs));
-        OnPropertyChanged(nameof(TotalPagesOrgs));
-        OnPropertyChanged(nameof(TotalReportCount));
-    }
-
-    public void UpdateOrgsPageInfo()
-    {
-        // Не InvalidateAll: при переключении вкладок кэш должен остаться.
-        SyncOrgsCollection();
-        OnPropertyChanged(nameof(TotalRowsOrgs));
-        OnPropertyChanged(nameof(TotalPagesOrgs));
-        OnPropertyChanged(nameof(ReportsCollection));
-        UpdateTotalReportsCount();
-        if (SelectedReports != null)
-            UpdateReportCollection();
-    }
-
     /// <summary>
-    /// После правки титула 1.0: пересобрать текущую страницу org из уже пропатченных ключей
-    /// (без полного сброса OrgKeys / report warm-cache). Сохраняет SelectedReports.
+    /// Полный сброс warm-cache и OrgKeys (тяжелее базового <see cref="FormsTabControlBaseVM.UpdateReportsCollectionWithoutReCreation"/>).
     /// </summary>
-    public void RefreshOrgListAfterTitleChange()
-    {
-        var keep = SelectedReports;
-        _cache.InvalidateOrgPages();
-        SyncOrgsCollection();
-
-        if (keep != null)
-        {
-            for (var i = 0; i < _orgsCollection.Count; i++)
-            {
-                if (_orgsCollection[i].Id == keep.Id)
-                {
-                    _orgsCollection[i] = keep;
-                    break;
-                }
-            }
-
-            SetSelectedReportsWithoutReload(keep);
-        }
-
-        OnPropertyChanged(nameof(FilteredRowsOrgs));
-        OnPropertyChanged(nameof(TotalPagesOrgs));
-        OnPropertyChanged(nameof(ReportsCollection));
-    }
-
     public override void UpdateReportsCollectionWithoutReCreation()
     {
         var selectedId = SelectedReports?.Master_DB?.Id;
@@ -348,86 +236,7 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
         }
 
         OnPropertyChanged(nameof(ReportsCollection));
-    }
-
-    private void SyncOrgsCollection()
-    {
-        var search = SearchText;
-        var pageNum = CurrentPageOrgs;
-        var pageSize = RowsCountOrgs;
-
-        if (_cache.TryGetOrgPage(search, pageNum, pageSize, out var cached))
-        {
-            ReplaceCollection(_orgsCollection, cached.Items, r => r.Id);
-            _cache.PrefetchAdjacentOrgPages(
-                StaticConfiguration.DBPath, search, pageNum, pageSize, TotalPagesOrgs);
-            return;
-        }
-
-        var generation = Interlocked.Increment(ref _orgLoadGeneration);
-        var dbPath = StaticConfiguration.DBPath;
-
-        // Быстрый sync-путь, если UI уже на странице и кэша нет — всё же грузим sync,
-        // но параллельно не дёргаем TotalReportCount (убрано с CurrentPageOrgs).
-        // Для смены страницы предпочтительнее показать кэш; при miss — короткий sync.
-        try
-        {
-            var page = _cache.GetOrgPage(StaticConfiguration.DBModel, search, pageNum, pageSize);
-            if (generation != _orgLoadGeneration) return;
-            ReplaceCollection(_orgsCollection, page.Items, r => r.Id);
-            _cache.PrefetchAdjacentOrgPages(dbPath, search, pageNum, pageSize, TotalPagesOrgs);
-        }
-        catch
-        {
-            // leave previous page visible
-        }
-    }
-
-    private void WarmSelectedOrgAndPrefetchReports()
-    {
-        if (SelectedReports is null) return;
-
-        var filter = string.IsNullOrEmpty(FormNumWhiteList) ? null : FormNumWhiteList;
-        _cache.OnOrgSelected(
-            StaticConfiguration.DBPath,
-            SelectedReports.Id,
-            filter,
-            CurrentPageForms,
-            RowsCountForms);
-
-        _cache.PrefetchAdjacentReportPages(
-            StaticConfiguration.DBPath,
-            SelectedReports.Id,
-            filter,
-            CurrentPageForms,
-            RowsCountForms,
-            TotalPagesForms);
-    }
-
-    private static void ReplaceCollection<T>(
-        ObservableCollection<T> target,
-        IReadOnlyList<T> source,
-        Func<T, int> idSelector)
-    {
-        if (target.Count == source.Count)
-        {
-            var same = true;
-            for (var i = 0; i < source.Count; i++)
-            {
-                if (idSelector(target[i]) != idSelector(source[i]))
-                {
-                    same = false;
-                    break;
-                }
-            }
-
-            if (same)
-                return;
-        }
-
-        target.Clear();
-        foreach (var item in source)
-            target.Add(item);
+        RefreshCountsAsync();
     }
 
     #endregion

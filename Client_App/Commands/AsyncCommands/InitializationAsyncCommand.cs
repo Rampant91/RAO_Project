@@ -135,7 +135,12 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
         var dbPath = StaticConfiguration.DBPath;
         Forms1WarmCache.Instance.PrefetchTabs(
-            dbPath, orgPageSize: 8, reportPageSize: 10, "1.0", "2.0", "4.0", "5.0");
+            dbPath,
+            MainWindowPagingDefaults.DefaultOrgsPerPage,
+            MainWindowPagingDefaults.DefaultFormsPerPage,
+            "1.0", "2.0", "4.0", "5.0");
+
+        mainWindowViewModel.Forms1TabControlVM.ActivateTab();
 
         //new CountRowsInAllReportByRegionAndYearCommand().AsyncExecute(null);
 

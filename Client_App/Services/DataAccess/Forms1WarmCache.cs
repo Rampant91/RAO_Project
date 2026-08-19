@@ -9,8 +9,8 @@ using Models.DBRealization;
 namespace Client_App.Services.DataAccess;
 
 /// <summary>
-/// Warm-cache главного окна для форм 1.x: stubs организации, страницы org/report ±2,
-/// LRU вытеснение недавно покинутых организаций.
+/// Warm-cache главного окна (вкладки 1/2/4/5): stubs org, страницы org/report ±2,
+/// LRU-вытеснение (6 org / 9 org-страниц / 15 report-страниц).
 /// Prefetch всегда в отдельном <see cref="DBModel"/> (DbContext не потокобезопасен).
 /// </summary>
 public sealed class Forms1WarmCache
@@ -57,7 +57,8 @@ public sealed class Forms1WarmCache
             _activeOrgId = null;
         }
 
-        MainWindowListQuery.InvalidateOrgKeysCacheForm10();
+        MainWindowListQuery.InvalidateAllOrgKeysCaches();
+        MainWindowPrefetchService.Instance.CancelPending();
         CancelPrefetch();
         CancelPrefetchOrgsOnly();
     }

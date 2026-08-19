@@ -15,6 +15,7 @@ using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
+using Models.Forms.Form2;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -81,12 +82,24 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
             }
             case "2.0":
             {
+                await EnsureForm20RowsLoadedAsync(report);
+                var titleBefore = SnapshotForm20Title(report);
                 var form20VM = new Form_20VM(formNum, report)
                 {
                     IsSeparateDivision = !string.IsNullOrWhiteSpace(report.Rows20[1].Okpo.Value)
                 };
                 var window = new Form_20(form20VM) { DataContext = form20VM };
                 await window.ShowDialog(mainWindow);
+
+                var titleAfter = SnapshotForm20Title(report);
+                if (titleBefore != titleAfter)
+                {
+                    MainWindowListQuery.UpsertOrgKeyForm20FromMaster(
+                        mainWindowVM.SelectedReports.Id, report);
+                    mainWindowVM.Forms2TabControlVM.RefreshOrgListAfterTitleChange();
+                }
+
+                refreshOrgListAfterTitle = true;
                 break;
             }
             case "4.0":
@@ -105,9 +118,19 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
             }
         }
 
-        // Для 1.0 список org уже обновлён точечно (или не менялся) — без Sync через getter ReportsCollection.
+        // Для 1.0/2.0 список org уже обновлён точечно (или не менялся).
         if (!refreshOrgListAfterTitle)
             mainWindowVM.UpdateReportsCollection();
+    }
+
+    private static Form10TitleSelector.TitleFields SnapshotForm20Title(Report master)
+    {
+        var rows = master.Rows20.OrderBy(r => r.NumberInOrder_DB).ToList();
+        var r0 = rows.ElementAtOrDefault(0);
+        var r1 = rows.ElementAtOrDefault(1);
+        return Form10TitleSelector.Pick(
+            r0?.RegNo_DB, r0?.Okpo_DB, r0?.ShortJurLico_DB,
+            r1?.RegNo_DB, r1?.Okpo_DB, r1?.ShortJurLico_DB);
     }
 
     private static Form10TitleSelector.TitleFields SnapshotForm10Title(Report master)
@@ -145,6 +168,30 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
             var empty = (Form10)FormCreator.Create("1.0");
             empty.NumberInOrder_DB = (short)(master.Rows10.Count + 1);
             master.Rows10.Add(empty);
+        }
+    }
+
+    private static async Task EnsureForm20RowsLoadedAsync(Report master)
+    {
+        if (master.Rows20.Count >= 2)
+            return;
+
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+        var rows = await db.form_20
+            .AsNoTracking()
+            .Where(f => f.ReportId == master.Id)
+            .OrderBy(f => f.NumberInOrder_DB)
+            .ToListAsync();
+
+        master.Rows20.Clear();
+        foreach (var row in rows)
+            master.Rows20.Add(row);
+
+        while (master.Rows20.Count < 2)
+        {
+            var empty = (Form20)FormCreator.Create("2.0");
+            empty.NumberInOrder_DB = (short)(master.Rows20.Count + 1);
+            master.Rows20.Add(empty);
         }
     }
 }

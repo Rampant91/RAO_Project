@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using Xunit;
@@ -51,10 +52,14 @@ public class LazyLoadHardeningGuardTests
     {
         var forms4 = ReadClient("ViewModels", "MainWindowTabs", "Forms4TabControlVM.cs");
         var forms5 = ReadClient("ViewModels", "MainWindowTabs", "Forms5TabControlVM.cs");
-        Assert.Contains("Forms1WarmCache", forms4);
-        Assert.Contains("Forms1WarmCache", forms5);
+        var tabBase = ReadClient("ViewModels", "MainWindowTabs", "FormsTabControlBaseVM.cs");
+        Assert.Contains("Forms1WarmCache", tabBase);
         Assert.Contains("UpdateReportCollection", forms4);
         Assert.Contains("UpdateReportCollection", forms5);
+        Assert.Contains("_cache", forms4);
+        Assert.Contains("_cache", forms5);
+        Assert.Contains("WarmSelectedOrgAndPrefetchReports", tabBase);
+        Assert.Contains("RefreshOrgListAfterTitleChange", tabBase);
         Assert.DoesNotContain("HasFormNumAsync", forms4);
         Assert.DoesNotContain("HasFormNumAsync", forms5);
         Assert.DoesNotContain(".GetResult()", forms4);
@@ -71,5 +76,39 @@ public class LazyLoadHardeningGuardTests
         Assert.DoesNotContain("await dbm.form_50.LoadAsync()", src);
         Assert.Contains("masterIdsWithForm20", src);
         Assert.Contains("zeroOrderNotes", src);
+    }
+
+    [Fact]
+    public void Initialization_ActivatesFirstTabAfterPrefetch()
+    {
+        var src = ReadClient("Commands", "AsyncCommands", "InitializationAsyncCommand.cs");
+        Assert.Contains("Forms1TabControlVM.ActivateTab()", src);
+        Assert.Contains("MainWindowPagingDefaults", src);
+        Assert.DoesNotContain("ScheduleWarmInactiveTabs", src);
+    }
+
+    [Fact]
+    public void ImportBase_DoesNotDoubleInvalidateOrgKeys()
+    {
+        var src = ReadClient("Commands", "AsyncCommands", "Import", "ImportBaseAsyncCommand.cs");
+        Assert.Contains("InvalidateMainWindowCachesAfterImport", src);
+        Assert.DoesNotContain("InvalidateAllOrgKeysCaches()", src);
+        Assert.DoesNotContain("InvalidateOrgKeysCachesForm12()", src);
+    }
+
+    [Fact]
+    public void TabSwitch_UsesActivateTabNotSyncOrgsReload()
+    {
+        var src = ReadClient("ViewModels", "MainWindowVM.cs");
+        Assert.Contains("ActivateTab()", src);
+        Assert.Contains("ScheduleWarmInactiveTabs", src);
+
+        var setterStart = src.IndexOf("public byte SelectedReportType", StringComparison.Ordinal);
+        Assert.True(setterStart >= 0);
+        var nextRegion = src.IndexOf("#endregion", setterStart, StringComparison.Ordinal);
+        Assert.True(nextRegion > setterStart);
+        var setterBlock = src.Substring(setterStart, nextRegion - setterStart);
+        Assert.DoesNotContain("UpdateOrgsPageInfo()", setterBlock);
+        Assert.DoesNotContain("UpdateReportsCollection()", setterBlock);
     }
 }

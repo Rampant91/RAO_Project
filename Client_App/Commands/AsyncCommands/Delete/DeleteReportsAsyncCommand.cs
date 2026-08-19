@@ -95,6 +95,7 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
             Forms1WarmCache.Instance.InvalidateOrg(reps.Id);
             Forms1WarmCache.Instance.InvalidateOrgPages();
+            MainWindowListQuery.InvalidateAllOrgKeysCaches();
 
             await ProcessDataBaseFillEmpty(db);
 

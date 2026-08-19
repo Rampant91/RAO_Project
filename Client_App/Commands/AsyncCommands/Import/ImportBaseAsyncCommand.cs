@@ -1624,7 +1624,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     private protected static void InvalidateMainWindowCachesAfterImport()
     {
         Forms1WarmCache.Instance.InvalidateAll();
-        MainWindowListQuery.InvalidateOrgKeysCacheForm10();
     }
 
     /// <summary>

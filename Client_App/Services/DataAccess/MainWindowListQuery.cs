@@ -23,13 +23,26 @@ public sealed class ReportListStub
 
 /// <summary>
 /// Выборка страниц организаций и отчётов для главного окна (без полной загрузки Local).
+/// <para>
+/// Два уровня кэша org: (1) in-memory <see cref="OrgKey"/>-индекс на сессию — быстрый paging/поиск;
+/// (2) warm-cache страниц в <see cref="Forms1WarmCache"/> с LRU-вытеснением.
+/// </para>
 /// </summary>
 public static class MainWindowListQuery
 {
     private static readonly object OrgKeysForm10Lock = new();
     private static List<OrgKey>? _cachedOrgKeysForm10;
 
-    private sealed class OrgKey
+    private static readonly object OrgKeysForm20Lock = new();
+    private static List<OrgKey>? _cachedOrgKeysForm20;
+
+    private static readonly object OrgKeysForm40Lock = new();
+    private static List<OrgKey>? _cachedOrgKeysForm40;
+
+    private static readonly object OrgKeysForm50Lock = new();
+    private static List<OrgKey>? _cachedOrgKeysForm50;
+
+    internal sealed class OrgKey
     {
         public int Id { get; init; }
         public string RegNo { get; init; } = "";
@@ -47,6 +60,50 @@ public static class MainWindowListQuery
     {
         lock (OrgKeysForm10Lock)
             _cachedOrgKeysForm10 = null;
+    }
+
+    /// <summary>
+    /// Сбрасывает кэш ключей организаций формы 2.0 (после импорта/удаления/добавления).
+    /// </summary>
+    public static void InvalidateOrgKeysCacheForm20()
+    {
+        lock (OrgKeysForm20Lock)
+            _cachedOrgKeysForm20 = null;
+    }
+
+    /// <summary>
+    /// Сбрасывает in-memory ключи org для вкладок 1.0, 2.0, 4.0 и 5.0.
+    /// </summary>
+    public static void InvalidateAllOrgKeysCaches()
+    {
+        InvalidateOrgKeysCacheForm10();
+        InvalidateOrgKeysCacheForm20();
+        InvalidateOrgKeysCacheForm40();
+        InvalidateOrgKeysCacheForm50();
+    }
+
+    /// <summary>
+    /// Устаревшее имя — используйте <see cref="InvalidateAllOrgKeysCaches"/>.
+    /// </summary>
+    [Obsolete("Use InvalidateAllOrgKeysCaches")]
+    public static void InvalidateOrgKeysCachesForm12() => InvalidateAllOrgKeysCaches();
+
+    /// <summary>
+    /// Сбрасывает кэш ключей организаций формы 4.0 (после импорта/удаления/добавления).
+    /// </summary>
+    public static void InvalidateOrgKeysCacheForm40()
+    {
+        lock (OrgKeysForm40Lock)
+            _cachedOrgKeysForm40 = null;
+    }
+
+    /// <summary>
+    /// Сбрасывает кэш ключей организаций формы 5.0 (после импорта/удаления/добавления).
+    /// </summary>
+    public static void InvalidateOrgKeysCacheForm50()
+    {
+        lock (OrgKeysForm50Lock)
+            _cachedOrgKeysForm50 = null;
     }
 
     /// <summary>
@@ -76,6 +133,34 @@ public static class MainWindowListQuery
                 _cachedOrgKeysForm10[idx] = key;
             else
                 _cachedOrgKeysForm10.Add(key);
+        }
+    }
+
+    /// <summary>
+    /// Точечно обновляет ключ одной org в кэше (после правки титула 2.0).
+    /// </summary>
+    public static void UpsertOrgKeyForm20FromMaster(int reportsId, Report master)
+    {
+        if (master?.FormNum_DB is not "2.0")
+            return;
+
+        var rows = master.Rows20
+            .OrderBy(r => r.NumberInOrder_DB)
+            .Select(r => (r.RegNo_DB, r.Okpo_DB, r.ShortJurLico_DB))
+            .ToList();
+
+        var key = ToOrgKeyFromTitleRows(reportsId, rows);
+
+        lock (OrgKeysForm20Lock)
+        {
+            if (_cachedOrgKeysForm20 == null)
+                return;
+
+            var idx = _cachedOrgKeysForm20.FindIndex(k => k.Id == reportsId);
+            if (idx >= 0)
+                _cachedOrgKeysForm20[idx] = key;
+            else
+                _cachedOrgKeysForm20.Add(key);
         }
     }
 
@@ -116,6 +201,12 @@ public static class MainWindowListQuery
         var keys = LoadOrgKeysForm12(db, masterFormNum);
         return FilterOrgKeys(keys, searchText).Count();
     }
+
+    public static int CountOrgsForm40(DBModel db, string? searchText) =>
+        FilterOrgKeysForm40(LoadOrgKeysForm40(db), searchText).Count();
+
+    public static int CountOrgsForm50(DBModel db, string? searchText) =>
+        FilterOrgKeysForm50(LoadOrgKeysForm50(db), searchText).Count();
 
     public static PagedResult<Reports> GetOrgPageForm40(
         DBModel db, string? searchText, int page, int pageSize)
@@ -396,9 +487,26 @@ public static class MainWindowListQuery
         return LoadReportsByIds(db, orderedIds);
     }
 
-    private static List<int> GetFilteredOrgIdsForm40(DBModel db, string? searchText)
+    private static List<int> GetFilteredOrgIdsForm40(DBModel db, string? searchText) =>
+        FilterOrgKeysForm40(LoadOrgKeysForm40(db), searchText)
+            .OrderBy(k => k.SubjectRf)
+            .Select(k => k.Id)
+            .ToList();
+
+    private static List<int> GetFilteredOrgIdsForm50(DBModel db, string? searchText) =>
+        FilterOrgKeysForm50(LoadOrgKeysForm50(db), searchText)
+            .Select(k => k.Id)
+            .ToList();
+
+    private static List<OrgKey> LoadOrgKeysForm40(DBModel db)
     {
-        var keys = db.ReportsCollectionDbSet
+        lock (OrgKeysForm40Lock)
+        {
+            if (_cachedOrgKeysForm40 != null)
+                return _cachedOrgKeysForm40;
+        }
+
+        var loaded = db.ReportsCollectionDbSet
             .AsNoTracking()
             .Where(x => x.DBObservableId != null && x.Master_DB.FormNum_DB == "4.0")
             .Select(x => new OrgKey
@@ -419,25 +527,21 @@ public static class MainWindowListQuery
             })
             .ToList();
 
-        IEnumerable<OrgKey> filtered = keys;
-        if (!string.IsNullOrWhiteSpace(searchText))
-        {
-            var s = searchText.Trim();
-            filtered = keys.Where(k =>
-                k.SubjectRf.Contains(s, StringComparison.CurrentCultureIgnoreCase)
-                || k.RegNo.Contains(s, StringComparison.CurrentCultureIgnoreCase)
-                || k.ShortJurLico.Contains(s, StringComparison.CurrentCultureIgnoreCase));
-        }
+        lock (OrgKeysForm40Lock)
+            _cachedOrgKeysForm40 = loaded;
 
-        return filtered
-            .OrderBy(k => k.SubjectRf)
-            .Select(k => k.Id)
-            .ToList();
+        return loaded;
     }
 
-    private static List<int> GetFilteredOrgIdsForm50(DBModel db, string? searchText)
+    private static List<OrgKey> LoadOrgKeysForm50(DBModel db)
     {
-        var keys = db.ReportsCollectionDbSet
+        lock (OrgKeysForm50Lock)
+        {
+            if (_cachedOrgKeysForm50 != null)
+                return _cachedOrgKeysForm50;
+        }
+
+        var loaded = db.ReportsCollectionDbSet
             .AsNoTracking()
             .Where(x => x.DBObservableId != null && x.Master_DB.FormNum_DB == "5.0")
             .Select(x => new OrgKey
@@ -454,16 +558,39 @@ public static class MainWindowListQuery
             })
             .ToList();
 
-        IEnumerable<OrgKey> filtered = keys;
-        if (!string.IsNullOrWhiteSpace(searchText))
-        {
-            var s = searchText.Trim();
-            filtered = keys.Where(k =>
-                (!string.IsNullOrEmpty(k.ShortJurLico) && k.ShortJurLico.Contains(s, StringComparison.CurrentCultureIgnoreCase))
-                || (string.IsNullOrEmpty(k.ShortJurLico) && k.Name50.Contains(s, StringComparison.CurrentCultureIgnoreCase)));
-        }
+        lock (OrgKeysForm50Lock)
+            _cachedOrgKeysForm50 = loaded;
 
-        return filtered.Select(k => k.Id).ToList();
+        return loaded;
+    }
+
+    internal static IEnumerable<OrgKey> FilterOrgKeysForm40ForTest(IEnumerable<OrgKey> keys, string? searchText) =>
+        FilterOrgKeysForm40(keys, searchText);
+
+    internal static IEnumerable<OrgKey> FilterOrgKeysForm50ForTest(IEnumerable<OrgKey> keys, string? searchText) =>
+        FilterOrgKeysForm50(keys, searchText);
+
+    private static IEnumerable<OrgKey> FilterOrgKeysForm40(IEnumerable<OrgKey> keys, string? searchText)
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+            return keys;
+
+        var s = searchText.Trim();
+        return keys.Where(k =>
+            k.SubjectRf.Contains(s, StringComparison.CurrentCultureIgnoreCase)
+            || k.RegNo.Contains(s, StringComparison.CurrentCultureIgnoreCase)
+            || k.ShortJurLico.Contains(s, StringComparison.CurrentCultureIgnoreCase));
+    }
+
+    private static IEnumerable<OrgKey> FilterOrgKeysForm50(IEnumerable<OrgKey> keys, string? searchText)
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+            return keys;
+
+        var s = searchText.Trim();
+        return keys.Where(k =>
+            (!string.IsNullOrEmpty(k.ShortJurLico) && k.ShortJurLico.Contains(s, StringComparison.CurrentCultureIgnoreCase))
+            || (string.IsNullOrEmpty(k.ShortJurLico) && k.Name50.Contains(s, StringComparison.CurrentCultureIgnoreCase)));
     }
 
     /// <summary>
@@ -508,20 +635,36 @@ public static class MainWindowListQuery
             return loaded;
         }
 
-        return db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .Where(x => x.DBObservableId != null && x.Master_DB.FormNum_DB == "2.0")
-            .Select(x => new
+        if (masterFormNum == "2.0")
+        {
+            lock (OrgKeysForm20Lock)
             {
-                x.Id,
-                Rows = x.Master_DB.Rows20
-                    .OrderBy(r => r.NumberInOrder_DB)
-                    .Select(r => new { r.RegNo_DB, r.Okpo_DB, r.ShortJurLico_DB })
-                    .ToList()
-            })
-            .AsEnumerable()
-            .Select(x => ToOrgKeyFromTitleRows(x.Id, x.Rows.Select(r => (r.RegNo_DB, r.Okpo_DB, r.ShortJurLico_DB)).ToList()))
-            .ToList();
+                if (_cachedOrgKeysForm20 != null)
+                    return _cachedOrgKeysForm20;
+            }
+
+            var loaded20 = db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .Where(x => x.DBObservableId != null && x.Master_DB.FormNum_DB == "2.0")
+                .Select(x => new
+                {
+                    x.Id,
+                    Rows = x.Master_DB.Rows20
+                        .OrderBy(r => r.NumberInOrder_DB)
+                        .Select(r => new { r.RegNo_DB, r.Okpo_DB, r.ShortJurLico_DB })
+                        .ToList()
+                })
+                .AsEnumerable()
+                .Select(x => ToOrgKeyFromTitleRows(x.Id, x.Rows.Select(r => (r.RegNo_DB, r.Okpo_DB, r.ShortJurLico_DB)).ToList()))
+                .ToList();
+
+            lock (OrgKeysForm20Lock)
+                _cachedOrgKeysForm20 = loaded20;
+
+            return loaded20;
+        }
+
+        return [];
     }
 
     private static OrgKey ToOrgKeyFromTitleRows(

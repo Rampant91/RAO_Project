@@ -10,10 +10,9 @@ public class MainWindowListQueryLogicTests
     [Fact]
     public void PagingHelper_UsedByMainWindow_DefaultsMatchUi()
     {
-        // Defaults on Forms*TabControlVM: 8 orgs / 10 reports
-        var (_, pageSize, skip) = PagingHelper.Normalize(2, 8);
-        Assert.Equal(8, pageSize);
-        Assert.Equal(8, skip);
+        var (_, pageSize, skip) = PagingHelper.Normalize(2, MainWindowPagingDefaults.DefaultOrgsPerPage);
+        Assert.Equal(MainWindowPagingDefaults.DefaultOrgsPerPage, pageSize);
+        Assert.Equal(MainWindowPagingDefaults.DefaultOrgsPerPage, skip);
     }
 
     [Theory]
@@ -50,6 +49,15 @@ public class MainWindowListQueryLogicTests
         Assert.Contains("FirebirdInClause.SumCount", src);
         Assert.Contains("Master_DB.FormNum_DB == masterFormNum", src);
         Assert.Contains("UpsertOrgKeyForm10FromMaster", src);
+        Assert.Contains("UpsertOrgKeyForm20FromMaster", src);
+        Assert.Contains("_cachedOrgKeysForm20", src);
+        Assert.Contains("InvalidateOrgKeysCacheForm20", src);
+        Assert.Contains("_cachedOrgKeysForm40", src);
+        Assert.Contains("_cachedOrgKeysForm50", src);
+        Assert.Contains("InvalidateOrgKeysCacheForm40", src);
+        Assert.Contains("InvalidateAllOrgKeysCaches", src);
+        Assert.Contains("LoadOrgKeysForm40", src);
+        Assert.Contains("LoadOrgKeysForm50", src);
         Assert.DoesNotContain("filteredOrgIds.Contains(r.Reports.Id)", src);
     }
 
@@ -63,6 +71,18 @@ public class MainWindowListQueryLogicTests
         Assert.Contains("UpsertOrgKeyForm10FromMaster", src);
         Assert.Contains("RefreshOrgListAfterTitleChange", src);
         Assert.DoesNotContain("InvalidateOrgKeysCacheForm10()", src);
+    }
+
+    [Fact]
+    public void Form20Close_DoesNotInvalidateWholeOrgKeysCache()
+    {
+        var path = Path.Combine(
+            FindRepoRoot(), "Client_App", "Commands", "AsyncCommands", "NewChangeReportsAsyncCommand.cs");
+        Assert.True(File.Exists(path), path);
+        var src = File.ReadAllText(path);
+        Assert.Contains("UpsertOrgKeyForm20FromMaster", src);
+        Assert.Contains("RefreshOrgListAfterTitleChange", src);
+        Assert.DoesNotContain("InvalidateOrgKeysCacheForm20()", src);
     }
 
     private static string FindRepoRoot()

@@ -15,9 +15,11 @@ using Client_App.Commands.AsyncCommands.RaodbExport;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Properties;
 using Client_App.Services;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels.MainWindowTabs;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Models.Collections;
+using Models.DBRealization;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -46,12 +48,29 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(SelectedReports));
                 OnPropertyChanged(nameof(IsExcelSelectedOrganizationMenuEnabled));
-                UpdateReportsCollection();
-                UpdateOrgsPageInfo();
-                UpdateFormsPageInfo();
+
+                GetTabVm(value)?.ActivateTab();
+
+                if (!string.IsNullOrEmpty(StaticConfiguration.DBPath))
+                {
+                    MainWindowPrefetchService.Instance.ScheduleWarmInactiveTabs(
+                        value,
+                        StaticConfiguration.DBPath,
+                        MainWindowPagingDefaults.DefaultOrgsPerPage,
+                        MainWindowPagingDefaults.DefaultFormsPerPage);
+                }
             }
         }
     }
+
+    private FormsTabControlBaseVM? GetTabVm(byte formTab) => formTab switch
+    {
+        1 => Forms1TabControlVM,
+        2 => Forms2TabControlVM,
+        4 => Forms4TabControlVM,
+        5 => Forms5TabControlVM,
+        _ => null
+    };
     public string SelectedReportTypeToString => $"{_selectedReportType}.0";
 
     #endregion
@@ -200,138 +219,32 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     #endregion
 
     #region UpdateReportsCollection
-    public void UpdateReportsCollection()
-    {
-        switch (SelectedReportType)
-        {
-            case 1:
-                Forms1TabControlVM.UpdateReportsCollection();
-                break;
-            case 2:
-                Forms2TabControlVM.UpdateReportsCollection();
-                break;
-            case 4:
-                Forms4TabControlVM.UpdateReportsCollection();
-                break;
-            case 5:
-                Forms5TabControlVM.UpdateReportsCollection();
-                break;
-            default:
-                break;
-        }
-    }
+    public void UpdateReportsCollection() =>
+        GetTabVm(SelectedReportType)?.UpdateReportsCollection();
     #endregion
 
     #region UpdateReportCollection
-    public void UpdateReportCollection()
-    {
-        switch (SelectedReportType)
-        {
-            case 1:
-                Forms1TabControlVM.UpdateReportCollection();
-                break;
-            case 2:
-                Forms2TabControlVM.UpdateReportCollection();
-                break;
-            case 4:
-                Forms4TabControlVM.UpdateReportCollection();
-                break;
-            case 5:
-                Forms5TabControlVM.UpdateReportCollection();
-                break;
-            default:
-                break;
-        }
-    }
+    public void UpdateReportCollection() =>
+        GetTabVm(SelectedReportType)?.UpdateReportCollection();
     #endregion
 
     #region UpdateOrgsPageInfo
     public void UpdateOrgsPageInfo()
     {
-        switch (SelectedReportType)
-        {
-            case 1:
-                Forms1TabControlVM.UpdateOrgsPageInfo();
-                break;
-            case 2:
-                Forms2TabControlVM.UpdateOrgsPageInfo();
-                break;
-            case 4:
-                Forms4TabControlVM.UpdateOrgsPageInfo();
-                break;
-            case 5:
-                Forms5TabControlVM.UpdateOrgsPageInfo();
-                break;
-            default:
-                break;
-        }
+        GetTabVm(SelectedReportType)?.UpdateOrgsPageInfo();
     }
     #endregion
     
     #region UpdateFormsPageInfo
-    public void UpdateFormsPageInfo()
-    {
-        switch (SelectedReportType)
-        {
-            case 1:
-                Forms1TabControlVM.UpdateFormsPageInfo();
-                break;
-            case 2:
-                Forms2TabControlVM.UpdateFormsPageInfo();
-                break;
-            case 4:
-                Forms4TabControlVM.UpdateFormsPageInfo();
-                break;
-            case 5:
-                Forms5TabControlVM.UpdateFormsPageInfo();
-                break;
-            default:
-                break;
-        }
-    }
+    public void UpdateFormsPageInfo() =>
+        GetTabVm(SelectedReportType)?.UpdateFormsPageInfo();
     #endregion
 
-    public void UpdateTotalReportCount()
-    {
-        switch (SelectedReportType)
-        {
-            case 1:
-                Forms1TabControlVM.UpdateTotalReportCount();
-                break;
-            case 2:
-                Forms2TabControlVM.UpdateTotalReportCount();
-                break;
-            case 4:
-                Forms4TabControlVM.UpdateTotalReportCount();
-                break;
-            case 5:
-                Forms5TabControlVM.UpdateTotalReportCount();
-                break;
-            default:
-                break;
-        }
-    }
+    public void UpdateTotalReportCount() =>
+        GetTabVm(SelectedReportType)?.UpdateTotalReportCount();
 
-    public void UpdateTotalReportsCount()
-    {
-        switch (SelectedReportType)
-        {
-            case 1:
-                Forms1TabControlVM.UpdateTotalReportsCount();
-                break;
-            case 2:
-                Forms2TabControlVM.UpdateTotalReportsCount();
-                break;
-            case 4:
-                Forms4TabControlVM.UpdateTotalReportsCount();
-                break;
-            case 5:
-                Forms5TabControlVM.UpdateTotalReportsCount();
-                break;
-            default:
-                break;
-        }
-    }
+    public void UpdateTotalReportsCount() =>
+        GetTabVm(SelectedReportType)?.UpdateTotalReportsCount();
 
     #region OnStartProgressBar
 

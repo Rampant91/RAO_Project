@@ -16,9 +16,14 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Avalonia.Threading;
 
 namespace Client_App.ViewModels.MainWindowTabs;
 
+/// <summary>
+/// Базовая VM вкладок форм главного окна (1/2/4/5).
+/// Org-грид: cache-first через <see cref="Forms1WarmCache"/>; счётчики — async в фоне.
+/// </summary>
 public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 {
     #region Commands
@@ -72,9 +77,22 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
     #endregion
 
-    #region Properties
+    #region Fields
 
     private CancellationTokenSource? _debounceCts;
+
+    protected readonly ObservableCollection<Reports> _orgsCollection = new();
+    protected readonly Forms1WarmCache _cache = Forms1WarmCache.Instance;
+    private int _orgLoadGeneration;
+    private int _countsLoadGeneration;
+
+    private int _filteredRowsOrgs;
+    private int _totalReportCount;
+    private int _totalRowsOrgs;
+
+    #endregion
+
+    #region Properties
 
     public MainWindowVM MainWindowVM { get; }
 
@@ -86,31 +104,82 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
     private protected abstract ObservableCollection<Report>? ReportCollection { get; }
 
-    private protected abstract ObservableCollection<Reports>? ReportsCollection { get; }
+    private protected virtual ObservableCollection<Reports> ReportsCollection => _orgsCollection;
 
     private protected abstract Dictionary<string, Func<IQueryable<Report>, IQueryable<object>>> RowSelectors { get; }
 
-    private protected abstract int TotalPagesForms { get; }
-
-    private protected abstract int TotalPagesOrgs { get; }
-
     private protected abstract int TotalRowsForms { get; }
+
+    protected virtual string OrgPageMasterFormNum => $"{FormNum}.0";
+
+    /// <summary>Фильтр формы для report-грида (1/2/5 — whitelist; 4 — null).</summary>
+    protected virtual string? GetReportFormFilter() => null;
+
+    /// <summary>Обновлять SelectedReports после загрузки report-страницы (кнопки фильтра Forms 1/2).</summary>
+    protected virtual bool NotifySelectedReportsOnReportPageUpdate => false;
+
+    /// <summary>Организаций с учётом фильтра (кэш, обновляется в фоне).</summary>
+    public int FilteredRowsOrgs => _filteredRowsOrgs;
+
+    /// <summary>Страниц организаций; зависит только от <see cref="FilteredRowsOrgs"/> и <see cref="RowsCountOrgs"/>.</summary>
+    public int TotalPagesOrgs => ComputeTotalPages(FilteredRowsOrgs, RowsCountOrgs);
+
+    /// <summary>Страниц отчётов; зависит только от <see cref="TotalRowsForms"/> и <see cref="RowsCountForms"/>.</summary>
+    public int TotalPagesForms => ComputeTotalPages(TotalRowsForms, RowsCountForms);
+
+    /// <summary>Текущая страница org без clamp и без побочных эффектов (для sync/загрузки).</summary>
+    private protected int CurrentPageOrgsValue => _currentPageOrgs;
+
+    /// <summary>Текущая страница отчётов без clamp и без побочных эффектов.</summary>
+    private protected int CurrentPageFormsValue => _currentPageForms;
+
+    private static int ComputeTotalPages(int totalRows, int pageSize)
+    {
+        if (totalRows <= 0 || pageSize <= 0)
+            return 0;
+        return (totalRows + pageSize - 1) / pageSize;
+    }
+
+    private static int NormalizePage(int page, int totalPages)
+    {
+        if (page <= 0)
+            return 1;
+        if (totalPages > 0 && page > totalPages)
+            return totalPages;
+        return page;
+    }
+
+    private void ClampCurrentPageOrgs()
+    {
+        var normalized = NormalizePage(_currentPageOrgs, TotalPagesOrgs);
+        if (_currentPageOrgs == normalized)
+            return;
+        _currentPageOrgs = normalized;
+        OnPropertyChanged(nameof(CurrentPageOrgs));
+    }
+
+    private void ClampCurrentPageForms()
+    {
+        var normalized = NormalizePage(_currentPageForms, TotalPagesForms);
+        if (_currentPageForms == normalized)
+            return;
+        _currentPageForms = normalized;
+        OnPropertyChanged(nameof(CurrentPageForms));
+    }
 
     #region CurrentPageForms
 
     private int _currentPageForms = 1;
     private protected int CurrentPageForms
     {
-        get
-        {
-            if (_currentPageForms > TotalPagesForms && TotalPagesForms > 0)
-                _currentPageForms = TotalPagesForms;
-
-            return _currentPageForms;
-        }
+        get => _currentPageForms;
         set
         {
-            _currentPageForms = value;
+            var normalized = NormalizePage(value, TotalPagesForms);
+            if (_currentPageForms == normalized)
+                return;
+
+            _currentPageForms = normalized;
             OnPropertyChanged();
             UpdateReportCollection();
         }
@@ -123,17 +192,17 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     private int _currentPageOrgs = 1;
     public int CurrentPageOrgs
     {
-        get
-        {
-            if (_currentPageOrgs > TotalPagesOrgs)
-                _currentPageOrgs = TotalPagesOrgs;
-            return _currentPageOrgs;
-        }
+        get => _currentPageOrgs;
         set
         {
-            _currentPageOrgs = value;
-            OnPropertyChanged(nameof(ReportsCollection));
+            var normalized = NormalizePage(value, TotalPagesOrgs);
+            if (_currentPageOrgs == normalized)
+                return;
+
+            _currentPageOrgs = normalized;
             OnPropertyChanged();
+            SyncOrgsCollection();
+            OnPropertyChanged(nameof(ReportsCollection));
             // TotalReportCount не зависит от страницы org — не пересчитываем (дорого на Firebird).
         }
     }
@@ -180,6 +249,7 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
                 _rowsCountForms = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(TotalPagesForms));
+                ClampCurrentPageForms();
                 UpdateReportCollection();
                 SaveRowCountSettings();
             }
@@ -307,26 +377,7 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
     #endregion
 
-    public int TotalReportCount
-    {
-        get
-        {
-            var db = StaticConfiguration.DBModel;
-            return FormNum switch
-            {
-                '1' => MainWindowListQuery.CountAllReportsForFormType(db, '1', SearchText, "1.0"),
-                '2' => MainWindowListQuery.CountAllReportsForFormType(db, '2', SearchText, "2.0"),
-                '4' => MainWindowListQuery.CountAllReportsForForm40(db, SearchText),
-                '5' => MainWindowListQuery.CountAllReportsForForm50(db, SearchText),
-                _ => 0
-            };
-        }
-    }
-
-    /// <summary>
-    /// Всего организаций с учётом фильтра.
-    /// </summary>
-    private protected abstract int FilteredRowsOrgs { get; }
+    public int TotalReportCount => _totalReportCount;
 
     /// <summary>
     /// Дополнительные условия поиска для переопределения в дочерних классах.
@@ -340,21 +391,236 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     protected virtual void CheckAndResetFilterIfNeeded() { }
 
     /// <summary>
-    /// Всего организаций.
+    /// Всего организаций (без фильтра поиска).
     /// </summary>
-    public int TotalRowsOrgs => StaticConfiguration.DBModel.ReportsCollectionDbSet
-        .Where(x => x.DBObservable != null)
-        .Count(reps => reps.Master_DB.FormNum_DB == FormNum + ".0");
+    public int TotalRowsOrgs => _totalRowsOrgs;
+
+    #endregion
+
+    #region Org paging
+
+    /// <summary>
+    /// Смена вкладки: показать org из warm-cache; miss и счётчики — в фоне.
+    /// </summary>
+    public virtual void ActivateTab() => ReloadOrgAndReportGrids();
+
+    /// <summary>
+    /// После мутации данных (import/delete/add): перезагрузить org/report без блокировки UI.
+    /// </summary>
+    public virtual void UpdateOrgsPageInfo() => ReloadOrgAndReportGrids();
+
+    private void ReloadOrgAndReportGrids()
+    {
+        SyncOrgsCollection();
+        RefreshCountsAsync();
+        OnPropertyChanged(nameof(ReportsCollection));
+        if (SelectedReports != null)
+            UpdateReportCollection();
+        UpdateFormsPageInfo();
+    }
+
+    protected void SyncOrgsCollection()
+    {
+        var search = SearchText;
+        var pageNum = CurrentPageOrgsValue;
+        var pageSize = RowsCountOrgs;
+        var master = OrgPageMasterFormNum;
+
+        if (_cache.TryGetOrgPage(search, pageNum, pageSize, out var cached, master))
+        {
+            if (ReplaceCollection(_orgsCollection, cached.Items, r => r.Id))
+                OnPropertyChanged(nameof(ReportsCollection));
+            SchedulePrefetchAdjacentOrgPages(search, pageNum, pageSize);
+            return;
+        }
+
+        var generation = Interlocked.Increment(ref _orgLoadGeneration);
+        var dbPath = StaticConfiguration.DBPath;
+
+        _ = Task.Run(() =>
+        {
+            try
+            {
+                using var db = new DBModel(dbPath);
+                var page = _cache.GetOrgPage(db, search, pageNum, pageSize, master);
+                Dispatcher.UIThread.Post(() =>
+                {
+                    if (generation != _orgLoadGeneration)
+                        return;
+                    if (ReplaceCollection(_orgsCollection, page.Items, r => r.Id))
+                        OnPropertyChanged(nameof(ReportsCollection));
+                    SchedulePrefetchAdjacentOrgPages(search, pageNum, pageSize);
+                });
+            }
+            catch
+            {
+                // keep previous page visible
+            }
+        });
+    }
+
+    /// <summary>
+    /// После правки титула 1.0/2.0: пересобрать org-страницу без полного сброса OrgKeys.
+    /// </summary>
+    public void RefreshOrgListAfterTitleChange()
+    {
+        var keep = SelectedReports;
+        _cache.InvalidateOrgPages();
+        SyncOrgsCollection();
+
+        if (keep != null)
+        {
+            for (var i = 0; i < _orgsCollection.Count; i++)
+            {
+                if (_orgsCollection[i].Id == keep.Id)
+                {
+                    _orgsCollection[i] = keep;
+                    break;
+                }
+            }
+
+            SetSelectedReportsWithoutReload(keep);
+        }
+
+        NotifyOrgFilterChanged();
+    }
+
+    private void SchedulePrefetchAdjacentOrgPages(string? search, int pageNum, int pageSize)
+    {
+        var totalPages = ComputeTotalPages(_filteredRowsOrgs, pageSize);
+        _cache.PrefetchAdjacentOrgPages(
+            StaticConfiguration.DBPath, search, pageNum, pageSize, totalPages, OrgPageMasterFormNum);
+    }
+
+    protected void WarmSelectedOrgAndPrefetchReports()
+    {
+        if (SelectedReports is null) return;
+
+        var filter = GetReportFormFilter();
+        _cache.OnOrgSelected(
+            StaticConfiguration.DBPath,
+            SelectedReports.Id,
+            filter,
+            CurrentPageFormsValue,
+            RowsCountForms);
+
+        _cache.PrefetchAdjacentReportPages(
+            StaticConfiguration.DBPath,
+            SelectedReports.Id,
+            filter,
+            CurrentPageFormsValue,
+            RowsCountForms,
+            TotalPagesForms);
+    }
+
+    #endregion
+
+    #region Async counts
+
+    protected void RefreshCountsAsync()
+    {
+        var generation = Interlocked.Increment(ref _countsLoadGeneration);
+        var search = SearchText;
+        var dbPath = StaticConfiguration.DBPath;
+        var formNum = FormNum;
+
+        _ = Task.Run(() =>
+        {
+            try
+            {
+                using var db = new DBModel(dbPath);
+                var filtered = QueryFilteredRowsOrgs(db, formNum, search);
+                var totalReports = QueryTotalReportCount(db, formNum, search);
+                var totalOrgs = QueryTotalRowsOrgs(db, formNum);
+
+                Dispatcher.UIThread.Post(() =>
+                {
+                    if (generation != _countsLoadGeneration)
+                        return;
+
+                    _filteredRowsOrgs = filtered;
+                    _totalReportCount = totalReports;
+                    _totalRowsOrgs = totalOrgs;
+                    OnPropertyChanged(nameof(FilteredRowsOrgs));
+                    OnPropertyChanged(nameof(TotalPagesOrgs));
+                    OnPropertyChanged(nameof(TotalReportCount));
+                    OnPropertyChanged(nameof(TotalRowsOrgs));
+                });
+            }
+            catch
+            {
+                // keep previous counts
+            }
+        });
+    }
+
+    private static int QueryFilteredRowsOrgs(DBModel db, char formNum, string? search) =>
+        formNum switch
+        {
+            '1' => MainWindowListQuery.CountOrgsForm12(db, "1.0", search),
+            '2' => MainWindowListQuery.CountOrgsForm12(db, "2.0", search),
+            '4' => MainWindowListQuery.CountOrgsForm40(db, search),
+            '5' => MainWindowListQuery.CountOrgsForm50(db, search),
+            _ => 0
+        };
+
+    private static int QueryTotalReportCount(DBModel db, char formNum, string? search) =>
+        formNum switch
+        {
+            '1' => MainWindowListQuery.CountAllReportsForFormType(db, '1', search, "1.0"),
+            '2' => MainWindowListQuery.CountAllReportsForFormType(db, '2', search, "2.0"),
+            '4' => MainWindowListQuery.CountAllReportsForForm40(db, search),
+            '5' => MainWindowListQuery.CountAllReportsForForm50(db, search),
+            _ => 0
+        };
+
+    private static int QueryTotalRowsOrgs(DBModel db, char formNum) =>
+        db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .Count(x => x.DBObservableId != null && x.Master_DB.FormNum_DB == $"{formNum}.0");
 
     #endregion
 
     #region Methods
 
+    private protected virtual void NotifySearchTextChanged()
+    {
+        SyncOrgsCollection();
+        RefreshCountsAsync();
+        NotifyOrgFilterChanged();
+    }
+
+    private void NotifyRowsChanged()
+    {
+        OnPropertyChanged(nameof(RowsCountOrgs));
+        OnPropertyChanged(nameof(ReportsCollection));
+        OnPropertyChanged(nameof(TotalPagesOrgs));
+        ClampCurrentPageOrgs();
+        SyncOrgsCollection();
+    }
+
+    private void SaveRowCountSettings()
+    {
+        Properties.RowCountSettings.RowCountSettingsManager.SaveSettings(
+            "form" + FormNum,
+            _rowsCountOrgs,
+            _rowsCountForms);
+    }
+
+    public virtual void UpdateFormsPageInfo()
+    {
+        OnPropertyChanged(nameof(TotalRowsForms));
+        OnPropertyChanged(nameof(TotalPagesForms));
+        ClampCurrentPageForms();
+    }
+
+    protected static bool ReplaceCollection<T>(
+        ObservableCollection<T> target, IReadOnlyList<T> source, Func<T, int> idSelector) =>
+        CollectionSync.ReplaceById(target, source, idSelector);
+
     /// <summary>
     /// Возвращает количество строчек форм у отчёта.
     /// </summary>
-    /// <param name="rep">Отчёт, у которого нужно посчитать количество строчек форм.</param>
-    /// <returns>Количество строчек форм.</returns>
     private async Task<int> GetReportRowsCount(Report? rep)
     {
         if (rep == null || rep.FormNum == null) return 0;
@@ -371,34 +637,9 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
             .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id);
 
         if (RowSelectors.TryGetValue(rep.FormNum_DB, out var selector))
-        {
             return await selector(baseQuery).CountAsync();
-        }
 
         return 0;
-    }
-
-    private protected abstract void NotifySearchTextChanged();
-
-    private void NotifyRowsChanged()
-    {
-        OnPropertyChanged(nameof(RowsCountOrgs));
-        OnPropertyChanged(nameof(ReportsCollection));
-        OnPropertyChanged(nameof(TotalPagesOrgs));
-    }
-
-    private void SaveRowCountSettings()
-    {
-        Properties.RowCountSettings.RowCountSettingsManager.SaveSettings(
-            "form" + FormNum,
-            _rowsCountOrgs,
-            _rowsCountForms);
-    }
-
-    public void UpdateFormsPageInfo()
-    {
-        OnPropertyChanged(nameof(TotalRowsForms));
-        OnPropertyChanged(nameof(TotalPagesForms));
     }
 
     private async Task UpdateInSelectedReportFormsCountAsync()
@@ -432,27 +673,19 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     /// </summary>
     public virtual void UpdateReportsCollectionWithoutReCreation()
     {
-        var currentCollection = ReportsCollection;
-        if (currentCollection == null) return;
-
         var selectedId = SelectedReports?.Master_DB?.Id;
-        var page = MainWindowListQuery.GetOrgPage(
-            StaticConfiguration.DBModel,
-            FormNum,
-            SearchText,
-            CurrentPageOrgs,
-            RowsCountOrgs);
-
-        currentCollection.Clear();
-        foreach (var item in page.Items)
-            currentCollection.Add(item);
+        _cache.InvalidateOrgPages();
+        SyncOrgsCollection();
+        RefreshCountsAsync();
 
         if (selectedId.HasValue)
         {
-            var restored = currentCollection.FirstOrDefault(r => r.Master_DB?.Id == selectedId.Value);
+            var restored = _orgsCollection.FirstOrDefault(r => r.Master_DB?.Id == selectedId.Value);
             if (restored != null)
                 SetSelectedReportsWithoutReload(restored);
         }
+
+        OnPropertyChanged(nameof(ReportsCollection));
     }
 
     /// <summary>
@@ -464,14 +697,19 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
         OnPropertyChanged(nameof(SelectedReports));
     }
 
-    public void UpdateTotalReportCount()
+    public void UpdateTotalReportCount() => RefreshCountsAsync();
+
+    protected void NotifyOrgFilterChanged()
     {
-        OnPropertyChanged(nameof(TotalReportCount));
+        ClampCurrentPageOrgs();
+        OnPropertyChanged(nameof(FilteredRowsOrgs));
+        OnPropertyChanged(nameof(TotalPagesOrgs));
     }
 
     public void UpdateTotalReportsCount()
     {
-        OnPropertyChanged(nameof(FilteredRowsOrgs));
+        RefreshCountsAsync();
+        NotifyOrgFilterChanged();
     }
 
     #endregion
