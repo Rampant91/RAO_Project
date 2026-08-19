@@ -73,7 +73,7 @@ public class ExcelExportAllAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
         var repsList = await GetReportsList(db, cts);
 
         progressBarVM.SetProgressBar(16, "Определение форм для разбиения");
-        Form1SplitFormNums = IsSelectedOrg
+        Form1SplitFormNums = !Form1SheetSplitEnabled || IsSelectedOrg
             ? []
             : await GetForm1FormsNeedingSplit(db, repsList, selectedReportsId: null, cts.Token);
 
