@@ -317,6 +317,7 @@
                 </MenuItem>
 				<Separator/>
 				<MenuItem Command="{Binding  CalculateVolumesRaoProcessingByPeriod, Mode=OneWay}"
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"
 			              Header="Собрать сведения о переработке РАО"/>
                 <!--
                 <MenuItem Command="{Binding MaxGraphsLength, Mode=OneTime}"
@@ -374,7 +375,6 @@
             </MenuItem>
 
 			<MenuItem Name="PackagePassports"
-					  IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"
 					  Header="Паспорта">
 				<MenuItem Command="{Binding OpenPassportMenu}"
 						  Header="Открыть меню паспортов"/>
