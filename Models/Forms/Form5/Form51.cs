@@ -9,13 +9,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Drawing;
 using System.Linq;
 using Models.Comparers.FormContent;
+using Models.Interfaces;
 
 namespace Models.Forms.Form5;
 
 [Serializable]
 [Form_Class(name: "Форма 5.1: Сведения о закрытых радионуклидных источниках, полученных/переданных  подведомственными организациями сторонним организациям переведенных в радиоактивные отходы")]
 [Table(name: "form_51")]
-public class Form51 : Form
+public class Form51 : Form, ICopiable
 {
     #region Constructor
 
@@ -448,7 +449,7 @@ public class Form51 : Form
     /// <summary>
     /// </summary>
     /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
-    public override string ConvertToTSVstring()
+    public string ConvertToTSVstring()
     {
         // Создаем текстовое представление (TSV - tab-separated values)
         var str =
@@ -463,6 +464,11 @@ public class Form51 : Form
     }
 
     #endregion
+    public void PasteParsedTSVstring(string[] parsedTSVstring)
+    {
+        throw new NotImplementedException();
+    }
+
 
     public override bool IsContentEqual(Form otherForm)
     {

@@ -131,6 +131,7 @@ namespace Models.Forms.Form3
         }
         #endregion
 
+        #region ICopiable
         #region ConvertToTSVstring
 
         /// <summary>
@@ -138,16 +139,15 @@ namespace Models.Forms.Form3
         /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
         public string ConvertToTSVstring()
         {
-            // Создаем текстовое представление (TSV - tab-separated values)
-            var str =
-                $"{Name}\t" +
-                $"{Type}\t" +
-                $"{IdNum}\t" +
-                $"{ReleaseYear}\t" +
-                $"{DepletedUraniumMass}";
-            return str;
+            throw new NotImplementedException();
         }
-
+        #endregion
+        #region PasteParsedTSVstring
+        public  void PasteParsedTSVstring(string[] parsedTSVstring)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
         #endregion
 
         #region Validation

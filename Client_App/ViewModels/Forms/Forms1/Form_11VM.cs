@@ -198,6 +198,7 @@ public class Form_11VM : BaseFormVM
     public ICommand CopyPasName => new CopyPasNameAsyncCommand();
     public ICommand ExcelExportSourceMovementHistory => new ExcelExportSourceMovementHistoryAsyncCommand();
     public ICommand OpenPas => new OpenPasAsyncCommand();
+    public ICommand PasteRows => new NewPasteRowsAsyncCommand(this.Report.Rows11);
     public ICommand SourceTransmission => new SourceTransmissionAsyncCommand(this);
 
     #endregion

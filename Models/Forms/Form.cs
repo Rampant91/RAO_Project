@@ -15,7 +15,7 @@ using Spravochniki;
 
 namespace Models.Forms;
 
-public abstract partial class Form : IKey, IDataGridColumn, ICopiable
+public abstract partial class Form : IKey, IDataGridColumn
 {
     #region Properties
 
@@ -542,15 +542,6 @@ public abstract partial class Form : IKey, IDataGridColumn, ICopiable
 
     [GeneratedRegex(@"^\d{8}([\d_][Мм\d]\d{4})?$")]
     public static partial Regex OkpoRegex();
-
-    #endregion
-
-    #region ConvertToTSVstring
-
-    /// <summary>
-    /// </summary>
-    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
-    public abstract string ConvertToTSVstring();
 
     #endregion
 

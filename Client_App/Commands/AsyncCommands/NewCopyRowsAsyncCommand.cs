@@ -1,5 +1,5 @@
 ﻿using Avalonia;
-using Models.Forms; 
+using Models.Interfaces; 
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,7 +22,8 @@ public class NewCopyRowsAsyncCommand() : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter is null) return;
-        var forms = (IEnumerable<Form>)parameter;
+        
+        var forms = (IEnumerable<ICopiable>)parameter;
         if (forms == null || !forms.Any()) return;
 
         var plainText = new StringBuilder();

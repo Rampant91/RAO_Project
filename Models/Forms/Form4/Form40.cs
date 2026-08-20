@@ -1037,19 +1037,6 @@ public partial class Form40 : Form
 
     #endregion
 
-    #region ConvertToTSVstring
-
-    /// <summary>
-    /// </summary>
-    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
-    public override string ConvertToTSVstring()
-    {
-        // Заглушка
-        var str = "Форма 4.0";
-        return str;
-    }
-
-    #endregion
 
     public override bool IsContentEqual(Form otherForm)
     {

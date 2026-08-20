@@ -1,6 +1,8 @@
 ﻿using Models.Attributes;
 using Models.Collections;
+using Models.Comparers.FormContent;
 using Models.Forms.DataAccess;
+using Models.Interfaces;
 using Models.Passports;
 using OfficeOpenXml;
 using System;
@@ -10,8 +12,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,7 +24,7 @@ namespace Models.Forms.Form3
     [Serializable]
     [Form_Class("Форма 3.1")]
     [Table(name: "form_31")]
-    public class Form31 : Form
+    public class Form31 : Form, ICopiable
     {
         #region Constructor
         public Form31()
@@ -810,11 +814,26 @@ namespace Models.Forms.Form3
         #endregion
         #endregion
 
-        #region InheritedMethods
-        public override string ConvertToTSVstring()
+        #region ICopiable
+        #region ConvertToTSVstring
+
+        /// <summary>
+        /// </summary>
+        /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+        public string ConvertToTSVstring()
         {
             throw new NotImplementedException();
         }
+        #endregion
+        #region PasteParsedTSVstring
+        public void PasteParsedTSVstring(string[] parsedTSVstring)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+        #endregion
+
+        #region InheritedMethods
         public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
         {
             throw new NotImplementedException();

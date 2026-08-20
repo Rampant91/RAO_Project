@@ -434,7 +434,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand SetNumberOrder => new NewSetNumberOrderSyncCommand(this);
     public ICommand SortForms => new NewSortFormSyncCommand(this);
     public ICommand CopyRows => new NewCopyRowsAsyncCommand();
-    public ICommand PasteRows => new NewPasteRowsAsyncCommand(this);
+    public ICommand PasteRows => new NewPasteRowsAsyncCommand(this.Report.Rows11);
     public ICommand SelectAll => new SelectAllRowsAsyncCommand(this);
     public ICommand SaveReport => new SaveReportAsyncCommand(this);
     public ICommand AddNote => new NewAddNoteAsyncCommand(this);

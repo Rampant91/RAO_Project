@@ -1132,20 +1132,6 @@ public partial class Form20 : Form
 
     #endregion
 
-    #region ConvertToTSVstring
-
-    /// <summary>
-    /// </summary>
-    /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
-    public override string ConvertToTSVstring()
-    {
-        // Создаем текстовое представление (TSV - tab-separated values)
-        string str = $"Форма 2.0";
-        return str;
-    }
-
-    #endregion
-
     public override bool IsContentEqual(Form otherForm)
     {
         if (otherForm is not Form20 formToCompare) return false;

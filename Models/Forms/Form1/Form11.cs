@@ -2,6 +2,7 @@ using Models.Attributes;
 using Models.Collections;
 using Models.Comparers.FormContent;
 using Models.Forms.DataAccess;
+using Models.Interfaces;
 using OfficeOpenXml;
 using Spravochniki;
 using System;
@@ -15,7 +16,7 @@ namespace Models.Forms.Form1;
 [Serializable]
 [Form_Class("Форма 1.1: Сведения о ЗРИ")]
 [Table (name: "form_11")]
-public class Form11 : Form1
+public class Form11 : Form1, ICopiable
 {
     #region Constructor
     
@@ -1553,12 +1554,13 @@ public class Form11 : Form1
 
     #endregion
 
+    #region ICopiable
     #region ConvertToTSVstring
 
     /// <summary>
     /// </summary>
     /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
-    public override string ConvertToTSVstring()
+    public string ConvertToTSVstring()
     {
         // Создаем текстовое представление (TSV - tab-separated values)
         var str =
@@ -1589,7 +1591,42 @@ public class Form11 : Form1
     }
 
     #endregion
+    #region PasteParsedTSVstring
+    public void PasteParsedTSVstring(string[] parsedTSVstring)
+    {
+        
+        if (parsedTSVstring.Length is not 22 and not 23) return;
 
+        int offset = 0;
+        if (parsedTSVstring.Length is 23)
+            offset = 1;
+
+
+        OperationCode.Value = parsedTSVstring[0+ offset];
+        OperationDate.Value = parsedTSVstring[1+ offset];
+        PassportNumber.Value = parsedTSVstring[2+ offset];
+        Type.Value = parsedTSVstring[3+ offset];
+        Radionuclids.Value = parsedTSVstring[4+ offset];
+        FactoryNumber.Value = parsedTSVstring[5+ offset];
+        Quantity.Value = FormStringHelper.ConvertStringToInt(parsedTSVstring[6+ offset]);
+        Activity.Value = parsedTSVstring[7+ offset];
+        CreatorOKPO.Value = parsedTSVstring[8+ offset];
+        CreationDate.Value = parsedTSVstring[9+ offset];
+        Category.Value = FormStringHelper.ConvertStringToShort(parsedTSVstring[10+ offset]);
+        SignedServicePeriod.Value = FormStringHelper.ConvertStringToFloat(parsedTSVstring[11+ offset]);
+        PropertyCode.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[12+ offset]);
+        Owner.Value = parsedTSVstring[13+ offset];
+        DocumentVid.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[14+ offset]);
+        DocumentNumber.Value = parsedTSVstring[15+ offset];
+        DocumentDate.Value = parsedTSVstring[16+ offset];
+        ProviderOrRecieverOKPO.Value = parsedTSVstring[17+ offset];
+        TransporterOKPO.Value = parsedTSVstring[18+ offset];
+        PackName.Value = parsedTSVstring[19+ offset];
+        PackType.Value = parsedTSVstring[20+ offset];
+        PackNumber.Value = parsedTSVstring[21+ offset];
+    }
+    #endregion
+    #endregion
     public override bool IsContentEqual(Form otherForm)
     {
         if (otherForm is not Form11 formToCompare) return false;

@@ -1,6 +1,7 @@
 ﻿using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
+using Models.Interfaces;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace Models.Forms.Form5
     [Serializable]
     [Form_Class(name: "Форма 5.3: Сведения о закрытых радионуклидных источниках, полученных/переданных  подведомственными организациями сторонним организациям переведенных в радиоактивные отходы")]
     [Table(name: "form_53")]
-    public class Form53 : Form
+    public class Form53 : Form, ICopiable
     {
         #region Constructor
 
@@ -662,7 +663,7 @@ namespace Models.Forms.Form5
         /// <summary>
         /// </summary>
         /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
-        public override string ConvertToTSVstring()
+        public string ConvertToTSVstring()
         {
             // Создаем текстовое представление (TSV - tab-separated values)
             var str =
@@ -681,6 +682,11 @@ namespace Models.Forms.Form5
         }
 
         #endregion
+
+        public void PasteParsedTSVstring(string[] parsedTSVstring)
+        {
+            throw new NotImplementedException();
+        }
 
         public override bool IsContentEqual(Form otherForm)
         {

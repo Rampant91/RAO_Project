@@ -3,6 +3,7 @@ using Models.Collections;
 using Models.Comparers.FormContent;
 using Models.Forms.DataAccess;
 using Models.Forms.Form2;
+using Models.Interfaces;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -1137,19 +1138,7 @@ namespace Models.Forms.Form3
 
         #endregion
 
-        #region ConvertToTSVstring
-
-        /// <summary>
-        /// </summary>
-        /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
-        public override string ConvertToTSVstring()
-        {
-            // Создаем текстовое представление (TSV - tab-separated values)
-            string str = $"Форма 3.0";
-            return str;
-        }
-
-        #endregion
+       
 
         public override bool IsContentEqual(Form otherForm)
         {

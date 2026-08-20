@@ -1,5 +1,6 @@
 ﻿using Models.Attributes;
 using Models.Forms.DataAccess;
+using Models.Interfaces;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ namespace Models.Forms.Form3
     [Serializable]
     [Form_Class("Форма 3.2")]
     [Table(name: "form_32")]
-    public class Form32 : Form
+    public class Form32 : Form, ICopiable
     {
         #region Consructor
         public Form32()
@@ -897,11 +898,26 @@ namespace Models.Forms.Form3
         public ObservableCollection<Form32Identificator> IdentificatorsCollection { get; set; }
         #endregion
 
-        #region InheritedMethods
-        public override string ConvertToTSVstring()
+        #region ICopiable
+        #region ConvertToTSVstring
+
+        /// <summary>
+        /// </summary>
+        /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
+        public string ConvertToTSVstring()
         {
             throw new NotImplementedException();
         }
+        #endregion
+        #region PasteParsedTSVstring
+        public void PasteParsedTSVstring(string[] parsedTSVstring)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+        #endregion
+
+        #region InheritedMethods
         public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
         {
             throw new NotImplementedException();

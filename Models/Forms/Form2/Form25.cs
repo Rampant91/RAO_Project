@@ -8,13 +8,14 @@ using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
 using Models.Comparers.FormContent;
+using Models.Interfaces;
 
 namespace Models.Forms.Form2;
 
 [Serializable]
 [Form_Class("Форма 2.5: Наличие РВ, содержащихся в отработавшем ядерном топливе, в пунктах хранения")]
 [Table (name: "form_25")]
-public partial class Form25 : Form2
+public partial class Form25 : Form2, ICopiable
 {
     #region Constructor
     
@@ -702,7 +703,7 @@ public partial class Form25 : Form2
     /// <summary>
     /// </summary>
     /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
-    public override string ConvertToTSVstring()
+    public string ConvertToTSVstring()
     {
         // Создаем текстовое представление (TSV - tab-separated values)
         var str =
@@ -720,6 +721,10 @@ public partial class Form25 : Form2
     }
 
     #endregion
+    public void PasteParsedTSVstring(string[] parsedTSVstring)
+    {
+        throw new NotImplementedException();
+    }
 
     public override bool IsContentEqual(Form otherForm)
     {
