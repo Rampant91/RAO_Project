@@ -1,0 +1,15 @@
+---
+description: Тесты алгоритмов сравнения/нормализации/Excel layout — без дублей
+globs: "Test/Pairing41/**/*.cs,Test/TransferReceive/**/*.cs,Test/FormPrintCompare/**/*.cs,Test/Snk/**/*.cs,Test/FormEqualityTests/**/*.cs,**/ExcelExport/**/Testing/**/*.cs"
+alwaysApply: false
+---
+
+# Тесты алгоритмов
+
+Для сравнения, нормализации, soft-match, tolerance, Excel layout/highlight (и похожих алгоритмов):
+
+- Паттерн: harness + models + assertions (как Pairing41 / TransferReceive)
+- Группы кейсов по идее (нормализация, soft, сценарии, layout) — не свалка без структуры
+- Проверять то, что уходит пользователю (ячейки, подсветка, раскладка), когда это часть контракта фичи — не только внутренний bool
+- Один кейс — одна идея; не плодить почти одинаковые сценарии
+- Тестовые хуки (`Testing/`) — узкие фасады для прод-логики, без дублирования алгоритма в тестах

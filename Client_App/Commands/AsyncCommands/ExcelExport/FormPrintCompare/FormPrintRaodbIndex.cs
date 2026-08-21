@@ -100,7 +100,7 @@ internal static class FormPrintRaodbIndex
             .ThenBy(r => r.PeriodKey)
             .ToList();
 
-    private static (string RegNo, string Okpo) ReadOrgIdentity(Report master)
+    internal static (string RegNo, string Okpo) ReadOrgIdentity(Report master)
     {
         if (master.FormNum_DB == "1.0" && master.Rows10 is { Count: > 0 })
         {

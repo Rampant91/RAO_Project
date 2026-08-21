@@ -285,8 +285,10 @@
                               Command="{Binding ExcelExportCheckTransferReceive, Mode=OneWay}"
                               CommandParameter="{Binding SelectedReports, Mode=OneWay}"
                               IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
-                    <MenuItem Header="Сравнение отчётов с RAODB"
-                              Command="{Binding ExcelExportCompareFormPrint, Mode=OneWay}"/>
+                    <MenuItem Header="Сравнение отчётов"
+                              Command="{Binding ExcelExportCompareFormPrint, Mode=OneWay}"
+                              CommandParameter="{Binding SelectedReports, Mode=OneWay}"
+                              IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Command="{Binding ExcelExportIntersections, Mode=OneWay}"
@@ -309,7 +311,9 @@
                           Header="Проверка операций приёма-передачи (вся БД)"
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
                 <MenuItem Command="{Binding ExcelExportCompareFormPrint, Mode=OneWay}"
-                          Header="Сравнение отчётов с RAODB"/>
+                          CommandParameter="All"
+                          Header="Сравнение отчётов"
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
                 <MenuItem Header="Проблемные источники по региону"
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
                     <MenuItem Command="{Binding  ExcelExportLostAndExtraUnitsByRegion, Mode=OneWay}"

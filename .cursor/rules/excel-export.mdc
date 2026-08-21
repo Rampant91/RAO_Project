@@ -1,0 +1,24 @@
+---
+description: Паттерны Excel-выгрузок (общее) и отдельно — команд сравнения/парности
+globs: "**/ExcelExport/**/*.cs"
+alwaysApply: false
+---
+
+# Excel-команды
+
+При работе в `ExcelExport/`:
+
+## Общее (любая выгрузка)
+
+- Сначала смотреть ближайшие аналоги и базу `ExcelExportBaseAllAsyncCommand` (ориентиры в репо: Pairing41, TransferReceive, FormPrintCompare, ListOfForms и др.)
+- Нетривиальная команда — папка фичи + partial по слоям; простую однофайловую выгрузку не дробить без нужды
+- UI: меню / контекст + проводка в VM; прогресс-бар, `CancellationToken`, cleanup temp в `finally`
+- Нетривиальная логика — короткий README + smoke-чеклист в `Client_App/Documentation/`
+- Большие списки Id в SQL `IN` — батчить (лимит Firebird ~1500; в проекте обычно запас ~1000). На больших данных — лёгкий ключ → полные строки только для выгрузки
+
+## Только если сравнение / парность / dual-block
+
+Не навязывать простой выгрузке:
+
+- Shared: `SoftSimilarityCore`, уровни подсветки, lookalike — переиспользовать, не копировать
+- Excel UX: легенда, сводка, подписи вроде identical / нет пары; dual-block и цвета — в духе соседних compare-команд
