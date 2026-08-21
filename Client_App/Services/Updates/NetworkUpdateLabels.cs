@@ -69,6 +69,21 @@ public static class NetworkUpdateLabels
     public static string FormatRemote(NetworkReleaseInfo release) =>
         FormatVersion(release.MajorVersion, release.ReleaseId);
 
+    /// <summary>
+    /// Версия для шапки окна: текстовое имя выкладки отдела (1.3.0.11_test5),
+    /// иначе номер из сборки.
+    /// </summary>
+    public static string FormatForWindowTitle(LocalUpdateState localState, string assemblyVersion)
+    {
+        var installed = FormatInstalled(localState);
+        return IsTrackedInstallLabel(installed) ? installed : assemblyVersion;
+    }
+
+    public static bool IsTrackedInstallLabel(string? label) =>
+        !string.IsNullOrWhiteSpace(label)
+        && !string.Equals(label, UntrackedInstallLabel, StringComparison.Ordinal)
+        && !string.Equals(label, PreUpdateInstallLabel, StringComparison.Ordinal);
+
     public static bool IsLegacyPlaceholder(string? releaseId) =>
         string.Equals(releaseId?.Trim(), LegacyPreUpdateReleaseId, StringComparison.OrdinalIgnoreCase);
 }
