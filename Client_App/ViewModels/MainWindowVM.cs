@@ -25,6 +25,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using ExcelExportCheckPairingOfCode41AsyncCommand = Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
 using ExcelExportCheckTransferReceiveAsyncCommand = Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
+using ExcelExportCompareFormPrintAsyncCommand = Client_App.Commands.AsyncCommands.ExcelExport.FormPrintCompare.ExcelExportCompareFormPrintAsyncCommand;
 
 namespace Client_App.ViewModels;
 
@@ -361,6 +362,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ExcelExportCheckAllForms { get; set; }          //  Проверить все формы у организации
     public ICommand ExcelExportCheckPairingOfCode41 { get; set; }   //  Непарные операции 41 (org / вся БД, формы 1.1–1.6)
     public ICommand ExcelExportCheckTransferReceive { get; set; }   //  Проверка операций приёма-передачи (org / вся БД, формы 1.1–1.5)
+    public ICommand ExcelExportCompareFormPrint { get; set; }       //  Сравнение отчётов исходной БД с эталонным .RAODB
     public ICommand DeleteReports { get; set; }                     //  Удалить выбранную организацию (1.0, 2.0, 4.0)
 
     /// <summary>
@@ -526,6 +528,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand(this);
         ExcelExportCheckPairingOfCode41 = new ExcelExportCheckPairingOfCode41AsyncCommand(this);
         ExcelExportCheckTransferReceive = new ExcelExportCheckTransferReceiveAsyncCommand(this);
+        ExcelExportCompareFormPrint = new ExcelExportCompareFormPrintAsyncCommand();
         ImportExcel = new ImportExcelAsyncCommand();
         ImportJson = new ImportJsonAsyncCommand();
         ImportRaodb = new ImportRaodbAsyncCommand();
