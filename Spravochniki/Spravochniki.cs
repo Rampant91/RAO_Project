@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.IO;
+using System.Linq;
 using OfficeOpenXml;
 
 namespace Spravochniki;
@@ -833,51 +833,40 @@ public static class Spravochniks
         new(null, string.Empty)
     ];
 
-    public static List<(string rusName, string latinName, bool isLongLiving, GroupCode groupCode, long mzua, long mza)> SprRadionuclids => SprRadionuclidsTask.Result;
+    private static readonly Lazy<List<(string rusName, string latinName, bool isLongLiving, GroupCode groupCode, long mzua, long mza)>> SprRadionuclidsLazy =
+        new(() => ReadR(GetSpravochnikPath("R.xlsx")));
 
-    public static List<Tuple<string, string>> SprTypesToRadionuclids => SprTypesToRadionuclidsTask.Result;
+    private static readonly Lazy<List<Tuple<string, string>>> SprTypesToRadionuclidsLazy =
+        new(() => ReadCsv1(GetSpravochnikPath("TypeToRadionuclids.csv")));
 
-    private static Task<List<(string rusName, string latinName, bool isLongLiving, GroupCode groupCode, long mzua, long mza)>> SprRadionuclidsTask
+    private static readonly Lazy<HashSet<string>> SprRadionuclidRusNamesLazy =
+        new(() => SprRadionuclids
+            .Select(r => r.rusName)
+            .Where(name => name is not null)
+            .ToHashSet(StringComparer.Ordinal));
+
+    public static List<(string rusName, string latinName, bool isLongLiving, GroupCode groupCode, long mzua, long mza)> SprRadionuclids =>
+        SprRadionuclidsLazy.Value;
+
+    public static List<Tuple<string, string>> SprTypesToRadionuclids =>
+        SprTypesToRadionuclidsLazy.Value;
+
+    /// <summary>
+    /// Имена радионуклидов (rusName) для O(1) проверки в валидации. Совпадает с точным сравнением <c>==</c>.
+    /// </summary>
+    public static HashSet<string> SprRadionuclidRusNames =>
+        SprRadionuclidRusNamesLazy.Value;
+
+    private static string GetSpravochnikPath(string fileName)
     {
-        get
-        {
-            var tmp =
 #if DEBUG
+        return Path.Combine(
+            Path.GetFullPath(
                 Path.Combine(
-                    Path.GetFullPath(
-                        Path.Combine(
-                            AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "R.xlsx");
+                    AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", fileName);
 #else
-                Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", "R.xlsx");
+        return Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", fileName);
 #endif
-            return ReadRAsync(tmp);
-        }
-    }
-
-    private static Task<List<Tuple<string, string>>> SprTypesToRadionuclidsTask
-    {
-        get
-        {
-            var tmp =
-#if DEBUG
-                Path.Combine(
-                    Path.GetFullPath(
-                        Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "TypeToRadionuclids.csv");
-#else
-            Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", "TypeToRadionuclids.csv");
-#endif
-            return ReadCsvAsync1(tmp);
-        }
-    }
-
-    private static Task<List<(string rusName, string latinName, bool isLongLiving, GroupCode groupCode, long mzua, long mza)>> ReadRAsync(string path)
-    {
-        return Task.Run(() => ReadR(path));
-    }
-
-    private static Task<List<Tuple<string, string>>> ReadCsvAsync1(string path)
-    {
-        return Task.Run(() => ReadCsv1(path));
     }
 
     private static List<(string rusName, string latinName, bool isLongLiving, GroupCode groupCode, long mzua, long mza)> ReadR(string path)

@@ -223,8 +223,9 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     /// <returns></returns>
     private static Task ProcessSpravochniks()
     {
-        var a = Spravochniks.SprRadionuclids;
-        var b = Spravochniks.SprTypesToRadionuclids;
+        _ = Spravochniks.SprRadionuclids;
+        _ = Spravochniks.SprTypesToRadionuclids;
+        _ = Spravochniks.SprRadionuclidRusNames;
         return Task.CompletedTask;
     }
 

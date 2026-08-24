@@ -287,9 +287,8 @@ public abstract partial class Form : IKey, IDataGridColumn
             .Split(";")
             .Select(x => x.Trim())
             .ToHashSet();
-        var allNuclidsInSpr = nuclids
-            .All(nuclid => Spravochniks.SprRadionuclids
-                .Any(nameInSpr => nameInSpr.rusName == nuclid));
+        var namesInSpr = Spravochniks.SprRadionuclidRusNames;
+        var allNuclidsInSpr = nuclids.All(namesInSpr.Contains);
         if (!allNuclidsInSpr)
         {
             value.AddError("Недопустимое значение");
