@@ -145,6 +145,22 @@ public class LazyLoadHardeningGuardTests
     }
 
     [Fact]
+    public void Initialization_ResortUsesDbTitleKeysNotRegNoRep()
+    {
+        var init = ReadClient("Commands", "AsyncCommands", "InitializationAsyncCommand.cs");
+        Assert.Contains("GetForm20DisplayKeys", init);
+        Assert.Contains("form20Keys", init);
+        Assert.Contains("formNum == \"2.0\" && form20Keys.TryGetValue", init);
+    }
+
+    [Fact]
+    public void MainWindowListQuery_ExposesForm20DisplayKeys()
+    {
+        var src = ReadClient("Services", "DataAccess", "MainWindowListQuery.cs");
+        Assert.Contains("GetForm20DisplayKeys", src);
+    }
+
+    [Fact]
     public void TabSwitch_UsesActivateTabNotSyncOrgsReload()
     {
         var src = ReadClient("ViewModels", "MainWindowVM.cs");

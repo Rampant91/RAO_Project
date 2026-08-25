@@ -433,30 +433,47 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         MainWindowListQuery.InvalidateAllOrgKeysCaches();
 
         var comparator = new CustomReportsComparer();
-        var sortKeys = MainWindowListQuery.GetForm10DisplayKeys(StaticConfiguration.DBModel);
+        var db = StaticConfiguration.DBModel;
+        var form10Keys = MainWindowListQuery.GetForm10DisplayKeys(db);
+        var form20Keys = MainWindowListQuery.GetForm20DisplayKeys(db);
 
         var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
         ReportsStorage.LocalReports.Reports_Collection.Clear();
         ReportsStorage.LocalReports.Reports_Collection
             .AddRange(tmpReportsList
-                .OrderBy(x => GetSortRegNo(x, sortKeys), comparator)
-                .ThenBy(x => GetSortOkpo(x, sortKeys), comparator));
+                .OrderBy(x => GetSortRegNo(x, form10Keys, form20Keys), comparator)
+                .ThenBy(x => GetSortOkpo(x, form10Keys, form20Keys), comparator));
     }
 
     private static string GetSortRegNo(
-        Reports x, IReadOnlyDictionary<int, Form10TitleSelector.TitleFields> form10Keys)
+        Reports x,
+        IReadOnlyDictionary<int, Form10TitleSelector.TitleFields> form10Keys,
+        IReadOnlyDictionary<int, Form10TitleSelector.TitleFields> form20Keys)
     {
-        if (x.Master_DB?.FormNum_DB == "1.0" && form10Keys.TryGetValue(x.Id, out var t))
-            return t.RegNo;
-        return x.Master_DB?.RegNoRep?.Value ?? "";
+        var formNum = x.Master_DB?.FormNum_DB;
+        if (formNum == "1.0" && form10Keys.TryGetValue(x.Id, out var t10))
+            return t10.RegNo;
+        if (formNum == "2.0" && form20Keys.TryGetValue(x.Id, out var t20))
+            return t20.RegNo;
+        // 4.0/5.0: RegNoRep не трогает Rows*. 1.0/2.0 без ключей — не RegNoRep (stub без Rows10/20).
+        if (formNum is "4.0" or "5.0")
+            return x.Master_DB?.RegNoRep?.Value ?? "";
+        return "";
     }
 
     private static string GetSortOkpo(
-        Reports x, IReadOnlyDictionary<int, Form10TitleSelector.TitleFields> form10Keys)
+        Reports x,
+        IReadOnlyDictionary<int, Form10TitleSelector.TitleFields> form10Keys,
+        IReadOnlyDictionary<int, Form10TitleSelector.TitleFields> form20Keys)
     {
-        if (x.Master_DB?.FormNum_DB == "1.0" && form10Keys.TryGetValue(x.Id, out var t))
-            return t.Okpo;
-        return x.Master_DB?.OkpoRep?.Value ?? "";
+        var formNum = x.Master_DB?.FormNum_DB;
+        if (formNum == "1.0" && form10Keys.TryGetValue(x.Id, out var t10))
+            return t10.Okpo;
+        if (formNum == "2.0" && form20Keys.TryGetValue(x.Id, out var t20))
+            return t20.Okpo;
+        if (formNum is "4.0" or "5.0")
+            return x.Master_DB?.OkpoRep?.Value ?? "";
+        return "";
     }
 
     #endregion

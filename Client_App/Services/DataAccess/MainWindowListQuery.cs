@@ -604,6 +604,17 @@ public static class MainWindowListQuery
                 k => new Form10TitleSelector.TitleFields(k.RegNo, k.Okpo, k.ShortJurLico));
     }
 
+    /// <summary>
+    /// Лёгкие поля титула 2.0 (RegNo/Okpo/Short) для всех org — без полного preload form_20.
+    /// </summary>
+    public static IReadOnlyDictionary<int, Form10TitleSelector.TitleFields> GetForm20DisplayKeys(DBModel db)
+    {
+        return LoadOrgKeysForm12(db, "2.0")
+            .ToDictionary(
+                k => k.Id,
+                k => new Form10TitleSelector.TitleFields(k.RegNo, k.Okpo, k.ShortJurLico));
+    }
+
     private static List<OrgKey> LoadOrgKeysForm12(DBModel db, string masterFormNum)
     {
         if (masterFormNum == "1.0")
