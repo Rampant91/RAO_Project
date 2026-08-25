@@ -148,7 +148,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(CodeRAO), out var value))
             {
-                ((RamAccess<string>)value).Value = CodeRAO_DB;
+                ((RamAccess<string>)value).SyncFromStorage(CodeRAO_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(CodeRAO_Validation, CodeRAO_DB);
@@ -243,7 +243,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(StatusRAO), out var value))
             {
-                ((RamAccess<string>)value).Value = StatusRAO_DB;
+                ((RamAccess<string>)value).SyncFromStorage(StatusRAO_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(StatusRAO_Validation, StatusRAO_DB);
@@ -303,7 +303,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(Volume), out var value))
             {
-                ((RamAccess<string>)value).Value = Volume_DB;
+                ((RamAccess<string>)value).SyncFromStorage(Volume_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Volume_Validation, Volume_DB);
@@ -340,7 +340,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(Mass), out var value))
             {
-                ((RamAccess<string>)value).Value = Mass_DB;
+                ((RamAccess<string>)value).SyncFromStorage(Mass_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Mass_Validation, Mass_DB);
@@ -377,7 +377,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(QuantityOZIII), out var value))
             {
-                ((RamAccess<string>)value).Value = QuantityOZIII_DB;
+                ((RamAccess<string>)value).SyncFromStorage(QuantityOZIII_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityOZIII_Validation, QuantityOZIII_DB);
@@ -439,7 +439,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(MainRadionuclids), out var value))
             {
-                ((RamAccess<string>)value).Value = MainRadionuclids_DB;
+                ((RamAccess<string>)value).SyncFromStorage(MainRadionuclids_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MainRadionuclids_Validation, MainRadionuclids_DB);
@@ -477,7 +477,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(TritiumActivity), out var value))
             {
-                ((RamAccess<string>)value).Value = TritiumActivity_DB;
+                ((RamAccess<string>)value).SyncFromStorage(TritiumActivity_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TritiumActivity_Validation, TritiumActivity_DB);
@@ -514,7 +514,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(BetaGammaActivity), out var value))
             {
-                ((RamAccess<string>)value).Value = BetaGammaActivity_DB;
+                ((RamAccess<string>)value).SyncFromStorage(BetaGammaActivity_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(BetaGammaActivity_Validation, BetaGammaActivity_DB);
@@ -551,7 +551,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(AlphaActivity), out var value))
             {
-                ((RamAccess<string>)value).Value = AlphaActivity_DB;
+                ((RamAccess<string>)value).SyncFromStorage(AlphaActivity_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AlphaActivity_Validation, AlphaActivity_DB);
@@ -588,7 +588,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(TransuraniumActivity), out var value))
             {
-                ((RamAccess<string>)value).Value = TransuraniumActivity_DB;
+                ((RamAccess<string>)value).SyncFromStorage(TransuraniumActivity_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TransuraniumActivity_Validation, TransuraniumActivity_DB);
@@ -626,7 +626,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(ActivityMeasurementDate), out var value))
             {
-                ((RamAccess<string>)value).Value = ActivityMeasurementDate_DB;
+                ((RamAccess<string>)value).SyncFromStorage(ActivityMeasurementDate_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ActivityMeasurementDate_Validation, ActivityMeasurementDate_DB);
@@ -663,7 +663,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(ProviderOrRecieverOKPO), out var value))
             {
-                ((RamAccess<string>)value).Value = ProviderOrRecieverOKPO_DB;
+                ((RamAccess<string>)value).SyncFromStorage(ProviderOrRecieverOKPO_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
@@ -745,7 +745,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(TransporterOKPO), out var value))
             {
-                ((RamAccess<string>)value).Value = TransporterOKPO_DB;
+                ((RamAccess<string>)value).SyncFromStorage(TransporterOKPO_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TransporterOKPO_Validation, TransporterOKPO_DB);
@@ -809,7 +809,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(StoragePlaceName), out var value))
             {
-                ((RamAccess<string>)value).Value = StoragePlaceName_DB;
+                ((RamAccess<string>)value).SyncFromStorage(StoragePlaceName_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(StoragePlaceName_Validation, StoragePlaceName_DB);
@@ -861,7 +861,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(StoragePlaceCode), out var value))
             {
-                ((RamAccess<string>)value).Value = StoragePlaceCode_DB;
+                ((RamAccess<string>)value).SyncFromStorage(StoragePlaceCode_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(StoragePlaceCode_Validation, StoragePlaceCode_DB);
@@ -951,7 +951,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(RefineOrSortRAOCode), out var value))
             {
-                ((RamAccess<string>)value).Value = RefineOrSortRAOCode_DB;
+                ((RamAccess<string>)value).SyncFromStorage(RefineOrSortRAOCode_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RefineOrSortRAOCode_Validation, RefineOrSortRAOCode_DB);
@@ -1007,7 +1007,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(PackName), out var value))
             {
-                ((RamAccess<string>)value).Value = PackName_DB;
+                ((RamAccess<string>)value).SyncFromStorage(PackName_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackName_Validation, PackName_DB);
@@ -1060,7 +1060,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(PackType), out var value))
             {
-                ((RamAccess<string>)value).Value = PackType_DB;
+                ((RamAccess<string>)value).SyncFromStorage(PackType_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackType_Validation, PackType_DB);
@@ -1113,7 +1113,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(PackNumber), out var value))
             {
-                ((RamAccess<string>)value).Value = PackNumber_DB;
+                ((RamAccess<string>)value).SyncFromStorage(PackNumber_DB);
                 return (RamAccess<string>)value;
             }
 
@@ -1167,7 +1167,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(Subsidy), out var value))
             {
-                ((RamAccess<string>)value).Value = Subsidy_DB;
+                ((RamAccess<string>)value).SyncFromStorage(Subsidy_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Subsidy_Validation, Subsidy_DB);
@@ -1218,7 +1218,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(FcpNumber), out var value))
             {
-                ((RamAccess<string>)value).Value = FcpNumber_DB;
+                ((RamAccess<string>)value).SyncFromStorage(FcpNumber_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
@@ -1262,7 +1262,7 @@ public partial class Form16 : Form1
         {
             if (Dictionary.TryGetValue(nameof(ContractNumber), out var value))
             {
-                ((RamAccess<string>)value).Value = ContractNumber_DB;
+                ((RamAccess<string>)value).SyncFromStorage(ContractNumber_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ContractNumber_Validation, ContractNumber_DB);

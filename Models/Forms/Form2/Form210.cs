@@ -74,7 +74,7 @@ public partial class Form210 : Form2
         {
             if (Dictionary.TryGetValue(nameof(IndicatorName), out var value))
             {
-                ((RamAccess<string>)value).Value = IndicatorName_DB;
+                ((RamAccess<string>)value).SyncFromStorage(IndicatorName_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(IndicatorName_Validation, IndicatorName_DB);
@@ -125,7 +125,7 @@ public partial class Form210 : Form2
         {
             if (Dictionary.TryGetValue(nameof(PlotName), out var value))
             {
-                ((RamAccess<string>)value).Value = PlotName_DB;
+                ((RamAccess<string>)value).SyncFromStorage(PlotName_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PlotName_Validation, PlotName_DB);
@@ -173,7 +173,7 @@ public partial class Form210 : Form2
         {
             if (Dictionary.TryGetValue(nameof(PlotKadastrNumber), out var value))
             {
-                ((RamAccess<string>)value).Value = PlotKadastrNumber_DB;
+                ((RamAccess<string>)value).SyncFromStorage(PlotKadastrNumber_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PlotKadastrNumber_Validation, PlotKadastrNumber_DB);
@@ -219,7 +219,7 @@ public partial class Form210 : Form2
         {
             if (Dictionary.TryGetValue(nameof(PlotCode), out var value))
             {
-                ((RamAccess<string>)value).Value = PlotCode_DB;
+                ((RamAccess<string>)value).SyncFromStorage(PlotCode_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PlotCode_Validation, PlotCode_DB);
@@ -270,7 +270,7 @@ public partial class Form210 : Form2
         {
             if (Dictionary.TryGetValue(nameof(InfectedArea), out var value))
             {
-                ((RamAccess<string>)value).Value = InfectedArea_DB;
+                ((RamAccess<string>)value).SyncFromStorage(InfectedArea_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(InfectedArea_Validation, InfectedArea_DB);
@@ -307,7 +307,7 @@ public partial class Form210 : Form2
         {
             if (Dictionary.TryGetValue(nameof(AvgGammaRaysDosePower), out var value))
             {
-                ((RamAccess<string>)value).Value = AvgGammaRaysDosePower_DB;
+                ((RamAccess<string>)value).SyncFromStorage(AvgGammaRaysDosePower_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AvgGammaRaysDosePower_Validation, AvgGammaRaysDosePower_DB);
@@ -344,7 +344,7 @@ public partial class Form210 : Form2
         {
             if (Dictionary.TryGetValue(nameof(MaxGammaRaysDosePower), out var value))
             {
-                ((RamAccess<string>)value).Value = MaxGammaRaysDosePower_DB;
+                ((RamAccess<string>)value).SyncFromStorage(MaxGammaRaysDosePower_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MaxGammaRaysDosePower_Validation, MaxGammaRaysDosePower_DB);
@@ -381,7 +381,7 @@ public partial class Form210 : Form2
         {
             if (Dictionary.TryGetValue(nameof(WasteDensityAlpha), out var value))
             {
-                ((RamAccess<string>)value).Value = WasteDensityAlpha_DB;
+                ((RamAccess<string>)value).SyncFromStorage(WasteDensityAlpha_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(WasteDensityAlpha_Validation, WasteDensityAlpha_DB);
@@ -418,7 +418,7 @@ public partial class Form210 : Form2
         {
             if (Dictionary.TryGetValue(nameof(WasteDensityBeta), out var value))
             {
-                ((RamAccess<string>)value).Value = WasteDensityBeta_DB;
+                ((RamAccess<string>)value).SyncFromStorage(WasteDensityBeta_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(WasteDensityBeta_Validation, WasteDensityBeta_DB);
@@ -455,7 +455,7 @@ public partial class Form210 : Form2
         {
             if (Dictionary.TryGetValue(nameof(FcpNumber), out var value))
             {
-                ((RamAccess<string>)value).Value = FcpNumber_DB;
+                ((RamAccess<string>)value).SyncFromStorage(FcpNumber_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);

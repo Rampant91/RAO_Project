@@ -32,6 +32,7 @@ public partial class RadionuclidsSelector : UserControl
 
     private string _text = "";
     private CancellationTokenSource? _debounceCts;
+    private string? _lastValidatedText;
 
     public bool AllowEmpty
     {
@@ -67,6 +68,10 @@ public partial class RadionuclidsSelector : UserControl
 
     private void ValidateAndShowErrorDebounced()
     {
+        // Не гоняем таймер при recycle строки DataGrid, если текст тот же
+        if (string.Equals(Text, _lastValidatedText, StringComparison.Ordinal))
+            return;
+
         // Отменяем предыдущий таймер
         _debounceCts?.Cancel();
         _debounceCts = new CancellationTokenSource();
@@ -88,6 +93,7 @@ public partial class RadionuclidsSelector : UserControl
 
         var hasErrors = HasValidationErrors(Text);
         ErrorIndicator.IsVisible = hasErrors;
+        _lastValidatedText = Text;
     }
 
     private bool HasValidationErrors(string? text)
@@ -115,12 +121,8 @@ public partial class RadionuclidsSelector : UserControl
             // "-" допустим только если это единственный элемент
             if (part == "-") continue;
 
-            // Проверяем, есть ли в справочнике
-            if (!RadionuclidsProvider.AllRadionuclids.Any(r =>
-                r.Name.Equals(part, StringComparison.OrdinalIgnoreCase)))
-            {
-                return true; // Найден невалидный нуклид
-            }
+            if (!RadionuclidsProvider.IsKnownRadionuclid(part))
+                return true;
         }
 
         return false;
@@ -166,7 +168,12 @@ public partial class RadionuclidsSelector : UserControl
         if (textBox != null)
         {
             textBox.GetObservable(TextBox.TextProperty)
-                .Subscribe(_ => ValidateAndShowErrorDebounced());
+                .Subscribe(text =>
+                {
+                    if (string.Equals(text, _lastValidatedText, StringComparison.Ordinal))
+                        return;
+                    ValidateAndShowErrorDebounced();
+                });
         }
 
         // Подписываемся на изменения текста фильтра (Avalonia 0.10 не имеет события TextChanged)
@@ -186,10 +193,15 @@ public partial class RadionuclidsSelector : UserControl
         UpdateAddButtonState();
 
         // Подписываемся на изменение свойств режима
-        this.GetObservable(AllowEmptyProperty).Subscribe(_ => ValidateAndShowErrorDebounced());
+        this.GetObservable(AllowEmptyProperty).Subscribe(_ =>
+        {
+            _lastValidatedText = null;
+            ValidateAndShowErrorDebounced();
+        });
         this.GetObservable(SingleRadionuclideModeProperty).Subscribe(_ =>
         {
             UpdateAddButtonState();
+            _lastValidatedText = null;
             ValidateAndShowErrorDebounced();
         });
     }
@@ -289,9 +301,7 @@ public partial class RadionuclidsSelector : UserControl
             // "-" считается валидным
             if (part == "-") continue;
 
-            // Если нет в справочнике - добавляем в список невалидных
-            if (!RadionuclidsProvider.AllRadionuclids.Any(r =>
-                r.Name.Equals(part, StringComparison.OrdinalIgnoreCase)))
+            if (!RadionuclidsProvider.IsKnownRadionuclid(part))
             {
                 invalid.Add(part);
             }

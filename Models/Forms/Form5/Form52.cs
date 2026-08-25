@@ -41,7 +41,7 @@ public class Form52 : Form
         {
             if (Dictionary.TryGetValue(nameof(Category), out var value))
             {
-                ((RamAccess<short?>)value).Value = Category_DB;
+                ((RamAccess<short?>)value).SyncFromStorage(Category_DB);
                 return (RamAccess<short?>)value;
             }
             var rm = new RamAccess<short?>(Category_Validation, Category_DB);
@@ -97,7 +97,7 @@ public class Form52 : Form
         {
             if (Dictionary.TryGetValue(nameof(Radionuclids), out var value))
             {
-                ((RamAccess<string>)value).Value = Radionuclids_DB;
+                ((RamAccess<string>)value).SyncFromStorage(Radionuclids_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
@@ -149,7 +149,7 @@ public class Form52 : Form
         {
             if (Dictionary.TryGetValue(nameof(Quantity), out var value))
             {
-                ((RamAccess<int?>)value).Value = Quantity_DB;
+                ((RamAccess<int?>)value).SyncFromStorage(Quantity_DB);
                 return (RamAccess<int?>)value;
             }
             var rm = new RamAccess<int?>(Quantity_Validation, Quantity_DB);
@@ -195,7 +195,7 @@ public class Form52 : Form
         {
             if (Dictionary.TryGetValue(nameof(Activity), out var value))
             {
-                ((RamAccess<string>)value).Value = Activity_DB;
+                ((RamAccess<string>)value).SyncFromStorage(Activity_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Activity_Validation, Activity_DB);

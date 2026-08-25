@@ -286,7 +286,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(RefineMachineName), out var value))
             {
-                ((RamAccess<string>)value).Value = RefineMachineName_DB;
+                ((RamAccess<string>)value).SyncFromStorage(RefineMachineName_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RefineMachineName_Validation, RefineMachineName_DB, RefineMachineName_Hidden_Get, RefineMachineName_Hidden_Set);
@@ -406,7 +406,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(MachineCode), out var value))
             {
-                ((RamAccess<byte?>)value).Value = MachineCode_DB;
+                ((RamAccess<byte?>)value).SyncFromStorage(MachineCode_DB);
                 return (RamAccess<byte?>)value;
             }
             var rm = new RamAccess<byte?>(MachineCode_Validation, MachineCode_DB, MachineCode_Hidden_Get, MachineCode_Hidden_Set);
@@ -519,7 +519,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(MachinePower), out var value))
             {
-                ((RamAccess<string>)value).Value = MachinePower_DB;
+                ((RamAccess<string>)value).SyncFromStorage(MachinePower_DB);
                 return (RamAccess<string>)value;
 
             }
@@ -608,7 +608,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(NumberOfHoursPerYear), out var value))
             {
-                ((RamAccess<string>)value).Value = NumberOfHoursPerYear_DB;
+                ((RamAccess<string>)value).SyncFromStorage(NumberOfHoursPerYear_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(NumberOfHoursPerYear_Validation, NumberOfHoursPerYear_DB, NumberOfHoursPerYear_Hidden_Get, NumberOfHoursPerYear_Hidden_Set);
@@ -656,7 +656,7 @@ public partial class Form21 : Form2, IBaseColor
             if (CodeRAOIn_Hidden) return new RamAccess<string>(null, null);
             if (Dictionary.TryGetValue(nameof(CodeRAOIn), out var value))
             {
-                ((RamAccess<string>)value).Value = CodeRAOIn_DB;
+                ((RamAccess<string>)value).SyncFromStorage(CodeRAOIn_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(CodeRAOIn_Validation, CodeRAOIn_DB);
@@ -760,7 +760,7 @@ public partial class Form21 : Form2, IBaseColor
             if (StatusRAOIn_Hidden) return new RamAccess<string>(null, null);
             if (Dictionary.TryGetValue(nameof(StatusRAOIn), out var value))
             {
-                ((RamAccess<string>)value).Value = StatusRAOIn_DB;
+                ((RamAccess<string>)value).SyncFromStorage(StatusRAOIn_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(StatusRAOIn_Validation, StatusRAOIn_DB);
@@ -828,7 +828,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(VolumeIn), out var value))
             {
-                ((RamAccess<string>)value).Value = VolumeIn_DB;
+                ((RamAccess<string>)value).SyncFromStorage(VolumeIn_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(VolumeIn_Validation, VolumeIn_DB);
@@ -865,7 +865,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(MassIn), out var value))
             {
-                ((RamAccess<string>)value).Value = MassIn_DB;
+                ((RamAccess<string>)value).SyncFromStorage(MassIn_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassIn_Validation, MassIn_DB);
@@ -902,7 +902,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(QuantityIn), out var value))
             {
-                ((RamAccess<string>)value).Value = QuantityIn_DB;
+                ((RamAccess<string>)value).SyncFromStorage(QuantityIn_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityIn_Validation, QuantityIn_DB);
@@ -966,7 +966,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(TritiumActivityIn), out var value))
             {
-                ((RamAccess<string>)value).Value = TritiumActivityIn_DB;
+                ((RamAccess<string>)value).SyncFromStorage(TritiumActivityIn_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TritiumActivityIn_Validation, TritiumActivityIn_DB);
@@ -1003,7 +1003,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(BetaGammaActivityIn), out var value))
             {
-                ((RamAccess<string>)value).Value = BetaGammaActivityIn_DB;
+                ((RamAccess<string>)value).SyncFromStorage(BetaGammaActivityIn_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(BetaGammaActivityIn_Validation, BetaGammaActivityIn_DB);
@@ -1040,7 +1040,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(AlphaActivityIn), out var value))
             {
-                ((RamAccess<string>)value).Value = AlphaActivityIn_DB;
+                ((RamAccess<string>)value).SyncFromStorage(AlphaActivityIn_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AlphaActivityIn_Validation, AlphaActivityIn_DB);
@@ -1077,7 +1077,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(TransuraniumActivityIn), out var value))
             {
-                ((RamAccess<string>)value).Value = TransuraniumActivityIn_DB;
+                ((RamAccess<string>)value).SyncFromStorage(TransuraniumActivityIn_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TransuraniumActivityIn_Validation, TransuraniumActivityIn_DB);
@@ -1124,7 +1124,7 @@ public partial class Form21 : Form2, IBaseColor
             if (CodeRAOout_Hidden) return new RamAccess<string>(null, null);
             if (Dictionary.TryGetValue(nameof(CodeRAOout), out var value))
             {
-                ((RamAccess<string>)value).Value = CodeRAOout_DB;
+                ((RamAccess<string>)value).SyncFromStorage(CodeRAOout_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(CodeRAOout_Validation, CodeRAOout_DB);
@@ -1230,7 +1230,7 @@ public partial class Form21 : Form2, IBaseColor
             {
                 if (Dictionary.TryGetValue(nameof(StatusRAOout), out var value))
                 {
-                    ((RamAccess<string>)value).Value = StatusRAOout_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(StatusRAOout_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(StatusRAOout_Validation, StatusRAOout_DB);
@@ -1297,7 +1297,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(VolumeOut), out var value))
             {
-                ((RamAccess<string>)value).Value = VolumeOut_DB;
+                ((RamAccess<string>)value).SyncFromStorage(VolumeOut_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(VolumeOut_Validation, VolumeOut_DB);
@@ -1334,7 +1334,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(MassOut), out var value))
             {
-                ((RamAccess<string>)value).Value = MassOut_DB;
+                ((RamAccess<string>)value).SyncFromStorage(MassOut_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassOut_Validation, MassOut_DB);
@@ -1371,7 +1371,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(QuantityOZIIIout), out var value))
             {
-                ((RamAccess<string>)value).Value = QuantityOZIIIout_DB;
+                ((RamAccess<string>)value).SyncFromStorage(QuantityOZIIIout_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityOZIIIout_Validation, QuantityOZIIIout_DB);
@@ -1440,7 +1440,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(TritiumActivityOut), out var value))
             {
-                ((RamAccess<string>)value).Value = TritiumActivityOut_DB;
+                ((RamAccess<string>)value).SyncFromStorage(TritiumActivityOut_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TritiumActivityOut_Validation, TritiumActivityOut_DB);
@@ -1477,7 +1477,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(BetaGammaActivityOut), out var value))
             {
-                ((RamAccess<string>)value).Value = BetaGammaActivityOut_DB;
+                ((RamAccess<string>)value).SyncFromStorage(BetaGammaActivityOut_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(BetaGammaActivityOut_Validation, BetaGammaActivityOut_DB);
@@ -1514,7 +1514,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(AlphaActivityOut), out var value))
             {
-                ((RamAccess<string>)value).Value = AlphaActivityOut_DB;
+                ((RamAccess<string>)value).SyncFromStorage(AlphaActivityOut_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AlphaActivityOut_Validation, AlphaActivityOut_DB);
@@ -1551,7 +1551,7 @@ public partial class Form21 : Form2, IBaseColor
         {
             if (Dictionary.TryGetValue(nameof(TransuraniumActivityOut), out var value))
             {
-                ((RamAccess<string>)value).Value = TransuraniumActivityOut_DB;
+                ((RamAccess<string>)value).SyncFromStorage(TransuraniumActivityOut_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TransuraniumActivityOut_Validation, TransuraniumActivityOut_DB);

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -53,7 +53,7 @@ public abstract partial class Form1 : Form
             {
                 if (Dictionary.TryGetValue(nameof(OperationCode), out var value))
                 {
-                    ((RamAccess<string>)value).Value = OperationCode_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(OperationCode_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(OperationCode_Validation, OperationCode_DB);
@@ -113,7 +113,7 @@ public abstract partial class Form1 : Form
             {
                 if (Dictionary.TryGetValue(nameof(OperationDate), out RamAccess value))
                 {
-                    ((RamAccess<string>)value).Value = OperationDate_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(OperationDate_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(OperationDate_Validation, OperationDate_DB);
@@ -171,7 +171,7 @@ public abstract partial class Form1 : Form
             {
                 if (Dictionary.TryGetValue(nameof(DocumentVid), out var value))
                 {
-                    ((RamAccess<byte?>)value).Value = DocumentVid_DB;
+                    ((RamAccess<byte?>)value).SyncFromStorage(DocumentVid_DB);
                     return (RamAccess<byte?>)value;
                 }
                 var rm = new RamAccess<byte?>(DocumentVid_Validation, DocumentVid_DB);
@@ -237,7 +237,7 @@ public abstract partial class Form1 : Form
             {
                 if (Dictionary.TryGetValue(nameof(DocumentNumber), out var value))
                 {
-                    ((RamAccess<string>)value).Value = DocumentNumber_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(DocumentNumber_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(DocumentNumber_Validation, DocumentNumber_DB);
@@ -296,7 +296,7 @@ public abstract partial class Form1 : Form
             {
                 if (Dictionary.TryGetValue(nameof(DocumentDate), out var value))
                 {
-                    ((RamAccess<string>)value).Value = DocumentDate_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(DocumentDate_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(DocumentDate_Validation, DocumentDate_DB);

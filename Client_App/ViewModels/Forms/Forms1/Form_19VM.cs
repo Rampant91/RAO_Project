@@ -18,12 +18,16 @@ public class Form_19VM : BaseFormVM
     public override string FormType => "1.9";
 
     #region OpCodes
+
+    private ObservableCollection<OperationCodeItem>? _operationCodes;
+    private ICollection<string>? _validOperationCodes;
     
-    public ObservableCollection<OperationCodeItem> OperationCodes => 
-        new(OperationCodesProvider.AllOperationCodes
+    public ObservableCollection<OperationCodeItem> OperationCodes =>
+        _operationCodes ??= new(OperationCodesProvider.AllOperationCodes
             .Where(x => ValidOperationCodes.Contains(x.Code)));
     
-    public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm19();
+    public ICollection<string> ValidOperationCodes =>
+        _validOperationCodes ??= OperationCodesProvider.GetValidCodesForForm19();
 
     public string OperationCodePattern => "^1?$|^10$";
 
@@ -31,17 +35,15 @@ public class Form_19VM : BaseFormVM
 
     #region DocVids
 
-    /// <summary>
-    /// 
-    /// </summary>
+    private ObservableCollection<DocumentVidItem>? _documentVids;
+    private ICollection<string?>? _validDocumentVids;
+
     public ObservableCollection<DocumentVidItem> DocumentVids =>
-        new(DocumentVidProvider.AllDocumentVids
+        _documentVids ??= new(DocumentVidProvider.AllDocumentVids
             .Where(x => ValidDocumentVids.Contains(x.Code.ToString())));
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms19();
+    public ICollection<string?> ValidDocumentVids =>
+        _validDocumentVids ??= DocumentVidProvider.GetValidCodesForForms19();
 
     public string DocumentVidPattern => "^1?$";
 
@@ -49,17 +51,15 @@ public class Form_19VM : BaseFormVM
 
     #region CodeTypeAccObjects
 
-    /// <summary>
-    /// 
-    /// </summary>
+    private ObservableCollection<CodeTypeAccObjectItem>? _codeTypeAccObjects;
+    private ICollection<string>? _validCodeTypeAccObjects;
+
     public ObservableCollection<CodeTypeAccObjectItem> CodeTypeAccObjects =>
-        new(CodeTypeAccObjectProvider.AllCodeTypeAccObjects
+        _codeTypeAccObjects ??= new(CodeTypeAccObjectProvider.AllCodeTypeAccObjects
             .Where(x => ValidCodeTypeAccObjects.Contains(x.Code.ToString())));
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public ICollection<string> ValidCodeTypeAccObjects => CodeTypeAccObjectProvider.GetValidCodes();
+    public ICollection<string> ValidCodeTypeAccObjects =>
+        _validCodeTypeAccObjects ??= CodeTypeAccObjectProvider.GetValidCodes();
 
     public string CodeTypeAccObjectsPattern => @"^\d{0,2}$";
 

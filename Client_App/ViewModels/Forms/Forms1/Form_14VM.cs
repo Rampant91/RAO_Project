@@ -22,11 +22,15 @@ public class Form_14VM : BaseFormVM
 
     #region OpCodes
 
+    private ObservableCollection<OperationCodeItem>? _operationCodes;
+    private ICollection<string>? _validOperationCodes;
+
     public ObservableCollection<OperationCodeItem> OperationCodes =>
-        new(OperationCodesProvider.AllOperationCodes
+        _operationCodes ??= new(OperationCodesProvider.AllOperationCodes
             .Where(x => ValidOperationCodes.Contains(x.Code)));
 
-    public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm14();
+    public ICollection<string> ValidOperationCodes =>
+        _validOperationCodes ??= OperationCodesProvider.GetValidCodesForForm14();
 
     public string OperationCodePattern => @"^\d{0,2}$";
 
@@ -34,17 +38,15 @@ public class Form_14VM : BaseFormVM
 
     #region DocVids
 
-    /// <summary>
-    /// 
-    /// </summary>
+    private ObservableCollection<DocumentVidItem>? _documentVids;
+    private ICollection<string?>? _validDocumentVids;
+
     public ObservableCollection<DocumentVidItem> DocumentVids =>
-        new(DocumentVidProvider.AllDocumentVids
+        _documentVids ??= new(DocumentVidProvider.AllDocumentVids
             .Where(x => ValidDocumentVids.Contains(x.Code.ToString())));
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms11To16();
+    public ICollection<string?> ValidDocumentVids =>
+        _validDocumentVids ??= DocumentVidProvider.GetValidCodesForForms11To16();
 
     public string DocumentVidPattern => "^([1-9]|1[0-5]|19)$";
 
@@ -52,17 +54,15 @@ public class Form_14VM : BaseFormVM
 
     #region OwnershipForms
 
-    /// <summary>
-    /// 
-    /// </summary>
+    private ObservableCollection<OwnershipItem>? _ownershipForms;
+    private ICollection<string>? _validOwnershipForms;
+
     public ObservableCollection<OwnershipItem> OwnershipForms =>
-        new(OwnershipProvider.AllOwnershipForms
+        _ownershipForms ??= new(OwnershipProvider.AllOwnershipForms
             .Where(x => ValidOwnershipForms.Contains(x.Code.ToString())));
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodes();
+    public ICollection<string> ValidOwnershipForms =>
+        _validOwnershipForms ??= OwnershipProvider.GetValidCodes();
 
     public string OwnershipCodePattern => "^[1-6,9]$";
 
@@ -70,17 +70,15 @@ public class Form_14VM : BaseFormVM
 
     #region AggregateStates
 
-    /// <summary>
-    /// 
-    /// </summary>
+    private ObservableCollection<AggregateStateItem>? _aggregateStates;
+    private ICollection<string>? _validAggregateStates;
+
     public ObservableCollection<AggregateStateItem> AggregateStates =>
-        new(AggregateStateProvider.AllAggregateStates
+        _aggregateStates ??= new(AggregateStateProvider.AllAggregateStates
             .Where(x => ValidAggregateStates.Contains(x.Code.ToString())));
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public ICollection<string> ValidAggregateStates => AggregateStateProvider.GetValidCodes();
+    public ICollection<string> ValidAggregateStates =>
+        _validAggregateStates ??= AggregateStateProvider.GetValidCodes();
 
     public string AggregateStatePattern => "^[1-3]$";
 

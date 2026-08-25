@@ -66,7 +66,7 @@ public class Form28 : Form2
         {
             if (Dictionary.TryGetValue(nameof(WasteSourceName), out var value))
             {
-                ((RamAccess<string>)value).Value = WasteSourceName_DB;
+                ((RamAccess<string>)value).SyncFromStorage(WasteSourceName_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(WasteSourceName_Validation, WasteSourceName_DB);
@@ -112,7 +112,7 @@ public class Form28 : Form2
         {
             if (Dictionary.TryGetValue(nameof(WasteRecieverName), out var value))
             {
-                ((RamAccess<string>)value).Value = WasteRecieverName_DB;
+                ((RamAccess<string>)value).SyncFromStorage(WasteRecieverName_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(WasteRecieverName_Validation, WasteRecieverName_DB);
@@ -158,7 +158,7 @@ public class Form28 : Form2
         {
             if (Dictionary.TryGetValue(nameof(RecieverTypeCode), out var value))
             {
-                ((RamAccess<string>)value).Value = RecieverTypeCode_DB;
+                ((RamAccess<string>)value).SyncFromStorage(RecieverTypeCode_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RecieverTypeCode_Validation, RecieverTypeCode_DB);
@@ -209,7 +209,7 @@ public class Form28 : Form2
         {
             if (Dictionary.TryGetValue(nameof(PoolDistrictName), out var value))
             {
-                ((RamAccess<string>)value).Value = PoolDistrictName_DB;
+                ((RamAccess<string>)value).SyncFromStorage(PoolDistrictName_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PoolDistrictName_Validation, PoolDistrictName_DB);
@@ -262,7 +262,7 @@ public class Form28 : Form2
         {
             if (Dictionary.TryGetValue(nameof(AllowedWasteRemovalVolume), out var value))
             {
-                ((RamAccess<string>)value).Value = AllowedWasteRemovalVolume_DB;
+                ((RamAccess<string>)value).SyncFromStorage(AllowedWasteRemovalVolume_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AllowedWasteRemovalVolume_Validation, AllowedWasteRemovalVolume_DB);
@@ -299,7 +299,7 @@ public class Form28 : Form2
         {
             if (Dictionary.TryGetValue(nameof(RemovedWasteVolume), out var value))
             {
-                ((RamAccess<string>)value).Value = RemovedWasteVolume_DB;
+                ((RamAccess<string>)value).SyncFromStorage(RemovedWasteVolume_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RemovedWasteVolume_Validation, RemovedWasteVolume_DB);

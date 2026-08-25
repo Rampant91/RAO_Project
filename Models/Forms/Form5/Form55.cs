@@ -1,4 +1,4 @@
-﻿using Models.Attributes;
+using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
@@ -45,7 +45,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(Name), out var value))
                 {
-                    ((RamAccess<string>)value).Value = Name_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(Name_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(Name_Validation, Name_DB);
@@ -98,7 +98,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(OperationCode), out var value))
                 {
-                    ((RamAccess<string>)value).Value = OperationCode_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(OperationCode_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(OperationCode_Validation, OperationCode_DB);
@@ -150,7 +150,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(ProviderOrRecieverOKPO), out var value))
                 {
-                    ((RamAccess<string>)value).Value = ProviderOrRecieverOKPO_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(ProviderOrRecieverOKPO_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
@@ -200,7 +200,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(Quantity), out var value))
                 {
-                    ((RamAccess<int?>)value).Value = Quantity_DB;
+                    ((RamAccess<int?>)value).SyncFromStorage(Quantity_DB);
                     return (RamAccess<int?>)value;
                 }
                 var rm = new RamAccess<int?>(Quantity_Validation, Quantity_DB);
@@ -246,7 +246,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(Mass), out var value))
                 {
-                    ((RamAccess<string>)value).Value = Mass_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(Mass_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(Mass_Validation, Mass_DB);

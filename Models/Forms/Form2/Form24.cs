@@ -86,7 +86,7 @@ public partial class Form24 : Form2
         {
             if (Dictionary.TryGetValue(nameof(CodeOYAT), out var value))
             {
-                ((RamAccess<string>)value).Value = CodeOYAT_DB;
+                ((RamAccess<string>)value).SyncFromStorage(CodeOYAT_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(CodeOYAT_Validation, CodeOYAT_DB);
@@ -137,7 +137,7 @@ public partial class Form24 : Form2
         {
             if (Dictionary.TryGetValue(nameof(FcpNumber), out var value))
             {
-                ((RamAccess<string>)value).Value = FcpNumber_DB;
+                ((RamAccess<string>)value).SyncFromStorage(FcpNumber_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FcpNumber_Validation, FcpNumber_DB);
@@ -180,7 +180,7 @@ public partial class Form24 : Form2
         {
             if (Dictionary.TryGetValue(nameof(MassCreated), out var value))
             {
-                ((RamAccess<string>)value).Value = MassCreated_DB;
+                ((RamAccess<string>)value).SyncFromStorage(MassCreated_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassCreated_Validation, MassCreated_DB);
@@ -217,7 +217,7 @@ public partial class Form24 : Form2
         {
             if (Dictionary.TryGetValue(nameof(QuantityCreated), out var value))
             {
-                ((RamAccess<string>)value).Value = QuantityCreated_DB;
+                ((RamAccess<string>)value).SyncFromStorage(QuantityCreated_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityCreated_Validation, QuantityCreated_DB);
@@ -271,7 +271,7 @@ public partial class Form24 : Form2
         {
             if (Dictionary.TryGetValue(nameof(MassFromAnothers), out var value))
             {
-                ((RamAccess<string>)value).Value = MassFromAnothers_DB;
+                ((RamAccess<string>)value).SyncFromStorage(MassFromAnothers_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassFromAnothers_Validation, MassFromAnothers_DB);
@@ -308,7 +308,7 @@ public partial class Form24 : Form2
         {
             if (Dictionary.TryGetValue(nameof(QuantityFromAnothers), out var value))
             {
-                ((RamAccess<string>)value).Value = QuantityFromAnothers_DB;
+                ((RamAccess<string>)value).SyncFromStorage(QuantityFromAnothers_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityFromAnothers_Validation, QuantityFromAnothers_DB);
@@ -361,7 +361,7 @@ public partial class Form24 : Form2
         {
             if (Dictionary.TryGetValue(nameof(MassFromAnothersImported), out var value))
             {
-                ((RamAccess<string>)value).Value = MassFromAnothersImported_DB;
+                ((RamAccess<string>)value).SyncFromStorage(MassFromAnothersImported_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassFromAnothersImported_Validation, MassFromAnothersImported_DB);
@@ -398,7 +398,7 @@ public partial class Form24 : Form2
         {
             if (Dictionary.TryGetValue(nameof(QuantityFromAnothersImported), out var value))
             {
-                ((RamAccess<string>)value).Value = QuantityFromAnothersImported_DB;
+                ((RamAccess<string>)value).SyncFromStorage(QuantityFromAnothersImported_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityFromAnothersImported_Validation, QuantityFromAnothersImported_DB);
@@ -451,7 +451,7 @@ public partial class Form24 : Form2
         {
             if (Dictionary.TryGetValue(nameof(MassAnotherReasons), out var value))
             {
-                ((RamAccess<string>)value).Value = MassAnotherReasons_DB;
+                ((RamAccess<string>)value).SyncFromStorage(MassAnotherReasons_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassAnotherReasons_Validation, MassAnotherReasons_DB);
@@ -488,7 +488,7 @@ public partial class Form24 : Form2
         {
             if (Dictionary.TryGetValue(nameof(QuantityAnotherReasons), out var value))
             {
-                ((RamAccess<string>)value).Value = QuantityAnotherReasons_DB;
+                ((RamAccess<string>)value).SyncFromStorage(QuantityAnotherReasons_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityAnotherReasons_Validation, QuantityAnotherReasons_DB);
@@ -541,7 +541,7 @@ public partial class Form24 : Form2
         {
             if (Dictionary.TryGetValue(nameof(MassTransferredToAnother), out var value))
             {
-                ((RamAccess<string>)value).Value = MassTransferredToAnother_DB;
+                ((RamAccess<string>)value).SyncFromStorage(MassTransferredToAnother_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassTransferredToAnother_Validation, MassTransferredToAnother_DB);
@@ -578,7 +578,7 @@ public partial class Form24 : Form2
         {
             if (Dictionary.TryGetValue(nameof(QuantityTransferredToAnother), out var value))
             {
-                ((RamAccess<string>)value).Value = QuantityTransferredToAnother_DB;
+                ((RamAccess<string>)value).SyncFromStorage(QuantityTransferredToAnother_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityTransferredToAnother_Validation, QuantityTransferredToAnother_DB);
@@ -632,7 +632,7 @@ public partial class Form24 : Form2
         {
             if (Dictionary.TryGetValue(nameof(MassRefined), out var value))
             {
-                ((RamAccess<string>)value).Value = MassRefined_DB;
+                ((RamAccess<string>)value).SyncFromStorage(MassRefined_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassRefined_Validation, MassRefined_DB);
@@ -669,7 +669,7 @@ public partial class Form24 : Form2
         {
             if (Dictionary.TryGetValue(nameof(QuantityRefined), out var value))
             {
-                ((RamAccess<string>)value).Value = QuantityRefined_DB;
+                ((RamAccess<string>)value).SyncFromStorage(QuantityRefined_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityRefined_Validation, QuantityRefined_DB);
@@ -722,7 +722,7 @@ public partial class Form24 : Form2
         {
             if (Dictionary.TryGetValue(nameof(MassRemovedFromAccount), out var value))
             {
-                ((RamAccess<string>)value).Value = MassRemovedFromAccount_DB;
+                ((RamAccess<string>)value).SyncFromStorage(MassRemovedFromAccount_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(MassRemovedFromAccount_Validation, MassRemovedFromAccount_DB);
@@ -759,7 +759,7 @@ public partial class Form24 : Form2
         {
             if (Dictionary.TryGetValue(nameof(QuantityRemovedFromAccount), out var value))
             {
-                ((RamAccess<string>)value).Value = QuantityRemovedFromAccount_DB;
+                ((RamAccess<string>)value).SyncFromStorage(QuantityRemovedFromAccount_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(QuantityRemovedFromAccount_Validation, QuantityRemovedFromAccount_DB);

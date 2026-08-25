@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -15,9 +16,18 @@ public static class RadionuclidsProvider
     /// Все радионуклиды из справочника
     /// </summary>
     public static ObservableCollection<RadionuclidItem> AllRadionuclids { get; } =
-        new(Spravochniki.Spravochniks.SprRadionuclids
+        new(Spravochniks.SprRadionuclids
             .Select(r => new RadionuclidItem { Name = r.rusName })
             .OrderBy(r => r.Name));
+
+    /// <summary>
+    /// Имена для O(1) проверки (без учёта регистра, как в UI-валидации).
+    /// </summary>
+    public static HashSet<string> AllRadionuclidNames { get; } =
+        new(AllRadionuclids.Select(r => r.Name), StringComparer.OrdinalIgnoreCase);
+
+    public static bool IsKnownRadionuclid(string name) =>
+        AllRadionuclidNames.Contains(name);
 
     /// <summary>
     /// Возвращает список радионуклидов, которых ещё нет в текущей строке (доступных для добавления)

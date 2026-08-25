@@ -226,6 +226,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         _ = Spravochniks.SprRadionuclids;
         _ = Spravochniks.SprTypesToRadionuclids;
         _ = Spravochniks.SprRadionuclidRusNames;
+        _ = ViewModels.Forms.Forms1.Providers.RadionuclidsProvider.AllRadionuclidNames;
         return Task.CompletedTask;
     }
 

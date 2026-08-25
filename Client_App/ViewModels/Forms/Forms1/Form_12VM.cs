@@ -22,17 +22,21 @@ public class Form_12VM : BaseFormVM
 
     #region OpCodes
 
+    private ObservableCollection<OperationCodeItem>? _operationCodes;
+    private ICollection<string>? _validOperationCodes;
+
     /// <summary>
     /// Справочник кодов операции для AutoCompleteBox с описаниями
     /// </summary>
     public ObservableCollection<OperationCodeItem> OperationCodes =>
-        new(OperationCodesProvider.AllOperationCodes
+        _operationCodes ??= new(OperationCodesProvider.AllOperationCodes
             .Where(x => ValidOperationCodes.Contains(x.Code)));
 
     /// <summary>
     /// Список допустимых кодов операции для валидации (только коды без описаний)
     /// </summary>
-    public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm12();
+    public ICollection<string> ValidOperationCodes =>
+        _validOperationCodes ??= OperationCodesProvider.GetValidCodesForForm12();
 
     public string OperationCodePattern => @"^\d{0,2}$";
 
@@ -40,17 +44,15 @@ public class Form_12VM : BaseFormVM
 
     #region DocVids
 
-    /// <summary>
-    /// 
-    /// </summary>
+    private ObservableCollection<DocumentVidItem>? _documentVids;
+    private ICollection<string?>? _validDocumentVids;
+
     public ObservableCollection<DocumentVidItem> DocumentVids =>
-        new(DocumentVidProvider.AllDocumentVids
+        _documentVids ??= new(DocumentVidProvider.AllDocumentVids
             .Where(x => ValidDocumentVids.Contains(x.Code.ToString())));
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms11To16();
+    public ICollection<string?> ValidDocumentVids =>
+        _validDocumentVids ??= DocumentVidProvider.GetValidCodesForForms11To16();
 
     public string DocumentVidPattern => "^([1-9]|1[0-5]|19)$";
 
@@ -58,17 +60,15 @@ public class Form_12VM : BaseFormVM
 
     #region OwnershipForms
 
-    /// <summary>
-    /// 
-    /// </summary>
+    private ObservableCollection<OwnershipItem>? _ownershipForms;
+    private ICollection<string>? _validOwnershipForms;
+
     public ObservableCollection<OwnershipItem> OwnershipForms =>
-        new(OwnershipProvider.AllOwnershipForms
+        _ownershipForms ??= new(OwnershipProvider.AllOwnershipForms
             .Where(x => ValidOwnershipForms.Contains(x.Code.ToString())));
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public ICollection<string> ValidOwnershipForms => OwnershipProvider.GetValidCodes();
+    public ICollection<string> ValidOwnershipForms =>
+        _validOwnershipForms ??= OwnershipProvider.GetValidCodes();
 
     public string OwnershipCodePattern => "^[1-6,9]$";
 

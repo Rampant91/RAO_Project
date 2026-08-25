@@ -63,7 +63,7 @@ public class Form27 : Form2
         {
             if (Dictionary.TryGetValue(nameof(ObservedSourceNumber), out var value))
             {
-                ((RamAccess<string>)value).Value = ObservedSourceNumber_DB;
+                ((RamAccess<string>)value).SyncFromStorage(ObservedSourceNumber_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ObservedSourceNumber_Validation, ObservedSourceNumber_DB);
@@ -110,7 +110,7 @@ public class Form27 : Form2
         {
             if (Dictionary.TryGetValue(nameof(RadionuclidName), out var value))
             {
-                ((RamAccess<string>)value).Value = RadionuclidName_DB;
+                ((RamAccess<string>)value).SyncFromStorage(RadionuclidName_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
@@ -149,7 +149,7 @@ public class Form27 : Form2
         {
             if (Dictionary.TryGetValue(nameof(AllowedWasteValue), out var value))
             {
-                ((RamAccess<string>)value).Value = AllowedWasteValue_DB;
+                ((RamAccess<string>)value).SyncFromStorage(AllowedWasteValue_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AllowedWasteValue_Validation, AllowedWasteValue_DB);
@@ -186,7 +186,7 @@ public class Form27 : Form2
         {
             if (Dictionary.TryGetValue(nameof(FactedWasteValue), out var value))
             {
-                ((RamAccess<string>)value).Value = FactedWasteValue_DB;
+                ((RamAccess<string>)value).SyncFromStorage(FactedWasteValue_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FactedWasteValue_Validation, FactedWasteValue_DB);
@@ -223,7 +223,7 @@ public class Form27 : Form2
         {
             if (Dictionary.TryGetValue(nameof(WasteOutbreakPreviousYear), out var value))
             {
-                ((RamAccess<string>)value).Value = WasteOutbreakPreviousYear_DB;
+                ((RamAccess<string>)value).SyncFromStorage(WasteOutbreakPreviousYear_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(WasteOutbreakPreviousYear_Validation, WasteOutbreakPreviousYear_DB);

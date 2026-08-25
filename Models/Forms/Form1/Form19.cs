@@ -125,7 +125,7 @@ public class Form19 : Form1
         {
             if (Dictionary.TryGetValue(nameof(CodeTypeAccObject), out var value))
             {
-                ((RamAccess<short?>)value).Value = CodeTypeAccObject_DB;
+                ((RamAccess<short?>)value).SyncFromStorage(CodeTypeAccObject_DB);
                 return (RamAccess<short?>)value;
             }
             var rm = new RamAccess<short?>(CodeTypeAccObject_Validation, CodeTypeAccObject_DB);
@@ -176,7 +176,7 @@ public class Form19 : Form1
         {
             if (Dictionary.TryGetValue(nameof(Radionuclids), out var value))
             {
-                ((RamAccess<string>)value).Value = Radionuclids_DB;
+                ((RamAccess<string>)value).SyncFromStorage(Radionuclids_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
@@ -214,7 +214,7 @@ public class Form19 : Form1
         {
             if (Dictionary.TryGetValue(nameof(Activity), out var value))
             {
-                ((RamAccess<string>)value).Value = Activity_DB;
+                ((RamAccess<string>)value).SyncFromStorage(Activity_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Activity_Validation, Activity_DB);

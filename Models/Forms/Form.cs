@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -53,7 +53,7 @@ public abstract partial class Form : IKey, IDataGridColumn
         {
             if (Dictionary.TryGetValue(nameof(FormNum), out var value))
             {
-                ((RamAccess<string>)value).Value = FormNum_DB;
+                ((RamAccess<string>)value).SyncFromStorage(FormNum_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FormNum_Validation, FormNum_DB);
@@ -111,7 +111,7 @@ public abstract partial class Form : IKey, IDataGridColumn
         {
             if (Dictionary.TryGetValue(nameof(NumberInOrder), out var value))
             {
-                ((RamAccess<int>)value).Value = NumberInOrder_DB;
+                ((RamAccess<int>)value).SyncFromStorage(NumberInOrder_DB);
                 return (RamAccess<int>)value;
             }
             var rm = new RamAccess<int>(NumberInOrder_Validation, NumberInOrder_DB);
@@ -152,7 +152,7 @@ public abstract partial class Form : IKey, IDataGridColumn
         {
             if (Dictionary.TryGetValue(nameof(NumberOfFields), out RamAccess value))
             {
-                ((RamAccess<int>)value).Value = NumberOfFields_DB;
+                ((RamAccess<int>)value).SyncFromStorage(NumberOfFields_DB);
                 return (RamAccess<int>)value;
             }
             var rm = new RamAccess<int>(NumberOfFields_Validation, NumberOfFields_DB);

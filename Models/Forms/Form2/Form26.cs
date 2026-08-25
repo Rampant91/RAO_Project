@@ -67,7 +67,7 @@ public class Form26 : Form2
         {
             if (Dictionary.TryGetValue(nameof(ObservedSourceNumber), out var value))
             {
-                ((RamAccess<string>)value).Value = ObservedSourceNumber_DB;
+                ((RamAccess<string>)value).SyncFromStorage(ObservedSourceNumber_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ObservedSourceNumber_Validation, ObservedSourceNumber_DB);
@@ -108,7 +108,7 @@ public class Form26 : Form2
         {
             if (Dictionary.TryGetValue(nameof(ControlledAreaName), out var value))
             {
-                ((RamAccess<string>)value).Value = ControlledAreaName_DB;
+                ((RamAccess<string>)value).SyncFromStorage(ControlledAreaName_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ControlledAreaName_Validation, ControlledAreaName_DB);
@@ -164,7 +164,7 @@ public class Form26 : Form2
         {
             if (Dictionary.TryGetValue(nameof(SupposedWasteSource), out var value))
             {
-                ((RamAccess<string>)value).Value = SupposedWasteSource_DB;
+                ((RamAccess<string>)value).SyncFromStorage(SupposedWasteSource_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(SupposedWasteSource_Validation, SupposedWasteSource_DB);
@@ -207,7 +207,7 @@ public class Form26 : Form2
         {
             if (Dictionary.TryGetValue(nameof(DistanceToWasteSource), out var value))
             {
-                ((RamAccess<string>)value).Value = DistanceToWasteSource_DB;
+                ((RamAccess<string>)value).SyncFromStorage(DistanceToWasteSource_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(DistanceToWasteSource_Validation, DistanceToWasteSource_DB);
@@ -244,7 +244,7 @@ public class Form26 : Form2
         {
             if (Dictionary.TryGetValue(nameof(TestDepth), out var value))
             {
-                ((RamAccess<string>)value).Value = TestDepth_DB;
+                ((RamAccess<string>)value).SyncFromStorage(TestDepth_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TestDepth_Validation, TestDepth_DB);
@@ -281,7 +281,7 @@ public class Form26 : Form2
         {
             if (Dictionary.TryGetValue(nameof(RadionuclidName), out var value))
             {
-                ((RamAccess<string>)value).Value = RadionuclidName_DB;
+                ((RamAccess<string>)value).SyncFromStorage(RadionuclidName_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
@@ -319,7 +319,7 @@ public class Form26 : Form2
         {
             if (Dictionary.TryGetValue(nameof(AverageYearConcentration), out var value))
             {
-                ((RamAccess<string>)value).Value = AverageYearConcentration_DB;
+                ((RamAccess<string>)value).SyncFromStorage(AverageYearConcentration_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AverageYearConcentration_Validation, AverageYearConcentration_DB);

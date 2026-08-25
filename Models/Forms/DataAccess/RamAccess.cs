@@ -41,6 +41,15 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo
         {
             if (IsSet?.Get() ?? true)
             {
+                if (EqualityComparer<T>.Default.Equals(_value, value))
+                {
+                    // TwoWay-биндинг мог оставить HasErrors при уже верном Value —
+                    // без повторного Handler красный кружок «залипает».
+                    if (HasErrors)
+                        Handler?.Invoke(this);
+                    return;
+                }
+
                 _value = value;
                 OnPropertyChanged(nameof(Value));
                 Handler?.Invoke(this);
@@ -54,6 +63,9 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo
         {
             if (value != null)
             {
+                if (EqualityComparer<T>.Default.Equals(_value, value))
+                    return;
+
                 _value = value;
                 OnPropertyChanged(nameof(Value));
             }
@@ -69,9 +81,31 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo
         get => _value;
         set
         {
+            if (EqualityComparer<T>.Default.Equals(_value, value))
+                return;
+
             _value = value;
             Handler?.Invoke(this);
         }
+    }
+
+    /// <summary>
+    /// Подтянуть значение из поля *_DB.
+    /// Без лишней валидации, если значение уже совпадает и ошибок нет;
+    /// при расхождении или залипших ошибках — синхронизация + Handler.
+    /// </summary>
+    public void SyncFromStorage(T dbValue)
+    {
+        if (EqualityComparer<T>.Default.Equals(_value, dbValue))
+        {
+            if (HasErrors)
+                Handler?.Invoke(this);
+            return;
+        }
+
+        _value = dbValue;
+        OnPropertyChanged(nameof(Value));
+        Handler?.Invoke(this);
     }
 
     public RamAccess(Func<RamAccess<T>, bool> handler, T value)
@@ -110,12 +144,13 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo
     {
         if (obj is RamAccess<T> ramAccess)
         {
-            dynamic val1 = Value;
-            dynamic val2 = ramAccess.Value;
-            return val1 == val2;
+            return EqualityComparer<T>.Default.Equals(Value, ramAccess.Value);
         }
         return false;
     }
+
+    public override int GetHashCode() =>
+        Value is null ? 0 : EqualityComparer<T>.Default.GetHashCode(Value);
 
     public static bool operator ==(RamAccess<T> obj1, RamAccess<T> obj2)
     {

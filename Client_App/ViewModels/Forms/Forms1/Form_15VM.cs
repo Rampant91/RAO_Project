@@ -22,11 +22,15 @@ public class Form_15VM : BaseFormVM
 
     #region OpCodes
 
+    private ObservableCollection<OperationCodeItem>? _operationCodes;
+    private ICollection<string>? _validOperationCodes;
+
     public ObservableCollection<OperationCodeItem> OperationCodes =>
-        new(OperationCodesProvider.AllOperationCodes
+        _operationCodes ??= new(OperationCodesProvider.AllOperationCodes
             .Where(x => ValidOperationCodes.Contains(x.Code)));
 
-    public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm15();
+    public ICollection<string> ValidOperationCodes =>
+        _validOperationCodes ??= OperationCodesProvider.GetValidCodesForForm15();
 
     public string OperationCodePattern => @"^\d{0,2}$";
 
@@ -34,17 +38,15 @@ public class Form_15VM : BaseFormVM
 
     #region DocVids
 
-    /// <summary>
-    /// 
-    /// </summary>
+    private ObservableCollection<DocumentVidItem>? _documentVids;
+    private ICollection<string?>? _validDocumentVids;
+
     public ObservableCollection<DocumentVidItem> DocumentVids =>
-        new(DocumentVidProvider.AllDocumentVids
+        _documentVids ??= new(DocumentVidProvider.AllDocumentVids
             .Where(x => ValidDocumentVids.Contains(x.Code.ToString())));
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms11To16();
+    public ICollection<string?> ValidDocumentVids =>
+        _validDocumentVids ??= DocumentVidProvider.GetValidCodesForForms11To16();
 
     public string DocumentVidPattern => "^([1-9]|1[0-5]|19)$";
 
@@ -52,17 +54,15 @@ public class Form_15VM : BaseFormVM
 
     #region RefineOrSortRAOCodes
 
-    /// <summary>
-    /// 
-    /// </summary>
+    private ObservableCollection<RefineOrSortRAOCodeItem>? _refineOrSortRAOCodes;
+    private ICollection<string>? _validRefineOrSortRAOCodes;
+
     public ObservableCollection<RefineOrSortRAOCodeItem> RefineOrSortRAOCodes =>
-        new(RefineOrSortRAOCodeProvider.AllRefineOrSortRAOCodes
+        _refineOrSortRAOCodes ??= new(RefineOrSortRAOCodeProvider.AllRefineOrSortRAOCodes
             .Where(x => ValidRefineOrSortRAOCodes.Contains(x.Code)));
 
-    /// <summary>
-    /// 
-    /// </summary>
-    public ICollection<string> ValidRefineOrSortRAOCodes => RefineOrSortRAOCodeProvider.GetValidCodes();
+    public ICollection<string> ValidRefineOrSortRAOCodes =>
+        _validRefineOrSortRAOCodes ??= RefineOrSortRAOCodeProvider.GetValidCodes();
 
     public string RefineOrSortRAOCodePattern => @"^(?:\d{0,2}|-)$";
 

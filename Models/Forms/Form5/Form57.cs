@@ -1,4 +1,4 @@
-﻿using Models.Attributes;
+using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
@@ -44,7 +44,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(RegNo), out var value))
                 {
-                    ((RamAccess<string>)value).Value = RegNo_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(RegNo_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(RegNo_Validation, RegNo_DB);
@@ -96,7 +96,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(OKPO), out var value))
                 {
-                    ((RamAccess<string>)value).Value = OKPO_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(OKPO_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(OKPO_Validation, OKPO_DB);
@@ -150,7 +150,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(Name), out var value))
                 {
-                    ((RamAccess<string>)value).Value = Name_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(Name_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(Name_Validation, Name_DB);
@@ -202,7 +202,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(Recognizance), out var value))
                 {
-                    ((RamAccess<string>)value).Value = Recognizance_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(Recognizance_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(Recognizance_Validation, Recognizance_DB);
@@ -254,7 +254,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(License), out var value))
                 {
-                    ((RamAccess<string>)value).Value = License_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(License_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(License_Validation, License_DB);
@@ -304,7 +304,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(Practice), out var value))
                 {
-                    ((RamAccess<string>)value).Value = Practice_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(Practice_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(Practice_Validation, Practice_DB);
@@ -349,7 +349,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(Note), out var value))
                 {
-                    ((RamAccess<string>)value).Value = Note_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(Note_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(Note_Validation, Note_DB);

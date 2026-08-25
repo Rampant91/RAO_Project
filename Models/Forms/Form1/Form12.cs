@@ -150,7 +150,7 @@ public class Form12 : Form1
         {
             if (Dictionary.TryGetValue(nameof(PassportNumber), out var value))
             {
-                ((RamAccess<string>)value).Value = PassportNumber_DB;
+                ((RamAccess<string>)value).SyncFromStorage(PassportNumber_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PassportNumber_Validation, PassportNumber_DB);
@@ -207,7 +207,7 @@ public class Form12 : Form1
         {
             if (Dictionary.TryGetValue(nameof(NameIOU), out var value))
             {
-                ((RamAccess<string>)value).Value = NameIOU_DB;
+                ((RamAccess<string>)value).SyncFromStorage(NameIOU_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(NameIOU_Validation, NameIOU_DB);
@@ -254,7 +254,7 @@ public class Form12 : Form1
         {
             if (Dictionary.TryGetValue(nameof(FactoryNumber), out var value))
             {
-                ((RamAccess<string>)value).Value = FactoryNumber_DB;
+                ((RamAccess<string>)value).SyncFromStorage(FactoryNumber_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FactoryNumber_Validation, FactoryNumber_DB);
@@ -301,7 +301,7 @@ public class Form12 : Form1
         {
             if (Dictionary.TryGetValue(nameof(Mass), out var value))
             {
-                ((RamAccess<string>)value).Value = Mass_DB;
+                ((RamAccess<string>)value).SyncFromStorage(Mass_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Mass_Validation, Mass_DB);
@@ -338,7 +338,7 @@ public class Form12 : Form1
         {
             if (Dictionary.TryGetValue(nameof(CreatorOKPO), out var value))
             {
-                ((RamAccess<string>)value).Value = CreatorOKPO_DB;
+                ((RamAccess<string>)value).SyncFromStorage(CreatorOKPO_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(CreatorOKPO_Validation, CreatorOKPO_DB);
@@ -417,7 +417,7 @@ public class Form12 : Form1
         {
             if (Dictionary.TryGetValue(nameof(CreationDate), out var value))
             {
-                ((RamAccess<string>)value).Value = CreationDate_DB;
+                ((RamAccess<string>)value).SyncFromStorage(CreationDate_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(CreationDate_Validation, CreationDate_DB);
@@ -454,7 +454,7 @@ public class Form12 : Form1
         {
             if (Dictionary.TryGetValue(nameof(SignedServicePeriod), out var value))
             {
-                ((RamAccess<string>)value).Value = SignedServicePeriod_DB;
+                ((RamAccess<string>)value).SyncFromStorage(SignedServicePeriod_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(SignedServicePeriod_Validation, SignedServicePeriod_DB);
@@ -513,7 +513,7 @@ public class Form12 : Form1
         {
             if (Dictionary.TryGetValue(nameof(PropertyCode), out var value))
             {
-                ((RamAccess<byte?>)value).Value = PropertyCode_DB;
+                ((RamAccess<byte?>)value).SyncFromStorage(PropertyCode_DB);
                 return (RamAccess<byte?>)value;
             }
             var rm = new RamAccess<byte?>(PropertyCode_Validation, PropertyCode_DB);
@@ -568,7 +568,7 @@ public class Form12 : Form1
         {
             if (Dictionary.TryGetValue(nameof(Owner), out var value))
             {
-                ((RamAccess<string>)value).Value = Owner_DB;
+                ((RamAccess<string>)value).SyncFromStorage(Owner_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Owner_Validation, Owner_DB);
@@ -638,7 +638,7 @@ public class Form12 : Form1
         {
             if (Dictionary.TryGetValue(nameof(ProviderOrRecieverOKPO), out var value))
             {
-                ((RamAccess<string>)value).Value = ProviderOrRecieverOKPO_DB;
+                ((RamAccess<string>)value).SyncFromStorage(ProviderOrRecieverOKPO_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ProviderOrRecieverOKPO_Validation, ProviderOrRecieverOKPO_DB);
@@ -702,7 +702,7 @@ public class Form12 : Form1
         {
             if (Dictionary.TryGetValue(nameof(TransporterOKPO), out var value))
             {
-                ((RamAccess<string>)value).Value = TransporterOKPO_DB;
+                ((RamAccess<string>)value).SyncFromStorage(TransporterOKPO_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(TransporterOKPO_Validation, TransporterOKPO_DB);
@@ -767,7 +767,7 @@ public class Form12 : Form1
         {
             if (Dictionary.TryGetValue(nameof(PackName), out var value))
             {
-                ((RamAccess<string>)value).Value = PackName_DB;
+                ((RamAccess<string>)value).SyncFromStorage(PackName_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackName_Validation, PackName_DB);
@@ -818,7 +818,7 @@ public class Form12 : Form1
         {
             if (Dictionary.TryGetValue(nameof(PackType), out var value))
             {
-                ((RamAccess<string>)value).Value = PackType_DB;
+                ((RamAccess<string>)value).SyncFromStorage(PackType_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackType_Validation, PackType_DB);
@@ -872,7 +872,7 @@ public class Form12 : Form1
         {
             if (Dictionary.TryGetValue(nameof(PackNumber), out var value))
             {
-                ((RamAccess<string>)value).Value = PackNumber_DB;
+                ((RamAccess<string>)value).SyncFromStorage(PackNumber_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(PackNumber_Validation, PackNumber_DB);

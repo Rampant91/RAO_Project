@@ -1,4 +1,4 @@
-﻿using Models.Attributes;
+using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
@@ -45,7 +45,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(TypeORI), out var value))
                 {
-                    ((RamAccess<string>)value).Value = TypeORI_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(TypeORI_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(TypeORI_Validation, TypeORI_DB);
@@ -90,7 +90,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(VarietyORI), out var value))
                 {
-                    ((RamAccess<byte?>)value).Value = VarietyORI_DB;
+                    ((RamAccess<byte?>)value).SyncFromStorage(VarietyORI_DB);
                     return (RamAccess<byte?>)value;
                 }
                 var rm = new RamAccess<byte?>(VarietyORI_Validation, VarietyORI_DB);
@@ -145,7 +145,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(AggregateState), out var value))
                 {
-                    ((RamAccess<byte?>)value).Value = AggregateState_DB;
+                    ((RamAccess<byte?>)value).SyncFromStorage(AggregateState_DB);
                     return (RamAccess<byte?>)value;
                 }
                 var rm = new RamAccess<byte?>(AggregateState_Validation, AggregateState_DB);
@@ -197,7 +197,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(Radionuclids), out var value))
                 {
-                    ((RamAccess<string>)value).Value = Radionuclids_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(Radionuclids_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(Radionuclids_Validation, Radionuclids_DB);
@@ -251,7 +251,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(Activity), out var value))
                 {
-                    ((RamAccess<string>)value).Value = Activity_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(Activity_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(Activity_Validation, Activity_DB);
@@ -297,7 +297,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(Mass), out var value))
                 {
-                    ((RamAccess<string>)value).Value = Mass_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(Mass_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(Mass_Validation, Mass_DB);
@@ -343,7 +343,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(Volume), out var value))
                 {
-                    ((RamAccess<string>)value).Value = Volume_DB;
+                    ((RamAccess<string>)value).SyncFromStorage(Volume_DB);
                     return (RamAccess<string>)value;
                 }
                 var rm = new RamAccess<string>(Volume_Validation, Volume_DB);
@@ -387,7 +387,7 @@ namespace Models.Forms.Form5
             {
                 if (Dictionary.TryGetValue(nameof(Quantity), out var value))
                 {
-                    ((RamAccess<int?>)value).Value = Quantity_DB;
+                    ((RamAccess<int?>)value).SyncFromStorage(Quantity_DB);
                     return (RamAccess<int?>)value;
                 }
                 var rm = new RamAccess<int?>(Quantity_Validation, Quantity_DB);

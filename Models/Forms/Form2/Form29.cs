@@ -61,7 +61,7 @@ public class Form29 : Form2
         {
             if (Dictionary.TryGetValue(nameof(WasteSourceName), out var value))
             {
-                ((RamAccess<string>)value).Value = WasteSourceName_DB;
+                ((RamAccess<string>)value).SyncFromStorage(WasteSourceName_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(WasteSourceName_Validation, WasteSourceName_DB);
@@ -107,7 +107,7 @@ public class Form29 : Form2
         {
             if (Dictionary.TryGetValue(nameof(RadionuclidName), out var value))
             {
-                ((RamAccess<string>)value).Value = RadionuclidName_DB;
+                ((RamAccess<string>)value).SyncFromStorage(RadionuclidName_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(RadionuclidName_Validation, RadionuclidName_DB);
@@ -144,7 +144,7 @@ public class Form29 : Form2
         {
             if (Dictionary.TryGetValue(nameof(AllowedActivity), out var value))
             {
-                ((RamAccess<string>)value).Value = AllowedActivity_DB;
+                ((RamAccess<string>)value).SyncFromStorage(AllowedActivity_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(AllowedActivity_Validation, AllowedActivity_DB);
@@ -181,7 +181,7 @@ public class Form29 : Form2
         {
             if (Dictionary.TryGetValue(nameof(FactedActivity), out var value))
             {
-                ((RamAccess<string>)value).Value = FactedActivity_DB;
+                ((RamAccess<string>)value).SyncFromStorage(FactedActivity_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(FactedActivity_Validation, FactedActivity_DB);

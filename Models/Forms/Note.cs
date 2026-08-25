@@ -1,4 +1,4 @@
-﻿using Models.Attributes;
+using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using Models.Interfaces;
@@ -81,7 +81,7 @@ public class Note : IKey, IDataGridColumn
         {
             if (Dictionary.TryGetValue(nameof(RowNumber), out var value))
             {
-                ((RamAccess<string?>)value).Value = RowNumber_DB;
+                ((RamAccess<string?>)value).SyncFromStorage(RowNumber_DB);
                 return (RamAccess<string?>)value;
             }
             var rm = new RamAccess<string?>(RowNumber_Validation, RowNumber_DB);
@@ -123,7 +123,7 @@ public class Note : IKey, IDataGridColumn
         {
             if (Dictionary.TryGetValue(nameof(GraphNumber), out var value))
             {
-                ((RamAccess<string?>)value).Value = GraphNumber_DB;
+                ((RamAccess<string?>)value).SyncFromStorage(GraphNumber_DB);
                 return (RamAccess<string?>)value;
             }
             var rm = new RamAccess<string?>(GraphNumber_Validation, GraphNumber_DB);
@@ -164,7 +164,7 @@ public class Note : IKey, IDataGridColumn
         {
             if (Dictionary.TryGetValue(nameof(Comment), out RamAccess? value))
             {
-                ((RamAccess<string>)value).Value = Comment_DB;
+                ((RamAccess<string>)value).SyncFromStorage(Comment_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Comment_Validation, Comment_DB);

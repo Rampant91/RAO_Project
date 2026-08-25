@@ -42,7 +42,7 @@ public partial class Form50 : Form
         {
             if (Dictionary.TryGetValue(nameof(ExecutiveAuthority), out var value))
             {
-                ((RamAccess<string>)value).Value = ExecutiveAuthority_DB;
+                ((RamAccess<string>)value).SyncFromStorage(ExecutiveAuthority_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(ExecutiveAuthority_Validation, ExecutiveAuthority_DB);
@@ -98,7 +98,7 @@ public partial class Form50 : Form
         {
             if (Dictionary.TryGetValue(nameof(Rosatom), out var value))
             {
-                ((RamAccess<bool>)value).Value = Rosatom_DB;
+                ((RamAccess<bool>)value).SyncFromStorage(Rosatom_DB);
                 return (RamAccess<bool>)value;
             }
             var rm = new RamAccess<bool>(Rosatom_Validation, Rosatom_DB);
@@ -148,7 +148,7 @@ public partial class Form50 : Form
         {
             if (Dictionary.TryGetValue(nameof(MinObr), out var value))
             {
-                ((RamAccess<bool>)value).Value = MinObr_DB;
+                ((RamAccess<bool>)value).SyncFromStorage(MinObr_DB);
                 return (RamAccess<bool>)value;
             }
             var rm = new RamAccess<bool>(MinObr_Validation, MinObr_DB);
@@ -206,7 +206,7 @@ public partial class Form50 : Form
         {
             if (Dictionary.TryGetValue(nameof(Name), out var value))
             {
-                ((RamAccess<string>)value).Value = Name_DB;
+                ((RamAccess<string>)value).SyncFromStorage(Name_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Name_Validation, Name_DB);
@@ -259,7 +259,7 @@ public partial class Form50 : Form
         {
             if (Dictionary.TryGetValue(nameof(ShortName), out var value))
             {
-                ((RamAccess<string?>)value).Value = ShortName_DB;
+                ((RamAccess<string?>)value).SyncFromStorage(ShortName_DB);
                 return (RamAccess<string?>)value;
             }
             var rm = new RamAccess<string?>(ShortName_Validation, ShortName_DB);
@@ -312,7 +312,7 @@ public partial class Form50 : Form
         {
             if (Dictionary.TryGetValue(nameof(Address), out var value))
             {
-                ((RamAccess<string>)value).Value = Address_DB;
+                ((RamAccess<string>)value).SyncFromStorage(Address_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Address_Validation, Address_DB);
@@ -364,7 +364,7 @@ public partial class Form50 : Form
         {
             if (Dictionary.TryGetValue(nameof(GradeFioDirector), out var value))
             {
-                ((RamAccess<string?>)value).Value = GradeFioDirector_DB;
+                ((RamAccess<string?>)value).SyncFromStorage(GradeFioDirector_DB);
                 return (RamAccess<string?>)value;
             }
             var rm = new RamAccess<string?>(GradeFioDirector_Validation, GradeFioDirector_DB);
@@ -417,7 +417,7 @@ public partial class Form50 : Form
         {
             if (Dictionary.TryGetValue(nameof(GradeFioExecutor), out var value))
             {
-                ((RamAccess<string?>)value).Value = GradeFioExecutor_DB;
+                ((RamAccess<string?>)value).SyncFromStorage(GradeFioExecutor_DB);
                 return (RamAccess<string?>)value;
             }
             var rm = new RamAccess<string?>(GradeFioExecutor_Validation, GradeFioExecutor_DB);
@@ -469,7 +469,7 @@ public partial class Form50 : Form
         {
             if (Dictionary.TryGetValue(nameof(Telephone), out var value))
             {
-                ((RamAccess<string>)value).Value = Telephone_DB;
+                ((RamAccess<string>)value).SyncFromStorage(Telephone_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Telephone_Validation, Telephone_DB);
@@ -521,7 +521,7 @@ public partial class Form50 : Form
         {
             if (Dictionary.TryGetValue(nameof(Fax), out var value))
             {
-                ((RamAccess<string>)value).Value = Fax_DB;
+                ((RamAccess<string>)value).SyncFromStorage(Fax_DB);
                 return (RamAccess<string>)value;
             }
             var rm = new RamAccess<string>(Fax_Validation, Fax_DB);
@@ -574,7 +574,7 @@ public partial class Form50 : Form
         {
             if (Dictionary.TryGetValue(nameof(Email), out var value))
             {
-                ((RamAccess<string?>)value).Value = Email_DB;
+                ((RamAccess<string?>)value).SyncFromStorage(Email_DB);
                 return (RamAccess<string?>)value;
             }
             var rm = new RamAccess<string?>(Email_Validation, Email_DB);
