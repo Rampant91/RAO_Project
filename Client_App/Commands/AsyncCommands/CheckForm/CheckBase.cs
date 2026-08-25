@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -21,8 +21,11 @@ public abstract class CheckBase : BaseAsyncCommand
     
     protected static bool checkNumPrint = false;
 
-    protected static bool HasEarlierSiblingReport(Report rep) =>
-        OrgReportsQuery.HasEarlierSiblingReport(StaticConfiguration.DBModel, rep);
+    protected static bool HasEarlierSiblingReport(Report rep)
+    {
+        using var db = new DBModel(StaticConfiguration.DBPath);
+        return OrgReportsQuery.HasEarlierSiblingReport(db, rep);
+    }
 
     private protected static List<Dictionary<string, string>> OKSM = new();
 

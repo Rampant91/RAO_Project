@@ -220,7 +220,7 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         else
         {
             var id = rep.Id;
-            while (StaticConfiguration.IsFileLocked(null)) Thread.Sleep(50);
+            StaticConfiguration.WaitForDatabaseFileAvailable();
             Task myTask = Task.Factory.StartNew(() => ReportsStorage.GetReportAsync(id, this));  //при открытии формы загружаем все формы из БД
             myTask.Wait();
         }

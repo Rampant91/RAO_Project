@@ -1,4 +1,4 @@
-﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.ExcelExport;
@@ -625,8 +625,7 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     {
         if (rep == null || rep.FormNum == null) return 0;
 
-        while (StaticConfiguration.IsFileLocked(null))
-            await Task.Delay(50);
+        await StaticConfiguration.WaitForDatabaseFileAvailableAsync();
 
         await using var db = new DBModel(StaticConfiguration.DBPath);
 

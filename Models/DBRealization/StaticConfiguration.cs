@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
@@ -38,6 +38,41 @@ public static class StaticConfiguration
             return true;
         }
         return false;
+    }
+
+    /// <summary>
+    /// Короткое ожидание перед операцией с файлом БД (копирование и т.п.).
+    /// Не блокирует бесконечно: при активном Firebird-соединении файл часто «занят».
+    /// </summary>
+    public static async Task WaitForDatabaseFileAvailableAsync(
+        CancellationToken cancellationToken = default,
+        int maxWaitMs = 2000)
+    {
+        var deadline = Environment.TickCount64 + maxWaitMs;
+        while (IsFileLocked(null))
+        {
+            if (Environment.TickCount64 >= deadline || cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
+            await Task.Delay(50, cancellationToken).ConfigureAwait(false);
+        }
+    }
+
+    /// <summary>Синхронный вариант <see cref="WaitForDatabaseFileAvailableAsync"/>.</summary>
+    public static void WaitForDatabaseFileAvailable(int maxWaitMs = 2000)
+    {
+        var deadline = Environment.TickCount64 + maxWaitMs;
+        while (IsFileLocked(null))
+        {
+            if (Environment.TickCount64 >= deadline)
+            {
+                return;
+            }
+
+            Thread.Sleep(50);
+        }
     }
 
     #endregion

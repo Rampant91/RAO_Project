@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,7 +26,7 @@ public abstract class ExportRaodbBaseAsyncCommand : BaseAsyncCommand
         IsExecute = true;
         try
         {
-            await Task.Run(() => AsyncExecute(parameter), Cts.Token);
+            await Task.Run(async () => await AsyncExecute(parameter), Cts.Token);
         }
         catch (OperationCanceledException)
         {

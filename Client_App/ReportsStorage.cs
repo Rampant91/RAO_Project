@@ -1,4 +1,4 @@
-﻿using Client_App.DBAPIFactory;
+using Client_App.DBAPIFactory;
 using Client_App.ViewModels;
 using DynamicData;
 using Microsoft.EntityFrameworkCore;
@@ -179,7 +179,7 @@ public static class ReportsStorage
     /// <returns>Количество строчек форм.</returns>
     public static async Task<int> GetReportRowsCount(Report rep)
     {
-        while (StaticConfiguration.IsFileLocked(null)) Thread.Sleep(50);
+        StaticConfiguration.WaitForDatabaseFileAvailable();
         await using var db = new DBModel(StaticConfiguration.DBPath);
 
         var query = db.ReportCollectionDbSet

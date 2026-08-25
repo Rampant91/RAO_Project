@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -44,7 +44,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         IsExecute = true;
         try
         {
-            await Task.Run(() => AsyncExecute(parameter));
+            await Task.Run(async () => await AsyncExecute(parameter));
         }
         catch (OperationCanceledException) { }
         catch (Exception ex)

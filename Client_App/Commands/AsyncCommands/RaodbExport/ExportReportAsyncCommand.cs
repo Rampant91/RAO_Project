@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Properties;
@@ -108,22 +108,28 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
                 : _formsTabControlVM.SelectedReport;
         if (selectedReport is null)
         {
+            await progressBar.CloseAsync();
             return;
         }
 
         var organizationId = ReportExportLock.ResolveOrganizationId(selectedReport, _formsTabControlVM.SelectedReports);
         if (organizationId <= 0)
         {
+            await progressBar.CloseAsync();
             return;
         }
 
         using var exportLock = ReportExportLock.Acquire(repId, organizationId);
+        using var releaseExportLockOnCancel = cts.Token.Register(exportLock.Dispose);
 
         var dt = DateTime.Now;
         var fileNameTmp = $"Report_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
 
-        await using var dbReadOnly = new DBModel(StaticConfiguration.DBPath);
+        Report reportWithoutRows;
+        Report exportReport;
 
+        await using (var dbReadOnly = new DBModel(StaticConfiguration.DBPath))
+        {
         #region Progress = 10
 
         loadStatus = "Загрузка данных организации";
@@ -134,7 +140,7 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #region GetReportWithoutForms
 
-        var reportWithoutRows = dbReadOnly.ReportCollectionDbSet
+            reportWithoutRows = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -173,7 +179,7 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #region GetReportWithForm
 
-        var exportReport = await dbReadOnly.ReportCollectionDbSet
+            exportReport = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -231,9 +237,11 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
             #endregion
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+            return;
         }
 
-        #endregion
+            #endregion
+        }
 
         #region Progress = 25
 
@@ -247,15 +255,25 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
         var dtMonth = dt.Month.ToString();
         if (dtDay.Length < 2) dtDay = $"0{dtDay}";
         if (dtMonth.Length < 2) dtMonth = $"0{dtMonth}";
-        exportReport.ExportDate.Value = $"{dtDay}.{dtMonth}.{dt.Year}";
+        var exportDate = $"{dtDay}.{dtMonth}.{dt.Year}";
+        exportReport.ExportDate.Value = exportDate;
 
-        await StaticConfiguration.DBModel.SaveChangesAsync(cts.Token);
+        await using (var dbUpdate = new DBModel(StaticConfiguration.DBPath))
+        {
+            var trackedReport = await dbUpdate.ReportCollectionDbSet
+                .FirstOrDefaultAsync(x => x.Id == repId, cts.Token);
+            if (trackedReport is not null)
+            {
+                trackedReport.ExportDate.Value = exportDate;
+                await dbUpdate.SaveChangesAsync(cts.Token);
+            }
+        }
 
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");
 
         Reports orgWithExpForm = new()
         {
-            Master = reportWithoutRows.Reports.Master,
+            Master_DB = reportWithoutRows.Reports.Master_DB,
             Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>([exportReport])
         };
 
@@ -263,6 +281,10 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
         progressBarVM.SetProgressBar(28, "Проверка отчёта");
         await CheckForm(exportReport, cts, progressBar);
+        if (cts.Token.IsCancellationRequested)
+        {
+            return;
+        }
 
         var filename = reportWithoutRows.Reports.Master_DB.FormNum_DB switch
         {
@@ -299,8 +321,14 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        var folderPath = await new OpenFolderDialog().ShowAsync(Desktop.MainWindow);
-        if (string.IsNullOrEmpty(folderPath)) return;
+        progressBarVM.SetProgressBar(29, "Выбор папки назначения");
+        var folderPath = await Dispatcher.UIThread.InvokeAsync(() =>
+            new OpenFolderDialog().ShowAsync(Desktop.MainWindow));
+        if (string.IsNullOrEmpty(folderPath))
+        {
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+            return;
+        }
 
         var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
 
@@ -522,36 +550,48 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
     private static async Task CheckForm(Report exportReport, CancellationTokenSource cts, AnyTaskProgressBar progressBar)
     {
-        var errorList = new List<CheckError>();
-        try
+        if (cts.Token.IsCancellationRequested)
         {
-            errorList.Add(exportReport.FormNum_DB switch
-            {
-                "1.1" => CheckF11.Check_Total(exportReport.Reports, exportReport),
-                "1.2" => CheckF12.Check_Total(exportReport.Reports, exportReport),
-                "1.3" => CheckF13.Check_Total(exportReport.Reports, exportReport),
-                "1.4" => CheckF14.Check_Total(exportReport.Reports, exportReport),
-                "1.5" => CheckF15.Check_Total(exportReport.Reports, exportReport),
-                "1.6" => CheckF16.Check_Total(exportReport.Reports, exportReport),
-                "1.7" => CheckF17.Check_Total(exportReport.Reports, exportReport),
-                "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
-                //"2.1" => await new CheckF21().AsyncExecute(exportReport),
-                //"2.2" => await new CheckF22().AsyncExecute(exportReport),
-                //"2.3" => await new CheckF23().AsyncExecute(exportReport),
-                //"2.4" => await new CheckF24().AsyncExecute(exportReport),
-                //"2.5" => await new CheckF25().AsyncExecute(exportReport),
-                //"2.6" => await new CheckF26().AsyncExecute(exportReport),
-                //"2.7" => await new CheckF27().AsyncExecute(exportReport),
-                //"2.8" => await new CheckF28().AsyncExecute(exportReport),
-                //"2.9" => await new CheckF29().AsyncExecute(exportReport),
-                //"2.10" => await new CheckF210().AsyncExecute(exportReport),
-                //"2.11" => await new CheckF211().AsyncExecute(exportReport),
-                _ => []
-            });
+            return;
         }
-        catch (Exception ex)
+
+        var checkTask = Task.Run(() =>
         {
-            //ignored
+            var errorList = new List<CheckError>();
+            try
+            {
+                errorList.AddRange(exportReport.FormNum_DB switch
+                {
+                    "1.1" => CheckF11.Check_Total(exportReport.Reports, exportReport),
+                    "1.2" => CheckF12.Check_Total(exportReport.Reports, exportReport),
+                    "1.3" => CheckF13.Check_Total(exportReport.Reports, exportReport),
+                    "1.4" => CheckF14.Check_Total(exportReport.Reports, exportReport),
+                    "1.5" => CheckF15.Check_Total(exportReport.Reports, exportReport),
+                    "1.6" => CheckF16.Check_Total(exportReport.Reports, exportReport),
+                    "1.7" => CheckF17.Check_Total(exportReport.Reports, exportReport),
+                    "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
+                    _ => []
+                });
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            return errorList;
+        });
+
+        var cancelWait = Task.Delay(Timeout.Infinite, cts.Token);
+        if (await Task.WhenAny(checkTask, cancelWait) != checkTask)
+        {
+            return;
+        }
+
+        var errorList = await checkTask;
+
+        if (cts.Token.IsCancellationRequested)
+        {
+            return;
         }
 
         if (!errorList.Any(x => x.IsCritical)) return;
@@ -584,7 +624,7 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
         {
             #region ReportHasCriticalErrors
 
-            var answer = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
+            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxCustomWindow(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =

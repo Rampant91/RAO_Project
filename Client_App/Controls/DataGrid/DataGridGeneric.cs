@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
@@ -10,6 +10,8 @@ using Models.Attributes;
 using Models.Collections;
 using Models.Interfaces;
 using System;
+using Avalonia.Threading;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -669,8 +671,21 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
             var rep = SelectedItems.Get<Report>(0);
             if (rep is null) return;
-            var countR = ReportsStorage.GetReportRowsCount(rep).Result;
-            SetAndRaise(ReportStringCountProperty, ref _ReportStringCount, countR.ToString());
+            UpdateReportStringCountAsync(rep);
+        }
+    }
+
+    private async void UpdateReportStringCountAsync(Report rep)
+    {
+        try
+        {
+            var countR = await ReportsStorage.GetReportRowsCount(rep);
+            await Dispatcher.UIThread.InvokeAsync(() =>
+                SetAndRaise(ReportStringCountProperty, ref _ReportStringCount, countR.ToString()));
+        }
+        catch
+        {
+            // Счётчик необязателен; не блокируем UI.
         }
     }
 
