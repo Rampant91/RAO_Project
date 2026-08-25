@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Services;
 using Client_App.ViewModels;
 using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views;
@@ -35,6 +36,19 @@ public class NewDeleteFormAsyncCommand : BaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
+        if (parameter is Report reportToDelete
+            && await ReportExportLock.TryBlockReportAccessAsync(reportToDelete.Id))
+        {
+            return;
+        }
+
+        if (parameter is null
+            && _formsTabControlVM.SelectedReport is { } selected
+            && await ReportExportLock.TryBlockReportAccessAsync(selected.Id))
+        {
+            return;
+        }
+
         #region MessageDeleteReport
 
         var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager

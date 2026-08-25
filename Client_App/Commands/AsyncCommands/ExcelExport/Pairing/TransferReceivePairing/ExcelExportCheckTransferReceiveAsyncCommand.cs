@@ -481,14 +481,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
 
     private static async Task CleanupAndClose(AnyTaskProgressBar progressBar, string tmpDbPath)
     {
-        try
-        {
-            File.Delete(tmpDbPath);
-        }
-        catch
-        {
-            // ignored
-        }
+        TryDeleteTempDataBase(tmpDbPath);
 
         progressBar.AnyTaskProgressBarVM.SetProgressBar(100, "Завершение выгрузки");
         await progressBar.CloseAsync();

@@ -18,6 +18,15 @@ namespace Client_App.Services;
 /// </summary>
 public class UpdateService
 {
+#if DEBUG
+    /// <summary>
+    /// Автопроверка обновлений при старте в Debug-сборке.
+    /// Поставьте <c>true</c>, чтобы при запуске из студии показывался диалог обновления.
+    /// Ручная проверка из меню «Сервис» работает независимо от этого флага.
+    /// </summary>
+    private const bool DebugAutoUpdateCheckEnabled = false;
+#endif
+
     private readonly UpdateChecker _websiteChecker = new();
     private readonly NetworkUpdateChecker _networkChecker = new();
     private readonly LocalUpdateStateStore _stateStore = new();
@@ -44,6 +53,13 @@ public class UpdateService
             {
                 TrySyncUpdaterFromLatestQuietly();
             }
+
+#if DEBUG
+            if (!DebugAutoUpdateCheckEnabled)
+            {
+                return;
+            }
+#endif
 
             if (!ShouldCheckForUpdates())
             {
@@ -307,7 +323,10 @@ public class UpdateService
   private bool ShouldCheckForUpdates()
   {
 #if DEBUG
-    _prefsStore.ResetCheckThrottleForDebug();
+    if (DebugAutoUpdateCheckEnabled)
+    {
+        _prefsStore.ResetCheckThrottleForDebug();
+    }
 #endif
 
     var lastCheck = _prefsStore.GetLastUpdateCheck();

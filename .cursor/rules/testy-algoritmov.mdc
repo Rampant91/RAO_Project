@@ -1,0 +1,14 @@
+---
+description: Тесты алгоритмов сравнения/нормализации/Excel layout
+globs: "Test/Pairing41/**/*.cs,Test/TransferReceive/**/*.cs,Test/FormPrintCompare/**/*.cs,Test/Snk/**/*.cs,Test/FormEqualityTests/**/*.cs,**/ExcelExport/**/Testing/**/*.cs"
+alwaysApply: false
+---
+
+# Тесты алгоритмов
+
+Для compare/normalization/layout-тестов:
+
+- Паттерн: harness + models + assertions
+- Группировать кейсы по идее (нормализация / soft / сценарии / layout)
+- Проверять пользовательский результат (ячейки/подсветка/раскладка), если это контракт фичи
+- Не плодить почти одинаковые кейсы

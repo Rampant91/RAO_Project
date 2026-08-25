@@ -377,5 +377,8 @@
   <ItemGroup>
     <Folder Include="Commands\AsyncCommands\Change\" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="Test" />
+  </ItemGroup>
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 </Project>

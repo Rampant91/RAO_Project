@@ -71,31 +71,38 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
         progressBarVM.SetProgressBar(10, "Создание временной БД", exportName, "Выгрузка в .xlsx");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        void Status(int percent, string text) =>
-            progressBarVM.SetProgressBar(percent, text, exportName);
-
-        var export = await BuildOrganizationPairingExportAsync(
-            db, selectedReports, pairingParams, cts.Token, Status);
-
-        if (export is null)
+        try
         {
-            await ShowNoUnpairedOperationsMessage(progressBar);
+            await using var db = new DBModel(tmpDbPath);
+
+            void Status(int percent, string text) =>
+                progressBarVM.SetProgressBar(percent, text, exportName);
+
+            var export = await BuildOrganizationPairingExportAsync(
+                db, selectedReports, pairingParams, cts.Token, Status);
+
+            if (export is null)
+            {
+                await ShowNoUnpairedOperationsMessage(progressBar);
+                await CleanupAndClose(progressBar, tmpDbPath);
+                return;
+            }
+
+            Status(70, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(fullPath);
+            InitializePairingWorkbook(excelPackage);
+            AppendOrganizationToPairingWorkbook(excelPackage, export, progressBarVM, percentBase: 72, percentSpan: 20);
+            progressBarVM.SetProgressBar(93, "Оформление таблиц Excel (фильтры, сетка)…", exportName, "Выгрузка в .xlsx");
+            FinalizePairingWorkbookTables(excelPackage);
+
+            Status(95, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
             await CleanupAndClose(progressBar, tmpDbPath);
-            return;
         }
-
-        Status(70, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-        InitializePairingWorkbook(excelPackage);
-        AppendOrganizationToPairingWorkbook(excelPackage, export, progressBarVM, percentBase: 72, percentSpan: 20);
-        progressBarVM.SetProgressBar(93, "Оформление таблиц Excel (фильтры, сетка)…", exportName, "Выгрузка в .xlsx");
-        FinalizePairingWorkbookTables(excelPackage);
-
-        Status(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-        await CleanupAndClose(progressBar, tmpDbPath);
+        finally
+        {
+            TryDeleteTempDataBase(tmpDbPath);
+        }
     }
 
     private async Task ExecuteForWholeDatabaseAsync(
@@ -123,95 +130,102 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand
 
         progressBarVM.SetProgressBar(10, "Создание временной БД", "Вся БД", "Выгрузка в .xlsx");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        progressBarVM.SetProgressBar(12, "Поиск организаций с операциями 41", "Вся БД", "Выгрузка в .xlsx");
-        var wholeDbLastPercent = 12;
-        void ReportWholeDb(int percent, string text)
+        try
         {
-            if (percent < wholeDbLastPercent)
+            await using var db = new DBModel(tmpDbPath);
+
+            progressBarVM.SetProgressBar(12, "Поиск организаций с операциями 41", "Вся БД", "Выгрузка в .xlsx");
+            var wholeDbLastPercent = 12;
+            void ReportWholeDb(int percent, string text)
             {
-                percent = wholeDbLastPercent;
-            }
-            else
-            {
-                wholeDbLastPercent = percent;
+                if (percent < wholeDbLastPercent)
+                {
+                    percent = wholeDbLastPercent;
+                }
+                else
+                {
+                    wholeDbLastPercent = percent;
+                }
+
+                progressBarVM.SetProgressBar(percent, text, "Вся БД");
             }
 
-            progressBarVM.SetProgressBar(percent, text, "Вся БД");
-        }
+            var scanProgress = new ProgressReporter(ReportWholeDb, percentMin: 12, percentMax: 20);
+            var cardProgress = new ProgressReporter(ReportWholeDb, percentMin: 20, percentMax: 28);
+            var candidates = await LoadOrganizationsWithOperation41Async(
+                db, cts.Token, scanProgress, cardProgress);
+            if (candidates.Count == 0)
+            {
+                await ShowNoUnpairedOperationsMessage(progressBar);
+                await CleanupAndClose(progressBar, tmpDbPath);
+                return;
+            }
 
-        var scanProgress = new ProgressReporter(ReportWholeDb, percentMin: 12, percentMax: 20);
-        var cardProgress = new ProgressReporter(ReportWholeDb, percentMin: 20, percentMax: 28);
-        var candidates = await LoadOrganizationsWithOperation41Async(
-            db, cts.Token, scanProgress, cardProgress);
-        if (candidates.Count == 0)
-        {
-            await ShowNoUnpairedOperationsMessage(progressBar);
+            var bulkProgress = new ProgressReporter(ReportWholeDb, percentMin: 28, percentMax: 55);
+            var bulkByOrg = await LoadAllOperation41GroupedByRepsIdAsync(
+                db, pairingParams, cts.Token, bulkProgress);
+
+            progressBarVM.SetProgressBar(55, "Инициализация Excel пакета", "Вся БД", "Выгрузка в .xlsx");
+            using var excelPackage = await InitializeExcelPackage(fullPath);
+            InitializePairingWorkbook(excelPackage);
+
+            var anyUnpairedWritten = false;
+            var total = candidates.Count;
+            for (var i = 0; i < total; i++)
+            {
+                cts.Token.ThrowIfCancellationRequested();
+                var org = candidates[i];
+                var orgIndex = i + 1;
+                var regNum = RemoveForbiddenChars(org.Master_DB.RegNoRep.Value);
+                var okpo = RemoveForbiddenChars(org.Master_DB.OkpoRep.Value);
+                var exportName = $"{regNum}_{okpo}";
+                var percentBase = 55 + (int)(38.0 * i / total);
+                var percentSpan = Math.Max(1, (int)(38.0 / total));
+
+                void Status(int offsetWithinOrg, string stage) =>
+                    progressBarVM.SetProgressBar(
+                        Math.Min(94, percentBase + offsetWithinOrg),
+                        $"Организация {orgIndex} из {total}: {stage}",
+                        exportName);
+
+                Status(0, "сопоставление");
+                bulkByOrg.TryGetValue(org.Id, out var loaded);
+                loaded ??= new OrgOperation41Lists();
+                var export = await BuildOrganizationPairingExportFromLoadedAsync(
+                    db,
+                    org,
+                    loaded,
+                    pairingParams,
+                    cts.Token,
+                    (p, text) => Status(Math.Min(percentSpan - 1, p / 5), text));
+
+                if (export is null)
+                {
+                    continue;
+                }
+
+                Status(percentSpan - 1, "запись в Excel");
+                AppendOrganizationToPairingWorkbook(excelPackage, export, progressBarVM: null);
+                anyUnpairedWritten = true;
+            }
+
+            if (!anyUnpairedWritten)
+            {
+                await ShowNoUnpairedOperationsMessage(progressBar);
+                await CleanupAndClose(progressBar, tmpDbPath);
+                return;
+            }
+
+            progressBarVM.SetProgressBar(93, "Оформление таблиц Excel (фильтры, сетка)…", "Вся БД", "Выгрузка в .xlsx");
+            FinalizePairingWorkbookTables(excelPackage);
+            progressBarVM.SetProgressBar(95, "Сохранение", "Вся БД", "Выгрузка в .xlsx");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
             await CleanupAndClose(progressBar, tmpDbPath);
-            return;
         }
-
-        var bulkProgress = new ProgressReporter(ReportWholeDb, percentMin: 28, percentMax: 55);
-        var bulkByOrg = await LoadAllOperation41GroupedByRepsIdAsync(
-            db, pairingParams, cts.Token, bulkProgress);
-
-        progressBarVM.SetProgressBar(55, "Инициализация Excel пакета", "Вся БД", "Выгрузка в .xlsx");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-        InitializePairingWorkbook(excelPackage);
-
-        var anyUnpairedWritten = false;
-        var total = candidates.Count;
-        for (var i = 0; i < total; i++)
+        finally
         {
-            cts.Token.ThrowIfCancellationRequested();
-            var org = candidates[i];
-            var orgIndex = i + 1;
-            var regNum = RemoveForbiddenChars(org.Master_DB.RegNoRep.Value);
-            var okpo = RemoveForbiddenChars(org.Master_DB.OkpoRep.Value);
-            var exportName = $"{regNum}_{okpo}";
-            var percentBase = 55 + (int)(38.0 * i / total);
-            var percentSpan = Math.Max(1, (int)(38.0 / total));
-
-            void Status(int offsetWithinOrg, string stage) =>
-                progressBarVM.SetProgressBar(
-                    Math.Min(94, percentBase + offsetWithinOrg),
-                    $"Организация {orgIndex} из {total}: {stage}",
-                    exportName);
-
-            Status(0, "сопоставление");
-            bulkByOrg.TryGetValue(org.Id, out var loaded);
-            loaded ??= new OrgOperation41Lists();
-            var export = await BuildOrganizationPairingExportFromLoadedAsync(
-                db,
-                org,
-                loaded,
-                pairingParams,
-                cts.Token,
-                (p, text) => Status(Math.Min(percentSpan - 1, p / 5), text));
-
-            if (export is null)
-            {
-                continue;
-            }
-
-            Status(percentSpan - 1, "запись в Excel");
-            AppendOrganizationToPairingWorkbook(excelPackage, export, progressBarVM: null);
-            anyUnpairedWritten = true;
+            TryDeleteTempDataBase(tmpDbPath);
         }
-
-        if (!anyUnpairedWritten)
-        {
-            await ShowNoUnpairedOperationsMessage(progressBar);
-            await CleanupAndClose(progressBar, tmpDbPath);
-            return;
-        }
-
-        progressBarVM.SetProgressBar(93, "Оформление таблиц Excel (фильтры, сетка)…", "Вся БД", "Выгрузка в .xlsx");
-        FinalizePairingWorkbookTables(excelPackage);
-        progressBarVM.SetProgressBar(95, "Сохранение", "Вся БД", "Выгрузка в .xlsx");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-        await CleanupAndClose(progressBar, tmpDbPath);
     }
 
     #endregion

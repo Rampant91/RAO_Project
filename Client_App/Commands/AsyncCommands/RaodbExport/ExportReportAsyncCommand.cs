@@ -3,6 +3,7 @@ using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Properties;
 using Client_App.Resources;
+using Client_App.Services;
 using Client_App.ViewModels;
 using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views.ProgressBar;
@@ -95,17 +96,33 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
         progressBarVM.ExportType = "Экспорт_RAODB";
         progressBarVM.ExportName = "Выгрузка отчёта";
         progressBarVM.ValueBar = 5;
-        var loadStatus = "Создание временной БД";
+        var loadStatus = "Загрузка данных организации";
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         #endregion
 
-        var dbReadOnlyPath = await CreateTempDataBase(progressBar, cts);
+        var selectedReport = parameter is Report r
+            ? r
+            : parameter is ObservableCollectionWithItemPropertyChanged<IKey> keys
+                ? (Report)keys.First()
+                : _formsTabControlVM.SelectedReport;
+        if (selectedReport is null)
+        {
+            return;
+        }
+
+        var organizationId = ReportExportLock.ResolveOrganizationId(selectedReport, _formsTabControlVM.SelectedReports);
+        if (organizationId <= 0)
+        {
+            return;
+        }
+
+        using var exportLock = ReportExportLock.Acquire(repId, organizationId);
 
         var dt = DateTime.Now;
         var fileNameTmp = $"Report_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
 
-        await using var dbReadOnly = new DBModel(dbReadOnlyPath);
+        await using var dbReadOnly = new DBModel(StaticConfiguration.DBPath);
 
         #region Progress = 10
 

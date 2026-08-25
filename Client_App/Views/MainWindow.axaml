@@ -286,6 +286,10 @@
                               Command="{Binding ExcelExportCheckTransferReceive, Mode=OneWay}"
                               CommandParameter="{Binding SelectedReports, Mode=OneWay}"
                               IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
+                    <MenuItem Header="Сверка отчётов с БД"
+                              Command="{Binding ExcelExportCompareFormPrint, Mode=OneWay}"
+                              CommandParameter="{Binding SelectedReports, Mode=OneWay}"
+                              IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Command="{Binding ExcelExportIntersections, Mode=OneWay}"
@@ -307,6 +311,10 @@
                           CommandParameter="All"
                           Header="Проверка операций приёма-передачи (вся БД)"
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
+                <MenuItem Command="{Binding ExcelExportCompareFormPrint, Mode=OneWay}"
+                          CommandParameter="All"
+                          Header="Сверка отчётов с БД"
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
                 <MenuItem Header="Проблемные источники по региону"
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
                     <MenuItem Command="{Binding  ExcelExportLostAndExtraUnitsByRegion, Mode=OneWay}"
@@ -318,6 +326,7 @@
                 </MenuItem>
 				<Separator/>
 				<MenuItem Command="{Binding  CalculateVolumesRaoProcessingByPeriod, Mode=OneWay}"
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"
 			              Header="Собрать сведения о переработке РАО"/>
                 <!--
                 <MenuItem Command="{Binding MaxGraphsLength, Mode=OneTime}"
@@ -375,7 +384,6 @@
             </MenuItem>
 
 			<MenuItem Name="PackagePassports"
-					  IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"
 					  Header="Паспорта">
 				<MenuItem Command="{Binding OpenPassportMenu}"
 						  Header="Открыть меню паспортов"/>

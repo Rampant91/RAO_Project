@@ -163,64 +163,61 @@ public class ExcelExportExecutorsAsyncCommand : ExcelExportListOfFormsBaseAsyncC
 
         progressBarVM.SetProgressBar(5, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        progressBarVM.SetProgressBar(10, "Подсчёт количества организаций");
-        await CountReports(db, progressBar, cts);
-
-        fullPath = ResolveUniqueFilePath(fullPath, isBackgroundCommand ? folderPath : null);
-
-        progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-
-        await ExportExecutorsSheet(
-            db, excelPackage, progressBarVM, cts,
-            formNum: '1', sheetName: "Формы 1", masterFormNum: "1.0", reportFormPrefix: "1.",
-            includeMaster: q => q
-                .Include(reps => reps.Master_DB)
-                .ThenInclude(rep => rep.Rows10),
-            progressDbStart: ProgressForm1DbStart,
-            progressOrgsLoaded: ProgressForm1OrgsLoaded,
-            progressDbEnd: ProgressForm1DbEnd,
-            progressExcelEnd: ProgressForm1ExcelEnd);
-
-        await ExportExecutorsSheet(
-            db, excelPackage, progressBarVM, cts,
-            formNum: '2', sheetName: "Формы 2", masterFormNum: "2.0", reportFormPrefix: "2.",
-            includeMaster: q => q
-                .Include(reps => reps.Master_DB)
-                .ThenInclude(rep => rep.Rows20),
-            progressDbStart: ProgressForm2DbStart,
-            progressOrgsLoaded: ProgressForm2OrgsLoaded,
-            progressDbEnd: ProgressForm2DbEnd,
-            progressExcelEnd: ProgressForm2ExcelEnd);
-
-        await ExportExecutorsSheet(
-            db, excelPackage, progressBarVM, cts,
-            formNum: '4', sheetName: "Формы 4", masterFormNum: "4.0", reportFormPrefix: "4.",
-            includeMaster: q => q
-                .Include(reps => reps.Master_DB)
-                .ThenInclude(rep => rep.Rows40),
-            progressDbStart: ProgressForm4DbStart,
-            progressOrgsLoaded: ProgressForm4OrgsLoaded,
-            progressDbEnd: ProgressForm4DbEnd,
-            progressExcelEnd: ProgressForm4ExcelEnd);
-
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
-
-        progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
         {
-            File.Delete(tmpDbPath);
-        }
-        catch
-        {
-            // ignored
-        }
+            await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-        await progressBar.CloseAsync();
+            progressBarVM.SetProgressBar(10, "Подсчёт количества организаций");
+            await CountReports(db, progressBar, cts);
+
+            fullPath = ResolveUniqueFilePath(fullPath, isBackgroundCommand ? folderPath : null);
+
+            progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(fullPath);
+
+            await ExportExecutorsSheet(
+                db, excelPackage, progressBarVM, cts,
+                formNum: '1', sheetName: "Формы 1", masterFormNum: "1.0", reportFormPrefix: "1.",
+                includeMaster: q => q
+                    .Include(reps => reps.Master_DB)
+                    .ThenInclude(rep => rep.Rows10),
+                progressDbStart: ProgressForm1DbStart,
+                progressOrgsLoaded: ProgressForm1OrgsLoaded,
+                progressDbEnd: ProgressForm1DbEnd,
+                progressExcelEnd: ProgressForm1ExcelEnd);
+
+            await ExportExecutorsSheet(
+                db, excelPackage, progressBarVM, cts,
+                formNum: '2', sheetName: "Формы 2", masterFormNum: "2.0", reportFormPrefix: "2.",
+                includeMaster: q => q
+                    .Include(reps => reps.Master_DB)
+                    .ThenInclude(rep => rep.Rows20),
+                progressDbStart: ProgressForm2DbStart,
+                progressOrgsLoaded: ProgressForm2OrgsLoaded,
+                progressDbEnd: ProgressForm2DbEnd,
+                progressExcelEnd: ProgressForm2ExcelEnd);
+
+            await ExportExecutorsSheet(
+                db, excelPackage, progressBarVM, cts,
+                formNum: '4', sheetName: "Формы 4", masterFormNum: "4.0", reportFormPrefix: "4.",
+                includeMaster: q => q
+                    .Include(reps => reps.Master_DB)
+                    .ThenInclude(rep => rep.Rows40),
+                progressDbStart: ProgressForm4DbStart,
+                progressOrgsLoaded: ProgressForm4OrgsLoaded,
+                progressDbEnd: ProgressForm4DbEnd,
+                progressExcelEnd: ProgressForm4ExcelEnd);
+
+            progressBarVM.SetProgressBar(95, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
+
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            await progressBar.CloseAsync();
+        }
+        finally
+        {
+            TryDeleteTempDataBase(tmpDbPath);
+        }
     }
 
     #region CountReports

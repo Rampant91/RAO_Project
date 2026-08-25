@@ -99,7 +99,8 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         #endregion
 
         var dbReadOnlyPath = await CreateTempDataBase(progressBar, cts);
-
+        try
+        {
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
 
         #region Progress = 10
@@ -341,7 +342,6 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         {
             File.Copy(fullPathTmp, fullPath);
             File.Delete(fullPathTmp);
-            File.Delete(dbReadOnlyPath);
         }
         catch (Exception ex)
         {
@@ -465,5 +465,10 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
             }
         }
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+        }
+        finally
+        {
+            TryDeleteTempDataBase(dbReadOnlyPath);
+        }
     }
 }

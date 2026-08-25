@@ -170,6 +170,48 @@ public static class NetworkUpdatePaths
         IsNetworkRootAccessible(out _, out _);
 
     /// <summary>
+    /// Если exe лежит в {root}/{majorVersion}/{releaseId}/win-x64 — вернуть major и releaseId.
+    /// </summary>
+    public static bool TryParseReleaseFromAppDirectory(
+        string? networkRoot,
+        out string majorVersion,
+        out string releaseId)
+    {
+        majorVersion = string.Empty;
+        releaseId = string.Empty;
+        try
+        {
+            networkRoot ??= ResolveNetworkRoot();
+            if (!IsRunningFromNetworkDistribution(networkRoot))
+            {
+                return false;
+            }
+
+            var appDir = Path.GetFullPath(AppDirectory)
+                .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            if (!string.Equals(Path.GetFileName(appDir), WinPublishFolderName, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            var releaseDir = Path.GetDirectoryName(appDir);
+            var majorDir = string.IsNullOrEmpty(releaseDir) ? null : Path.GetDirectoryName(releaseDir);
+            if (string.IsNullOrEmpty(releaseDir) || string.IsNullOrEmpty(majorDir))
+            {
+                return false;
+            }
+
+            releaseId = Path.GetFileName(releaseDir) ?? string.Empty;
+            majorVersion = Path.GetFileName(majorDir) ?? string.Empty;
+            return !string.IsNullOrWhiteSpace(majorVersion) && !string.IsNullOrWhiteSpace(releaseId);
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
     /// Программа запущена из каталога дистрибутивов на шаре (под Исходные\…).
     /// В этом случае нельзя применять автообновление поверх сетевой папки.
     /// </summary>

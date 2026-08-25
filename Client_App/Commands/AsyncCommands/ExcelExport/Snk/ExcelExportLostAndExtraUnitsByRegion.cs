@@ -42,35 +42,32 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
 
         progressBarVM.SetProgressBar(10, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        progressBarVM.SetProgressBar(17, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-
-        progressBarVM.SetProgressBar(18, "Заполнение заголовков");
-        await FillExcelHeaders(formNum, excelPackage);
-
-        progressBarVM.SetProgressBar(20, "Получение списка организаций");
-        var repsDtoList = await GetReportsListByRegion(db, region!, formNum, cts, progressBar);
-
-        progressBarVM.SetProgressBar(25, "Формирование СНК и списка ошибок");
-        await GetSnkAndErrorsList(db, repsDtoList, formNum, snkParams, endSnkDate, region, excelPackage, progressBarVM, cts);
-
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-
-        progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
         {
-            File.Delete(tmpDbPath);
-        }
-        catch
-        {
-            // ignored
-        }
+            await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-        await progressBar.CloseAsync();
+            progressBarVM.SetProgressBar(17, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(fullPath);
+
+            progressBarVM.SetProgressBar(18, "Заполнение заголовков");
+            await FillExcelHeaders(formNum, excelPackage);
+
+            progressBarVM.SetProgressBar(20, "Получение списка организаций");
+            var repsDtoList = await GetReportsListByRegion(db, region!, formNum, cts, progressBar);
+
+            progressBarVM.SetProgressBar(25, "Формирование СНК и списка ошибок");
+            await GetSnkAndErrorsList(db, repsDtoList, formNum, snkParams, endSnkDate, region, excelPackage, progressBarVM, cts);
+
+            progressBarVM.SetProgressBar(95, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            await progressBar.CloseAsync();
+        }
+        finally
+        {
+            TryDeleteTempDataBase(tmpDbPath);
+        }
     }
 
     #region GetSnkAndErrorsList

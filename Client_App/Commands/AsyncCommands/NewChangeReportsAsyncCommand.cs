@@ -1,4 +1,5 @@
-﻿using Client_App.Services.DataAccess;
+using Client_App.Services;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
@@ -50,6 +51,9 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
 
         if (mainWindowVM.SelectedReports is null) return;
 
+        if (await ReportExportLock.TryBlockOrganizationAccessAsync(mainWindowVM.SelectedReports.Id))
+            return;
+
         mainWindow.SetReportOpeningOverlay(true);
         try
         {
@@ -63,7 +67,7 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
 
     private static async Task OpenOrganizationFormAsync(MainWindow mainWindow, MainWindowVM mainWindowVM)
     {
-        var report = mainWindowVM.SelectedReports.Master;
+        var report = mainWindowVM.SelectedReports!.Master;
         var formNum = report.FormNum.Value;
         var refreshOrgListAfterTitle = false;
 

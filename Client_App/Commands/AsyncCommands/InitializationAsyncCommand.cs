@@ -5,6 +5,7 @@ using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Properties;
 using Client_App.Resources.CustomComparers;
 using Client_App.Services.DataAccess;
+using Client_App.Services.Updates;
 using Client_App.ViewModels;
 using Client_App.Views.Messages;
 using MessageBox.Avalonia.DTO;
@@ -196,8 +197,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
         }
 
-        var fl = Directory.GetFiles(TmpDirectory, ".");
-        foreach (var file in fl)
+        foreach (var file in Directory.GetFiles(TmpDirectory, "*.*", SearchOption.AllDirectories))
         {
             try
             {
@@ -461,6 +461,46 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
     #endregion
 
+    /// <summary>
+    /// Для отдела — текстовое имя выкладки (1.3.0.11_test5 / 1.3.0.11), иначе AssemblyVersion.
+    /// </summary>
+    private static string GetVersionLabelForWindowTitle()
+    {
+        var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? string.Empty;
+        if (!Settings.Default.AppLaunchedInNorao)
+        {
+            return assemblyVersion;
+        }
+
+        try
+        {
+            var state = new LocalUpdateStateStore().Load();
+            var installed = NetworkUpdateLabels.FormatInstalled(state);
+            if (NetworkUpdateLabels.IsTrackedInstallLabel(installed))
+            {
+                return installed;
+            }
+
+            if (NetworkUpdatePaths.TryParseReleaseFromAppDirectory(null, out var major, out var releaseId))
+            {
+                var fromPath = NetworkUpdateLabels.FormatVersion(major, releaseId);
+                if (!string.IsNullOrWhiteSpace(fromPath))
+                {
+                    return fromPath;
+                }
+            }
+        }
+        catch
+        {
+            // ignore — в шапке останется номер из сборки
+        }
+
+        return assemblyVersion;
+    }
+
+    private static string BuildMainWindowTitle(string dbFileName) =>
+        $"МПЗФ ver.{GetVersionLabelForWindowTitle()} Текущая база данных - {dbFileName}";
+
     #region ProcessDataBaseCreate
 
     /// <summary>
@@ -506,8 +546,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
                 dbFileInfo = fileInfo;
                 DbFileName = Path.GetFileNameWithoutExtension(fileInfo.Name);
-                mainWindowViewModel.Current_Db =
-                    $"МПЗФ ver.{Assembly.GetExecutingAssembly().GetName().Version} Текущая база данных - {DbFileName}";
+                mainWindowViewModel.Current_Db = BuildMainWindowTitle(DbFileName);
                 StaticConfiguration.DBPath = fileInfo.FullName;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
@@ -546,8 +585,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             progressBarVm.LoadStatus = "Создание базы данных";
 
         DbFileName = $"Local_{i}";
-        mainWindowViewModel.Current_Db = $"МПЗФ ver.{Assembly.GetExecutingAssembly().GetName().Version} " +
-                                         $"Текущая база данных - {DbFileName}";
+        mainWindowViewModel.Current_Db = BuildMainWindowTitle(DbFileName);
         StaticConfiguration.DBPath = Path.Combine(RaoDirectory, $"{DbFileName}.RAODB");
         StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
         dbm = StaticConfiguration.DBModel;

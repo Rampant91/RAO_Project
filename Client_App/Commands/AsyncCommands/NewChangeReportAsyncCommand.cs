@@ -1,4 +1,5 @@
-﻿using Client_App.Services.DataAccess;
+using Client_App.Services;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
@@ -74,6 +75,9 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
     private static async Task OpenReport(object? parameter)
     {
         if (parameter is not Report report)
+            return;
+
+        if (await ReportExportLock.TryBlockReportAccessAsync(report.Id))
             return;
 
         var owner = Desktop.MainWindow as MainWindow;

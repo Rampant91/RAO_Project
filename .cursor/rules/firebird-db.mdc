@@ -1,0 +1,12 @@
+---
+description: Firebird: контролировать IN/Contains и батчинг Id
+globs: "**/Commands/AsyncCommands/ExcelExport/**/*.cs,**/*Repository*.cs,**/*Query*.cs"
+alwaysApply: false
+---
+
+# Firebird / запросы
+
+СУБД — Firebird. Для `IN (...)`/`Contains` держать практический лимит ~1500 (в проекте обычно батчи ~1000).
+
+- Не собирать один огромный `IN` на все Id
+- Для массовых выборок использовать батчи (`FirebirdInClauseBatchSize`, `ChunkIds` и аналоги)

@@ -52,73 +52,70 @@ public partial class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWi
 
         progressBarVM.SetProgressBar(8, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
-        var fileName = $"{exportName}_{Assembly.GetExecutingAssembly().GetName().Version}";
-        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
-
-        progressBarVM.SetProgressBar(13, "Формирование списка инвентаризационных отчётов");
-        var inventoryReportDtoList = await GetInventoryReportDtoList(db, selectedReports.Id, formNum, endSnkDate, cts);
-
-        progressBarVM.SetProgressBar(14, "Проверка наличия инвентаризации");
-        await CheckInventoryFormPresence(inventoryReportDtoList, formNum, progressBar, cts);
-
-        progressBarVM.SetProgressBar(15, "Формирование списка операций инвентаризации");
-        var (firstSnkDate, inventoryFormsDtoList, inventoryDuplicateErrors) = 
-            await GetInventoryFormsDtoList(db, inventoryReportDtoList, formNum, endSnkDate, cts, snkParams);
-
-        progressBarVM.SetProgressBar(16, "Получение списка дат инвентаризаций");
-        var inventoryDatesList = await GetInventoryDatesList(inventoryFormsDtoList, endSnkDate);
-
-        progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-
-        progressBarVM.SetProgressBar(19, "Заполнение заголовков");
-        await FillExcelHeaders(excelPackage, inventoryDatesList, formNum);
-
-        List<int> reportIds = [];
-        progressBarVM.SetProgressBar(20, "Загрузка списка отчётов");
-        reportIds = await GetReportIds(db, selectedReports.Id, formNum, cts);
-
-        progressBarVM.SetProgressBar(21, "Формирование списка операций передачи/получения");
-        var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, formNum, firstSnkDate, endSnkDate, cts, snkParams);
-
-        progressBarVM.SetProgressBar(25, "Загрузка операций перезарядки");
-        var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, selectedReports.Id, formNum, firstSnkDate, endSnkDate, cts, snkParams);
-
-        progressBarVM.SetProgressBar(30, "Загрузка нулевых операций");
-        var zeroFormsDtoList = await GetZeroFormsDtoList(db, reportIds, rechargeFormsDtoList, firstSnkDate, endSnkDate, formNum, cts, snkParams);
-
-        progressBarVM.SetProgressBar(35, "Формирование списка учётных единиц");
-        var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(formNum, inventoryFormsDtoList, plusMinusFormsDtoList, 
-            rechargeFormsDtoList, zeroFormsDtoList);
-
-        progressBarVM.SetProgressBar(40, "Формирование списков СНК и ошибок");
-        var (unitInStockByDateDictionary, inventoryErrorsByDateDictionary) = await GetInventoryErrorsAndSnk(uniqueUnitWithAllOperationDictionary, 
-            inventoryDatesList, inventoryDuplicateErrors, firstSnkDate, formNum);
-
-        progressBarVM.SetProgressBar(45, "Загрузка и заполнение СНК");
-        await FillSnkPages(db, unitInStockByDateDictionary, inventoryFormsDtoList, formNum, excelPackage, snkParams, progressBarVM, cts);
-
-        progressBarVM.SetProgressBar(75, "Загрузка и заполнение ошибок");
-        await FillInventoryErrorsPages(db, inventoryErrorsByDateDictionary, formNum, excelPackage, progressBarVM, cts);
-
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-
-        progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
         {
-            File.Delete(tmpDbPath);
-        }
-        catch
-        {
-            // ignored
-        }
+            await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-        await progressBar.CloseAsync();
+            progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
+            var fileName = $"{exportName}_{Assembly.GetExecutingAssembly().GetName().Version}";
+            var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+            progressBarVM.SetProgressBar(13, "Формирование списка инвентаризационных отчётов");
+            var inventoryReportDtoList = await GetInventoryReportDtoList(db, selectedReports.Id, formNum, endSnkDate, cts);
+
+            progressBarVM.SetProgressBar(14, "Проверка наличия инвентаризации");
+            await CheckInventoryFormPresence(inventoryReportDtoList, formNum, progressBar, cts);
+
+            progressBarVM.SetProgressBar(15, "Формирование списка операций инвентаризации");
+            var (firstSnkDate, inventoryFormsDtoList, inventoryDuplicateErrors) = 
+                await GetInventoryFormsDtoList(db, inventoryReportDtoList, formNum, endSnkDate, cts, snkParams);
+
+            progressBarVM.SetProgressBar(16, "Получение списка дат инвентаризаций");
+            var inventoryDatesList = await GetInventoryDatesList(inventoryFormsDtoList, endSnkDate);
+
+            progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(fullPath);
+
+            progressBarVM.SetProgressBar(19, "Заполнение заголовков");
+            await FillExcelHeaders(excelPackage, inventoryDatesList, formNum);
+
+            List<int> reportIds = [];
+            progressBarVM.SetProgressBar(20, "Загрузка списка отчётов");
+            reportIds = await GetReportIds(db, selectedReports.Id, formNum, cts);
+
+            progressBarVM.SetProgressBar(21, "Формирование списка операций передачи/получения");
+            var plusMinusFormsDtoList = await GetPlusMinusFormsDtoList(db, reportIds, formNum, firstSnkDate, endSnkDate, cts, snkParams);
+
+            progressBarVM.SetProgressBar(25, "Загрузка операций перезарядки");
+            var rechargeFormsDtoList = await GetRechargeFormsDtoList(db, selectedReports.Id, formNum, firstSnkDate, endSnkDate, cts, snkParams);
+
+            progressBarVM.SetProgressBar(30, "Загрузка нулевых операций");
+            var zeroFormsDtoList = await GetZeroFormsDtoList(db, reportIds, rechargeFormsDtoList, firstSnkDate, endSnkDate, formNum, cts, snkParams);
+
+            progressBarVM.SetProgressBar(35, "Формирование списка учётных единиц");
+            var uniqueUnitWithAllOperationDictionary = await GetDictionary_UniqueUnitsWithOperations(formNum, inventoryFormsDtoList, plusMinusFormsDtoList, 
+                rechargeFormsDtoList, zeroFormsDtoList);
+
+            progressBarVM.SetProgressBar(40, "Формирование списков СНК и ошибок");
+            var (unitInStockByDateDictionary, inventoryErrorsByDateDictionary) = await GetInventoryErrorsAndSnk(uniqueUnitWithAllOperationDictionary, 
+                inventoryDatesList, inventoryDuplicateErrors, firstSnkDate, formNum);
+
+            progressBarVM.SetProgressBar(45, "Загрузка и заполнение СНК");
+            await FillSnkPages(db, unitInStockByDateDictionary, inventoryFormsDtoList, formNum, excelPackage, snkParams, progressBarVM, cts);
+
+            progressBarVM.SetProgressBar(75, "Загрузка и заполнение ошибок");
+            await FillInventoryErrorsPages(db, inventoryErrorsByDateDictionary, formNum, excelPackage, progressBarVM, cts);
+
+            progressBarVM.SetProgressBar(95, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            await progressBar.CloseAsync();
+        }
+        finally
+        {
+            TryDeleteTempDataBase(tmpDbPath);
+        }
     }
 
     #region CheckInventoryFormPresence

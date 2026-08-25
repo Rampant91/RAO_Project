@@ -243,6 +243,10 @@
                             <MenuItem Command="{Binding MainWindowVM.ExcelExportAll, Mode=OneWay}"
                                       CommandParameter="SelectedOrg"
                                       Header="Все формы"/>
+                            <MenuItem Header="Сверка отчётов с БД"
+                                      Command="{Binding MainWindowVM.ExcelExportCompareFormPrint, Mode=OneWay}"
+                                      CommandParameter="{Binding SelectedReports, Mode=OneWay}"
+                                      IsVisible="{Binding MainWindowVM.AppLaunchedAtNorao, Mode=OneWay}"/>
                             <MenuItem Header="Формы 2">
                                 <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
                                           CommandParameter="Org2.1"

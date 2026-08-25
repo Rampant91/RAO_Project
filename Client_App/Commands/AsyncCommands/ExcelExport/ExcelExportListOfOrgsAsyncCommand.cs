@@ -140,47 +140,44 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 
         progressBarVM.SetProgressBar(8, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        progressBarVM.SetProgressBar(10, "Подсчёт количества организаций");
-        await ReportsCountCheck(db, progressBar, cts);
-
-        progressBarVM.SetProgressBar(13, "Запрос пути сохранения");
-        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
-
-        var (fullPath, openTemp) = !isBackgroundCommand
-            ? await ExcelGetFullPath(fileName, cts, progressBar)
-            : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
-
-        fullPath = ResolveUniqueFilePath(fullPath, isBackgroundCommand ? folderPath : null);
-
-        progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-
-        progressBarVM.SetProgressBar(18, "Заполнение заголовков");
-        await FillExcelHeaders(excelPackage, parameter);
-
-        progressBarVM.SetProgressBar(ProgressDbLoadStart, "Получение списка организаций");
-        var repsList = await GetReportsList(db, progressBarVM, cts);
-
-        progressBarVM.SetProgressBar(ProgressDbLoadEnd, "Заполнение строчек в .xlsx");
-        await FillExcel(repsList, parameter, progressBarVM);
-
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
-
-        progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
         {
-            File.Delete(tmpDbPath);
-        }
-        catch
-        {
-            // ignored
-        }
+            await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-        await progressBar.CloseAsync();
+            progressBarVM.SetProgressBar(10, "Подсчёт количества организаций");
+            await ReportsCountCheck(db, progressBar, cts);
+
+            progressBarVM.SetProgressBar(13, "Запрос пути сохранения");
+            var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
+
+            var (fullPath, openTemp) = !isBackgroundCommand
+                ? await ExcelGetFullPath(fileName, cts, progressBar)
+                : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
+
+            fullPath = ResolveUniqueFilePath(fullPath, isBackgroundCommand ? folderPath : null);
+
+            progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(fullPath);
+
+            progressBarVM.SetProgressBar(18, "Заполнение заголовков");
+            await FillExcelHeaders(excelPackage, parameter);
+
+            progressBarVM.SetProgressBar(ProgressDbLoadStart, "Получение списка организаций");
+            var repsList = await GetReportsList(db, progressBarVM, cts);
+
+            progressBarVM.SetProgressBar(ProgressDbLoadEnd, "Заполнение строчек в .xlsx");
+            await FillExcel(repsList, parameter, progressBarVM);
+
+            progressBarVM.SetProgressBar(95, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
+
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            await progressBar.CloseAsync();
+        }
+        finally
+        {
+            TryDeleteTempDataBase(tmpDbPath);
+        }
     }
 
     #region ReportsCountCheck
