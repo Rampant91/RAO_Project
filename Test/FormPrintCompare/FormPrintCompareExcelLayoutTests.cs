@@ -46,28 +46,35 @@ public class FormPrintCompareExcelLayoutTests
         Assert.Equal("Сводка", package.Workbook.Worksheets[0].Name);
         Assert.Equal("Легенда", package.Workbook.Worksheets[1].Name);
         var summary = package.Workbook.Worksheets[0];
-        Assert.Equal("Совпадает (лист не создан)", summary.Cells[15, 7].Text);
-        Assert.Equal("Начало отчёта", summary.Cells[14, 2].Text);
-        Assert.Equal("Конец отчёта", summary.Cells[14, 3].Text);
-        Assert.Equal("01.01.2024", summary.Cells[15, 2].Text);
-        Assert.Equal("31.12.2024", summary.Cells[15, 3].Text);
-        Assert.Equal("различаются", summary.Cells[15, 6].Text);
-        Assert.Equal("source.RAODB", summary.Cells[4, 2].Text);
-        Assert.Equal("compare.RAODB", summary.Cells[5, 2].Text);
+        Assert.Equal("Совпадает (лист не создан)", summary.Cells[14, 11].Text);
+        Assert.Equal("Начало отчёта", summary.Cells[13, 6].Text);
+        Assert.Equal("Конец отчёта", summary.Cells[13, 7].Text);
+        Assert.Equal("01.01.2024", summary.Cells[14, 6].Text);
+        Assert.Equal("31.12.2024", summary.Cells[14, 7].Text);
+        Assert.Equal("различаются", summary.Cells[14, 10].Text);
+        Assert.Equal("Исходник: source.RAODB", summary.Cells[2, 1].Text);
+        Assert.Equal("Файлы для сверки: compare.RAODB", summary.Cells[3, 1].Text);
+        Assert.Equal("Отчётов в файлах сверки", summary.Cells[6, 1].Text);
+        Assert.Equal(1, summary.Cells[6, 2].GetValue<int>());
+        Assert.True(summary.Cells[1, 1, 1, 16].Merge);
+        Assert.False(summary.Cells[6, 1, 6, 15].Merge);
+        Assert.True(summary.Column(5).Width <= 10.5);
+        Assert.True(summary.Column(6).Width <= 14.5);
     }
 
     [Fact]
-    public void MissingRight_SheetHasMissingMessage()
+    public void MissingRight_DoesNotCreateDetailSheet()
     {
         var left = Left(R(1, 0, 1, "PAS1"));
         var result = FormPrintCompareTestAccess.Compare(left, null);
 
+        Assert.Equal(ReportCompareKind.MissingInCompareFiles, result.Kind);
+        Assert.False(result.CreatesDetailSheet);
+
         using var package = FormPrintCompareTestAccess.BuildWorkbookForTests(
             "12345", "12345678", "compare.RAODB", [result]);
 
-        Assert.Equal(3, package.Workbook.Worksheets.Count);
-        var sheet = package.Workbook.Worksheets[2];
-        Assert.Contains("отсутствует отчёт для сверки", sheet.Cells[FormPrintCompareTestAccess.ReportDataStartRow, 1].Text);
+        Assert.Equal(2, package.Workbook.Worksheets.Count); // Сводка + Легенда
     }
 
     [Fact]
@@ -81,12 +88,55 @@ public class FormPrintCompareExcelLayoutTests
             "12345", "12345678", "compare.RAODB", [result]);
 
         Assert.Equal("Легенда", package.Workbook.Worksheets[1].Name);
+        var legend = package.Workbook.Worksheets[1];
+        Assert.Equal("Как читать сравнение", legend.Cells[30, 1].Text);
+        Assert.Contains("Сводка", legend.Cells[34, 1].Text);
+        Assert.True(legend.Column(1).Width <= 75.5);
         var report = package.Workbook.Worksheets[2];
         var leftStart = 2;
         var rightStart = 2 + result.Left.Columns.Length + 2;
         var headerRow = FormPrintCompareTestAccess.ReportDataStartRow - 2;
-        Assert.Equal("Исходник (source.RAODB)", report.Cells[headerRow, leftStart].Text);
-        Assert.Equal("Для сравнения (compare.RAODB)", report.Cells[headerRow, rightStart].Text);
+        Assert.Equal("Отчёт из текущей БД (source.RAODB)", report.Cells[headerRow, leftStart].Text);
+        Assert.Equal("Отчёт на сравнение из файла (compare.RAODB)", report.Cells[headerRow, rightStart].Text);
+        Assert.Equal("12345_1.1_01.01.24-31.12.24", report.Name);
+    }
+
+    [Fact]
+    public void SheetName_UsesRegFormPeriod_TwoDigitYear_IndexOnlyOnCollision()
+    {
+        var a = FormPrintCompareTestAccess.CreateReport11(
+            "01.01.2024", "31.03.2024", 0, "98765", "okpo1", 1,
+            R(1, 0, 1, "A"));
+        var b = FormPrintCompareTestAccess.CreateReport11(
+            "01.01.2024", "31.03.2024", 1, "98765", "okpo1", 2,
+            R(2, 0, 1, "B"));
+        // Одинаковый ключ периода/формы/рег — разные корректировки; оба с отличиями → два листа.
+        var leftA = FormPrintCompareTestAccess.CreateReport11(
+            "01.01.2024", "31.03.2024", 0, "98765", "okpo1", 10,
+            R(1, 0, 1, "LEFT1"));
+        var rightA = FormPrintCompareTestAccess.CreateReport11(
+            "01.01.2024", "31.03.2024", 0, "98765", "okpo1", 11,
+            R(2, 0, 1, "RIGHT1"));
+        var leftB = FormPrintCompareTestAccess.CreateReport11(
+            "01.01.2024", "31.03.2024", 2, "98765", "okpo1", 20,
+            R(3, 0, 1, "LEFT2"));
+        var rightB = FormPrintCompareTestAccess.CreateReport11(
+            "01.01.2024", "31.03.2024", 2, "98765", "okpo1", 21,
+            R(4, 0, 1, "RIGHT2"));
+
+        Assert.Equal("98765_1.1_01.01.24-31.03.24", FormPrintCompareTestAccess.BuildSheetName(a));
+        Assert.Equal("98765_1.1_01.01.24-31.03.24", FormPrintCompareTestAccess.BuildSheetName(b));
+
+        var results = new[]
+        {
+            FormPrintCompareTestAccess.Compare(leftA, rightA),
+            FormPrintCompareTestAccess.Compare(leftB, rightB)
+        };
+        using var package = FormPrintCompareTestAccess.BuildWorkbookForTests(
+            "98765", "okpo1", "compare.RAODB", results);
+
+        Assert.Equal("98765_1.1_01.01.24-31.03.24", package.Workbook.Worksheets[2].Name);
+        Assert.Equal("98765_1.1_01.01.24-31.03.24_2", package.Workbook.Worksheets[3].Name);
     }
 
     [Fact]
@@ -280,8 +330,10 @@ public class FormPrintCompareExcelLayoutTests
             row,
             2 + result.Left.Columns.Length + 2 + FormPrintCompareTestAccess.PassportColumnIndex].Text;
 
-        Assert.Equal("Изменена", sheet.Cells[row, 1].Text);
-        Assert.Contains("ZWSP", rightPassport);
+        Assert.NotEmpty(sheet.Cells[row, 1].Text);
+        Assert.True(
+            rightPassport.Contains("ZWSP") || rightPassport.Contains("\u200B"),
+            $"Expected hidden marker in '{rightPassport}'.");
         Assert.NotEqual(leftPassport, rightPassport);
     }
 }

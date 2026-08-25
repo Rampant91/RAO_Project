@@ -231,7 +231,7 @@ public class FormPrintCompareMatcherTests
 
         Assert.False(result.HasRight);
         Assert.Empty(result.DisplayLines);
-        Assert.Contains("отсутствует отчёт для сверки", result.Message);
+        Assert.Contains("нет пары в выбранных файлах", result.Message);
     }
 
     [Fact]
@@ -255,5 +255,74 @@ public class FormPrintCompareMatcherTests
         Assert.Equal(1, result.DeletedCount);
         Assert.Equal(1, result.AddedCount);
         Assert.Equal(0, result.ChangedCount);
+    }
+
+    [Fact]
+    public void Form18_HeaderAndNuclideBreakdown_Identical_WhenSameRads()
+    {
+        var left = FormPrintCompareTestAccess.CreateReport18(
+            "05.04.2026", "13.04.2026", 0,
+            FormPrintCompareTestAccess.Row18Header(1, 0, 1, "11", "05.04.2026", "ZHRO-1", "PAS-1"),
+            FormPrintCompareTestAccess.Row18Detail(2, 1, 2, "цезий-137", "1,487e+02"),
+            FormPrintCompareTestAccess.Row18Detail(3, 2, 3, "кобальт-60", "2,882e+01"));
+        var right = FormPrintCompareTestAccess.CreateReport18(
+            "05.04.2026", "13.04.2026", 1,
+            FormPrintCompareTestAccess.Row18Header(10, 0, 1, "11", "05.04.2026", "ZHRO-1", "PAS-1"),
+            FormPrintCompareTestAccess.Row18Detail(11, 1, 2, "цезий-137", "1,487e+02"),
+            FormPrintCompareTestAccess.Row18Detail(12, 2, 3, "кобальт-60", "2,882e+01"));
+
+        Assert.True(FormPrintCompareTestAccess.IsNuclideBreakdownDetailRow("1.8", left.Rows[1]));
+        Assert.False(FormPrintCompareTestAccess.IsNuclideBreakdownDetailRow("1.8", left.Rows[0]));
+
+        var result = FormPrintCompareTestAccess.Compare(left, right);
+
+        Assert.True(result.IsIdentical);
+        Assert.Equal(0, result.AddedCount);
+        Assert.Equal(0, result.DeletedCount);
+        Assert.Equal(3, result.UnchangedCount);
+    }
+
+    [Fact]
+    public void Form18_BreakdownActivityChange_IsChanged_NotDeleteAdd()
+    {
+        var left = FormPrintCompareTestAccess.CreateReport18(
+            "05.04.2026", "13.04.2026", 0,
+            FormPrintCompareTestAccess.Row18Header(1, 0, 1, "11", "05.04.2026", "ZHRO-1", "PAS-1"),
+            FormPrintCompareTestAccess.Row18Detail(2, 1, 2, "цезий-137", "1,487e+02"));
+        var right = FormPrintCompareTestAccess.CreateReport18(
+            "05.04.2026", "13.04.2026", 1,
+            FormPrintCompareTestAccess.Row18Header(10, 0, 1, "11", "05.04.2026", "ZHRO-1", "PAS-1"),
+            FormPrintCompareTestAccess.Row18Detail(11, 1, 2, "цезий-137", "9,999e+02"));
+
+        var result = FormPrintCompareTestAccess.Compare(left, right);
+
+        Assert.Equal(0, result.AddedCount);
+        Assert.Equal(0, result.DeletedCount);
+        Assert.Equal(1, result.ChangedCount);
+        Assert.Equal(1, result.UnchangedCount); // заглавная
+    }
+
+    [Fact]
+    public void Form18_DifferentHeaders_DoNotCrossMatchBreakdowns()
+    {
+        var left = FormPrintCompareTestAccess.CreateReport18(
+            "05.04.2026", "13.04.2026", 0,
+            FormPrintCompareTestAccess.Row18Header(1, 0, 1, "11", "05.04.2026", "ZHRO-A", "PAS-A"),
+            FormPrintCompareTestAccess.Row18Detail(2, 1, 2, "цезий-137", "1,0e+02"),
+            FormPrintCompareTestAccess.Row18Header(3, 2, 3, "11", "06.04.2026", "ZHRO-B", "PAS-B"),
+            FormPrintCompareTestAccess.Row18Detail(4, 3, 4, "кобальт-60", "2,0e+01"));
+        var right = FormPrintCompareTestAccess.CreateReport18(
+            "05.04.2026", "13.04.2026", 1,
+            FormPrintCompareTestAccess.Row18Header(10, 0, 1, "11", "05.04.2026", "ZHRO-A", "PAS-A"),
+            FormPrintCompareTestAccess.Row18Detail(11, 1, 2, "кобальт-60", "2,0e+01"), // чужой нуклид для группы A
+            FormPrintCompareTestAccess.Row18Header(12, 2, 3, "11", "06.04.2026", "ZHRO-B", "PAS-B"),
+            FormPrintCompareTestAccess.Row18Detail(13, 3, 4, "цезий-137", "1,0e+02"));
+
+        var result = FormPrintCompareTestAccess.Compare(left, right);
+
+        // Заглавные совпали; подстрочки не перекидываются между группами → delete+add по нуклидам.
+        Assert.Equal(2, result.UnchangedCount);
+        Assert.Equal(2, result.DeletedCount);
+        Assert.Equal(2, result.AddedCount);
     }
 }

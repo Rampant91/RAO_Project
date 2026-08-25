@@ -1,13 +1,12 @@
 ---
-description: Firebird — лимит IN (~1500) и батчинг списков Id в запросах
-globs: "**/Commands/**/*.cs,**/Models/**/*.cs"
+description: Firebird: контролировать IN/Contains и батчинг Id
+globs: "**/Commands/AsyncCommands/ExcelExport/**/*.cs,**/*Repository*.cs,**/*Query*.cs"
 alwaysApply: false
 ---
 
 # Firebird / запросы
 
-СУБД — **Firebird**. При трансляции EF/`Contains` в SQL `IN (...)` действует практический лимит **~1500** значений: больший список часто даёт exception.
+СУБД — Firebird. Для `IN (...)`/`Contains` держать практический лимит ~1500 (в проекте обычно батчи ~1000).
 
-- Списки Id/ключей для `IN` / `Contains` батчить; в проекте обычно запас **~1000** (`FirebirdInClauseBatchSize`, `ChunkIds` и аналоги)
-- Не строить один огромный `IN` «на все Id»
-- Перед новым массовым запросом сверяться с уже принятым батчингом в соседних командах
+- Не собирать один огромный `IN` на все Id
+- Для массовых выборок использовать батчи (`FirebirdInClauseBatchSize`, `ChunkIds` и аналоги)

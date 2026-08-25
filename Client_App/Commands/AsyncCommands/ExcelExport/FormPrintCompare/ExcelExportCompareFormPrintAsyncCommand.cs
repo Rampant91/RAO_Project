@@ -12,12 +12,13 @@ using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.DBRealization;
+using Models.Interfaces;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.FormPrintCompare;
 
 /// <summary>
-/// Сравнение отчётов исходной БД МПЗФ с выбранным .RAODB (формы 1.1, 1.3, 1.4, 2.12).
+/// Сравнение отчётов исходной БД МПЗФ с выбранными .RAODB (формы 1 и 2).
 /// Только для режима разработчика (внутренний инструмент отдела).
 /// </summary>
 public class ExcelExportCompareFormPrintAsyncCommand : ExcelExportBaseAllAsyncCommand
@@ -54,112 +55,188 @@ public class ExcelExportCompareFormPrintAsyncCommand : ExcelExportBaseAllAsyncCo
             }
         }
 
-        if (!await ConfirmIntroAsync(wholeDb))
-        {
-            return;
-        }
-
-        var etalonPath = await AskEtalonRaodbPathAsync();
-        if (string.IsNullOrWhiteSpace(etalonPath))
+        var etalonPaths = await AskCompareRaodbPathsAsync();
+        if (etalonPaths.Count == 0)
         {
             return;
         }
 
         var cts = new CancellationTokenSource();
-        ExportType = "Сравнение_отчётов";
+        ExportType = "Сверка_отчётов_с_БД";
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
         string? tmpSourcePath = null;
-        string? tmpEtalonPath = null;
+        var tmpEtalonPaths = new List<string>();
 
         try
         {
-            progressBarVM.SetProgressBar(5, "Создание временной копии исходной БД", "Сравнение", "Выгрузка в .xlsx");
+            progressBarVM.SetProgressBar(5, "Копирование файлов .RAODB для сверки", "Сверка", "Выгрузка в .xlsx");
+            var filesCount = etalonPaths.Count;
+            for (var copyIndex = 0; copyIndex < etalonPaths.Count; copyIndex++)
+            {
+                if (filesCount > 1)
+                {
+                    progressBarVM.SetProgressBar(
+                        5,
+                        $"Копирование файлов .RAODB для сверки: {copyIndex + 1} из {filesCount}",
+                        "Сверка",
+                        "Выгрузка в .xlsx");
+                }
+
+                tmpEtalonPaths.Add(CopyEtalonToTemp(etalonPaths[copyIndex]));
+            }
+
+            // File-first: сначала файлы сверки, затем только нужные организации из БД.
+            progressBarVM.SetProgressBar(8, "Загрузка отчётов из файлов для сверки", "Сверка", "Выгрузка в .xlsx");
+            var etalonParts = new List<FormPrintRaodbIndex.LoadResult>(tmpEtalonPaths.Count);
+            const int filesProgressStart = 8;
+            const int filesProgressSpan = 27;
+            var lastFilesPercent = filesProgressStart;
+            for (var i = 0; i < tmpEtalonPaths.Count; i++)
+            {
+                cts.Token.ThrowIfCancellationRequested();
+
+                // Абсолютные start/span для LoadAsync; в UI пересчитываем в монотонный % по индексу файла.
+                var start = filesProgressStart + (int)Math.Floor(filesProgressSpan * (double)i / Math.Max(1, filesCount));
+                var end = filesProgressStart
+                          + (int)Math.Floor(filesProgressSpan * (i + 1.0) / Math.Max(1, filesCount));
+                var span = Math.Max(1, end - start);
+                var filePrefix = filesCount > 1 ? $"Файл {i + 1} из {filesCount}. " : "";
+
+                Action<int, string> fileProgress = (percent, text) =>
+                {
+                    var local = span <= 1
+                        ? 1.0
+                        : Math.Clamp((percent - start) / (double)span, 0.0, 1.0);
+                    var mapped = (int)Math.Floor(
+                        filesProgressStart + filesProgressSpan * (i + local) / Math.Max(1, filesCount));
+                    mapped = Math.Min(filesProgressStart + filesProgressSpan, Math.Max(lastFilesPercent, mapped));
+                    lastFilesPercent = mapped;
+                    progressBarVM.SetProgressBar(mapped, filePrefix + text, "Сверка", "Выгрузка в .xlsx");
+                };
+
+                etalonParts.Add(await FormPrintRaodbIndex.LoadAsync(
+                    tmpEtalonPaths[i],
+                    cts.Token,
+                    Path.GetFileName(etalonPaths[i]),
+                    fileProgress,
+                    progressStartPercent: start,
+                    progressSpanPercent: span));
+            }
+
+            var etalon = FormPrintCompareCatalog.Merge(etalonParts);
+            if (!wholeDb)
+            {
+                var selectedIdentity = TryGetSelectedOrgIdentity(parameter);
+                if (selectedIdentity is { } sel)
+                {
+                    etalon = FilterReportsToOrg(etalon, sel.RegNo, sel.Okpo);
+                }
+            }
+
+            var orgKeys = FormPrintCompareCatalog.CollectOrgKeys(etalon.Reports);
+            var periodHintsByOrg = FormPrintCompareCatalog.BuildPeriodHintsByOrg(etalon.Reports);
+            progressBarVM.SetProgressBar(
+                36,
+                $"Организаций в файлах сверки: {orgKeys.Count}",
+                "Сверка",
+                "Выгрузка в .xlsx");
+
+            progressBarVM.SetProgressBar(38, "Создание временной копии исходной БД", "Сверка", "Выгрузка в .xlsx");
             tmpSourcePath = await CreateTempDataBase(progressBar, cts);
             if (string.IsNullOrEmpty(tmpSourcePath) || cts.IsCancellationRequested)
             {
                 return;
             }
 
-            progressBarVM.SetProgressBar(12, "Копирование файла .RAODB для сравнения", "Сравнение", "Выгрузка в .xlsx");
-            tmpEtalonPath = CopyEtalonToTemp(etalonPath);
+            progressBarVM.SetProgressBar(
+                48,
+                "Загрузка отчётов исходной БД (организации и периоды из файлов)",
+                "Сверка",
+                "Выгрузка в .xlsx");
+            Action<int, string> sourceProgress = (percent, text) =>
+                progressBarVM.SetProgressBar(percent, text, "Сверка", "Выгрузка в .xlsx");
 
-            progressBarVM.SetProgressBar(22, "Загрузка отчётов исходной БД", "Сравнение", "Выгрузка в .xlsx");
-            var source = await FormPrintRaodbIndex.LoadAsync(tmpSourcePath, cts.Token);
+            var source = await FormPrintRaodbIndex.LoadAsync(
+                tmpSourcePath,
+                cts.Token,
+                "исходная_БД",
+                sourceProgress,
+                progressStartPercent: 48,
+                progressSpanPercent: 27,
+                orgFilter: orgKeys,
+                periodHintsByOrg: periodHintsByOrg);
+
             if (!wholeDb)
             {
                 source = FilterSourceToSelectedOrg(source, parameter);
             }
 
-            if (source.Reports.Count == 0)
+            if (source.Reports.Count == 0 && etalon.Reports.Count == 0)
             {
                 await ShowInfoAsync(
                     progressBar,
                     wholeDb
-                        ? "В исходной БД нет отчётов форм 1.1, 1.3, 1.4 или 2.12 для сравнения."
-                        : "У выбранной организации нет отчётов форм 1.1, 1.3, 1.4 или 2.12 для сравнения.");
-                await CleanupAndClose(progressBar, tmpSourcePath, tmpEtalonPath);
+                        ? "В исходной БД и в выбранных файлах нет отчётов форм 1 и 2 для сравнения."
+                        : "У выбранной организации нет отчётов форм 1 и 2 для сравнения (ни в БД, ни в файлах).");
+                await CleanupAndClose(progressBar, tmpSourcePath, tmpEtalonPaths);
                 return;
             }
 
-            progressBarVM.SetProgressBar(40, "Загрузка отчётов из файла для сравнения", "Сравнение", "Выгрузка в .xlsx");
-            var etalon = await FormPrintRaodbIndex.LoadAsync(tmpEtalonPath, cts.Token);
-            var etalonIndex = FormPrintRaodbIndex.ToIndex(etalon.Reports);
+            progressBarVM.SetProgressBar(76, "Сверка отчётов с БД", "Сверка", "Выгрузка в .xlsx");
+            Action<int, string> pairingProgress = (percent, text) =>
+                progressBarVM.SetProgressBar(percent, text, "Сверка", "Выгрузка в .xlsx");
+            var results = FormPrintComparePairing.Pair(
+                source.Reports,
+                etalon.Reports,
+                pairingProgress,
+                progressStartPercent: 76,
+                progressSpanPercent: 6);
 
-            progressBarVM.SetProgressBar(55, "Сравнение отчётов", "Сравнение", "Выгрузка в .xlsx");
-            var results = new List<ReportCompareResult>(source.Reports.Count);
-            var total = source.Reports.Count;
-            for (var i = 0; i < total; i++)
-            {
-                cts.Token.ThrowIfCancellationRequested();
-                var left = source.Reports[i];
-                etalonIndex.TryGetValue(new ReportMatchKey(left.FormNum, left.PeriodKey), out var right);
-                results.Add(FormPrintCompareMatcher.Compare(left, right));
-
-                var percent = 55 + (25 * (i + 1) / Math.Max(total, 1));
-                progressBarVM.SetProgressBar(
-                    percent,
-                    $"Сравнение отчётов ({i + 1}/{total})",
-                    "Сравнение");
-            }
-
+            var exportRegNo = !string.IsNullOrWhiteSpace(etalon.RegNo)
+                ? etalon.RegNo
+                : source.RegNo;
+            var exportOkpo = !string.IsNullOrWhiteSpace(etalon.Okpo)
+                ? etalon.Okpo
+                : source.Okpo;
             var regNo = RemoveForbiddenChars(
-                string.IsNullOrWhiteSpace(source.RegNo) ? "без_рег" : source.RegNo);
+                string.IsNullOrWhiteSpace(exportRegNo) ? "без_рег" : exportRegNo);
             var okpo = RemoveForbiddenChars(
-                string.IsNullOrWhiteSpace(source.Okpo) ? "без_окпо" : source.Okpo);
+                string.IsNullOrWhiteSpace(exportOkpo) ? "без_окпо" : exportOkpo);
             var fileName = $"{ExportType}_{regNo}_{okpo}_{DateTime.Now:yyyyMMdd_HHmmss}";
 
-            progressBarVM.SetProgressBar(82, "Запрос пути сохранения", "Сравнение", "Выгрузка в .xlsx");
+            progressBarVM.SetProgressBar(82, "Запрос пути сохранения", "Сверка", "Выгрузка в .xlsx");
             var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
             if (string.IsNullOrEmpty(fullPath))
             {
                 TryDelete(tmpSourcePath);
-                TryDelete(tmpEtalonPath);
+                TryDeleteAll(tmpEtalonPaths);
                 return;
             }
 
-            progressBarVM.SetProgressBar(88, "Инициализация Excel пакета", "Сравнение", "Выгрузка в .xlsx");
+            progressBarVM.SetProgressBar(88, "Инициализация Excel пакета", "Сверка", "Выгрузка в .xlsx");
             using var excelPackage = await InitializeExcelPackage(fullPath);
             var sourceFileName = string.IsNullOrWhiteSpace(StaticConfiguration.DBPath)
                 ? "исходная_БД.RAODB"
                 : Path.GetFileName(StaticConfiguration.DBPath);
             FormPrintCompareExcel.FillWorkbook(
                 excelPackage,
-                source.RegNo,
-                source.Okpo,
                 sourceFileName,
-                Path.GetFileName(etalonPath),
-                results);
+                FormatCompareFileNames(etalonPaths),
+                results,
+                (percent, text) => progressBarVM.SetProgressBar(percent, text, "Сверка", "Выгрузка в .xlsx"),
+                progressStartPercent: 88,
+                progressSpanPercent: 7);
 
-            progressBarVM.SetProgressBar(95, "Сохранение", "Сравнение", "Выгрузка в .xlsx");
+            progressBarVM.SetProgressBar(95, "Сохранение", "Сверка", "Выгрузка в .xlsx");
             await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-            await CleanupAndClose(progressBar, tmpSourcePath, tmpEtalonPath);
+            await CleanupAndClose(progressBar, tmpSourcePath, tmpEtalonPaths);
         }
         catch (OperationCanceledException)
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
             TryDelete(tmpSourcePath);
-            TryDelete(tmpEtalonPath);
+            TryDeleteAll(tmpEtalonPaths);
         }
         catch (Exception ex)
         {
@@ -167,7 +244,7 @@ public class ExcelExportCompareFormPrintAsyncCommand : ExcelExportBaseAllAsyncCo
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Сравнение отчётов",
+                    ContentTitle = "Сверка отчётов с БД",
                     ContentHeader = "Ошибка",
                     ContentMessage = $"{ex.Message}{Environment.NewLine}{ex.StackTrace}",
                     MinWidth = 400,
@@ -177,61 +254,31 @@ public class ExcelExportCompareFormPrintAsyncCommand : ExcelExportBaseAllAsyncCo
                 .ShowDialog(progressBar ?? Desktop.MainWindow));
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar!);
             TryDelete(tmpSourcePath);
-            TryDelete(tmpEtalonPath);
+            TryDeleteAll(tmpEtalonPaths);
         }
-    }
-
-    private async Task<bool> ConfirmIntroAsync(bool wholeDb)
-    {
-        var scope = wholeDb
-            ? "всех организаций открытой базы данных МПЗФ"
-            : "выбранной организации в открытой базе данных МПЗФ";
-
-        var message =
-            "Сравнение отчётов (внутренний инструмент)." + Environment.NewLine + Environment.NewLine +
-            $"Что сравнивается: отчёты форм 1.1, 1.3, 1.4 и 2.12 у {scope}." + Environment.NewLine + Environment.NewLine +
-            "С чем: вы выберете файл .RAODB — в нём ищутся те же формы и периоды." + Environment.NewLine + Environment.NewLine +
-            "Номер корректировки в ключ сопоставления не входит (показывается в Excel)." + Environment.NewLine +
-            "Результат — книга Excel со сводкой и листами отличий." + Environment.NewLine + Environment.NewLine +
-            "Продолжить и выбрать файл .RAODB?";
-
-        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-            {
-                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.YesNo,
-                ContentTitle = "Сравнение отчётов",
-                ContentHeader = "Что будет сделано",
-                ContentMessage = message,
-                MinWidth = 520,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(Desktop.MainWindow));
-
-        return answer == MessageBox.Avalonia.Enums.ButtonResult.Yes;
     }
 
     private FormPrintRaodbIndex.LoadResult FilterSourceToSelectedOrg(
         FormPrintRaodbIndex.LoadResult source,
         object? parameter)
     {
-        if (!TryGetReports(parameter, out var selected) && _mainWindowVM.SelectedReports is null)
+        var selectedIdentity = TryGetSelectedOrgIdentity(parameter);
+        if (selectedIdentity is null)
         {
             return source;
         }
 
-        selected ??= _mainWindowVM.SelectedReports!;
-        var master = selected.Master_DB;
-        if (master is null)
-        {
-            return source;
-        }
-
-        // Берём рег.№/ОКПО так же, как при загрузке индекса.
-        var (regNo, okpo) = ReadOrgIdentityFromMaster(master);
+        var (regNo, okpo) = selectedIdentity.Value;
         var filtered = source.Reports
             .Where(r =>
-                string.Equals(r.RegNo ?? "", regNo, StringComparison.OrdinalIgnoreCase)
-                && string.Equals(r.Okpo ?? "", okpo, StringComparison.OrdinalIgnoreCase))
+                string.Equals(
+                    ReportMatchKey.NormalizeOrg(r.RegNo),
+                    ReportMatchKey.NormalizeOrg(regNo),
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    ReportMatchKey.NormalizeOrg(r.Okpo),
+                    ReportMatchKey.NormalizeOrg(okpo),
+                    StringComparison.Ordinal))
             .ToList();
 
         return new FormPrintRaodbIndex.LoadResult
@@ -239,6 +286,48 @@ public class ExcelExportCompareFormPrintAsyncCommand : ExcelExportBaseAllAsyncCo
             Reports = filtered,
             RegNo = string.IsNullOrEmpty(regNo) ? source.RegNo : regNo,
             Okpo = string.IsNullOrEmpty(okpo) ? source.Okpo : okpo
+        };
+    }
+
+    private (string RegNo, string Okpo)? TryGetSelectedOrgIdentity(object? parameter)
+    {
+        if (!TryGetReports(parameter, out var selected) && _mainWindowVM.SelectedReports is null)
+        {
+            return null;
+        }
+
+        selected ??= _mainWindowVM.SelectedReports!;
+        var master = selected.Master_DB;
+        if (master is null)
+        {
+            return null;
+        }
+
+        return ReadOrgIdentityFromMaster(master);
+    }
+
+    private static FormPrintRaodbIndex.LoadResult FilterReportsToOrg(
+        FormPrintRaodbIndex.LoadResult source,
+        string regNo,
+        string okpo)
+    {
+        var filtered = source.Reports
+            .Where(r =>
+                string.Equals(
+                    ReportMatchKey.NormalizeOrg(r.RegNo),
+                    ReportMatchKey.NormalizeOrg(regNo),
+                    StringComparison.Ordinal)
+                && string.Equals(
+                    ReportMatchKey.NormalizeOrg(r.Okpo),
+                    ReportMatchKey.NormalizeOrg(okpo),
+                    StringComparison.Ordinal))
+            .ToList();
+
+        return new FormPrintRaodbIndex.LoadResult
+        {
+            Reports = filtered,
+            RegNo = regNo,
+            Okpo = okpo
         };
     }
 
@@ -306,23 +395,23 @@ public class ExcelExportCompareFormPrintAsyncCommand : ExcelExportBaseAllAsyncCo
     private static async Task CleanupAndClose(
         AnyTaskProgressBar progressBar,
         string? tmpSourcePath,
-        string? tmpEtalonPath)
+        IEnumerable<string> tmpEtalonPaths)
     {
         TryDelete(tmpSourcePath);
-        TryDelete(tmpEtalonPath);
+        TryDeleteAll(tmpEtalonPaths);
         progressBar.AnyTaskProgressBarVM.SetProgressBar(100, "Завершение выгрузки");
         await progressBar.CloseAsync();
     }
 
-    private static async Task<string?> AskEtalonRaodbPathAsync()
+    private static async Task<IReadOnlyList<string>> AskCompareRaodbPathsAsync()
     {
         string[]? files = null;
         await Dispatcher.UIThread.InvokeAsync(async () =>
         {
             var dial = new OpenFileDialog
             {
-                AllowMultiple = false,
-                Title = "Выберите файл .RAODB для сравнения"
+                AllowMultiple = true,
+                Title = "Выберите один или несколько файлов .RAODB для сравнения"
             };
             dial.Filters.Add(new FileDialogFilter
             {
@@ -332,7 +421,29 @@ public class ExcelExportCompareFormPrintAsyncCommand : ExcelExportBaseAllAsyncCo
             files = await dial.ShowAsync(Desktop.MainWindow);
         });
 
-        return files is { Length: > 0 } ? files[0] : null;
+        if (files is not { Length: > 0 })
+        {
+            return [];
+        }
+
+        var readable = files.Where(p => CompareReportSources.ForPath(p) is not null).ToList();
+        return readable;
+    }
+
+    private static string FormatCompareFileNames(IReadOnlyList<string> paths)
+    {
+        var names = paths.Select(Path.GetFileName).Where(n => !string.IsNullOrEmpty(n)).Cast<string>().ToList();
+        if (names.Count == 0)
+        {
+            return "";
+        }
+
+        if (names.Count <= 8)
+        {
+            return string.Join("; ", names);
+        }
+
+        return $"{names.Count} файлов: {string.Join("; ", names.Take(5))}; …";
     }
 
     private static string CopyEtalonToTemp(string etalonPath)
@@ -346,6 +457,14 @@ public class ExcelExportCompareFormPrintAsyncCommand : ExcelExportBaseAllAsyncCo
 
         File.Copy(etalonPath, tmpPath, overwrite: true);
         return tmpPath;
+    }
+
+    private static void TryDeleteAll(IEnumerable<string> paths)
+    {
+        foreach (var path in paths)
+        {
+            TryDelete(path);
+        }
     }
 
     private static void TryDelete(string? path)
@@ -374,7 +493,7 @@ public class ExcelExportCompareFormPrintAsyncCommand : ExcelExportBaseAllAsyncCo
             .GetMessageBoxStandardWindow(new MessageBoxStandardParams
             {
                 ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                ContentTitle = "Сравнение отчётов",
+                ContentTitle = "Сверка отчётов с БД",
                 ContentMessage = message,
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner

@@ -264,7 +264,7 @@
                                           Command="{Binding MainWindowVM.ExcelExportCheckTransferReceive, Mode=OneWay}"
                                           CommandParameter="{Binding SelectedReports, Mode=OneWay}"
                                           IsVisible="{Binding MainWindowVM.AppLaunchedAtNorao, Mode=OneWay}"/>
-                                <MenuItem Header="Сравнение отчётов"
+                                <MenuItem Header="Сверка отчётов с БД"
                                           Command="{Binding MainWindowVM.ExcelExportCompareFormPrint, Mode=OneWay}"
                                           CommandParameter="{Binding SelectedReports, Mode=OneWay}"
                                           IsVisible="{Binding MainWindowVM.AppLaunchedAtNorao, Mode=OneWay}"/>

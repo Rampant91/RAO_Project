@@ -22,7 +22,7 @@
 | `rules/excel-export.mdc` | `ExcelExport/` — общее + блок только для compare |
 | `rules/testy-algoritmov.mdc` | Тесты алгоритмов (Pairing/TR/FormPrintCompare/Snk/…) |
 | `rules/avalonia-ui.mdc` | Views / axaml / Behaviors — Avalonia **0.10.22** |
-| `rules/firebird-db.mdc` | Commands / Models — лимит Firebird `IN` ~1500 |
+| `rules/firebird-db.mdc` | ExcelExport + repository/query-код — лимит Firebird `IN` ~1500 |
 | `rules/database-migrations.mdc` | `*.cs` — Migrate только через обёртку |
 
 ## Skills (процессы)
@@ -34,7 +34,7 @@
 
 ## Принципы
 
-- Один always-чеклист качества; платформа и Excel — в glob-rules
+- Один always-чеклист качества; остальное — узкие glob-rules
 - В skills — режимы и порядок, не копия чеклиста
 - Rules не обновлять по ходу фичи; править по явной просьбе или когда одна формулировка повторяется 2–3 раза
 - Не дублировать то же в глобальных User Rules Cursor

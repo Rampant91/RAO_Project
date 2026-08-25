@@ -57,6 +57,109 @@ internal static partial class FormPrintCompareNormalize
         return $"{s}-{e}";
     }
 
+    public static bool TryGetPeriodRange(CompareReportDto report, out DateOnly start, out DateOnly end)
+    {
+        start = default;
+        end = default;
+        if (IsYearOnlyForm(report.FormNum))
+        {
+            if (!int.TryParse(report.PeriodKey, out var year) || year is < 1900 or > 3000)
+            {
+                return false;
+            }
+
+            start = new DateOnly(year, 1, 1);
+            end = new DateOnly(year, 12, 31);
+            return true;
+        }
+
+        var startText = NormalizePeriodPart(report.StartPeriod);
+        var endText = NormalizePeriodPart(report.EndPeriod);
+        var ru = CultureInfo.GetCultureInfo("ru-RU");
+        return DateOnly.TryParse(startText, ru, DateTimeStyles.None, out start)
+            && DateOnly.TryParse(endText, ru, DateTimeStyles.None, out end);
+    }
+
+    /// <summary>
+    /// Внутреннее пересечение периодов. Общая только граница (следующий отчёт начинается с даты предыдущего) — не пересечение.
+    /// </summary>
+    public static bool PeriodsOverlap(CompareReportDto left, CompareReportDto right)
+    {
+        if (!string.Equals(left.FormNum, right.FormNum, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        if (!TryGetPeriodRange(left, out var leftStart, out var leftEnd)
+            || !TryGetPeriodRange(right, out var rightStart, out var rightEnd))
+        {
+            return false;
+        }
+
+        return leftStart < rightEnd && rightStart < leftEnd;
+    }
+
+    /// <summary>
+    /// Пересечение по сырым полям периода (без загрузки строк отчёта) — для узкой выборки из БД.
+    /// </summary>
+    public static bool PeriodsOverlap(
+        string formNum,
+        string? startA,
+        string? endA,
+        string? yearA,
+        string? startB,
+        string? endB,
+        string? yearB)
+    {
+        var a = new CompareReportDto
+        {
+            ReportId = 0,
+            FormNum = formNum,
+            PeriodKey = BuildPeriodKey(formNum, startA, endA, yearA),
+            PeriodDisplay = "",
+            StartPeriod = startA ?? "",
+            EndPeriod = endA ?? "",
+            Year = yearA ?? "",
+            RegNo = "",
+            Okpo = "",
+            Rows = [],
+            Columns = []
+        };
+        var b = new CompareReportDto
+        {
+            ReportId = 0,
+            FormNum = formNum,
+            PeriodKey = BuildPeriodKey(formNum, startB, endB, yearB),
+            PeriodDisplay = "",
+            StartPeriod = startB ?? "",
+            EndPeriod = endB ?? "",
+            Year = yearB ?? "",
+            RegNo = "",
+            Okpo = "",
+            Rows = [],
+            Columns = []
+        };
+        return PeriodsOverlap(a, b);
+    }
+
+    public static int OverlapDayCount(CompareReportDto left, CompareReportDto right)
+    {
+        if (!TryGetPeriodRange(left, out var leftStart, out var leftEnd)
+            || !TryGetPeriodRange(right, out var rightStart, out var rightEnd))
+        {
+            return 0;
+        }
+
+        var start = leftStart > rightStart ? leftStart : rightStart;
+        var end = leftEnd < rightEnd ? leftEnd : rightEnd;
+        if (start >= end)
+        {
+            return 0;
+        }
+
+        return end.DayNumber - start.DayNumber;
+    }
+
     public static string NormalizeId(string? value)
     {
         if (string.IsNullOrWhiteSpace(value) || value == "-")

@@ -21,7 +21,8 @@ internal static class FormPrintCompareMatcher
                 OrderOnlyChanged = false,
                 Lines = [],
                 DisplayLines = [],
-                Message = "Для отчёта отсутствует отчёт для сверки в выбранном .RAODB.",
+                Kind = ReportCompareKind.MissingInCompareFiles,
+                Message = "Отчёт есть в текущей БД, но нет пары в выбранных файлах сверки.",
                 UnchangedCount = 0,
                 ChangedCount = 0,
                 MovedCount = 0,
@@ -127,9 +128,20 @@ internal static class FormPrintCompareMatcher
             unmatchedRight.Remove(best);
         }
 
+        // 1.7/1.8: подстрочки раскладки (пустые код/дата операции) — внутри группы заглавной.
+        if (IsNuclideBreakdownForm(left.FormNum))
+        {
+            PairNuclideBreakdownDetails(
+                columns,
+                leftRows,
+                rightRows,
+                pairs,
+                matchedRight);
+        }
+
         var pairByLeftId = pairs.ToDictionary(p => p.L.Id);
-        var added = unmatchedRight.OrderBy(r => r.SourceIndex).ToList();
-        var deleted = unmatchedLeft.OrderBy(r => r.SourceIndex).ToList();
+        var added = rightRows.Where(r => !matchedRight.Contains(r.Id)).OrderBy(r => r.SourceIndex).ToList();
+        var deleted = leftRows.Where(r => pairs.All(p => p.L.Id != r.Id)).OrderBy(r => r.SourceIndex).ToList();
 
         var lines = BuildUnifiedLayout(columns, leftRows, pairByLeftId, added, deleted);
 
@@ -173,6 +185,7 @@ internal static class FormPrintCompareMatcher
 
         return new ReportCompareResult
         {
+            Kind = ReportCompareKind.Compared,
             Left = left,
             Right = right,
             IsIdentical = isIdentical,
@@ -448,6 +461,176 @@ internal static class FormPrintCompareMatcher
         return left.NumberInOrder != right.NumberInOrder
             ? DiffRowStatus.Moved
             : DiffRowStatus.Unchanged;
+    }
+
+    private static bool IsNuclideBreakdownForm(string formNum) =>
+        formNum is "1.7" or "1.8";
+
+    /// <summary>
+    /// Подстрочка раскладки 1.7/1.8: код и дата операции пустые или «-».
+    /// </summary>
+    internal static bool IsNuclideBreakdownDetailRow(CompareColumn[] columns, CompareRowDto row)
+    {
+        var opCodeIdx = IndexOfHeader(columns, "Код операции");
+        var opDateIdx = IndexOfHeader(columns, "Дата операции");
+        if (opCodeIdx < 0 || opDateIdx < 0)
+        {
+            return false;
+        }
+
+        var opCode = opCodeIdx < row.Values.Length ? row.Values[opCodeIdx] : "";
+        var opDate = opDateIdx < row.Values.Length ? row.Values[opDateIdx] : "";
+        return IsEmptyOperationKeyPart(opCode) && IsEmptyOperationKeyPart(opDate);
+    }
+
+    private static bool IsEmptyOperationKeyPart(string? value) =>
+        string.IsNullOrWhiteSpace(value) || value.Trim() == "-";
+
+    private static int IndexOfHeader(CompareColumn[] columns, string header)
+    {
+        for (var i = 0; i < columns.Length; i++)
+        {
+            if (string.Equals(columns[i].Header, header, StringComparison.Ordinal))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private sealed class RowGroup
+    {
+        public CompareRowDto? Header { get; init; }
+        public List<CompareRowDto> Details { get; } = [];
+    }
+
+    /// <summary>
+    /// Группы: заглавная строка + следующие подстрочки раскладки до следующей заглавной.
+    /// </summary>
+    private static List<RowGroup> BuildNuclideBreakdownGroups(
+        CompareColumn[] columns,
+        IReadOnlyList<CompareRowDto> rows)
+    {
+        var groups = new List<RowGroup>();
+        RowGroup? current = null;
+        foreach (var row in rows.OrderBy(r => r.SourceIndex).ThenBy(r => r.Id))
+        {
+            if (!IsNuclideBreakdownDetailRow(columns, row))
+            {
+                current = new RowGroup { Header = row };
+                groups.Add(current);
+                continue;
+            }
+
+            if (current is null)
+            {
+                current = new RowGroup { Header = null };
+                groups.Add(current);
+            }
+
+            current.Details.Add(row);
+        }
+
+        return groups;
+    }
+
+    /// <summary>
+    /// После сопоставления заглавных: внутри каждой пары групп склеить подстрочки по радионуклиду.
+    /// </summary>
+    private static void PairNuclideBreakdownDetails(
+        CompareColumn[] columns,
+        IReadOnlyList<CompareRowDto> leftRows,
+        IReadOnlyList<CompareRowDto> rightRows,
+        List<(CompareRowDto L, CompareRowDto R, FieldMatchLevel[] Levels)> pairs,
+        HashSet<int> matchedRight)
+    {
+        var radIdx = IndexOfHeader(columns, "Радионуклиды");
+        if (radIdx < 0)
+        {
+            return;
+        }
+
+        var leftGroups = BuildNuclideBreakdownGroups(columns, leftRows);
+        var rightGroups = BuildNuclideBreakdownGroups(columns, rightRows);
+        var rightGroupByHeaderId = rightGroups
+            .Where(g => g.Header is not null)
+            .ToDictionary(g => g.Header!.Id);
+
+        var pairedLeftIds = pairs.Select(p => p.L.Id).ToHashSet();
+        var leftHeaderToRight = pairs.ToDictionary(p => p.L.Id, p => p.R);
+
+        foreach (var leftGroup in leftGroups)
+        {
+            if (leftGroup.Header is null
+                || !leftHeaderToRight.TryGetValue(leftGroup.Header.Id, out var rightHeader)
+                || !rightGroupByHeaderId.TryGetValue(rightHeader.Id, out var rightGroup))
+            {
+                continue;
+            }
+
+            var leftDetails = leftGroup.Details
+                .Where(d => !pairedLeftIds.Contains(d.Id))
+                .ToList();
+            var rightDetails = rightGroup.Details
+                .Where(d => !matchedRight.Contains(d.Id))
+                .ToList();
+
+            PairDetailsByRadionuclide(columns, radIdx, leftDetails, rightDetails, pairs, matchedRight, pairedLeftIds);
+        }
+
+        // Подстрочки без заглавной (редкий край) — между «сиротскими» группами по радионуклиду.
+        var orphanLeft = leftGroups
+            .Where(g => g.Header is null)
+            .SelectMany(g => g.Details)
+            .Where(d => !pairedLeftIds.Contains(d.Id))
+            .ToList();
+        var orphanRight = rightGroups
+            .Where(g => g.Header is null)
+            .SelectMany(g => g.Details)
+            .Where(d => !matchedRight.Contains(d.Id))
+            .ToList();
+        PairDetailsByRadionuclide(columns, radIdx, orphanLeft, orphanRight, pairs, matchedRight, pairedLeftIds);
+    }
+
+    private static void PairDetailsByRadionuclide(
+        CompareColumn[] columns,
+        int radIdx,
+        List<CompareRowDto> leftDetails,
+        List<CompareRowDto> rightDetails,
+        List<(CompareRowDto L, CompareRowDto R, FieldMatchLevel[] Levels)> pairs,
+        HashSet<int> matchedRight,
+        HashSet<int> pairedLeftIds)
+    {
+        var rightByRad = rightDetails
+            .GroupBy(r => FormPrintCompareNormalize.NormalizeRads(
+                radIdx < r.Values.Length ? r.Values[radIdx] : ""))
+            .Where(g => !string.IsNullOrEmpty(g.Key))
+            .ToDictionary(g => g.Key, g => g.OrderBy(x => x.SourceIndex).ThenBy(x => x.Id).ToList());
+
+        foreach (var leftRow in leftDetails.OrderBy(r => r.SourceIndex).ThenBy(r => r.Id))
+        {
+            var rad = FormPrintCompareNormalize.NormalizeRads(
+                radIdx < leftRow.Values.Length ? leftRow.Values[radIdx] : "");
+            if (string.IsNullOrEmpty(rad) || !rightByRad.TryGetValue(rad, out var candidates) || candidates.Count == 0)
+            {
+                continue;
+            }
+
+            var best = candidates
+                .OrderBy(r => Math.Abs(r.SourceIndex - leftRow.SourceIndex))
+                .ThenBy(r => r.Id)
+                .First();
+            candidates.Remove(best);
+            if (candidates.Count == 0)
+            {
+                rightByRad.Remove(rad);
+            }
+
+            pairs.Add((leftRow, best, ScoreFields(columns, leftRow, best)));
+            matchedRight.Add(best.Id);
+            pairedLeftIds.Add(leftRow.Id);
+        }
     }
 
     private static FieldMatchLevel[] ScoreFields(

@@ -1,5 +1,5 @@
 ---
-description: Паттерны Excel-выгрузок (общее) и отдельно — команд сравнения/парности
+description: Короткие паттерны для Excel-выгрузок и compare-команд
 globs: "**/ExcelExport/**/*.cs"
 alwaysApply: false
 ---
@@ -8,17 +8,12 @@ alwaysApply: false
 
 При работе в `ExcelExport/`:
 
-## Общее (любая выгрузка)
+- Опирайся на ближайшие аналоги и `ExcelExportBaseAllAsyncCommand`
+- Нетривиальная команда: папка фичи + partial по слоям; простую однофайловую не дробить без нужды
+- UI/исполнение: меню или контекст + VM, прогресс, `CancellationToken`, cleanup temp в `finally`
+- Для нетривиальной логики: короткий README + smoke в `Client_App/Documentation/`
 
-- Сначала смотреть ближайшие аналоги и базу `ExcelExportBaseAllAsyncCommand` (ориентиры в репо: Pairing41, TransferReceive, FormPrintCompare, ListOfForms и др.)
-- Нетривиальная команда — папка фичи + partial по слоям; простую однофайловую выгрузку не дробить без нужды
-- UI: меню / контекст + проводка в VM; прогресс-бар, `CancellationToken`, cleanup temp в `finally`
-- Нетривиальная логика — короткий README + smoke-чеклист в `Client_App/Documentation/`
-- Большие списки Id в SQL `IN` — батчить (лимит Firebird ~1500; в проекте обычно запас ~1000). На больших данных — лёгкий ключ → полные строки только для выгрузки
+Только для compare/парности (не для любой выгрузки):
 
-## Только если сравнение / парность / dual-block
-
-Не навязывать простой выгрузке:
-
-- Shared: `SoftSimilarityCore`, уровни подсветки, lookalike — переиспользовать, не копировать
-- Excel UX: легенда, сводка, подписи вроде identical / нет пары; dual-block и цвета — в духе соседних compare-команд
+- Переиспользовать `SoftSimilarityCore` / lookalike / уровни подсветки
+- Легенда, сводка, dual-block и статусы identical / no-pair

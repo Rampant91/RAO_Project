@@ -29,23 +29,48 @@ internal static class FormPrintCompareExcel
     /// </summary>
     internal const int ReportDataStartRow = 8;
 
-    private const int SummaryColCount = 12;
+    private const int SummaryColCount = 16;
+
+    private const int SummaryColRegNo = 1;
+    private const int SummaryColShortName = 2;
+    private const int SummaryColOkpo = 3;
+    private const int SummaryColFile = 4;
+    private const int SummaryColForm = 5;
+    private const int SummaryColStart = 6;
+    private const int SummaryColEnd = 7;
+    private const int SummaryColCorrSource = 8;
+    private const int SummaryColCorrCompare = 9;
+    private const int SummaryColCorrMatch = 10;
+    private const int SummaryColResult = 11;
+    private const int SummaryColAdded = 12;
+    private const int SummaryColDeleted = 13;
+    private const int SummaryColChanged = 14;
+    private const int SummaryColMoved = 15;
+    private const int SummaryColUnchanged = 16;
 
     public static void FillWorkbook(
         ExcelPackage package,
-        string regNo,
-        string okpo,
         string sourceFileName,
         string compareFileName,
-        IReadOnlyList<ReportCompareResult> results)
+        IReadOnlyList<ReportCompareResult> results,
+        Action<int, string>? progress = null,
+        int progressStartPercent = 0,
+        int progressSpanPercent = 100)
     {
+        var safeSpan = Math.Max(1, progressSpanPercent);
+        var detailStart = progressStartPercent + Math.Max(1, safeSpan / 4);
+        var detailSpan = Math.Max(1, safeSpan - (detailStart - progressStartPercent));
+
+        progress?.Invoke(progressStartPercent, "excel: подготовка листов");
         while (package.Workbook.Worksheets.Count > 0)
         {
             package.Workbook.Worksheets.Delete(0);
         }
 
-        WriteSummary(package, regNo, okpo, sourceFileName, compareFileName, results);
+        WriteSummary(package, sourceFileName, compareFileName, results);
+        progress?.Invoke(progressStartPercent + Math.Max(1, safeSpan / 8), "excel: заполнение сводки");
         WriteLegendSheet(package);
+        progress?.Invoke(progressStartPercent + Math.Max(1, safeSpan / 6), "excel: заполнение легенды");
 
         var usedNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
@@ -53,81 +78,108 @@ internal static class FormPrintCompareExcel
             "Легенда"
         };
 
-        foreach (var result in OrderForSheets(results))
+        var detailResults = OrderForSheets(results).ToList();
+        var detailTotal = Math.Max(1, detailResults.Count);
+        for (var i = 0; i < detailResults.Count; i++)
         {
+            var result = detailResults[i];
             var sheetName = UniqueSheetName(BuildSheetName(result.Left), usedNames);
             var sheet = package.Workbook.Worksheets.Add(sheetName);
             WriteReportSheet(sheet, result, sourceFileName, compareFileName);
+            var percent = detailStart + (detailSpan * (i + 1)) / detailTotal;
+            progress?.Invoke(percent, $"excel: лист {i + 1}/{detailTotal} ({sheetName})");
         }
+
+        progress?.Invoke(progressStartPercent + safeSpan, "excel: готово");
     }
 
-    /// <summary>Листы: всё, кроме полностью совпавших (они только в сводке).</summary>
+    /// <summary>Листы только при совпавшем ключе и отличиях.</summary>
     internal static IEnumerable<ReportCompareResult> OrderForSheets(IReadOnlyList<ReportCompareResult> results) =>
         results
-            .Where(r => !r.IsIdentical)
-            .OrderBy(r => r.HasRight ? 1 : 0)
-            .ThenBy(r => r.OrderOnlyChanged ? 1 : 0)
+            .Where(r => r.CreatesDetailSheet)
+            .OrderBy(r => r.OrderOnlyChanged ? 1 : 0)
+            .ThenBy(r => r.Left.RegNo)
             .ThenBy(r => r.Left.FormNum)
             .ThenBy(r => r.Left.PeriodKey);
 
     internal static IEnumerable<ReportCompareResult> OrderForSummary(IReadOnlyList<ReportCompareResult> results) =>
         results
-            .OrderBy(r => r.HasRight ? 1 : 0)
-            .ThenBy(r => r.IsIdentical ? 2 : r.OrderOnlyChanged ? 1 : 0)
-            .ThenBy(r => r.Left.FormNum)
-            .ThenBy(r => r.Left.PeriodKey);
+            .OrderBy(r => r.Kind switch
+            {
+                ReportCompareKind.PeriodOverlap => 0,
+                ReportCompareKind.Compared when !r.IsIdentical && !r.OrderOnlyChanged => 1,
+                ReportCompareKind.Compared when r.OrderOnlyChanged => 2,
+                ReportCompareKind.Compared => 3,
+                ReportCompareKind.MissingInSourceDb => 4,
+                _ => 5
+            })
+            .ThenBy(r => SummaryFileSide(r).RegNo)
+            .ThenBy(r => SummaryFileSide(r).FormNum)
+            .ThenBy(r => SummaryFileSide(r).PeriodKey);
+
+    /// <summary>Сторона из файла сверки — основа строки сводки.</summary>
+    private static CompareReportDto SummaryFileSide(ReportCompareResult result) =>
+        result.Right ?? result.Left;
 
     private static void WriteSummary(
         ExcelPackage package,
-        string regNo,
-        string okpo,
         string sourceFileName,
         string compareFileName,
         IReadOnlyList<ReportCompareResult> results)
     {
         var sheet = package.Workbook.Worksheets.Add("Сводка");
-        sheet.Cells[1, 1].Value = "Сравнение отчётов (исходная БД МПЗФ ↔ файл для сравнения .RAODB)";
-        sheet.Cells[1, 1].Style.Font.Bold = true;
-        sheet.Cells[2, 1].Value = "Рег.№";
-        sheet.Cells[2, 2].Value = regNo;
-        sheet.Cells[3, 1].Value = "ОКПО";
-        sheet.Cells[3, 2].Value = okpo;
-        sheet.Cells[4, 1].Value = "Исходник";
-        sheet.Cells[4, 2].Value = sourceFileName;
-        sheet.Cells[5, 1].Value = "Файл для сравнения";
-        sheet.Cells[5, 2].Value = compareFileName;
-        sheet.Cells[6, 1].Value =
-            "Легенда подсветки и расшифровка счётчиков — на листе «Легенда». Листы сравнения создаются только при отличиях.";
 
-        var identical = results.Count(r => r.IsIdentical);
-        var orderOnly = results.Count(r => r.OrderOnlyChanged);
-        var changed = results.Count(r => r.HasRight && !r.IsIdentical && !r.OrderOnlyChanged);
-        var missing = results.Count(r => !r.HasRight);
+        // Шапка на всю ширину таблицы — иначе AutoFit раздувает колонки «Форма» / даты.
+        // Рег.№ / ОКПО только в таблице: организаций может быть много.
+        WriteMergedHeaderRow(
+            sheet,
+            1,
+            SummaryColCount,
+            "Сверка отчётов с БД (исходная БД МПЗФ ↔ файл(ы) для сверки; из БД — только организации из файлов)",
+            bold: true,
+            wrap: true,
+            minHeight: 30);
+        WriteMergedHeaderRow(sheet, 2, SummaryColCount, $"Исходник: {sourceFileName}");
+        WriteMergedHeaderRow(sheet, 3, SummaryColCount, $"Файлы для сверки: {compareFileName}");
+        WriteMergedHeaderRow(
+            sheet,
+            4,
+            SummaryColCount,
+            "Легенда подсветки и расшифровка счётчиков — на листе «Легенда». Листы сравнения создаются только при отличиях.",
+            wrap: true,
+            minHeight: 28);
 
-        sheet.Cells[8, 1].Value = "Всего отчётов в исходниках";
-        sheet.Cells[8, 2].Value = results.Count;
-        sheet.Cells[9, 1].Value = "Полностью совпадают (без отдельных листов)";
-        sheet.Cells[9, 2].Value = identical;
-        sheet.Cells[10, 1].Value = "Изменён только порядок строк";
-        sheet.Cells[10, 2].Value = orderOnly;
-        sheet.Cells[11, 1].Value = "Есть изменения данных";
-        sheet.Cells[11, 2].Value = changed;
-        sheet.Cells[12, 1].Value = "Нет отчёта для сверки";
-        sheet.Cells[12, 2].Value = missing;
+        var compared = results.Where(r => r.Kind == ReportCompareKind.Compared).ToList();
+        var identical = compared.Count(r => r.IsIdentical);
+        var orderOnly = compared.Count(r => r.OrderOnlyChanged);
+        var changed = compared.Count(r => !r.IsIdentical && !r.OrderOnlyChanged);
+        var missingInSource = results.Count(r => r.Kind == ReportCompareKind.MissingInSourceDb);
+        var overlap = results.Count(r => r.Kind == ReportCompareKind.PeriodOverlap);
 
-        const int headerRow = 14;
-        sheet.Cells[headerRow, 1].Value = "Форма";
-        sheet.Cells[headerRow, 2].Value = "Начало отчёта";
-        sheet.Cells[headerRow, 3].Value = "Конец отчёта";
-        sheet.Cells[headerRow, 4].Value = "Корр. исходник";
-        sheet.Cells[headerRow, 5].Value = "Корр. сравнение";
-        sheet.Cells[headerRow, 6].Value = "Корректировки";
-        sheet.Cells[headerRow, 7].Value = "Результат";
-        sheet.Cells[headerRow, 8].Value = "Добавлено (+)";
-        sheet.Cells[headerRow, 9].Value = "Удалено (−)";
-        sheet.Cells[headerRow, 10].Value = "Изменено (~)";
-        sheet.Cells[headerRow, 11].Value = "Перемещено (↔)";
-        sheet.Cells[headerRow, 12].Value = "Без изменений (=)";
+        WriteSummaryCounterRow(sheet, 6, "Отчётов в файлах сверки", results.Count);
+        WriteSummaryCounterRow(sheet, 7, "Полностью совпадают (без отдельных листов)", identical);
+        WriteSummaryCounterRow(sheet, 8, "Изменён только порядок строк", orderOnly);
+        WriteSummaryCounterRow(sheet, 9, "Есть изменения данных", changed);
+        WriteSummaryCounterRow(sheet, 10, "Отсутствует в текущей БД (без отдельных листов)", missingInSource);
+        WriteSummaryCounterRow(sheet, 11, "Период пересекается, но не совпадает (без отдельных листов)", overlap);
+
+        const int headerRow = 13;
+        sheet.Cells[headerRow, SummaryColRegNo].Value = "Рег.№";
+        sheet.Cells[headerRow, SummaryColShortName].Value = "Сокр. наименование";
+        sheet.Cells[headerRow, SummaryColOkpo].Value = "ОКПО";
+        sheet.Cells[headerRow, SummaryColFile].Value = "Файл сверки";
+        sheet.Cells[headerRow, SummaryColForm].Value = "Форма";
+        sheet.Cells[headerRow, SummaryColStart].Value = "Начало отчёта";
+        sheet.Cells[headerRow, SummaryColEnd].Value = "Конец отчёта";
+        sheet.Cells[headerRow, SummaryColCorrSource].Value = "Корр. исходник";
+        sheet.Cells[headerRow, SummaryColCorrCompare].Value = "Корр. сравнение";
+        sheet.Cells[headerRow, SummaryColCorrMatch].Value = "Корректировки";
+        sheet.Cells[headerRow, SummaryColResult].Value = "Результат";
+        sheet.Cells[headerRow, SummaryColAdded].Value = "Добавлено (+)";
+        sheet.Cells[headerRow, SummaryColDeleted].Value = "Удалено (−)";
+        sheet.Cells[headerRow, SummaryColChanged].Value = "Изменено (~)";
+        sheet.Cells[headerRow, SummaryColMoved].Value = "Перемещено (↔)";
+        sheet.Cells[headerRow, SummaryColUnchanged].Value = "Без изменений (=)";
         using (var range = sheet.Cells[headerRow, 1, headerRow, SummaryColCount])
         {
             range.Style.Font.Bold = true;
@@ -138,27 +190,44 @@ internal static class FormPrintCompareExcel
         var row = headerRow + 1;
         foreach (var result in OrderForSummary(results))
         {
-            WriteSummaryPeriod(sheet, row, result.Left);
+            var fromFile = SummaryFileSide(result);
+            sheet.Cells[row, SummaryColRegNo].Value = fromFile.RegNo;
+            sheet.Cells[row, SummaryColShortName].Value = fromFile.OrgShortName;
+            sheet.Cells[row, SummaryColOkpo].Value = fromFile.Okpo;
+            sheet.Cells[row, SummaryColFile].Value = fromFile.SourceLabel;
 
-            sheet.Cells[row, 4].Value = result.Left.CorrectionNumber;
-            sheet.Cells[row, 5].Value = result.Right?.CorrectionNumber;
+            WriteSummaryPeriod(sheet, row, fromFile);
+
+            if (result.Kind == ReportCompareKind.MissingInSourceDb)
+            {
+                sheet.Cells[row, SummaryColCorrSource].Value = "—";
+                sheet.Cells[row, SummaryColCorrCompare].Value = fromFile.CorrectionNumber;
+            }
+            else
+            {
+                sheet.Cells[row, SummaryColCorrSource].Value = result.Left.CorrectionNumber;
+                sheet.Cells[row, SummaryColCorrCompare].Value = result.Right?.CorrectionNumber;
+            }
+
             WriteCorrectionMatch(sheet, row, result);
 
-            sheet.Cells[row, 7].Value = result switch
+            sheet.Cells[row, SummaryColResult].Value = result.Kind switch
             {
-                { HasRight: false } => "Нет отчёта для сверки",
-                { IsIdentical: true } => "Совпадает (лист не создан)",
-                { OrderOnlyChanged: true } => "Только порядок строк",
+                ReportCompareKind.MissingInSourceDb => "Отсутствует в текущей БД (лист не создан)",
+                ReportCompareKind.PeriodOverlap =>
+                    $"Период пересекается, но не совпадает (в БД: {result.Left.PeriodDisplay}; лист не создан)",
+                _ when result.IsIdentical => "Совпадает (лист не создан)",
+                _ when result.OrderOnlyChanged => "Только порядок строк",
                 _ => "Есть изменения"
             };
-            sheet.Cells[row, 8].Value = result.AddedCount;
-            sheet.Cells[row, 9].Value = result.DeletedCount;
-            sheet.Cells[row, 10].Value = result.ChangedCount;
-            sheet.Cells[row, 11].Value = result.MovedCount;
-            sheet.Cells[row, 12].Value = result.UnchangedCount;
+            sheet.Cells[row, SummaryColAdded].Value = result.AddedCount;
+            sheet.Cells[row, SummaryColDeleted].Value = result.DeletedCount;
+            sheet.Cells[row, SummaryColChanged].Value = result.ChangedCount;
+            sheet.Cells[row, SummaryColMoved].Value = result.MovedCount;
+            sheet.Cells[row, SummaryColUnchanged].Value = result.UnchangedCount;
             if (result.IsIdentical)
             {
-                sheet.Cells[row, 7].Style.Fill.SetBackground(ExactFill, ExcelFillStyle.Solid);
+                sheet.Cells[row, SummaryColResult].Style.Fill.SetBackground(ExactFill, ExcelFillStyle.Solid);
             }
 
             row++;
@@ -170,12 +239,48 @@ internal static class FormPrintCompareExcel
             sheet.Cells[headerRow, 1, lastDataRow, SummaryColCount].AutoFilter = true;
         }
 
-        sheet.Cells[1, 1, Math.Max(row, headerRow), SummaryColCount].AutoFitColumns();
+        // Только таблица: шапка уже в merge и не должна раздувать узкие колонки.
+        sheet.Cells[headerRow, 1, lastDataRow, SummaryColCount].AutoFitColumns();
+        // A/B заняты счётчиками (подпись + число) — A шире подписи, не сжимать до «Рег.№».
+        sheet.Column(1).Width = Math.Max(sheet.Column(1).Width, 48);
+        sheet.Column(2).Width = Math.Max(sheet.Column(2).Width, 8);
+        sheet.Column(SummaryColForm).Width = Math.Min(Math.Max(sheet.Column(SummaryColForm).Width, 8), 10);
+        sheet.Column(SummaryColStart).Width = Math.Min(Math.Max(sheet.Column(SummaryColStart).Width, 12), 14);
+        sheet.Column(SummaryColEnd).Width = Math.Min(Math.Max(sheet.Column(SummaryColEnd).Width, 12), 14);
+        sheet.Column(SummaryColResult).Width = Math.Max(sheet.Column(SummaryColResult).Width, 28);
+        sheet.Column(SummaryColShortName).Width = Math.Max(sheet.Column(SummaryColShortName).Width, 18);
+        sheet.Column(SummaryColFile).Width = Math.Max(sheet.Column(SummaryColFile).Width, 18);
+
+        WidenSummaryColumn(sheet, SummaryColCorrSource, min: 15, extra: 1.5);
+        WidenSummaryColumn(sheet, SummaryColCorrCompare, min: 16, extra: 1.5);
+        WidenSummaryColumn(sheet, SummaryColCorrMatch, min: 14, extra: 1.5);
+        WidenSummaryColumn(sheet, SummaryColAdded, min: 14, extra: 1.5);
+        WidenSummaryColumn(sheet, SummaryColDeleted, min: 13, extra: 1.5);
+        WidenSummaryColumn(sheet, SummaryColChanged, min: 13, extra: 1.5);
+        WidenSummaryColumn(sheet, SummaryColMoved, min: 15, extra: 1.5);
+        WidenSummaryColumn(sheet, SummaryColUnchanged, min: 17, extra: 1.5);
+    }
+
+    private static void WidenSummaryColumn(ExcelWorksheet sheet, int column, double min, double extra)
+    {
+        sheet.Column(column).Width = Math.Max(sheet.Column(column).Width + extra, min);
+    }
+
+    /// <summary>Подпись счётчика в A, число сразу в B — видно без горизонтального скролла.</summary>
+    private static void WriteSummaryCounterRow(ExcelWorksheet sheet, int row, string label, int value)
+    {
+        sheet.Cells[row, 1].Value = label;
+        sheet.Cells[row, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+        sheet.Cells[row, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+
+        sheet.Cells[row, 2].Value = value;
+        sheet.Cells[row, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+        sheet.Cells[row, 2].Style.Font.Bold = true;
     }
 
     private static void WriteSummaryPeriod(ExcelWorksheet sheet, int row, CompareReportDto report)
     {
-        sheet.Cells[row, 1].Value = report.FormNum;
+        sheet.Cells[row, SummaryColForm].Value = report.FormNum;
         if (FormPrintCompareNormalize.IsYearOnlyForm(report.FormNum))
         {
             var year = string.IsNullOrWhiteSpace(report.Year)
@@ -186,30 +291,36 @@ internal static class FormPrintCompareExcel
                 year = report.PeriodDisplay;
             }
 
-            sheet.Cells[row, 2].Value = year;
-            sheet.Cells[row, 2, row, 3].Merge = true;
-            sheet.Cells[row, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            sheet.Cells[row, SummaryColStart].Value = year;
+            sheet.Cells[row, SummaryColStart, row, SummaryColEnd].Merge = true;
+            sheet.Cells[row, SummaryColStart].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
             return;
         }
 
-        sheet.Cells[row, 2].Value = FormPrintCompareNormalize.NormalizePeriodPart(report.StartPeriod);
-        sheet.Cells[row, 3].Value = FormPrintCompareNormalize.NormalizePeriodPart(report.EndPeriod);
+        sheet.Cells[row, SummaryColStart].Value = FormPrintCompareNormalize.NormalizePeriodPart(report.StartPeriod);
+        sheet.Cells[row, SummaryColEnd].Value = FormPrintCompareNormalize.NormalizePeriodPart(report.EndPeriod);
     }
 
     private static void WriteCorrectionMatch(ExcelWorksheet sheet, int row, ReportCompareResult result)
     {
+        if (result.Kind is ReportCompareKind.MissingInCompareFiles or ReportCompareKind.MissingInSourceDb)
+        {
+            sheet.Cells[row, SummaryColCorrMatch].Value = "—";
+            return;
+        }
+
         if (!result.HasRight)
         {
-            sheet.Cells[row, 6].Value = "—";
+            sheet.Cells[row, SummaryColCorrMatch].Value = "—";
             return;
         }
 
         var match = result.Left.CorrectionNumber == result.Right!.CorrectionNumber;
-        sheet.Cells[row, 6].Value = match ? "совпадают" : "различаются";
+        sheet.Cells[row, SummaryColCorrMatch].Value = match ? "совпадают" : "различаются";
         var fill = match ? ExactFill : MismatchFill;
-        sheet.Cells[row, 4].Style.Fill.SetBackground(fill, ExcelFillStyle.Solid);
-        sheet.Cells[row, 5].Style.Fill.SetBackground(fill, ExcelFillStyle.Solid);
-        sheet.Cells[row, 6].Style.Fill.SetBackground(fill, ExcelFillStyle.Solid);
+        sheet.Cells[row, SummaryColCorrSource].Style.Fill.SetBackground(fill, ExcelFillStyle.Solid);
+        sheet.Cells[row, SummaryColCorrCompare].Style.Fill.SetBackground(fill, ExcelFillStyle.Solid);
+        sheet.Cells[row, SummaryColCorrMatch].Style.Fill.SetBackground(fill, ExcelFillStyle.Solid);
     }
 
     private static void WriteLegendSheet(ExcelPackage package)
@@ -222,9 +333,9 @@ internal static class FormPrintCompareExcel
 
         sheet.Cells[3, 1].Value = "Подсветка ячеек";
         sheet.Cells[3, 1].Style.Font.Bold = true;
-        WriteLegendItem(sheet, 4, "Совпадение (Exact) — то же значение, в т.ч. 2e+14 и 2,00e+14 / lookalike", ExactFill);
-        WriteLegendItem(sheet, 5, "Мелкое отличие (Near) — близко, но не то же; скрытая разница поясняется в ячейке", NearFill);
-        WriteLegendItem(sheet, 6, "Заметное отличие (Mismatch) — существенная разница", MismatchFill);
+        WriteLegendItem(sheet, 4, "Совпадение — значения одинаковые (в том числе при разной записи одного числа)", ExactFill);
+        WriteLegendItem(sheet, 5, "Мелкое отличие — почти то же, но не совпадает; скрытая разница поясняется в ячейке", NearFill);
+        WriteLegendItem(sheet, 6, "Заметное отличие — существенная разница значений", MismatchFill);
 
         sheet.Cells[8, 1].Value = "Статус строки";
         sheet.Cells[8, 1].Style.Font.Bold = true;
@@ -248,13 +359,26 @@ internal static class FormPrintCompareExcel
         sheet.Cells[24, 1].Value = "Изменено (~) — пара строк с отличиями хотя бы в одной колонке";
         sheet.Cells[25, 1].Value = "Перемещено (↔) — то же содержимое, другой № п/п";
         sheet.Cells[26, 1].Value = "Без изменений (=) — полное совпадение по всем колонкам";
-
+        sheet.Cells[27, 1].Value =
+            "Отсутствует в текущей БД — есть в файле сверки, в открытой БД нет; лист не создаётся";
         sheet.Cells[28, 1].Value =
-            "Сравнение ячеек — по всем колонкам формы (не только по ключам сопоставления строк). " +
-            "Если отличие скрыто (невидимый символ, lookalike), в ячейке показывается пояснение. " +
-            "Слева — исходник (имя файла БД). Справа — файл для сравнения (имя файла). " +
-            "Полностью совпавшие отчёты перечислены только на листе «Сводка».";
-        sheet.Cells[1, 1, 28, 1].AutoFitColumns();
+            "Период пересекается — даты не те же, интервалы пересекаются; лист не создаётся";
+
+        sheet.Cells[30, 1].Value = "Как читать сравнение";
+        sheet.Cells[30, 1].Style.Font.Bold = true;
+        sheet.Cells[31, 1].Value =
+            "Сравнение ячеек — по всем колонкам формы, не только по полям, по которым строки сопоставляются.";
+        sheet.Cells[32, 1].Value =
+            "Скрытое отличие (невидимый символ, похожие буквы разной раскладки) — пояснение в ячейке.";
+        sheet.Cells[33, 1].Value = "Слева — исходник (имя файла БД), справа — файл(ы) для сравнения.";
+        sheet.Cells[34, 1].Value =
+            "На листе «Сводка» — по одной строке на отчёт из файла сверки. Отдельный лист — только если найден такой же отчёт в БД и есть отличия.";
+        sheet.Cells[35, 1].Value =
+            "Формы 1.7/1.8: строки с пустыми кодом и датой операции — раскладка к заглавной строке выше; сопоставляются внутри этой группы по радионуклиду.";
+
+        sheet.Cells[1, 1, 35, 1].AutoFitColumns();
+        // Легенда читается без горизонтального скролла: длинные пояснения — отдельными строками.
+        sheet.Column(1).Width = Math.Min(Math.Max(sheet.Column(1).Width, 55), 75);
     }
 
     private static void WriteReportSheet(
@@ -296,12 +420,11 @@ internal static class FormPrintCompareExcel
 
         WriteMergedHeaderRow(
             sheet, 3, lastCol,
-            $"Исходник: {sourceFileName}  |  Для сравнения: {compareFileName}");
+            $"Отчёт из текущей БД: {sourceFileName}  |  Отчёт на сравнение из файла: {compareFileName}");
 
         var countsText =
             $"Строки: без изменений (={result.UnchangedCount}), изменено (~{result.ChangedCount}), " +
-            $"сбит № п/п (↔{result.MovedCount}), удалено (−{result.DeletedCount}), добавлено (+{result.AddedCount}). " +
-            "Легенда — лист «Легенда».";
+            $"сбит № п/п (↔{result.MovedCount}), удалено (−{result.DeletedCount}), добавлено (+{result.AddedCount}).";
 
         // Строка 4 — пояснение сбоя нумерации (или кратко «см. счётчики»); строка 5 — счётчики.
         if (!string.IsNullOrEmpty(result.Message)
@@ -322,18 +445,18 @@ internal static class FormPrintCompareExcel
         {
             WriteMergedHeaderRow(
                 sheet, dataStart, lastCol,
-                result.Message ?? "Для отчёта отсутствует отчёт для сверки.",
+                result.Message ?? "Отчёт из файла сверки отсутствует в текущей БД.",
                 fill: DeletedFill, bold: true, wrap: true, minHeight: 30);
             sheet.Column(statusCol).Width = 36;
             return;
         }
 
-        sheet.Cells[headerRow, leftStart].Value = $"Исходник ({sourceFileName})";
+        sheet.Cells[headerRow, leftStart].Value = $"Отчёт из текущей БД ({sourceFileName})";
         sheet.Cells[headerRow, leftStart, headerRow, leftStart + colCount - 1].Merge = true;
         sheet.Cells[headerRow, leftStart].Style.Fill.SetBackground(SourceHeaderFill, ExcelFillStyle.Solid);
         sheet.Cells[headerRow, leftStart].Style.Font.Bold = true;
 
-        sheet.Cells[headerRow, rightStart].Value = $"Для сравнения ({compareFileName})";
+        sheet.Cells[headerRow, rightStart].Value = $"Отчёт на сравнение из файла ({compareFileName})";
         sheet.Cells[headerRow, rightStart, headerRow, rightStart + colCount - 1].Merge = true;
         sheet.Cells[headerRow, rightStart].Style.Fill.SetBackground(CompareHeaderFill, ExcelFillStyle.Solid);
         sheet.Cells[headerRow, rightStart].Style.Font.Bold = true;
@@ -531,12 +654,72 @@ internal static class FormPrintCompareExcel
         percent >= 50 ? NearFill :
         DeletedFill;
 
-    private static string BuildSheetName(CompareReportDto report)
+    /// <summary>
+    /// Имя листа: «5цифрРег_форма_период», год в датах — 2 цифры.
+    /// Индекс (_2, _3…) добавляет <see cref="UniqueSheetName"/> только при коллизии.
+    /// </summary>
+    internal static string BuildSheetName(CompareReportDto report)
     {
-        var raw = FormPrintCompareNormalize.IsYearOnlyForm(report.FormNum)
-            ? $"{report.FormNum}_{report.PeriodDisplay}"
-            : $"{report.FormNum}_{FormPrintCompareNormalize.NormalizePeriodPart(report.StartPeriod)}_{FormPrintCompareNormalize.NormalizePeriodPart(report.EndPeriod)}";
-        return SanitizeSheetName(raw);
+        var reg = FormatRegNoFiveDigits(report.RegNo);
+        var period = FormatPeriodForSheetName(report);
+        return SanitizeSheetName($"{reg}_{report.FormNum}_{period}");
+    }
+
+    private static string FormatRegNoFiveDigits(string? regNo)
+    {
+        var digits = string.Concat((regNo ?? string.Empty).Where(char.IsDigit));
+        if (digits.Length == 0)
+        {
+            return "00000";
+        }
+
+        if (digits.Length >= 5)
+        {
+            return digits[..5];
+        }
+
+        return digits.PadLeft(5, '0');
+    }
+
+    private static string FormatPeriodForSheetName(CompareReportDto report)
+    {
+        if (FormPrintCompareNormalize.IsYearOnlyForm(report.FormNum))
+        {
+            var yearDigits = string.Concat((report.Year ?? report.PeriodKey ?? string.Empty).Where(char.IsDigit));
+            if (yearDigits.Length >= 2)
+            {
+                return yearDigits[^2..];
+            }
+
+            return string.IsNullOrEmpty(yearDigits) ? "бг" : yearDigits;
+        }
+
+        var start = FormatDateTwoDigitYear(report.StartPeriod);
+        var end = FormatDateTwoDigitYear(report.EndPeriod);
+        if (string.IsNullOrEmpty(start) && string.IsNullOrEmpty(end))
+        {
+            return "бп";
+        }
+
+        return $"{start}-{end}";
+    }
+
+    private static string FormatDateTwoDigitYear(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return string.Empty;
+        }
+
+        var trimmed = value.Trim().Replace('/', '.');
+        var ru = System.Globalization.CultureInfo.GetCultureInfo("ru-RU");
+        if (DateOnly.TryParse(trimmed, ru, System.Globalization.DateTimeStyles.None, out var date)
+            || DateOnly.TryParse(trimmed, out date))
+        {
+            return date.ToString("dd.MM.yy");
+        }
+
+        return trimmed;
     }
 
     private static string SanitizeSheetName(string name)
@@ -556,6 +739,7 @@ internal static class FormPrintCompareExcel
         return cleaned.Length <= 31 ? cleaned : cleaned[..31];
     }
 
+    /// <summary>Добавляет _2, _3… только если базовое имя уже занято.</summary>
     private static string UniqueSheetName(string baseName, HashSet<string> used)
     {
         var name = baseName;
