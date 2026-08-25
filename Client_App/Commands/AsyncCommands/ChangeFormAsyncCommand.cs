@@ -1,5 +1,6 @@
-﻿ using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Client_App.Resources;
+using Client_App.Services;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.Views;
@@ -68,6 +69,11 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
     private static async Task OpenReport(object? parameter)
     {
         if (parameter is not Report report) return;
+
+        if (await ReportExportLock.TryBlockReportAccessAsync(report.Id))
+        {
+            return;
+        }
 
         if (report.Reports is null)
         {

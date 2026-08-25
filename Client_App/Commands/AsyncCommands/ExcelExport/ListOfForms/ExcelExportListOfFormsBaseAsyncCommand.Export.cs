@@ -79,39 +79,48 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand
 
     progressBarVM.SetProgressBar(8, "Создание временной БД");
     var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-    await using var db = new DBModel(tmpDbPath);
+    try
+    {
+      await using var db = new DBModel(tmpDbPath);
 
-    progressBarVM.SetProgressBar(10, GetReportsCountCheckStatus(group));
-    await ReportsCountCheck(db, GetMasterFormNum(group), progressBar, cts);
+      progressBarVM.SetProgressBar(10, GetReportsCountCheckStatus(group));
+      await ReportsCountCheck(db, GetMasterFormNum(group), progressBar, cts);
 
-    progressBarVM.SetProgressBar(13, "Запрос пути сохранения", "Выгрузка в .xlsx", ExportType);
-    var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
-    var (fullPath, openTemp) = !isBackgroundCommand
-      ? await ExcelGetFullPath(fileName, cts, progressBar)
-      : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
+      progressBarVM.SetProgressBar(13, "Запрос пути сохранения", "Выгрузка в .xlsx", ExportType);
+      var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
+      var (fullPath, openTemp) = !isBackgroundCommand
+        ? await ExcelGetFullPath(fileName, cts, progressBar)
+        : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
 
-    fullPath = ResolveUniqueFilePath(fullPath, isBackgroundCommand ? folderPath : null);
+      fullPath = ResolveUniqueFilePath(fullPath, isBackgroundCommand ? folderPath : null);
 
-    progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
-    using var excelPackage = await InitializeExcelPackage(fullPath);
+      progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
+      using var excelPackage = await InitializeExcelPackage(fullPath);
 
-    progressBarVM.SetProgressBar(18, "Заполнение листа");
-    var worksheet = excelPackage.Workbook.Worksheets.Add(GetSheetName(group));
-    WriteFormListHeaders(worksheet, group);
+      progressBarVM.SetProgressBar(18, "Заполнение листа");
+      var worksheet = excelPackage.Workbook.Worksheets.Add(GetSheetName(group));
+      WriteFormListHeaders(worksheet, group);
 
-    await FillFormListSheetAsync(
-      db,
-      worksheet,
-      group,
-      filters,
-      progressBarVM,
-      CreateSingleFormProgressSegment(group),
-      cts);
+      await FillFormListSheetAsync(
+        db,
+        worksheet,
+        group,
+        filters,
+        progressBarVM,
+        CreateSingleFormProgressSegment(group),
+        cts);
 
-    progressBarVM.SetProgressBar(ProgressSaveStart, "Сохранение");
-    await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
+      progressBarVM.SetProgressBar(ProgressSaveStart, "Сохранение");
+      await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
 
-    await CleanupTempDbAsync(tmpDbPath, progressBarVM, progressBar);
+      progressBarVM.SetProgressBar(ProgressCleanup, "Очистка временных данных");
+      progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+      await progressBar.CloseAsync();
+    }
+    finally
+    {
+      TryDeleteTempDataBase(tmpDbPath);
+    }
   }
 
   /// <summary>
@@ -133,77 +142,67 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand
 
     progressBarVM.SetProgressBar(8, "Создание временной БД");
     var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-    await using var db = new DBModel(tmpDbPath);
-
-    progressBarVM.SetProgressBar(13, "Запрос пути сохранения", "Выгрузка в .xlsx", ExportType);
-    var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
-    var (fullPath, openTemp) = !isBackgroundCommand
-      ? await ExcelGetFullPath(fileName, cts, progressBar)
-      : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
-
-    fullPath = ResolveUniqueFilePath(fullPath, isBackgroundCommand ? folderPath : null);
-
-    progressBarVM.SetProgressBar(10, "Проверка наличия отчётности");
-    var groupsToExport = await GetFormListExportGroupsPresentInDbAsync(db, cts.Token);
-    if (groupsToExport.Length == 0)
-    {
-      await NotifyNoFormListReportsFoundAsync(progressBar, cts);
-      return;
-    }
-
-    progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
-    using var excelPackage = await InitializeExcelPackage(fullPath);
-
-    const int sheetProgressStart = 18;
-    const int sheetProgressEnd = 91;
-    var sheetProgressStep = (sheetProgressEnd - sheetProgressStart) / groupsToExport.Length;
-
-    for (var i = 0; i < groupsToExport.Length; i++)
-    {
-      var group = groupsToExport[i];
-      var sheetProgressFrom = sheetProgressStart + sheetProgressStep * i;
-      var sheetProgressTo = i == groupsToExport.Length - 1
-        ? sheetProgressEnd
-        : sheetProgressStart + sheetProgressStep * (i + 1);
-
-      progressBarVM.SetProgressBar(sheetProgressFrom, $"Лист: {GetSheetName(group)}");
-
-      var worksheet = excelPackage.Workbook.Worksheets.Add(GetSheetName(group));
-      WriteFormListHeaders(worksheet, group);
-
-      await FillFormListSheetAsync(
-        db,
-        worksheet,
-        group,
-        filters,
-        progressBarVM,
-        CreateAllFormsSheetProgressSegment(sheetProgressFrom, sheetProgressTo),
-        cts);
-    }
-
-    progressBarVM.SetProgressBar(ProgressSaveStart, "Сохранение");
-    await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
-
-    await CleanupTempDbAsync(tmpDbPath, progressBarVM, progressBar);
-  }
-
-  private static async Task CleanupTempDbAsync(
-    string tmpDbPath,
-    AnyTaskProgressBarVM progressBarVM,
-    AnyTaskProgressBar progressBar)
-  {
-    progressBarVM.SetProgressBar(ProgressCleanup, "Очистка временных данных");
     try
     {
-      File.Delete(tmpDbPath);
-    }
-    catch
-    {
-      // ignored
-    }
+      await using var db = new DBModel(tmpDbPath);
 
-    progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-    await progressBar.CloseAsync();
+      progressBarVM.SetProgressBar(13, "Запрос пути сохранения", "Выгрузка в .xlsx", ExportType);
+      var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
+      var (fullPath, openTemp) = !isBackgroundCommand
+        ? await ExcelGetFullPath(fileName, cts, progressBar)
+        : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
+
+      fullPath = ResolveUniqueFilePath(fullPath, isBackgroundCommand ? folderPath : null);
+
+      progressBarVM.SetProgressBar(10, "Проверка наличия отчётности");
+      var groupsToExport = await GetFormListExportGroupsPresentInDbAsync(db, cts.Token);
+      if (groupsToExport.Length == 0)
+      {
+        await NotifyNoFormListReportsFoundAsync(progressBar, cts);
+        return;
+      }
+
+      progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
+      using var excelPackage = await InitializeExcelPackage(fullPath);
+
+      const int sheetProgressStart = 18;
+      const int sheetProgressEnd = 91;
+      var sheetProgressStep = (sheetProgressEnd - sheetProgressStart) / groupsToExport.Length;
+
+      for (var i = 0; i < groupsToExport.Length; i++)
+      {
+        var group = groupsToExport[i];
+        var sheetProgressFrom = sheetProgressStart + sheetProgressStep * i;
+        var sheetProgressTo = i == groupsToExport.Length - 1
+          ? sheetProgressEnd
+          : sheetProgressStart + sheetProgressStep * (i + 1);
+
+        progressBarVM.SetProgressBar(sheetProgressFrom, $"Лист: {GetSheetName(group)}");
+
+        var worksheet = excelPackage.Workbook.Worksheets.Add(GetSheetName(group));
+        WriteFormListHeaders(worksheet, group);
+
+        await FillFormListSheetAsync(
+          db,
+          worksheet,
+          group,
+          filters,
+          progressBarVM,
+          CreateAllFormsSheetProgressSegment(sheetProgressFrom, sheetProgressTo),
+          cts);
+      }
+
+      progressBarVM.SetProgressBar(ProgressSaveStart, "Сохранение");
+      await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
+
+      progressBarVM.SetProgressBar(ProgressCleanup, "Очистка временных данных");
+      progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+      await progressBar.CloseAsync();
+    }
+    finally
+    {
+      TryDeleteTempDataBase(tmpDbPath);
+    }
   }
 
   #endregion

@@ -43,44 +43,41 @@ public class ExcelExportIntersectionsAsyncCommand : ExcelBaseAsyncCommand
 
         progressBarVM.SetProgressBar(7, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        progressBarVM.SetProgressBar(12, "Подсчёт количества организаций");
-        await ReportsCountCheck(db, progressBar, cts);
-
-        var count = 0;
-        while (File.Exists(fullPath))
-        {
-            fullPath = Path.Combine(folderPath, fileName + $"_{++count}.xlsx");
-        }
-
-        progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-
-        progressBarVM.SetProgressBar(18, "Заполнение заголовков");
-        await FillExcelHeaders(excelPackage);
-
-        progressBarVM.SetProgressBar(20, "Получение списка отчётов");
-        var listSortRep = await GetSortedRepList(db, cts);
-
-        progressBarVM.SetProgressBar(35, "Поиск пересечений");
-        await GetListToCompareForEachRepAndCompareAndFillExcel(listSortRep, progressBarVM);
-
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
-
-        progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
         {
-            File.Delete(tmpDbPath);
-        }
-        catch
-        {
-            // ignored
-        }
+            await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-        await progressBar.CloseAsync();
+            progressBarVM.SetProgressBar(12, "Подсчёт количества организаций");
+            await ReportsCountCheck(db, progressBar, cts);
+
+            var count = 0;
+            while (File.Exists(fullPath))
+            {
+                fullPath = Path.Combine(folderPath, fileName + $"_{++count}.xlsx");
+            }
+
+            progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(fullPath);
+
+            progressBarVM.SetProgressBar(18, "Заполнение заголовков");
+            await FillExcelHeaders(excelPackage);
+
+            progressBarVM.SetProgressBar(20, "Получение списка отчётов");
+            var listSortRep = await GetSortedRepList(db, cts);
+
+            progressBarVM.SetProgressBar(35, "Поиск пересечений");
+            await GetListToCompareForEachRepAndCompareAndFillExcel(listSortRep, progressBarVM);
+
+            progressBarVM.SetProgressBar(95, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
+
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            await progressBar.CloseAsync();
+        }
+        finally
+        {
+            TryDeleteTempDataBase(tmpDbPath);
+        }
     }
 
     #region CompareReportAndFillExcel

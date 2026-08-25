@@ -195,8 +195,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
         }
 
-        var fl = Directory.GetFiles(TmpDirectory, ".");
-        foreach (var file in fl)
+        foreach (var file in Directory.GetFiles(TmpDirectory, "*.*", SearchOption.AllDirectories))
         {
             try
             {

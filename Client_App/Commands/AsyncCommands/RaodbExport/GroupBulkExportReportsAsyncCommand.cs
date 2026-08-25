@@ -73,6 +73,8 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
         #endregion
 
         var dbReadOnlyPath = await CreateTempDataBase(progressBar, cts);
+        try
+        {
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
 
         var organizationsForm10 = await LoadOrganizationsAsync(dbReadOnly, "1.0", cts.Token);
@@ -315,6 +317,11 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
         }
 
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+        }
+        finally
+        {
+            TryDeleteTempDataBase(dbReadOnlyPath);
+        }
     }
 
     private static async Task<List<Reports>> LoadOrganizationsAsync(DBModel db, string masterFormNum, CancellationToken ct)

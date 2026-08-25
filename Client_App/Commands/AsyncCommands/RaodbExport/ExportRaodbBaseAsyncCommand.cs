@@ -106,4 +106,39 @@ public abstract class ExportRaodbBaseAsyncCommand : BaseAsyncCommand
 
         return tmpDbPath;
     }
+
+    /// <summary>
+    /// Безвозвратно удаляет временную копию основной БД после завершения работы с ней.
+    /// Повторяет попытку при кратковременной блокировке файла Firebird.
+    /// </summary>
+    /// <param name="tmpDbPath">Путь к временной копии (или null/пусто — no-op).</param>
+    private protected static void TryDeleteTempDataBase(string? tmpDbPath)
+    {
+        if (string.IsNullOrEmpty(tmpDbPath))
+        {
+            return;
+        }
+
+        for (var attempt = 0; attempt < 5; attempt++)
+        {
+            try
+            {
+                if (File.Exists(tmpDbPath))
+                {
+                    File.Delete(tmpDbPath);
+                }
+
+                return;
+            }
+            catch
+            {
+                if (attempt == 4)
+                {
+                    return;
+                }
+
+                Thread.Sleep(100);
+            }
+        }
+    }
 }

@@ -42,7 +42,8 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
         #endregion
 
         var dbReadOnlyPath = await CreateTempDataBase(progressBar, cts);
-
+        try
+        {
         #region Progress = 7
 
         loadStatus = "Загрузка данных организаций";
@@ -234,6 +235,11 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
             }
         }
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+        }
+        finally
+        {
+            TryDeleteTempDataBase(dbReadOnlyPath);
+        }
     }
 
     #region RestoreReportsOrders

@@ -209,8 +209,6 @@ public class ExcelExportCompareFormPrintAsyncCommand : ExcelExportBaseAllAsyncCo
             var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
             if (string.IsNullOrEmpty(fullPath))
             {
-                TryDelete(tmpSourcePath);
-                TryDeleteAll(tmpEtalonPaths);
                 return;
             }
 
@@ -235,8 +233,6 @@ public class ExcelExportCompareFormPrintAsyncCommand : ExcelExportBaseAllAsyncCo
         catch (OperationCanceledException)
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-            TryDelete(tmpSourcePath);
-            TryDeleteAll(tmpEtalonPaths);
         }
         catch (Exception ex)
         {
@@ -253,7 +249,10 @@ public class ExcelExportCompareFormPrintAsyncCommand : ExcelExportBaseAllAsyncCo
                 })
                 .ShowDialog(progressBar ?? Desktop.MainWindow));
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar!);
-            TryDelete(tmpSourcePath);
+        }
+        finally
+        {
+            TryDeleteTempDataBase(tmpSourcePath);
             TryDeleteAll(tmpEtalonPaths);
         }
     }
@@ -397,7 +396,7 @@ public class ExcelExportCompareFormPrintAsyncCommand : ExcelExportBaseAllAsyncCo
         string? tmpSourcePath,
         IEnumerable<string> tmpEtalonPaths)
     {
-        TryDelete(tmpSourcePath);
+        TryDeleteTempDataBase(tmpSourcePath);
         TryDeleteAll(tmpEtalonPaths);
         progressBar.AnyTaskProgressBarVM.SetProgressBar(100, "Завершение выгрузки");
         await progressBar.CloseAsync();

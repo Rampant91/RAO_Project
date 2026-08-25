@@ -52,52 +52,49 @@ public class ExcelExportAllAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
         progressBarVM.SetProgressBar(7, "Создание временной БД", 
             "Выгрузка всех отчётов", "Выгрузка в .xlsx");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        if (!isBackgroundCommand)
-        {
-            progressBarVM.SetProgressBar(10, "Подсчёт количества организаций");
-            await CountReports(db, progressBar, cts);
-        }
-
-        var count = 0;
-        while (File.Exists(fullPath))
-        {
-            fullPath = Path.Combine(folderPath, fileName + $"_{++count}.xlsx");
-        }
-
-        progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-
-        progressBarVM.SetProgressBar(15, "Загрузка списка отчётов");
-        var repsList = await GetReportsList(db, cts);
-
-        progressBarVM.SetProgressBar(16, "Определение форм для разбиения");
-        Form1SplitFormNums = !Form1SheetSplitEnabled || IsSelectedOrg
-            ? []
-            : await GetForm1FormsNeedingSplit(db, repsList, selectedReportsId: null, cts.Token);
-
-        progressBarVM.SetProgressBar(17, "Создание страниц и заполнение заголовков");
-        var formNums = await CreateWorksheetsAndFillHeaders(excelPackage, repsList, Form1SplitFormNums);
-
-        progressBarVM.SetProgressBar(20, "Загрузка форм");
-        await GetFullReportForeachReps(db, repsList, formNums, progressBarVM, excelPackage, cts);
-
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
-
-        progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
         {
-            File.Delete(tmpDbPath);
-        }
-        catch
-        {
-            // ignored
-        }
+            await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-        await progressBar.CloseAsync();
+            if (!isBackgroundCommand)
+            {
+                progressBarVM.SetProgressBar(10, "Подсчёт количества организаций");
+                await CountReports(db, progressBar, cts);
+            }
+
+            var count = 0;
+            while (File.Exists(fullPath))
+            {
+                fullPath = Path.Combine(folderPath, fileName + $"_{++count}.xlsx");
+            }
+
+            progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(fullPath);
+
+            progressBarVM.SetProgressBar(15, "Загрузка списка отчётов");
+            var repsList = await GetReportsList(db, cts);
+
+            progressBarVM.SetProgressBar(16, "Определение форм для разбиения");
+            Form1SplitFormNums = !Form1SheetSplitEnabled || IsSelectedOrg
+                ? []
+                : await GetForm1FormsNeedingSplit(db, repsList, selectedReportsId: null, cts.Token);
+
+            progressBarVM.SetProgressBar(17, "Создание страниц и заполнение заголовков");
+            var formNums = await CreateWorksheetsAndFillHeaders(excelPackage, repsList, Form1SplitFormNums);
+
+            progressBarVM.SetProgressBar(20, "Загрузка форм");
+            await GetFullReportForeachReps(db, repsList, formNums, progressBarVM, excelPackage, cts);
+
+            progressBarVM.SetProgressBar(95, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
+
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            await progressBar.CloseAsync();
+        }
+        finally
+        {
+            TryDeleteTempDataBase(tmpDbPath);
+        }
     }
 
     #region CountReports

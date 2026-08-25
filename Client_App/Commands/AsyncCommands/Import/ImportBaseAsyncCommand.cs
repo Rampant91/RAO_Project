@@ -76,7 +76,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     /// <summary>
     /// Сравнивает содержимое двух отчётов (строки данных и примечания).
     /// </summary>
-    private static bool AreReportContentEqual(Report baseRep, Report impRep)
+    /// <summary>
+    /// Сравнивает содержимое двух отчётов (строки форм и примечания).
+    /// Вызывать только после загрузки строк у обоих отчётов (<see cref="FillReportWithForms"/> /
+    /// загрузка импорта со строками) — иначе пустые коллекции дают ложное «совпадение».
+    /// </summary>
+    internal static bool AreReportContentEqual(Report baseRep, Report impRep)
     {
         if (baseRep.Rows.Count != impRep.Rows.Count)
             return false;
@@ -86,7 +91,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         var impRows = impRep.Rows.ToList<Form>().OrderBy(x => x.NumberInOrder_DB).ToList();
         for (var i = 0; i < baseRows.Count; i++)
         {
-            if (!baseRows[i].IsContentEqual(impRows[i]))
+            if (baseRows[i] is null || impRows[i] is null || !baseRows[i].IsContentEqual(impRows[i]))
                 return false;
         }
         for (var i = 0; i < baseRep.Notes.Count; i++)
@@ -1716,26 +1721,70 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     #region FillReportWithFormsInReports
 
     /// <summary>
-    /// Находит организацию и отчёт в БД и заменяет его в локальном хранилище.
+    /// Гарантирует отчёт со загруженными строками форм для сравнения при импорте.
+    /// Важно: в EF Local и в <see cref="Reports.Report_Collection"/> могут быть разные
+    /// экземпляры с одним Id — возвращаем экземпляр, у которого строки реально загружены.
     /// </summary>
     /// <param name="baseReps">Организация в БД.</param>
-    /// <param name="baseRep">Отчёт в БД.</param>
-    /// <returns>Отчёт.</returns>
+    /// <param name="baseRep">Отчёт из коллекции организации (может быть без строк).</param>
+    /// <returns>Отчёт со строками форм (и примечаниями).</returns>
     private static async Task<Report> FillReportWithForms(Reports baseReps, Report baseRep)
     {
-        var checkedRep = StaticConfiguration.DBModel.Set<Report>().Local
-                .FirstOrDefault(entry => entry.Id.Equals(baseRep.Id));
-        if (checkedRep != null &&
-            (checkedRep.Rows.ToList<Form>().Any(form => form == null) || checkedRep.Rows.Count == 0))
+        var db = StaticConfiguration.DBModel;
+        var trackedRep = db.Set<Report>().Local
+            .FirstOrDefault(entry => entry.Id == baseRep.Id);
+
+        var dbRowsCount = await ReportsStorage.GetReportRowsCount(baseRep);
+        var trackedIncomplete = trackedRep is null
+            || trackedRep.Rows.ToList<Form>().Any(form => form is null)
+            || trackedRep.Rows.Count != dbRowsCount;
+
+        Report result;
+        if (trackedIncomplete)
         {
-            baseRep = await ReportsStorage.Api.GetAsync(baseRep.Id);
-            StaticConfiguration.DBModel.Entry(checkedRep).State = EntityState.Detached;
-            StaticConfiguration.DBModel.Set<Report>().Attach(baseRep);
-            baseReps.Report_Collection.Replace(checkedRep, baseRep);
-            await StaticConfiguration.DBModel.SaveChangesAsync();
+            result = await ReportsStorage.Api.GetAsync(baseRep.Id);
+            if (result is null)
+                return baseRep;
+
+            if (trackedRep is not null)
+            {
+                db.Entry(trackedRep).State = EntityState.Detached;
+                ReplaceReportInCollection(baseReps, trackedRep, result);
+            }
+            else
+            {
+                ReplaceReportInCollection(baseReps, baseRep, result);
+            }
+
+            db.Set<Report>().Attach(result);
         }
-        
-        return baseRep;
+        else
+        {
+            // В Local уже актуальные строки — возвращаем его, даже если baseRep — другой stub.
+            result = trackedRep!;
+            if (!ReferenceEquals(baseRep, result))
+                ReplaceReportInCollection(baseReps, baseRep, result);
+        }
+
+        return result;
+    }
+
+    private static void ReplaceReportInCollection(Reports baseReps, Report oldReport, Report newReport)
+    {
+        if (ReferenceEquals(oldReport, newReport))
+            return;
+
+        var inCollection = baseReps.Report_Collection
+            .OfType<Report>()
+            .FirstOrDefault(r => r.Id == oldReport.Id || ReferenceEquals(r, oldReport));
+
+        if (inCollection is null)
+            return;
+
+        if (ReferenceEquals(inCollection, newReport))
+            return;
+
+        baseReps.Report_Collection.Replace(inCollection, newReport);
     }
 
     #endregion

@@ -38,50 +38,47 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
 
         progressBarVM.SetProgressBar(7, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        progressBarVM.SetProgressBar(9, "Запрос пути сохранения");
-        var fileName = $"{ExportType}_{Assembly.GetExecutingAssembly().GetName().Version}";
-        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
-
-        progressBarVM.SetProgressBar(10, "Проверка наличия отчётов");
-        await CheckRepsAndRepPresence(db, region, formNums, progressBar, cts);
-
-        progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-
-        progressBarVM.SetProgressBar(13, "Заполнение заголовков");
-        await FillExcelHeaders(excelPackage);
-
-        progressBarVM.SetProgressBar(15, "Загрузка списка организаций");
-        var repsDtoList = await GetReportsDtoList(db, region, formNums, cts);
-
-        var asOfDate = DateOnly.FromDateTime(DateTime.Now);
-
-        progressBarVM.SetProgressBar(20, "Проверка даты инвентаризации");
-        var filteredRepsDtoList = await CheckRepsInventoryDate(tmpDbPath, repsDtoList, formNums, asOfDate, progressBarVM, cts);
-
-        progressBarVM.SetProgressBar(40, "Проверка наличия СНК");
-        var repsWithUnitsDtoList = await CheckSnk(tmpDbPath, filteredRepsDtoList, asOfDate, progressBarVM, cts, snkParams);
-
-        progressBarVM.SetProgressBar(90, "Заполнение строчек в .xlsx");
-        await FillExcel(repsWithUnitsDtoList);
-
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-
-        progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
         {
-            File.Delete(tmpDbPath);
-        }
-        catch
-        {
-            // ignored
-        }
+            await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-        await progressBar.CloseAsync();
+            progressBarVM.SetProgressBar(9, "Запрос пути сохранения");
+            var fileName = $"{ExportType}_{Assembly.GetExecutingAssembly().GetName().Version}";
+            var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+            progressBarVM.SetProgressBar(10, "Проверка наличия отчётов");
+            await CheckRepsAndRepPresence(db, region, formNums, progressBar, cts);
+
+            progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(fullPath);
+
+            progressBarVM.SetProgressBar(13, "Заполнение заголовков");
+            await FillExcelHeaders(excelPackage);
+
+            progressBarVM.SetProgressBar(15, "Загрузка списка организаций");
+            var repsDtoList = await GetReportsDtoList(db, region, formNums, cts);
+
+            var asOfDate = DateOnly.FromDateTime(DateTime.Now);
+
+            progressBarVM.SetProgressBar(20, "Проверка даты инвентаризации");
+            var filteredRepsDtoList = await CheckRepsInventoryDate(tmpDbPath, repsDtoList, formNums, asOfDate, progressBarVM, cts);
+
+            progressBarVM.SetProgressBar(40, "Проверка наличия СНК");
+            var repsWithUnitsDtoList = await CheckSnk(tmpDbPath, filteredRepsDtoList, asOfDate, progressBarVM, cts, snkParams);
+
+            progressBarVM.SetProgressBar(90, "Заполнение строчек в .xlsx");
+            await FillExcel(repsWithUnitsDtoList);
+
+            progressBarVM.SetProgressBar(95, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            await progressBar.CloseAsync();
+        }
+        finally
+        {
+            TryDeleteTempDataBase(tmpDbPath);
+        }
     }
 
     #region GetRegionAndFormNums

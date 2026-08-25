@@ -60,47 +60,44 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         progressBarVM.SetProgressBar(9, "Создание временной БД", 
             $"Выгрузка движения источника{Environment.NewLine}" + $"{pasNum}_{factoryNum}", ExportType);
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        progressBarVM.SetProgressBar(11, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-
-        progressBarVM.SetProgressBar(13, "Заполнение заголовков");
-        await FillExcelHeaders(excelPackage);
-
-        progressBarVM.SetProgressBar(15, "Загрузка паспортов форм 1.1");
-        var pasUniqList11 = await GetPasUniqData(db, "1.1", cts);
-
-        progressBarVM.SetProgressBar(40, "Загрузка форм 1.1");
-        var filteredForm11 = (await GetFilteredForm(db, pasUniqList11, "1.1", pasNum!, factoryNum!, cts)).Cast<Form11>();
-
-        progressBarVM.SetProgressBar(50, "Заполнение строчек форм 1.1");
-        await FillExcel_11(filteredForm11, excelPackage);
-
-        progressBarVM.SetProgressBar(55, "Загрузка паспортов форм 1.5");
-        var pasUniqList15 = await GetPasUniqData(db, "1.5", cts);
-
-        progressBarVM.SetProgressBar(80, "Загрузка форм 1.5");
-        var filteredForm15 = (await GetFilteredForm(db, pasUniqList15, "1.5", pasNum!, factoryNum!, cts)).Cast<Form15>();
-
-        progressBarVM.SetProgressBar(90, "Заполнение строчек форм 1.5");
-        await FillExcel_15(filteredForm15, excelPackage);
-
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-
-        progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
         {
-            File.Delete(tmpDbPath);
-        }
-        catch
-        {
-            // ignored
-        }
+            await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-        await progressBar.CloseAsync();
+            progressBarVM.SetProgressBar(11, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(fullPath);
+
+            progressBarVM.SetProgressBar(13, "Заполнение заголовков");
+            await FillExcelHeaders(excelPackage);
+
+            progressBarVM.SetProgressBar(15, "Загрузка паспортов форм 1.1");
+            var pasUniqList11 = await GetPasUniqData(db, "1.1", cts);
+
+            progressBarVM.SetProgressBar(40, "Загрузка форм 1.1");
+            var filteredForm11 = (await GetFilteredForm(db, pasUniqList11, "1.1", pasNum!, factoryNum!, cts)).Cast<Form11>();
+
+            progressBarVM.SetProgressBar(50, "Заполнение строчек форм 1.1");
+            await FillExcel_11(filteredForm11, excelPackage);
+
+            progressBarVM.SetProgressBar(55, "Загрузка паспортов форм 1.5");
+            var pasUniqList15 = await GetPasUniqData(db, "1.5", cts);
+
+            progressBarVM.SetProgressBar(80, "Загрузка форм 1.5");
+            var filteredForm15 = (await GetFilteredForm(db, pasUniqList15, "1.5", pasNum!, factoryNum!, cts)).Cast<Form15>();
+
+            progressBarVM.SetProgressBar(90, "Заполнение строчек форм 1.5");
+            await FillExcel_15(filteredForm15, excelPackage);
+
+            progressBarVM.SetProgressBar(95, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            await progressBar.CloseAsync();
+        }
+        finally
+        {
+            TryDeleteTempDataBase(tmpDbPath);
+        }
     }
 
     #region CheckPasParam
