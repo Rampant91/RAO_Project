@@ -585,6 +585,33 @@ public partial class Form41 : Form, ICopiable
 
     public void PasteParsedTSVstring(string[] parsedTSVstring)
     {
+        if (parsedTSVstring.Length is not 8 and not 9) return;
+
+        int offset = 0;
+        if (parsedTSVstring.Length is 9)
+            offset = 1;
+
+        RegNo.Value = parsedTSVstring[0 + offset];
+        Okpo.Value = parsedTSVstring[1 + offset];
+        OrganizationName.Value = parsedTSVstring[2 + offset];
+        LicenseOrRegistrationInfo.Value = parsedTSVstring[3 + offset];
+
+        var value = FormStringHelper.ConvertStringToInt(parsedTSVstring[4 + offset]);
+        if (value == null)
+            value = 0;
+        NumOfFormsWithInventarizationInfo.Value = (int)value;
+
+        value = FormStringHelper.ConvertStringToInt(parsedTSVstring[5 + offset]);
+        if (value == null)
+            value = 0;
+        NumOfFormsWithoutInventarizationInfo.Value = (int)value;
+
+        value = FormStringHelper.ConvertStringToInt(parsedTSVstring[6 + offset]);
+        if (value == null)
+            value = 0;
+        NumOfForms212.Value = (int)value;
+
+        Note.Value = parsedTSVstring[7 + offset];
         throw new NotImplementedException();
     }
 

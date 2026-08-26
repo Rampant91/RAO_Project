@@ -466,7 +466,23 @@ public class Form51 : Form, ICopiable
     #endregion
     public void PasteParsedTSVstring(string[] parsedTSVstring)
     {
-        throw new NotImplementedException();
+        if (parsedTSVstring.Length is not 6 and not 7) return;
+
+        int offset = 0;
+        if (parsedTSVstring.Length is 7)
+            offset = 1;
+
+        OperationCode.Value = parsedTSVstring[0 + offset];
+        Category.Value = FormStringHelper.ConvertStringToShort(parsedTSVstring[1 + offset]);
+        Radionuclids.Value = parsedTSVstring[2 + offset];
+
+        var value = FormStringHelper.ConvertStringToInt(parsedTSVstring[3 + offset]);
+        if (value == null)
+            value = 0;
+        Quantity.Value = (int)value;
+
+        Activity.Value = parsedTSVstring[4 + offset];
+        ProviderOrRecieverOKPO.Value = parsedTSVstring[5 + offset];
     }
 
 

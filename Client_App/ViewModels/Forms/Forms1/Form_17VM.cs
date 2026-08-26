@@ -1,4 +1,5 @@
 ﻿using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Generate;
 using Client_App.ViewModels.Controls;
 using Client_App.ViewModels.Forms.Forms1.Items;
@@ -186,6 +187,7 @@ public class Form_17VM : BaseFormVM
     #region Commands
     public ICommand GenerateForm17 => new GenerateForm17AsyncCommand(this);
     public ICommand GeneratePackagePassport => new GeneratePackagePassportAsyncCommand(this);
+    public ICommand PasteRows => new NewPasteRowsAsyncCommand(this.Report.Rows17);
     #endregion
 
     #region Events

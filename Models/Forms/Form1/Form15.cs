@@ -1666,7 +1666,37 @@ public partial class Form15 : Form1, ICopiable
     #endregion
     public void PasteParsedTSVstring(string[] parsedTSVstring)
     {
-        throw new NotImplementedException();
+
+        if (parsedTSVstring.Length is not 24 and not 25) return;
+
+        int offset = 0;
+        if (parsedTSVstring.Length is 25)
+            offset = 1;
+
+        OperationCode.Value = parsedTSVstring[0 + offset] is not "41" ? parsedTSVstring[0 + offset] : string.Empty;
+                        OperationDate.Value = parsedTSVstring[1 + offset];
+        PassportNumber.Value = parsedTSVstring[2 + offset];
+        Type.Value = parsedTSVstring[3 + offset];
+        Radionuclids.Value = parsedTSVstring[4 + offset];
+        FactoryNumber.Value = parsedTSVstring[5 + offset];
+        Quantity.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[6 + offset]);
+        Activity.Value = parsedTSVstring[7 + offset];
+        CreationDate.Value = parsedTSVstring[8 + offset];
+        StatusRAO.Value = parsedTSVstring[9 + offset];
+        DocumentVid.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[10 + offset]);
+        DocumentNumber.Value = parsedTSVstring[11 + offset];
+        DocumentDate.Value = parsedTSVstring[12 + offset];
+        ProviderOrRecieverOKPO.Value = parsedTSVstring[13 + offset];
+        TransporterOKPO.Value = parsedTSVstring[14 + offset];
+        PackName.Value = parsedTSVstring[15 + offset];
+        PackType.Value = parsedTSVstring[16 + offset];
+        PackNumber.Value = parsedTSVstring[17 + offset];
+        StoragePlaceName.Value = parsedTSVstring[18 + offset];
+        StoragePlaceCode.Value = parsedTSVstring[19 + offset];
+        RefineOrSortRAOCode.Value = parsedTSVstring[20 + offset];
+        Subsidy.Value = parsedTSVstring[21 + offset];
+        FcpNumber.Value = parsedTSVstring[22 + offset];
+        ContractNumber.Value = parsedTSVstring[23 + offset];
     }
 
     public override bool IsContentEqual(Form otherForm)

@@ -16,7 +16,7 @@ namespace Models.Forms.Form1;
 [Serializable]
 [Form_Class("Форма 1.1: Сведения о ЗРИ")]
 [Table (name: "form_11")]
-public class Form11 : Form1, ICopiable
+public class Form11 : Form1
 {
     #region Constructor
     
@@ -1556,11 +1556,10 @@ public class Form11 : Form1, ICopiable
 
     #region ICopiable
     #region ConvertToTSVstring
-
     /// <summary>
     /// </summary>
     /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
-    public string ConvertToTSVstring()
+    public override string ConvertToTSVstring()
     {
         // Создаем текстовое представление (TSV - tab-separated values)
         var str =
@@ -1591,10 +1590,10 @@ public class Form11 : Form1, ICopiable
     }
 
     #endregion
+
     #region PasteParsedTSVstring
-    public void PasteParsedTSVstring(string[] parsedTSVstring)
+    public override void PasteParsedTSVstring(string[] parsedTSVstring)
     {
-        
         if (parsedTSVstring.Length is not 22 and not 23) return;
 
         int offset = 0;

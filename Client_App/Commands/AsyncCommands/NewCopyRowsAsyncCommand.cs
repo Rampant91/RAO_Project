@@ -22,8 +22,8 @@ public class NewCopyRowsAsyncCommand() : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         if (parameter is null) return;
-        
-        var forms = (IEnumerable<ICopiable>)parameter;
+        if (parameter is not IEnumerable<ICopiable> forms) return;
+
         if (forms == null || !forms.Any()) return;
 
         var plainText = new StringBuilder();

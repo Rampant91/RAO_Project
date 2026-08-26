@@ -1,5 +1,8 @@
-﻿using Client_App.Commands.AsyncCommands.SourceTransmission;
+﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.ViewModels.Controls;
+using Client_App.ViewModels.Forms.Forms1.Items;
+using Client_App.ViewModels.Forms.Forms1.Providers;
 using CommunityToolkit.Mvvm.Input;
 using Models.Collections;
 using System;
@@ -7,8 +10,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using Client_App.ViewModels.Forms.Forms1.Items;
-using Client_App.ViewModels.Forms.Forms1.Providers;
 
 namespace Client_App.ViewModels.Forms.Forms1;
 
@@ -162,6 +163,7 @@ public class Form_13VM : BaseFormVM
     #region Commands
 
     public ICommand SourceTransmission => new SourceTransmissionAsyncCommand(this);
+    public ICommand PasteRows => new NewPasteRowsAsyncCommand(this.Report.Rows13);
 
     #endregion
 }

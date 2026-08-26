@@ -1,4 +1,5 @@
-﻿using Models.Forms.DataAccess;
+﻿using Models.Comparers.FormContent;
+using Models.Forms.DataAccess;
 using Models.Interfaces;
 using Models.Passports;
 using OfficeOpenXml;
@@ -95,18 +96,30 @@ namespace Models.Forms.Form3
         /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
         public string ConvertToTSVstring()
         {
-            throw new NotImplementedException();
+            var str =
+            $"{IdName}\t" +
+            $"{IdValue}";
+            return str;
         }
         #endregion
         #region PasteParsedTSVstring
         public void PasteParsedTSVstring(string[] parsedTSVstring)
         {
-            throw new NotImplementedException();
+            if (parsedTSVstring.Length is not 2) return;
+
+
+            IdName = parsedTSVstring[0];
+            IdValue = parsedTSVstring[1];
         }
         #endregion
         #endregion
 
         #region Validation
+        public void ValidateAll()
+        {
+            ValidateString(nameof(IdName), _idName);
+            ValidateString(nameof(IdValue), _idValue);
+        }
         private void ValidateString(string propertyName, string str)
         {
             ClearErrors(propertyName);

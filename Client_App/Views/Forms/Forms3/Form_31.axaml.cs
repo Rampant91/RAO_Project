@@ -108,7 +108,7 @@ public partial class Form_31 : BaseWindow<Form_31VM>
         var dataContext = dataGrid?.DataContext;
         if (dataContext is null || dataGrid is null) return;
 
-        var selectedForms = vm.SelectedForms;
+        var selectedInfoCollection = vm.SelectedInfoCollection;
 
         if (!dataGrid.IsPointerOver || !_isCtrlPressed) return;
 
@@ -119,9 +119,9 @@ public partial class Form_31 : BaseWindow<Form_31VM>
             {
                 _isCtrlPressed = false;
                 _cKeyPressed = false;
-                if (selectedForms is { Count: > 0 })
+                if (selectedInfoCollection is { Count: > 0 })
                 {
-                    vm.CopyRows.Execute(selectedForms);
+                    vm.CopyRows.Execute(selectedInfoCollection);
                     e.Handled = true;
                 }
                 return;
@@ -130,9 +130,9 @@ public partial class Form_31 : BaseWindow<Form_31VM>
             {
                 _isCtrlPressed = false;
                 _vKeyPressed = false;
-                if (selectedForms is { Count: > 0 })
+                if (selectedInfoCollection is { Count: > 0 })
                 {
-                    vm.PasteRows.Execute(selectedForms);
+                    vm.PasteExportedZriOziiiInfo.Execute(selectedInfoCollection);
                     e.Handled = true;
                 }
                 return;
@@ -173,9 +173,9 @@ public partial class Form_31 : BaseWindow<Form_31VM>
                 }
             case Key.I: // Add N Rows Before
                 {
-                    if (selectedForms is { Count: > 0 })
+                    if (selectedInfoCollection is { Count: > 0 })
                     {
-                        vm.AddRowsIn.Execute(selectedForms);
+                        vm.AddRowsIn.Execute(selectedInfoCollection);
                         e.Handled = true;
                     }
 
@@ -183,9 +183,9 @@ public partial class Form_31 : BaseWindow<Form_31VM>
                 }
             case Key.D: // Delete Selected Rows
                 {
-                    if (selectedForms is { Count: > 0 })
+                    if (selectedInfoCollection is { Count: > 0 })
                     {
-                        vm.DeleteRows.Execute(selectedForms);
+                        vm.DeleteRows.Execute(selectedInfoCollection);
                         e.Handled = true;
                     }
 
@@ -200,9 +200,9 @@ public partial class Form_31 : BaseWindow<Form_31VM>
                 }
             case Key.U: // Clear Rows
                 {
-                    if (selectedForms is { Count: > 0 })
+                    if (selectedInfoCollection is { Count: > 0 })
                     {
-                        vm.DeleteDataInRows.Execute(selectedForms);
+                        vm.DeleteDataInRows.Execute(selectedInfoCollection);
                         e.Handled = true;
                     }
 

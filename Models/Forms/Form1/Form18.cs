@@ -2092,7 +2092,40 @@ public partial class Form18 : Form1, ICopiable
     #endregion
     public void PasteParsedTSVstring(string[] parsedTSVstring)
     {
-        throw new NotImplementedException();
+
+        if (parsedTSVstring.Length is not 28 and not 29) return;
+
+        int offset = 0;
+        if (parsedTSVstring.Length is 29)
+            offset = 1;
+        OperationCode.Value = parsedTSVstring[0 + offset];
+                            OperationDate.Value = parsedTSVstring[1 + offset];
+        IndividualNumberZHRO.Value = parsedTSVstring[2 + offset];
+        PassportNumber.Value = parsedTSVstring[3 + offset];
+        Volume6.Value = parsedTSVstring[4 + offset];
+        Mass7.Value = parsedTSVstring[5 + offset];
+        SaltConcentration.Value = parsedTSVstring[6 + offset];
+        Radionuclids.Value = parsedTSVstring[7 + offset];
+        SpecificActivity.Value = parsedTSVstring[8 + offset];
+        DocumentVid.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[9 + offset]);
+        DocumentNumber.Value = parsedTSVstring[10 + offset];
+        DocumentDate.Value = parsedTSVstring[11 + offset];
+        ProviderOrRecieverOKPO.Value = parsedTSVstring[12 + offset];
+        TransporterOKPO.Value = parsedTSVstring[13 + offset];
+        StoragePlaceName.Value = parsedTSVstring[14 + offset];
+        StoragePlaceCode.Value = parsedTSVstring[15 + offset];
+        CodeRAO.Value = parsedTSVstring[16 + offset];
+        StatusRAO.Value = parsedTSVstring[17 + offset];
+        Volume20.Value = parsedTSVstring[18 + offset];
+        Mass21.Value = parsedTSVstring[19 + offset];
+        TritiumActivity.Value = parsedTSVstring[20 + offset];
+        BetaGammaActivity.Value = parsedTSVstring[21 + offset];
+        AlphaActivity.Value = parsedTSVstring[22 + offset];
+        TransuraniumActivity.Value = parsedTSVstring[23 + offset];
+        RefineOrSortRAOCode.Value = parsedTSVstring[24 + offset];
+        Subsidy.Value = parsedTSVstring[25 + offset];
+        FcpNumber.Value = parsedTSVstring[26 + offset];
+        ContractNumber.Value = parsedTSVstring[27 + offset];
     }
 
     public override bool IsContentEqual(Form otherForm)

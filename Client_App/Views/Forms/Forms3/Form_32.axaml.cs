@@ -126,17 +126,17 @@ public partial class Form_32 : BaseWindow<Form_32VM>
                 }
                 return;
             }
-            else if (_vKeyPressed || e.Key is Key.V)
-            {
-                _isCtrlPressed = false;
-                _vKeyPressed = false;
-                if (selectedForms is { Count: > 0 })
-                {
-                    vm.PasteRows.Execute(selectedForms);
-                    e.Handled = true;
-                }
-                return;
-            }
+            //else if (_vKeyPressed || e.Key is Key.V)
+            //{
+            //    _isCtrlPressed = false;
+            //    _vKeyPressed = false;
+            //    if (selectedForms is { Count: > 0 })
+            //    {
+            //        vm.PasteRows.Execute(selectedForms);
+            //        e.Handled = true;
+            //    }
+            //    return;
+            //}
             else if (_aKeyPressed || e.Key is Key.A)
             {
                 _isCtrlPressed = false;

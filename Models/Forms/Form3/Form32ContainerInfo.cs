@@ -1,4 +1,5 @@
-﻿using Models.Forms.DataAccess;
+﻿using Models.Comparers.FormContent;
+using Models.Forms.DataAccess;
 using Models.Interfaces;
 using Models.Passports;
 using OfficeOpenXml;
@@ -70,7 +71,6 @@ namespace Models.Forms.Form3
         }
         #endregion
 
-
         #region Type (9.2)
         private string _type;
 
@@ -113,6 +113,7 @@ namespace Models.Forms.Form3
             set
             {
                 _releaseYear = value;
+                ValidateNullableInt(nameof(ReleaseYear), _releaseYear);
                 OnPropertyChanged();
             }
         }
@@ -126,6 +127,7 @@ namespace Models.Forms.Form3
             set
             {
                 _depletedUraniumMass = value;
+                ValidateNullableDouble(nameof(DepletedUraniumMass), _depletedUraniumMass);
                 OnPropertyChanged();
             }
         }
@@ -139,22 +141,55 @@ namespace Models.Forms.Form3
         /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
         public string ConvertToTSVstring()
         {
-            throw new NotImplementedException();
+            var str =
+            $"{Name}\t" +
+            $"{Type}\t" +
+            $"{IdNum}\t" +
+            $"{ReleaseYear}\t" +
+            $"{DepletedUraniumMass}";
+            return str;
         }
         #endregion
         #region PasteParsedTSVstring
-        public  void PasteParsedTSVstring(string[] parsedTSVstring)
+        public void PasteParsedTSVstring(string[] parsedTSVstring)
         {
-            throw new NotImplementedException();
+            if (parsedTSVstring.Length is not 5) return;
+
+            Name = parsedTSVstring[0];
+            Type = parsedTSVstring[1];
+            IdNum = parsedTSVstring[2];
+            ReleaseYear = FormStringHelper.ConvertStringToInt(parsedTSVstring[3]);
+            DepletedUraniumMass = FormStringHelper.ConvertStringToFloat(parsedTSVstring[4]);
         }
         #endregion
         #endregion
 
         #region Validation
+        public void ValidateAll()
+        {
+            ValidateString(nameof(Name), _name);
+            ValidateString(nameof(Type), _type);
+            ValidateString(nameof(IdNum), _idNum);
+            ValidateNullableInt(nameof(ReleaseYear), _releaseYear);
+            ValidateNullableDouble(nameof(DepletedUraniumMass), _depletedUraniumMass);
+
+        }
         private void ValidateString(string propertyName, string str)
         {
             ClearErrors(propertyName);
             if (string.IsNullOrEmpty(str))
+                AddError(propertyName, "Поле не заполнено");
+        }
+        private void ValidateNullableInt(string propertyName, int? value)
+        {
+            ClearErrors(propertyName);
+            if (value is null)
+                AddError(propertyName, "Поле не заполнено");
+        }
+        private void ValidateNullableDouble(string propertyName, double? value)
+        {
+            ClearErrors(propertyName);
+            if (value is null)
                 AddError(propertyName, "Поле не заполнено");
         }
         #endregion

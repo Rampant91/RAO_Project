@@ -1327,7 +1327,33 @@ public class Form12 : Form1, ICopiable
     #endregion
     public void PasteParsedTSVstring(string[] parsedTSVstring)
     {
-        throw new NotImplementedException();
+        if (parsedTSVstring.Length is not 19 and not 20) return;
+
+        int offset = 0;
+        if (parsedTSVstring.Length is 20)
+            offset = 1;
+
+        OperationCode.Value = parsedTSVstring[0];
+        OperationDate.Value = parsedTSVstring[1];
+        PassportNumber.Value = parsedTSVstring[2];
+        NameIOU.Value = parsedTSVstring[3];
+        FactoryNumber.Value = parsedTSVstring[4];
+        Mass.Value = parsedTSVstring[5];
+        CreatorOKPO.Value = parsedTSVstring[6];
+        CreationDate.Value = parsedTSVstring[7];
+        SignedServicePeriod.Value = parsedTSVstring[8];
+        PropertyCode.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[9]);
+        Owner.Value = parsedTSVstring[10];
+
+        DocumentVid.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[11]);
+
+        DocumentNumber.Value = parsedTSVstring[12];
+        DocumentDate.Value = parsedTSVstring[13];
+        ProviderOrRecieverOKPO.Value = parsedTSVstring[14];
+        TransporterOKPO.Value = parsedTSVstring[15];
+        PackName.Value = parsedTSVstring[16];
+        PackType.Value = parsedTSVstring[17];
+        PackNumber.Value = parsedTSVstring[18];
     }
 
     public override bool IsContentEqual(Form otherForm)

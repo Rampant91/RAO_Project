@@ -15,11 +15,11 @@ namespace Models.Forms.Form1;
 
 [Serializable]
 [Form_Class("Форма 1.3: Сведения об ОРИ в виде отдельных изделий")]
-[Table (name: "form_13")]
+[Table(name: "form_13")]
 public class Form13 : Form1, ICopiable
 {
     #region Constructor
-    
+
     public Form13()
     {
         FormNum.Value = "1.3";
@@ -29,7 +29,7 @@ public class Form13 : Form1, ICopiable
     #endregion
 
     #region Validation
-    
+
     public override bool Object_Validation()
     {
         return !(CreationDate.HasErrors ||
@@ -118,7 +118,7 @@ public class Form13 : Form1, ICopiable
     private protected override void OperationCode_ValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        
+
         var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
         if (OperationCode_DB != value1)
         {
@@ -438,7 +438,7 @@ public class Form13 : Form1, ICopiable
         if (value.Value.Length != 8 && value.Value.Length != 14
             || !OkpoRegex().IsMatch(value.Value))
         {
-            value.AddError("Недопустимое значение"); 
+            value.AddError("Недопустимое значение");
             return false;
         }
         return true;
@@ -639,7 +639,7 @@ public class Form13 : Form1, ICopiable
         if (value.Value.Length != 8 && value.Value.Length != 14
             || !OkpoRegex().IsMatch(value.Value))
         {
-            value.AddError("Недопустимое значение"); 
+            value.AddError("Недопустимое значение");
             return false;
 
         }
@@ -716,7 +716,7 @@ public class Form13 : Form1, ICopiable
         if (value.Value.Length != 8 && value.Value.Length != 14
             || !OkpoRegex().IsMatch(value.Value))
         {
-            value.AddError("Недопустимое значение"); 
+            value.AddError("Недопустимое значение");
             return false;
 
         }
@@ -772,9 +772,9 @@ public class Form13 : Form1, ICopiable
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("-") 
-            || value.Value.Equals("Минобороны") 
-            || value.Value.Equals("прим.") 
+        if (value.Value.Equals("-")
+            || value.Value.Equals("Минобороны")
+            || value.Value.Equals("прим.")
             || Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()))
         {
             return true;
@@ -782,7 +782,7 @@ public class Form13 : Form1, ICopiable
         if (value.Value.Length != 8 && value.Value.Length != 14
             || !OkpoRegex().IsMatch(value.Value))
         {
-            value.AddError("Недопустимое значение"); 
+            value.AddError("Недопустимое значение");
             return false;
 
         }
@@ -995,7 +995,7 @@ public class Form13 : Form1, ICopiable
         worksheet.Cells[row + (!transpose ? 9 : 0), column + (transpose ? 9 : 0)].Value = ConvertToExcelString(Owner_DB);
         worksheet.Cells[row + (!transpose ? 10 : 0), column + (transpose ? 10 : 0)].Value = DocumentVid_DB is null ? "-" : DocumentVid_DB;
         worksheet.Cells[row + (!transpose ? 11 : 0), column + (transpose ? 11 : 0)].Value = ConvertToExcelString(DocumentNumber_DB);
-        worksheet.Cells[row + (!transpose ? 12 : 0), column + (transpose ? 12 : 0)].Value = ConvertToExcelDate(DocumentDate_DB, worksheet, row + (!transpose ? 12: 0), column + (transpose ? 12: 0));
+        worksheet.Cells[row + (!transpose ? 12 : 0), column + (transpose ? 12 : 0)].Value = ConvertToExcelDate(DocumentDate_DB, worksheet, row + (!transpose ? 12 : 0), column + (transpose ? 12 : 0));
         worksheet.Cells[row + (!transpose ? 13 : 0), column + (transpose ? 13 : 0)].Value = ConvertToExcelString(ProviderOrRecieverOKPO_DB);
         worksheet.Cells[row + (!transpose ? 14 : 0), column + (transpose ? 14 : 0)].Value = ConvertToExcelString(TransporterOKPO_DB);
         worksheet.Cells[row + (!transpose ? 15 : 0), column + (transpose ? 15 : 0)].Value = ConvertToExcelString(PackName_DB);
@@ -1374,7 +1374,33 @@ public class Form13 : Form1, ICopiable
     #endregion
     public void PasteParsedTSVstring(string[] parsedTSVstring)
     {
-        throw new NotImplementedException();
+
+        if (parsedTSVstring.Length is not 20 and not 21) return;
+
+        int offset = 0;
+        if (parsedTSVstring.Length is 21)
+            offset = 1;
+
+        OperationCode.Value = parsedTSVstring[0 + offset];
+        OperationDate.Value = parsedTSVstring[1 + offset];
+        PassportNumber.Value = parsedTSVstring[2 + offset];
+        Type.Value = parsedTSVstring[3 + offset];
+        Radionuclids.Value = parsedTSVstring[4 + offset];
+        FactoryNumber.Value = parsedTSVstring[5 + offset];
+        Activity.Value = parsedTSVstring[6 + offset];
+        CreatorOKPO.Value = parsedTSVstring[7 + offset];
+        CreationDate.Value = parsedTSVstring[8 + offset];
+        AggregateState.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[9 + offset]);
+        PropertyCode.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[10 + offset]);
+        Owner.Value = parsedTSVstring[11 + offset];
+        DocumentVid.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[12 + offset]);
+        DocumentNumber.Value = parsedTSVstring[13 + offset];
+        DocumentDate.Value = parsedTSVstring[14 + offset];
+        ProviderOrRecieverOKPO.Value = parsedTSVstring[15 + offset];
+        TransporterOKPO.Value = parsedTSVstring[16 + offset];
+        PackName.Value = parsedTSVstring[17 + offset];
+        PackType.Value = parsedTSVstring[18 + offset];
+        PackNumber.Value = parsedTSVstring[19 + offset];
     }
 
     public override bool IsContentEqual(Form otherForm)

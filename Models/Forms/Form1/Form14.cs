@@ -1401,7 +1401,33 @@ public class Form14 : Form1, ICopiable
     #endregion
     public void PasteParsedTSVstring(string[] parsedTSVstring)
     {
-        throw new NotImplementedException();
+
+        if (parsedTSVstring.Length is not 21 and not 22) return;
+
+        int offset = 0;
+        if (parsedTSVstring.Length is 22)
+            offset = 1;
+        OperationCode.Value = parsedTSVstring[0 + offset];
+        OperationDate.Value = parsedTSVstring[1 + offset];
+        PassportNumber.Value = parsedTSVstring[2 + offset];
+        Name.Value = parsedTSVstring[3 + offset];
+        Sort.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[4 + offset]);
+        Radionuclids.Value = parsedTSVstring[5 + offset];
+        Activity.Value = parsedTSVstring[6 + offset];
+        ActivityMeasurementDate.Value = parsedTSVstring[7 + offset];
+        Volume.Value = parsedTSVstring[8 + offset];
+        Mass.Value = parsedTSVstring[9 + offset];
+        AggregateState.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[10 + offset]);
+        PropertyCode.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[11 + offset]);
+        Owner.Value = parsedTSVstring[12 + offset];
+        DocumentVid.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[13 + offset]);
+        DocumentNumber.Value = parsedTSVstring[14 + offset];
+        DocumentDate.Value = parsedTSVstring[15 + offset];
+        ProviderOrRecieverOKPO.Value = parsedTSVstring[16 + offset];
+        TransporterOKPO.Value = parsedTSVstring[17 + offset];
+        PackName.Value = parsedTSVstring[18 + offset];
+        PackType.Value = parsedTSVstring[19 + offset];
+        PackNumber.Value = parsedTSVstring[20 + offset];
     }
 
     public override bool IsContentEqual(Form otherForm)

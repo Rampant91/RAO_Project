@@ -1,5 +1,6 @@
 ﻿using Models.Attributes;
 using Models.Collections;
+using Models.Comparers.FormContent;
 using Models.Forms.DataAccess;
 using Models.Interfaces;
 using OfficeOpenXml;
@@ -685,7 +686,21 @@ namespace Models.Forms.Form5
 
         public void PasteParsedTSVstring(string[] parsedTSVstring)
         {
-            throw new NotImplementedException();
+            if (parsedTSVstring.Length is not 9 and not 10) return;
+
+            int offset = 0;
+            if (parsedTSVstring.Length is 10)
+                offset = 1;
+
+            OperationCode.Value = parsedTSVstring[0 + offset];
+            TypeORI.Value = parsedTSVstring[1 + offset];
+            VarietyORI.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[2 + offset]);
+            AggregateState.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[3 + offset]);
+            ProviderOrRecieverOKPO.Value = parsedTSVstring[4 + offset];
+            Radionuclids.Value = parsedTSVstring[5 + offset];
+            Activity.Value = parsedTSVstring[6 + offset];
+            Mass.Value = parsedTSVstring[7 + offset];
+            Volume.Value = parsedTSVstring[8 + offset];
         }
 
         public override bool IsContentEqual(Form otherForm)

@@ -1,4 +1,5 @@
-﻿using Models.Collections;
+﻿using Client_App.Commands.AsyncCommands;
+using Models.Collections;
 using Models.DBRealization;
 using Models.Forms.Form3;
 using ReactiveUI;
@@ -63,7 +64,7 @@ namespace Client_App.ViewModels.Forms.Forms3
                 OnPropertyChanged();
             }
         }
-        ObservableCollection<Form32ExportedZriInfo> _selectedZriInfoCollection;
+        ObservableCollection<Form32ExportedZriInfo> _selectedZriInfoCollection = [];
         public ObservableCollection<Form32ExportedZriInfo> SelectedZriInfoCollection
         {
             get => _selectedZriInfoCollection;
@@ -84,7 +85,7 @@ namespace Client_App.ViewModels.Forms.Forms3
                 OnPropertyChanged();
             }
         }
-        ObservableCollection<Form32ContainerInfo> _selectedContainerInfoCollection;
+        ObservableCollection<Form32ContainerInfo> _selectedContainerInfoCollection = [];
         public ObservableCollection<Form32ContainerInfo> SelectedContainerInfoCollection
         {
             get => _selectedContainerInfoCollection;
@@ -106,7 +107,7 @@ namespace Client_App.ViewModels.Forms.Forms3
                 OnPropertyChanged();
             }
         }
-        ObservableCollection<Form32Identificator> _selectedIdentificatorCollection;
+        ObservableCollection<Form32Identificator> _selectedIdentificatorCollection = [];
         public ObservableCollection<Form32Identificator> SelectedIdentificatorCollection
         {
             get => _selectedIdentificatorCollection;
@@ -120,10 +121,13 @@ namespace Client_App.ViewModels.Forms.Forms3
 
         #region Commands
         public ICommand AddExportedZriInfo { get; set; }
+        public ICommand PasteExportedZriInfo { get; set; }
         public ICommand DeleteExportedZriInfo { get; set; }
         public ICommand AddContainerInfo { get; set; }
+        public ICommand PasteContainerInfo { get; set; }
         public ICommand DeleteContainerInfo { get; set; }
         public ICommand AddIdentificator { get; set; }
+        public ICommand PasteIdentificator { get; set; }
         public ICommand DeleteIdentificator { get; set; }
         #endregion
 
@@ -132,25 +136,34 @@ namespace Client_App.ViewModels.Forms.Forms3
         {
             AddExportedZriInfo = ReactiveCommand.Create(() =>
             {
-                Report.Rows32One.ExportedZriInfoCollection.Add(new Form32ExportedZriInfo(Report.Rows32One));
+                var item = new Form32ExportedZriInfo(Report.Rows32One);
+                item.ValidateAll();
+                Report.Rows32One.ExportedZriInfoCollection.Add(item);
             });
+            AddContainerInfo = ReactiveCommand.Create(() =>
+            {
+                var item = new Form32ContainerInfo(Report.Rows32One);
+                item.ValidateAll();
+                Report.Rows32One.ContainersInfoCollection.Add(item);
+            });
+            AddIdentificator = ReactiveCommand.Create(() =>
+            {
+                var item = new Form32Identificator(Report.Rows32One);
+                item.ValidateAll();
+                Report.Rows32One.IdentificatorsCollection.Add(item);
+            });
+
+            PasteExportedZriInfo = new NewPasteRowsAsyncCommand(Report.Rows32One.ExportedZriInfoCollection);
+            PasteContainerInfo = new NewPasteRowsAsyncCommand(Report.Rows32One.ContainersInfoCollection);
+            PasteIdentificator = new NewPasteRowsAsyncCommand(Report.Rows32One.IdentificatorsCollection);
+
             DeleteExportedZriInfo = ReactiveCommand.Create<Form32ExportedZriInfo>(info =>
             {
                 info.Form32?.ExportedZriInfoCollection.Remove(info);
             });
-
-            AddContainerInfo = ReactiveCommand.Create(() =>
-            {
-                Report.Rows32One.ContainersInfoCollection.Add(new Form32ContainerInfo(Report.Rows32One));
-            });
             DeleteContainerInfo = ReactiveCommand.Create<Form32ContainerInfo>(container =>
             {
                 container.Form32?.ContainersInfoCollection.Remove(container);
-            });
-
-            AddIdentificator = ReactiveCommand.Create(() =>
-            {
-                Report.Rows32One.IdentificatorsCollection.Add(new Form32Identificator(Report.Rows32One));
             });
             DeleteIdentificator = ReactiveCommand.Create<Form32Identificator>(identificator =>
             {

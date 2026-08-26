@@ -32,10 +32,13 @@
 		<converter:NullToStringConverter x:Key="NullToStringConverter" />
 		<converter:ShortNullableToStringConverter x:Key="ShortNullableToStringConverter" />
 		<converter:ByteNullableToStringConverter x:Key="ByteNullableToStringConverter" />
+		<converter:IntNullableToStringConverter x:Key="IntNullableToStringConverter" />
 		<converter:ByteNullableOrDashToStringConverter x:Key="ByteNullableOrDashToStringConverter" />
 		<converter:DateConverter x:Key="DateConverter" />
+		<converter:DoubleToExponentionalFormatConverter x:Key="ExpontionalFormatConverter"/>
 		<converter:DateOnlyToStringConverter x:Key="DateOnlyToStringConverter"/>
 		<converter:IsOperation41AndSingleSelectionConverter x:Key="Op41AndOneSelectedConverter" />
+		
 	</Window.Resources>
 
 	<Design.DataContext>
@@ -492,6 +495,14 @@
 						<ContextMenu>
 							<MenuItem Header="Добавить информацию об импортированных ЗРИ/ОЗИИИ"
 									  Command="{Binding AddExportedZriOziiiInfo}"/>
+							<MenuItem Command="{Binding CopyRows}"
+									  CommandParameter="{Binding SelectedInfoCollection}"
+									  Header="Копировать"
+									  InputGesture="Ctrl+C" />
+							<MenuItem Command="{Binding PasteExportedZriOziiiInfo}"
+									  CommandParameter="{Binding SelectedInfo}"
+									  Header="Вставить"
+									  InputGesture="Ctrl+V" />
 							<MenuItem Header="Удалить информацию об импортированных ЗРИ/ОЗИИИ"
 									  Command="{Binding DeleteExportedZriOziiiInfo}"
 									  CommandParameter="{Binding SelectedInfo}"/>
@@ -537,7 +548,12 @@
 							</DataGridTemplateColumn.HeaderTemplate>
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<TextBox Text="{Binding Count, Mode=TwoWay}" />
+									<TextBox Text="{Binding Count, Mode=TwoWay, Converter={StaticResource IntNullableToStringConverter}}" >
+										<interactivity:Interaction.Behaviors>
+											<local:SelectAllOnFocusBehavior/>
+											<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9]+$"/>
+										</interactivity:Interaction.Behaviors>
+									</TextBox>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
@@ -553,7 +569,12 @@
 							</DataGridTemplateColumn.HeaderTemplate>
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<TextBox Text="{Binding TotalActivity, Mode=TwoWay}" />
+									<TextBox Text="{Binding TotalActivity, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}">
+										<interactivity:Interaction.Behaviors>
+											<local:SelectAllOnFocusBehavior/>
+											<local:TextBoxExponentionalFormatLostFocusBehavior/>
+										</interactivity:Interaction.Behaviors>
+									</TextBox>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>

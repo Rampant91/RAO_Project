@@ -1,5 +1,7 @@
-﻿using Models.Forms.DataAccess;
+﻿using Models.Comparers.FormContent;
+using Models.Forms.DataAccess;
 using Models.Interfaces;
+using Models.Passports;
 using OfficeOpenXml;
 using System;
 using System.Collections;
@@ -7,15 +9,18 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Models.Forms.Form3
 {
     [Serializable]
-    [Table(name: "form_31_table")] 
+    [Table(name: "form_31_table")]
     public class Form31ExportedZriOziiiInfo : INotifyPropertyChanged, INotifyDataErrorInfo, ICopiable
     {
         #region Constructor
@@ -27,7 +32,6 @@ namespace Models.Forms.Form3
             _form31 = form31;
         }
         #endregion
-
 
         [Key]
         public int Id { get; set; }
@@ -71,7 +75,6 @@ namespace Models.Forms.Form3
         }
         #endregion
 
-
         #region Count
         private int? _count = null;
         public int? Count
@@ -80,11 +83,10 @@ namespace Models.Forms.Form3
             set
             {
                 _count = value;
+                ValidateNullableInt(nameof(Count), _count);
                 OnPropertyChanged();
             }
         }
-        #endregion
-
         #endregion
 
         #region TotalActivity
@@ -100,30 +102,52 @@ namespace Models.Forms.Form3
         }
         #endregion
 
+        #endregion
+
         #region ICopiable
         #region ConvertToTSVstring
-
         /// <summary>
         /// </summary>
         /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
         public string ConvertToTSVstring()
         {
-            throw new NotImplementedException();
+            var str =
+            $"{RadionuclidComposition}\t" +
+            $"{Count}\t" +
+            $"{TotalActivity}";
+            return str;
         }
         #endregion
         #region PasteParsedTSVstring
         public void PasteParsedTSVstring(string[] parsedTSVstring)
         {
-            throw new NotImplementedException();
+            if (parsedTSVstring.Length is not 3) return;
+
+
+            RadionuclidComposition = parsedTSVstring[0];
+            Count = FormStringHelper.ConvertStringToInt(parsedTSVstring[1]);
+            TotalActivity = FormStringHelper.ConvertStringToFloat(parsedTSVstring[2]);
         }
         #endregion
         #endregion
 
         #region Validation
+        public void ValidateAll()
+        {
+            ValidateString(nameof(RadionuclidComposition), _radionuclidComposition);
+            ValidateNullableInt(nameof(Count), _count);
+        }
+
         private void ValidateString(string propertyName, string str)
         {
             ClearErrors(propertyName);
             if (string.IsNullOrEmpty(str))
+                AddError(propertyName, "Поле не заполнено");
+        }
+        private void ValidateNullableInt(string propertyName, int? str)
+        {
+            ClearErrors(propertyName);
+            if (str is null)
                 AddError(propertyName, "Поле не заполнено");
         }
         #endregion

@@ -32,9 +32,11 @@
 		<converter:NullToStringConverter x:Key="NullToStringConverter" />
 		<converter:ShortNullableToStringConverter x:Key="ShortNullableToStringConverter" />
 		<converter:ByteNullableToStringConverter x:Key="ByteNullableToStringConverter" />
+		<converter:IntNullableToStringConverter x:Key="IntNullableToStringConverter" />
 		<converter:ByteNullableOrDashToStringConverter x:Key="ByteNullableOrDashToStringConverter" />
 		<converter:DateConverter x:Key="DateConverter" />
 		<converter:DateOnlyToStringConverter x:Key="DateOnlyToStringConverter"/>
+		<converter:DoubleToExponentionalFormatConverter x:Key="ExpontionalFormatConverter"/>
 		<converter:IsOperation41AndSingleSelectionConverter x:Key="Op41AndOneSelectedConverter" />
 	</Window.Resources>
 
@@ -467,7 +469,7 @@
 					</DataGrid.Styles>
 					
 					<interactivity:Interaction.Behaviors>
-						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="3.2Table1" />
+						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="3.2Table1"/>
 						<dgBehaviors:DataGridPointerBehavior />
 						<dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedZriInfoCollection, Mode=TwoWay}" />
 						<dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
@@ -479,6 +481,14 @@
 						<ContextMenu>
 							<MenuItem Header="Добавить сведения о поставляемых ЗРИ"
 									  Command="{Binding AddExportedZriInfo}"/>
+							<MenuItem Command="{Binding CopyRows}"
+									  CommandParameter="{Binding SelectedZriInfoCollection}"
+									  Header="Копировать"
+									  InputGesture="Ctrl+C"/>
+							<MenuItem Command="{Binding PasteExportedZriInfo}"
+									  CommandParameter="{Binding SelectedZriInfo}"
+									  Header="Вставить"
+									  InputGesture="Ctrl+V"/>
 							<MenuItem Header="Удалить сведения о поставляемых ЗРИ"
 									  Command="{Binding DeleteExportedZriInfo}"
 									  CommandParameter="{Binding SelectedInfo}"/>
@@ -708,7 +718,7 @@
 						  RowHeight="25"
 						  Margin="0,10,0,0"
 						  Items="{Binding Report.Rows32One.ContainersInfoCollection}"
-						  SelectedItem="{Binding SelectedZriInfo}"
+						  SelectedItem="{Binding SelectedContainerInfo}"
 						  HorizontalScrollBarVisibility="Auto"
 						  VerticalScrollBarVisibility ="Auto">
 
@@ -728,7 +738,7 @@
 					<interactivity:Interaction.Behaviors>
 						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="3.2Table2" />
 						<dgBehaviors:DataGridPointerBehavior />
-						<dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedZriInfoCollection, Mode=TwoWay}" />
+						<dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedContainerInfoCollection, Mode=TwoWay}" />
 						<dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
 						<dgBehaviors:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
 						<dgBehaviors:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
@@ -738,6 +748,14 @@
 						<ContextMenu>
 							<MenuItem Header="Добавить информацию о контейнере, приборе, установке"
 									  Command="{Binding AddContainerInfo}"/>
+							<MenuItem Command="{Binding CopyRows}"
+									  CommandParameter="{Binding SelectedContainerInfoCollection}"
+									  Header="Копировать"
+									  InputGesture="Ctrl+C"/>
+							<MenuItem Command="{Binding PasteContainerInfo}"
+									  CommandParameter="{Binding SelectedContainerInfo}"
+									  Header="Вставить"
+									  InputGesture="Ctrl+V"/>
 							<MenuItem Header="Удалить информацию о контейнере, приборе, установке"
 									  Command="{Binding DeleteContainerInfo}"
 									  CommandParameter="{Binding SelectedInfo}"/>
@@ -811,7 +829,12 @@
 							</DataGridTemplateColumn.HeaderTemplate>
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<TextBox Text="{Binding ReleaseYear}" />
+									<TextBox Text="{Binding ReleaseYear, Converter={StaticResource IntNullableToStringConverter}}" >
+										<interactivity:Interaction.Behaviors>
+											<local:SelectAllOnFocusBehavior/>
+											<local:TextBoxWhiteListValidationBehavior WhiteListRegex="^[0-9]+$"/>
+										</interactivity:Interaction.Behaviors>
+									</TextBox>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
@@ -829,7 +852,12 @@
 							</DataGridTemplateColumn.HeaderTemplate>
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate>
-									<TextBox Text="{Binding DepletedUraniumMass}" />
+									<TextBox Text="{Binding DepletedUraniumMass, Mode=TwoWay, Converter={StaticResource ExpontionalFormatConverter}}">
+										<interactivity:Interaction.Behaviors>
+											<local:SelectAllOnFocusBehavior/>
+											<local:TextBoxExponentionalFormatLostFocusBehavior/>
+										</interactivity:Interaction.Behaviors>
+									</TextBox>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
@@ -859,7 +887,7 @@
 						  RowHeight="25"
 						  Margin="0,10,0,0"
 						  Items="{Binding Report.Rows32One.IdentificatorsCollection}"
-						  SelectedItem="{Binding SelectedContainerInfo}"
+						  SelectedItem="{Binding SelectedIdentificator}"
 						  HorizontalScrollBarVisibility="Auto"
 						  VerticalScrollBarVisibility ="Auto">
 
@@ -879,7 +907,7 @@
 					<interactivity:Interaction.Behaviors>
 						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="3.2Table3" />
 						<dgBehaviors:DataGridPointerBehavior />
-						<dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedContainerInfoCollection , Mode=TwoWay}" />
+						<dgBehaviors:DataGridSelectedItemsBehavior SelectedItems="{Binding SelectedIdentificatorCollection , Mode=TwoWay}" />
 						<dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
 						<dgBehaviors:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
 						<dgBehaviors:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
@@ -889,6 +917,14 @@
 						<ContextMenu>
 							<MenuItem Header="Добавить идентификатор"
 									  Command="{Binding AddIdentificator}"/>
+							<MenuItem Command="{Binding CopyRows}"
+									  CommandParameter="{Binding SelectedIdentificatorCollection}"
+									  Header="Копировать"
+									  InputGesture="Ctrl+C" />
+							<MenuItem Command="{Binding PasteIdentificator}"
+									  CommandParameter="{Binding SelectedIdentificator}"
+									  Header="Вставить"
+									  InputGesture="Ctrl+V"/>
 							<MenuItem Header="Удалить идентификатор"
 									  Command="{Binding DeleteExportedZriOziiiInfo}"
 									  CommandParameter="{Binding DeleteIdentificator}"/>

@@ -15,7 +15,7 @@ using Spravochniki;
 
 namespace Models.Forms;
 
-public abstract partial class Form : IKey, IDataGridColumn
+public abstract partial class Form : IKey, IDataGridColumn, ICopiable
 {
     #region Properties
 
@@ -417,6 +417,18 @@ public abstract partial class Form : IKey, IDataGridColumn
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
+
+    #endregion
+
+    #region ICopiable
+    public virtual string ConvertToTSVstring()
+    {
+        throw new NotImplementedException();
+    }
+    public virtual void PasteParsedTSVstring(string[] parsedString)
+    {
+        throw new NotImplementedException();
+    }
 
     #endregion
 

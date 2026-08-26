@@ -525,7 +525,19 @@ namespace Models.Forms.Form5
         #endregion
         public void PasteParsedTSVstring(string[] parsedTSVstring)
         {
-            throw new NotImplementedException();
+            if (parsedTSVstring.Length is not 7 and not 8) return;
+
+            int offset = 0;
+            if (parsedTSVstring.Length is 8)
+                offset = 1;
+
+            RegNo.Value = parsedTSVstring[0 + offset];
+            OKPO.Value = parsedTSVstring[1 + offset];
+            Name.Value = parsedTSVstring[2 + offset];
+            Recognizance.Value = parsedTSVstring[3 + offset];
+            License.Value = parsedTSVstring[4 + offset];
+            Practice.Value = parsedTSVstring[5 + offset];
+            Note.Value = parsedTSVstring[6 + offset];
         }
 
 

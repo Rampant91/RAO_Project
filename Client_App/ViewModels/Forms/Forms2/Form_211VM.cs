@@ -44,6 +44,7 @@ public class Form_211VM : BaseFormVM
     public ICommand ExcelExportSourceMovementHistory => new ExcelExportSourceMovementHistoryAsyncCommand();
     public ICommand OpenPas => new OpenPasAsyncCommand();
     public ICommand SourceTransmission => new SourceTransmissionAsyncCommand(this);
+    public ICommand PasteRows => new NewPasteRowsAsyncCommand(this.Report.Rows211);
 
     #endregion
 }

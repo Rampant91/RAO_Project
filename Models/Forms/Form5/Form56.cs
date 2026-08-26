@@ -1,5 +1,6 @@
 ﻿using Models.Attributes;
 using Models.Collections;
+using Models.Comparers.FormContent;
 using Models.Forms.DataAccess;
 using Models.Interfaces;
 using OfficeOpenXml;
@@ -288,7 +289,20 @@ namespace Models.Forms.Form5
         #endregion
         public void PasteParsedTSVstring(string[] parsedTSVstring)
         {
-            throw new NotImplementedException();
+            if (parsedTSVstring.Length is not 3 and not 4) return;
+
+            int offset = 0;
+            if (parsedTSVstring.Length is 4)
+
+                offset = 1;
+            Name.Value = parsedTSVstring[0 + offset];
+
+            var value = FormStringHelper.ConvertStringToInt(parsedTSVstring[1 + offset]);
+            if (value == null)
+                value = 0;
+            Quantity.Value = value;
+
+            Mass.Value = parsedTSVstring[2 + offset];
         }
 
 

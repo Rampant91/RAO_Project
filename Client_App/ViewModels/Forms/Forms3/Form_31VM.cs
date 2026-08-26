@@ -1,6 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands;
 using MessageBox.Avalonia.DTO;
 using Models.Collections;
 using Models.DBRealization;
@@ -73,7 +74,7 @@ namespace Client_App.ViewModels.Forms.Forms3
                 OnPropertyChanged();
             }
         }
-        ObservableCollection<Form31ExportedZriOziiiInfo> _selectedInfoCollection;
+        ObservableCollection<Form31ExportedZriOziiiInfo> _selectedInfoCollection = [];
         public ObservableCollection<Form31ExportedZriOziiiInfo> SelectedInfoCollection
         {
             get => _selectedInfoCollection;
@@ -89,9 +90,9 @@ namespace Client_App.ViewModels.Forms.Forms3
 
         #region Commands
         public ICommand AddExportedZriOziiiInfo { get; set; }
+        public ICommand PasteExportedZriOziiiInfo { get; set; }
         public ICommand DeleteExportedZriOziiiInfo { get; set; }
 
-        public ICommand PasteRows { get; set; }
         #endregion
 
         #region InitializeCommands
@@ -99,8 +100,11 @@ namespace Client_App.ViewModels.Forms.Forms3
         {
             AddExportedZriOziiiInfo = ReactiveCommand.Create(() =>
             {
-                Report.Rows31One.ExportedZriOziiiInfoCollection.Add(new Form31ExportedZriOziiiInfo(Report.Rows31One));
+                var item = new Form31ExportedZriOziiiInfo(Report.Rows31One);
+                Report.Rows31One.ExportedZriOziiiInfoCollection.Add(item);
+                item.ValidateAll();
             });
+            PasteExportedZriOziiiInfo = new NewPasteRowsAsyncCommand(Report.Rows31One.ExportedZriOziiiInfoCollection);
             DeleteExportedZriOziiiInfo = ReactiveCommand.Create<Form31ExportedZriOziiiInfo>(info =>
             {
                 info.Form31?.ExportedZriOziiiInfoCollection.Remove(info);

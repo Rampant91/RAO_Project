@@ -50,6 +50,7 @@ namespace Client_App.ViewModels.Forms.Forms5
         public ICommand OpenPas => new OpenPasAsyncCommand();
         public ICommand SourceTransmission => new SourceTransmissionAsyncCommand(this);
         public ICommand GenerateForm54 => new GenerateForm54AsyncCommand(this);
+        public ICommand PasteRows => new NewPasteRowsAsyncCommand(this.Report.Rows54);
 
         #endregion
 

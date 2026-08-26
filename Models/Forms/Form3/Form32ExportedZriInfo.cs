@@ -1,4 +1,5 @@
-﻿using Models.Forms.DataAccess;
+﻿using Models.Comparers.FormContent;
+using Models.Forms.DataAccess;
 using Models.Interfaces;
 using Models.Passports;
 using OfficeOpenXml;
@@ -8,12 +9,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.AccessControl;
 using System.Text;
-using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Models.Forms.Form3
 {
@@ -24,6 +26,7 @@ namespace Models.Forms.Form3
         #region Constructor
         public Form32ExportedZriInfo()
         {
+            
         }
         public Form32ExportedZriInfo(Form32 form32)
         {
@@ -54,17 +57,17 @@ namespace Models.Forms.Form3
         #endregion
 
         #region PassportNum (8.1)
-        private string _PassportNum;
+        private string _passportNum;
 
         [MaxLength(64)]
         [Column(TypeName = "varchar(64)")]
         public string PassportNum
         {
-            get => _PassportNum;
+            get => _passportNum;
             set
             {
-                _PassportNum = value ?? string.Empty;
-                ValidateString(nameof(PassportNum), _PassportNum);
+                _passportNum = value ?? string.Empty;
+                ValidateString(nameof(PassportNum), _passportNum);
                 OnPropertyChanged();
             }
         }
@@ -243,18 +246,58 @@ namespace Models.Forms.Form3
         /// <returns>Возвращает строку с записанными данными в формате TSV(Tab-Separated Values) </returns>
         public string ConvertToTSVstring()
         {
-            throw new NotImplementedException();
+            var str =
+            $"{PassportNum}\t" +
+            $"{Type}\t" +
+            $"{FactoryNum}\t" +
+            $"{RadionuclidComposition}\t" +
+            $"{ReleaseDate}\t" +
+            $"{ActivityOnRealeseDate}\t" +
+            $"{NuclearMaterials}\t" +
+            $"{Category}\t" +
+            $"{ManufacturerOksm}\t" +
+            $"{CertificateNum}\t" +
+            $"{CertificateExpirationDate}";
+            return str;
         }
         #endregion
         #region PasteParsedTSVstring
         public void PasteParsedTSVstring(string[] parsedTSVstring)
         {
-            throw new NotImplementedException();
+            if (parsedTSVstring.Length is not 11) return;
+
+            PassportNum = parsedTSVstring[0];
+            Type = parsedTSVstring[1];
+            FactoryNum = parsedTSVstring[2];
+            RadionuclidComposition = parsedTSVstring[3];
+            ReleaseDate = FormStringHelper.ConvertStringToDateOnly(parsedTSVstring[4]);
+            ActivityOnRealeseDate = parsedTSVstring[5];
+            NuclearMaterials = parsedTSVstring[6];
+            Category = parsedTSVstring[7];
+            ManufacturerOksm = parsedTSVstring[8];
+            CertificateNum = parsedTSVstring[9];
+            CertificateExpirationDate = FormStringHelper.ConvertStringToDateOnly(parsedTSVstring[10]);
         }
         #endregion
         #endregion
 
         #region Validation
+
+        public void ValidateAll()
+        {
+            ValidateString(nameof(PassportNum), _passportNum);
+            ValidateString(nameof(Type), _Type);
+            ValidateString(nameof(FactoryNum), _FactoryNum);
+            ValidateString(nameof(RadionuclidComposition), _radionuclidComposition);
+            ValidateDateOnly(nameof(ReleaseDate), _ReleaseDate);
+            ValidateString(nameof(ActivityOnRealeseDate), _activityOnRealeseDate);
+            ValidateString(nameof(NuclearMaterials), _nuclearMaterials);
+            ValidateString(nameof(Category), _category);
+            ValidateString(nameof(ManufacturerOksm), _manufacturerOksm);
+            ValidateString(nameof(CertificateNum), _certificateNum);
+            ValidateDateOnly(nameof(CertificateExpirationDate), _certificateExpirationDate);
+        }
+
         private void ValidateString(string propertyName, string str)
         {
             ClearErrors(propertyName);

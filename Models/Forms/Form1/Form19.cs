@@ -463,7 +463,19 @@ public class Form19 : Form1, ICopiable
     #endregion
     public void PasteParsedTSVstring(string[] parsedTSVstring)
     {
-        throw new NotImplementedException();
+        if (parsedTSVstring.Length is not 8 and not 9) return;
+
+        int offset = 0;
+        if (parsedTSVstring.Length is 9)
+            offset = 1;
+        OperationCode.Value = parsedTSVstring[0 + offset];
+                            OperationDate.Value = parsedTSVstring[1 + offset];
+        DocumentVid.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[2 + offset]);
+        DocumentNumber.Value = parsedTSVstring[3 + offset];
+        DocumentDate.Value = parsedTSVstring[4 + offset];
+        CodeTypeAccObject.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[5 + offset]);
+        Radionuclids.Value = parsedTSVstring[6 + offset];
+        Activity.Value = parsedTSVstring[7 + offset];
     }
 
     public override bool IsContentEqual(Form otherForm)
