@@ -105,6 +105,8 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
     {
         if (SelectedReports is null)
         {
+            Interlocked.Increment(ref _reportLoadGeneration);
+            SetReportsLoading(false);
             if (_reportCollection.Count > 0)
                 _reportCollection.Clear();
             OnPropertyChanged(nameof(ReportCollection));
@@ -118,6 +120,8 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
 
         if (_cache.TryGetReportPage(orgId, filter, page, pageSize, out var cached))
         {
+            Interlocked.Increment(ref _reportLoadGeneration);
+            SetReportsLoading(false);
             ReplaceCollection(_reportCollection, cached, r => r.Id);
             OnPropertyChanged(nameof(ReportCollection));
             OnPropertyChanged(nameof(TotalRowsForms));
@@ -127,6 +131,7 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
         }
 
         var generation = Interlocked.Increment(ref _reportLoadGeneration);
+        ScheduleReportsLoadingIndicator(generation, () => _reportLoadGeneration);
         if (_reportCollection.Count > 0)
             _reportCollection.Clear();
         OnPropertyChanged(nameof(ReportCollection));
@@ -142,6 +147,7 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
                 {
                     if (generation != _reportLoadGeneration || SelectedReports?.Id != orgId)
                         return;
+                    SetReportsLoading(false);
                     ReplaceCollection(_reportCollection, items, r => r.Id);
                     OnPropertyChanged(nameof(ReportCollection));
                     OnPropertyChanged(nameof(TotalRowsForms));
@@ -149,7 +155,14 @@ public class Forms5TabControlVM : FormsTabControlBaseVM
                     WarmSelectedOrgAndPrefetchReports();
                 });
             }
-            catch { }
+            catch
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    if (generation == _reportLoadGeneration)
+                        SetReportsLoading(false);
+                });
+            }
         });
     }
 

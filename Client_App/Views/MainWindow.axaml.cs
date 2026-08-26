@@ -21,9 +21,9 @@ namespace Client_App.Views;
 public partial class MainWindow : BaseWindow<MainWindowVM>
 {
     #region SelectedReports
-    // this.SelectedReports ������������ � ������ ����
-    // ��� ��� ��� �� ������������� �������� MVVM, ���� ������ �������������� SelectedReportsProperty � VM
-    // ����� ����������� ���������� ����� ����� ������� ���� SelectedReports
+    // this.SelectedReports используется в разметке вкладок
+    // (это не полноценный чистый MVVM, пока нельзя перенести SelectedReportsProperty в VM
+    // без потери привязки контекстных меню / выбора строк SelectedReports)
     public static readonly DirectProperty<MainWindow, IEnumerable<IKey>> SelectedReportsProperty =
         AvaloniaProperty.RegisterDirect<MainWindow, IEnumerable<IKey>>(
             nameof(SelectedReports),
@@ -52,7 +52,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
             }
             SetAndRaise(SelectedReportsProperty, ref _selectedReports, value);
         }
-        // ����� if (value != null) 
+        // раньше: if (value != null) 
     }
 
     private IEnumerable<IKey>? _selectedReports1;
@@ -133,7 +133,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
             .Select(elem => new ButtonDefinition { Name = elem })
             .ToList();
         par.ButtonDefinitions = lt;
-        par.ContentTitle = "�����������";
+        par.ContentTitle = "Уведомление";
             
         var msg = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
         var answer = await msg.ShowDialog(this);
@@ -167,7 +167,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
     #region RemoveTmpData
 
     /// <summary>
-    /// ����� ��������� ��������� ������� ����� tmp.
+    /// Метод очищает временную папку файлов tmp.
     /// </summary>
     private static void RemoveTmpData()
     {
@@ -190,11 +190,11 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
 
     #endregion
 
-    #region ShowInit_����������� ���� � �� ������
+    #region ShowInit_инициализация вкладок и их команд
 
     private static void SetCommandList(DataGrid<Reports> grd1, DataGrid<Report> grd2, string paramVal, MainWindowVM dataContext)
     {
-        #region Grd1_������ �����������_����������� ����
+        #region Grd1_список организаций_контекстное меню
 
         grd1.CommandsList.Add(new KeyCommand
         {
@@ -203,7 +203,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = paramVal,
-            ContextMenuText = ["�������� �����        Ctrl+T"],
+            ContextMenuText = ["Добавить организацию        Ctrl+T"],
             Command = dataContext.AddReports
         });
 
@@ -212,7 +212,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
         //    IsDoubleTappedCommand = true,
         //    IsContextMenuCommand = true,
         //    ParamName = "SelectedItems",
-        //    ContextMenuText = ["������������� �����"],
+        //    ContextMenuText = ["Редактировать форму"],
         //    Command = dataContext.ChangeReports
         //});
 
@@ -221,7 +221,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = ["��������� �����������"],
+            ContextMenuText = ["Выгрузить организацию"],
             Command = dataContext.ExportReports
         });
 
@@ -230,7 +230,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = ["��������� ����������� � ��������� ��������� ���"],
+            ContextMenuText = ["Выгрузить организацию в указанный диапазон дат"],
             Command = dataContext.ExportReportsWithDateRange
         });
 
@@ -239,7 +239,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = ["��������� ��� ����������� � ���� ����"],
+            ContextMenuText = ["Выгрузить все организации в один файл"],
             Command = dataContext.ExportAllReportsOneFile
         });
 
@@ -248,7 +248,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = ["��������� ��� ����������� � ��������� �����"],
+            ContextMenuText = ["Выгрузить все организации в отдельные файлы"],
             Command = dataContext.ExportAllReports
         });
 
@@ -257,7 +257,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = ["��������� ��� ����� �����������"],
+            ContextMenuText = ["Проверить все отчёты организации"],
             Command = dataContext.ExcelExportCheckAllForms
         });
 
@@ -268,20 +268,20 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
             IsDoubleTappedCommand = false,
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
-            ContextMenuText = ["������� �����           Ctrl+D"],
+            ContextMenuText = ["Удалить организацию           Ctrl+D"],
             Command = dataContext.DeleteReports
         });
 
         #endregion
 
-        #region Grd2_������ ����_����������� ����
+        #region Grd2_список форм_контекстное меню
 
         //grd2.CommandsList.Add(new KeyCommand
         //{
         //    IsDoubleTappedCommand = false,
         //    IsContextMenuCommand = true,
         //    ParamName = "SelectedItems",
-        //    ContextMenuText = ["�������� Excel", "��� ������"],
+        //    ContextMenuText = ["Выгрузить Excel", "для печати"],
         //    Command = dataContext.ExcelExportFormPrint
         //});
         //grd2.CommandsList.Add(new KeyCommand
@@ -289,7 +289,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
         //    IsDoubleTappedCommand = false,
         //    IsContextMenuCommand = true,
         //    ParamName = "SelectedItems",
-        //    ContextMenuText = ["�������� Excel", "��� �������"],
+        //    ContextMenuText = ["Выгрузить Excel", "для анализа"],
         //    Command = dataContext.ExcelExportFormAnalysis
         //});
         //grd2.CommandsList.Add(new KeyCommand
@@ -297,7 +297,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
         //    IsDoubleTappedCommand = false,
         //    IsContextMenuCommand = true,
         //    ParamName = "SelectedItems",
-        //    ContextMenuText = ["��������"],
+        //    ContextMenuText = ["Выгрузить"],
         //    Command = dataContext.ExportReport
         //});
         //grd2.CommandsList.Add(new KeyCommand
@@ -305,7 +305,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
         //    IsDoubleTappedCommand = true,
         //    IsContextMenuCommand = true,
         //    ParamName = "SelectedItems",
-        //    ContextMenuText = ["�������� �����"],
+        //    ContextMenuText = ["Изменить форму"],
         //    Command = dataContext.ChangeForm
         //});
         //grd2.CommandsList.Add(new KeyCommand
@@ -313,7 +313,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
         //    IsContextMenuCommand = true,
         //    IsDoubleTappedCommand = false,
         //    ParamName = "SelectedItems",
-        //    ContextMenuText = ["��������� �����"],
+        //    ContextMenuText = ["Проверить форму"],
         //    Command = dataContext.CheckFormFromMain
         //});
         //grd2.CommandsList.Add(new KeyCommand
@@ -324,7 +324,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
         //    IsContextMenuCommand = true,
         //    ParamName = "SelectedItems",
         //    IsUpdateCells = true,
-        //    ContextMenuText = ["������� �����           Ctrl+D"],
+        //    ContextMenuText = ["Удалить форму           Ctrl+D"],
         //    Command = dataContext.DeleteForm
         //});
         grd2.CommandsList.Add(new KeyCommand
@@ -335,7 +335,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
             IsContextMenuCommand = true,
             ParamName = "SelectedItems",
             IsUpdateCells = true,
-            ContextMenuText = ["��������� �����������           Ctrl+J"],
+            ContextMenuText = ["Сохранить комментарий           Ctrl+J"],
             Command = dataContext.SaveReports
         });
 
@@ -381,8 +381,8 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
         if (sender is not TabControl tc)
             return;
 
-        // �������: ������ 0 � �������, 1 � Forms1, 2 � Forms2 � �.�.
-        var target = SelectedReports; // �� ��������� ������� ��������
+        // Индексы: вкладка 0 — справка, 1 — Forms1, 2 — Forms2 и т.д.
+        var target = SelectedReports; // по умолчанию текущий выбор
 
         switch (tc.SelectedIndex)
         {
@@ -394,7 +394,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
                 break;
             default:
             {
-                // ��������� ������ ����� ��� ����� �� VM
+                // Восстановить выбор строк для вкладки из VM
                 if (DataContext is MainWindowVM vm)
                 {
                     var formNum = vm.SelectedReportTypeToString;

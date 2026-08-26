@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.ReactiveUI;
+using Avalonia.Threading;
 using Client_App.Behaviors.WindowSizing;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels;
@@ -17,10 +18,18 @@ public interface IFormDialogHost
     Task ShowFormDialogAsync(Window? owner);
 }
 
-public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost where T : class
+/// <summary>
+/// Состояние MainWindow до открытия формы (для восстановления при закрытии / смене отчёта).
+/// </summary>
+public interface IFormOwnerStateWindow
+{
+    WindowState OwnerPrevState { get; set; }
+}
+
+public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost, IFormOwnerStateWindow where T : class
 {
     public T? VM => DataContext as T;
-    public WindowState OwnerPrevState;
+    public WindowState OwnerPrevState { get; set; }
 
     protected virtual bool IsFullScreenWindow => false;
 
@@ -29,6 +38,7 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost wh
 
     private bool _revealOnOpenAttached;
     private bool _openedPositionFallbackAttached;
+    private bool _fullscreenFallbackAttached;
     private Window? _positionOwnerHint;
 
     /// <summary>
@@ -52,12 +62,7 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost wh
             return;
         }
 
-        if (Width > 0 && !double.IsNaN(Width) && Height > 0 && !double.IsNaN(Height))
-        {
-            return;
-        }
-
-        WindowScreenSizeBehavior.RefreshWindowSize(this);
+        WindowScreenSizeBehavior.RefreshWindowSize(this, owner);
 
         if (Width > 0 && !double.IsNaN(Width) && Height > 0 && !double.IsNaN(Height))
         {
@@ -82,16 +87,11 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost wh
 
         if (!IsFullScreenWindow)
         {
-            PositionWindowOnOwnerScreen(owner ?? GetOwnerWindow());
+            PositionWindowOnOwnerScreen(owner ?? GetPreferredOwnerWindow());
             AttachOpenedPositionFallback(owner);
         }
 
-        AttachRevealOnOpen();
-
-        if (owner is MainWindow mainWindow)
-        {
-            mainWindow.SetReportOpeningOverlay(false);
-        }
+        AttachRevealOnOpen(owner);
 
         if (owner != null)
         {
@@ -104,7 +104,7 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost wh
     /// </summary>
     protected void ShowCentered(Window? owner = null)
     {
-        var ownerWindow = owner ?? GetOwnerWindow();
+        var ownerWindow = owner ?? GetPreferredOwnerWindow();
         PrepareBeforeShow(ownerWindow);
         AttachFullscreenFallback();
 
@@ -114,7 +114,7 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost wh
             AttachOpenedPositionFallback(ownerWindow);
         }
 
-        AttachRevealOnOpen();
+        AttachRevealOnOpen(ownerWindow);
         base.Show();
     }
 
@@ -127,10 +127,9 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost wh
     {
         try
         {
-            if (!WindowCenterPlacement.TryCenterOnScreen(this, ownerWindow ?? GetOwnerWindow()))
-            {
-                return;
-            }
+            var owner = ownerWindow ?? GetPreferredOwnerWindow();
+            WindowCenterPlacement.TryCenterOnScreen(this, owner);
+            WindowScreenContext.TryEnsureVisibleOnScreen(this, owner);
         }
         catch (Exception ex)
         {
@@ -169,13 +168,17 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost wh
         {
             PositionWindowOnOwnerScreen(_positionOwnerHint);
         }
+
+        // Всегда: шапка не должна оказаться за верхним краем working area (Form_10 и др.).
+        WindowScreenContext.TryEnsureVisibleOnScreen(this, _positionOwnerHint);
     }
 
-    private void AttachRevealOnOpen()
+    private void AttachRevealOnOpen(Window? ownerHint)
     {
         if (!RevealOnOpen)
         {
             Opacity = 1;
+            ClearReportOpeningOverlay(ownerHint);
             return;
         }
 
@@ -185,6 +188,7 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost wh
         }
 
         _revealOnOpenAttached = true;
+        _positionOwnerHint ??= ownerHint;
         Opacity = 0;
         Opened += OnRevealAfterOpen;
     }
@@ -194,17 +198,19 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost wh
     /// </summary>
     private void AttachFullscreenFallback()
     {
-        if (!IsFullScreenWindow)
+        if (!IsFullScreenWindow || _fullscreenFallbackAttached)
         {
             return;
         }
 
+        _fullscreenFallbackAttached = true;
         Opened += OnEnsureMaximizedOnOpen;
     }
 
     private void OnEnsureMaximizedOnOpen(object? sender, EventArgs e)
     {
         Opened -= OnEnsureMaximizedOnOpen;
+        _fullscreenFallbackAttached = false;
         if (WindowState != WindowState.Maximized)
         {
             WindowState = WindowState.Maximized;
@@ -214,12 +220,63 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost wh
     private void OnRevealAfterOpen(object? sender, EventArgs e)
     {
         Opened -= OnRevealAfterOpen;
-        Opacity = 1;
+
+        // Пока Opacity=0: дожимаем геометрию (Linux), затем показываем кадр после layout.
+        if (IsFullScreenWindow && WindowState != WindowState.Maximized)
+        {
+            WindowState = WindowState.Maximized;
+        }
+        else if (!IsFullScreenWindow)
+        {
+            if (OperatingSystem.IsLinux() || WindowCenterPlacement.IsLikelyUnpositioned(Position))
+            {
+                PositionWindowOnOwnerScreen(_positionOwnerHint);
+            }
+
+            WindowScreenContext.TryEnsureVisibleOnScreen(this, _positionOwnerHint);
+        }
+
+        var ownerHint = _positionOwnerHint;
+        // ContextIdle: дать гриду/layout первый кадр до снятия overlay (слабые ПК).
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (!IsFullScreenWindow)
+            {
+                WindowScreenContext.TryEnsureVisibleOnScreen(this, ownerHint);
+            }
+
+            Opacity = 1;
+            ClearReportOpeningOverlay(ownerHint);
+        }, DispatcherPriority.ContextIdle);
     }
 
-    private Window? GetOwnerWindow()
+    private static void ClearReportOpeningOverlay(Window? ownerHint)
+    {
+        if (ownerHint is MainWindow mainWindow)
+        {
+            mainWindow.SetReportOpeningOverlay(false);
+            return;
+        }
+
+        var appLifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+        if (appLifetime?.MainWindow is MainWindow mw)
+        {
+            mw.SetReportOpeningOverlay(false);
+        }
+    }
+
+    /// <summary>
+    /// Предпочтительный owner для экрана: MainWindow (текущий монитор), иначе последнее видимое окно.
+    /// </summary>
+    private Window? GetPreferredOwnerWindow()
     {
         var appLifetime = Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+        var mainWindow = appLifetime?.MainWindow;
+        if (mainWindow != null && mainWindow != this && mainWindow.WindowState != WindowState.Minimized)
+        {
+            return mainWindow;
+        }
+
         var windows = appLifetime?.Windows;
         if (windows == null)
         {
@@ -235,23 +292,6 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost wh
             }
         }
 
-        if (candidateWindows.Count > 0)
-        {
-            var notMainWindowCandidates = candidateWindows
-                .Where(x => x.Name != "MainWindow")
-                .ToList();
-
-            return notMainWindowCandidates.Count > 0
-                ? notMainWindowCandidates.LastOrDefault()
-                : candidateWindows.LastOrDefault();
-        }
-
-        var mainWindow = appLifetime.MainWindow;
-        if (mainWindow != null && mainWindow != this)
-        {
-            return mainWindow;
-        }
-
-        return null;
+        return candidateWindows.LastOrDefault();
     }
 }

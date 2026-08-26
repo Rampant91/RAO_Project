@@ -9,16 +9,16 @@ public static class WindowScreenSizeBehavior
 {
     public static readonly AttachedProperty<double> WidthRatioProperty =
         AvaloniaProperty.RegisterAttached<Window, double>(
-            "WidthRatio", 
-            typeof(WindowScreenSizeBehavior), 
-            defaultValue: 0.5, 
+            "WidthRatio",
+            typeof(WindowScreenSizeBehavior),
+            defaultValue: 0.5,
             defaultBindingMode: BindingMode.OneWay);
 
     public static readonly AttachedProperty<double> HeightRatioProperty =
         AvaloniaProperty.RegisterAttached<Window, double>(
-            "HeightRatio", 
-            typeof(WindowScreenSizeBehavior), 
-            defaultValue: 0.5, 
+            "HeightRatio",
+            typeof(WindowScreenSizeBehavior),
+            defaultValue: 0.5,
             defaultBindingMode: BindingMode.OneWay);
 
     static WindowScreenSizeBehavior()
@@ -27,36 +27,37 @@ public static class WindowScreenSizeBehavior
         HeightRatioProperty.Changed.AddClassHandler<Window>(OnHeightRatioChanged);
     }
 
-    public static double GetWidthRatio(Window element)
-    {
-        return element.GetValue(WidthRatioProperty);
-    }
+    public static double GetWidthRatio(Window element) =>
+        element.GetValue(WidthRatioProperty);
 
-    public static void SetWidthRatio(Window element, double value)
-    {
+    public static void SetWidthRatio(Window element, double value) =>
         element.SetValue(WidthRatioProperty, value);
-    }
 
-    public static double GetHeightRatio(Window element)
-    {
-        return element.GetValue(HeightRatioProperty);
-    }
+    public static double GetHeightRatio(Window element) =>
+        element.GetValue(HeightRatioProperty);
 
-    public static void SetHeightRatio(Window element, double value)
-    {
+    public static void SetHeightRatio(Window element, double value) =>
         element.SetValue(HeightRatioProperty, value);
-    }
 
     /// <summary>
-    /// Пересчитывает Width/Height по ratio (с fallback для Linux, если ScreenFromWindow недоступен).
+    /// Пересчитывает Width/Height по ratio на экране owner/MainWindow (с clamp к working area).
+    /// Без явно заданных ratio ничего не меняет (чтобы не раздувать окна с фиксированным размером).
     /// </summary>
-    public static void RefreshWindowSize(Window window) => UpdateWindowSize(window);
+    public static void RefreshWindowSize(Window window, Window? ownerWindow = null)
+    {
+        if (!window.IsSet(WidthRatioProperty) && !window.IsSet(HeightRatioProperty))
+        {
+            return;
+        }
+
+        UpdateWindowSize(window, ownerWindow);
+    }
 
     private static void OnWidthRatioChanged(Window window, AvaloniaPropertyChangedEventArgs e)
     {
         if (e.NewValue is double and > 0)
         {
-            UpdateWindowSize(window);
+            UpdateWindowSize(window, ownerWindow: null);
         }
     }
 
@@ -64,96 +65,58 @@ public static class WindowScreenSizeBehavior
     {
         if (e.NewValue is double and > 0)
         {
-            UpdateWindowSize(window);
+            UpdateWindowSize(window, ownerWindow: null);
         }
     }
 
-    private static void UpdateWindowSize(Window window)
+    private static void UpdateWindowSize(Window window, Window? ownerWindow)
     {
         try
         {
-            var screens = window.Screens;
-            if (screens == null) return;
-
-            // Get the screen where the main window is located (same logic as CheckForm)
-            var targetScreen = screens.Primary;
-                
-            // Try to get screen from main window first
-            try
+            var targetScreen = WindowScreenContext.ResolveTargetScreen(window, ownerWindow);
+            if (targetScreen == null)
             {
-                var appLifetime = Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime;
-                var mainWindow = appLifetime?.MainWindow;
-                    
-                if (mainWindow?.PlatformImpl != null)
-                {
-                    var screenFromMainWindow = screens.ScreenFromWindow(mainWindow.PlatformImpl);
-                    if (screenFromMainWindow != null)
-                    {
-                        targetScreen = screenFromMainWindow;
-                    }
-                }
+                return;
             }
-            catch
-            {
-                System.Diagnostics.Debug.WriteLine("ScreenFromWindow for main window failed, using primary screen");
-            }
-
-            // Try to get screen from window position if window is already initialized
-            try
-            {
-                if (window.PlatformImpl != null)
-                {
-                    var screenFromWindow = screens.ScreenFromWindow(window.PlatformImpl);
-                    if (screenFromWindow != null)
-                    {
-                        targetScreen = screenFromWindow;
-                    }
-                }
-            }
-            catch
-            {
-                // Fallback to primary screen if ScreenFromWindow fails
-                System.Diagnostics.Debug.WriteLine("ScreenFromWindow failed, using primary screen");
-            }
-
-            // Final fallback to primary screen
-            targetScreen ??= screens.Primary;
-
-            if (targetScreen == null) return;
 
             var widthRatio = GetWidthRatio(window);
             var heightRatio = GetHeightRatio(window);
-
-            // Use PixelDensity for scaling, but handle potential issues
-            var scale = 1.0;
-            try
+            if (widthRatio <= 0 || heightRatio <= 0)
             {
-                scale = targetScreen.PixelDensity;
-                if (scale <= 0) scale = 1.0; // Fallback if PixelDensity is invalid
-            }
-            catch
-            {
-                System.Diagnostics.Debug.WriteLine("PixelDensity access failed, using scale 1.0");
+                return;
             }
 
-            // Calculate new size with proper error handling
-            var workingArea = targetScreen.WorkingArea;
-            var newWidth = workingArea.Width * widthRatio / scale;
-            var newHeight = workingArea.Height * heightRatio / scale;
+            var (newWidth, newHeight) = WindowScreenContext.ComputeSize(targetScreen, widthRatio, heightRatio);
 
-            // Apply minimum size constraints to prevent invalid window sizes
-            newWidth = Math.Max(newWidth, 200);
-            newHeight = Math.Max(newHeight, 150);
+            if (window.MaxWidth > 0 && !double.IsInfinity(window.MaxWidth))
+            {
+                newWidth = Math.Min(newWidth, window.MaxWidth);
+            }
+
+            if (window.MaxHeight > 0 && !double.IsInfinity(window.MaxHeight))
+            {
+                newHeight = Math.Min(newHeight, window.MaxHeight);
+            }
+
+            // Min* уважаем только в пределах working area — иначе окно выше экрана и шапка пропадает.
+            if (window.MinWidth > 0)
+            {
+                newWidth = Math.Max(newWidth, window.MinWidth);
+            }
+
+            if (window.MinHeight > 0)
+            {
+                newHeight = Math.Max(newHeight, window.MinHeight);
+            }
+
+            (newWidth, newHeight) = WindowScreenContext.ClampToWorkingArea(newWidth, newHeight, targetScreen);
 
             window.Width = newWidth;
             window.Height = newHeight;
         }
         catch (Exception ex)
         {
-            // Log error if logger is available
             System.Diagnostics.Debug.WriteLine($"WindowScreenSizeBehavior error: {ex.Message}");
-                
-            // Fallback to hardcoded reasonable size
             window.Width = 800;
             window.Height = 600;
         }

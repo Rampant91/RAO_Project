@@ -7,11 +7,12 @@
         x:Class="Client_App.Views.OnStartProgressBar"
         x:DataType="vm:OnStartProgressBarVM"
         MinWidth="300" MinHeight="30"
-        Width="300" Height="30"
-        d:DesignWidth="300" d:DesignHeight="30"
+        Width="300" Height="40"
+        d:DesignWidth="300" d:DesignHeight="40"
         SystemDecorations="None"
-        WindowStartupLocation="CenterScreen"
-        CanResize="True">
+        WindowStartupLocation="Manual"
+        CanResize="False"
+        Background="Transparent">
 
     <Design.DataContext>
         <vm:OnStartProgressBarVM/>
@@ -20,7 +21,8 @@
     <Panel>
 		<ProgressBar Maximum="100" 
                      Minimum="0" 
-                     Height="40" 
+                     Height="40"
+                     VerticalAlignment="Stretch"
                      Value="{Binding OnStartProgressBar, Mode=OneWay}"/>
 		<TextBlock HorizontalAlignment="Center" 
                    VerticalAlignment="Center" 

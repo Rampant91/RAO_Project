@@ -102,12 +102,12 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         //        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
         //        {
         //            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-        //            ContentTitle = "˜˜˜˜˜˜ ˜˜˜ ˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜˜",
-        //            ContentHeader = "˜˜˜˜˜˜",
+        //            ContentTitle = "ĞÑˆĞ¸Ğ±ĞºĞ° Ğ¿Ñ€Ğ¸ ÑĞ¾Ñ…Ñ€Ğ°Ğ½ĞµĞ½Ğ¸Ğ¸ Ñ‚Ğ¸Ñ‚ÑƒĞ»ÑŒĞ½Ğ¾Ğ³Ğ¾ Ğ»Ğ¸ÑÑ‚Ğ° Ğ¾Ñ€Ğ³Ğ°Ğ½Ğ¸Ğ·Ğ°Ñ†Ğ¸Ğ¸",
+        //            ContentHeader = "ĞÑˆĞ¸Ğ±ĞºĞ°",
         //            ContentMessage =
-        //                $"˜˜ ˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜ ˜ ˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜˜, " +
-        //                $"˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜˜ ˜ ˜˜˜˜˜˜˜ ˜˜˜˜ ˜ ˜˜˜.˜ ˜˜˜ ˜˜˜˜˜˜˜˜˜˜ ˜ ˜˜˜˜ ˜˜˜˜˜˜. " +
-        //                $"˜˜˜˜˜˜˜˜˜ ˜ ˜˜˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜ ˜ ˜˜˜.˜.",
+        //                $"ĞĞµ ÑƒĞ´Ğ°Ğ»Ğ¾ÑÑŒ ÑĞ¾Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚ÑŒ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ñ Ğ² Ñ‚Ğ¸Ñ‚ÑƒĞ»ÑŒĞ½Ğ¾Ğ¼ Ğ»Ğ¸ÑÑ‚Ğµ Ğ¾Ñ€Ğ³Ğ°Ğ½Ğ¸Ğ·Ğ°Ñ†Ğ¸Ğ¸, " +
+        //                $"Ğ¿Ğ¾ÑĞºĞ¾Ğ»ÑŒĞºÑƒ Ğ¾Ñ€Ğ³Ğ°Ğ½Ğ¸Ğ·Ğ°Ñ†Ğ¸Ñ Ñ Ğ´Ğ°Ğ½Ğ½Ñ‹Ğ¼Ğ¸ ĞĞšĞŸĞ Ğ¸ Ñ€ĞµĞ³.â„– ÑƒĞ¶Ğµ ÑÑƒÑ‰ĞµÑÑ‚Ğ²ÑƒĞµÑ‚ Ğ² Ğ±Ğ°Ğ·Ğµ Ğ´Ğ°Ğ½Ğ½Ñ‹Ñ…. " +
+        //                $"Ğ£Ğ±ĞµĞ´Ğ¸Ñ‚ĞµÑÑŒ Ğ² Ğ¿Ñ€Ğ°Ğ²Ğ¸Ğ»ÑŒĞ½Ğ¾ÑÑ‚Ğ¸ Ğ·Ğ°Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ¸Ñ ĞĞšĞŸĞ Ğ¸ Ñ€ĞµĞ³.â„–.",
         //            MinWidth = 400,
         //            MaxWidth = 600,
         //            MinHeight = 150,
@@ -157,22 +157,22 @@ public partial class Form_10 : BaseWindow<Form_10VM>
                 {
                     ButtonDefinitions =
                     [
-                        new ButtonDefinition { Name = "˜˜" },
-                        new ButtonDefinition { Name = "˜˜˜" }
+                        new ButtonDefinition { Name = "Ğ”Ğ°" },
+                        new ButtonDefinition { Name = "ĞĞµÑ‚" }
                     ],
-                    ContentTitle = "˜˜˜˜˜ 1.0",
-                    ContentHeader = "˜˜˜˜˜˜˜˜˜˜˜",
-                    ContentMessage = "˜˜˜ ˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜˜˜˜, " +
-                                     $"{Environment.NewLine}˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜. " +
-                                     $"{Environment.NewLine}˜˜ ˜˜˜˜˜˜˜, ˜˜˜ ˜˜˜˜˜˜ ˜˜˜˜˜˜˜ ˜˜˜˜˜, " +
-                                     $"˜˜˜˜˜˜˜ ˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜ ˜˜˜˜˜˜˜˜˜˜˜˜˜˜?",
+                    ContentTitle = "Ğ¤Ğ¾Ñ€Ğ¼Ğ° 1.0",
+                    ContentHeader = "Ğ£Ğ²ĞµĞ´Ğ¾Ğ¼Ğ»ĞµĞ½Ğ¸Ğµ",
+                    ContentMessage = "ĞĞµ Ğ²ÑĞµ Ğ¾Ğ±ÑĞ·Ğ°Ñ‚ĞµĞ»ÑŒĞ½Ñ‹Ğµ Ğ¿Ğ¾Ğ»Ñ ÑÑ€Ğ¸Ğ´Ğ¸Ñ‡ĞµÑĞºĞ¾Ğ³Ğ¾ Ğ»Ğ¸Ñ†Ğ° Ğ·Ğ°Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ñ‹, " +
+                                     $"{Environment.NewLine}Ñ‡Ğ°ÑÑ‚ÑŒ Ğ·Ğ°Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ½Ñ‹Ñ… Ğ¿Ğ¾Ğ»ĞµĞ¹ Ğ±ÑƒĞ´ĞµÑ‚ Ğ¾Ñ‡Ğ¸Ñ‰ĞµĞ½Ğ°. " +
+                                     $"{Environment.NewLine}Ğ’Ñ‹ ÑƒĞ²ĞµÑ€ĞµĞ½Ñ‹, Ñ‡Ñ‚Ğ¾ Ñ…Ğ¾Ñ‚Ğ¸Ñ‚Ğµ Ğ²Ñ‹Ğ¹Ñ‚Ğ¸, " +
+                                     $"Ğ½ĞµÑĞ¼Ğ¾Ñ‚Ñ€Ñ Ğ½Ğ° Ğ½ĞµĞ·Ğ°Ğ¿Ğ¾Ğ»Ğ½ĞµĞ½Ğ½Ñ‹Ğµ Ğ¿Ğ¾Ğ»Ñ ÑÑ€Ğ¸Ğ´Ğ¸Ñ‡ĞµÑĞºĞ¾Ğ³Ğ¾ Ğ»Ğ¸Ñ†Ğ°?",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
                 })
                 .ShowDialog(desktop.MainWindow));
 
-            if (answer is not "˜˜")
+            if (answer is not "Ğ”Ğ°")
             {
                 args.Cancel = true;
                 return;
@@ -188,12 +188,12 @@ public partial class Form_10 : BaseWindow<Form_10VM>
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "˜˜" },
-                    new ButtonDefinition { Name = "˜˜˜" }
+                    new ButtonDefinition { Name = "Ğ”Ğ°" },
+                    new ButtonDefinition { Name = "ĞĞµÑ‚" }
                 ],
-                ContentTitle = "˜˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜˜˜˜˜",
-                ContentHeader = "˜˜˜˜˜˜˜˜˜˜˜",
-                ContentMessage = $"˜˜˜˜˜˜˜˜˜ ˜˜˜˜˜ {vm.FormType}?",
+                ContentTitle = "Ğ¡Ğ¾Ñ…Ñ€Ğ°Ğ½ĞµĞ½Ğ¸Ğµ Ğ¸Ğ·Ğ¼ĞµĞ½ĞµĞ½Ğ¸Ğ¹",
+                ContentHeader = "Ğ£Ğ²ĞµĞ´Ğ¾Ğ¼Ğ»ĞµĞ½Ğ¸Ğµ",
+                ContentMessage = $"Ğ¡Ğ¾Ñ…Ñ€Ğ°Ğ½Ğ¸Ñ‚ÑŒ Ñ„Ğ¾Ñ€Ğ¼Ñƒ {vm.FormType}?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
@@ -206,7 +206,7 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         var dbm = StaticConfiguration.DBModel;
         switch (res.Result)
         {
-            case "˜˜":
+            case "Ğ”Ğ°":
             {
                 flag = true;
                 try
@@ -218,7 +218,7 @@ public partial class Form_10 : BaseWindow<Form_10VM>
 
                 break;
             }
-            case "˜˜˜":
+            case "ĞĞµÑ‚":
             {
                 flag = true;
                 dbm.Restore();

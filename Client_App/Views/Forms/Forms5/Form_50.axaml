@@ -4,16 +4,16 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms5"
-        xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
+        xmlns:behaviors="clr-namespace:Client_App.Behaviors"
         Title="Форма 5.0"
         Name="Форма 5.0"
-        Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.5', FallbackValue='600', Mode=OneTime}"
-        Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.75', FallbackValue='800', Mode=OneTime}"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.5"
+        behaviors:WindowScreenSizeBehavior.HeightRatio="0.75"
         MinWidth="950"
         MinHeight="600"
         x:CompileBindings="True"
         x:DataType="vm:Form_50VM"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="Manual"
         mc:Ignorable="d">
 
 	<Design.DataContext>

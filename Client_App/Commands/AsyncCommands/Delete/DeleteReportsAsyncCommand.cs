@@ -8,6 +8,7 @@ using Client_App.ViewModels;
 using Client_App.Views;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
@@ -22,6 +23,7 @@ namespace Client_App.Commands.AsyncCommands.Delete;
 
 /// <summary>
 /// Удалить выбранную организацию.
+/// Org в гриде — AsNoTracking stub: нельзя делать DbSet.Remove(stub), только удаление по Id.
 /// </summary>
 public class DeleteReportsAsyncCommand : BaseAsyncCommand
 {
@@ -31,30 +33,39 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
     {
         _mainWindowVM = mainWindowVM;
 
-        mainWindowVM.PropertyChanged += (sender, e) =>
+        mainWindowVM.PropertyChanged += (_, e) =>
         {
             if (e.PropertyName == nameof(MainWindowVM.SelectedReports))
-            {
                 OnCanExecuteChanged();
-            }
         };
     }
 
-    public override bool CanExecute(object? parameter) => _mainWindowVM.SelectedReports is not null;
+    public override bool CanExecute(object? parameter) =>
+        !IsExecute && (_mainWindowVM.SelectedReports is not null || parameter is Reports || parameter is IEnumerable);
 
     public override async Task AsyncExecute(object? parameter)
     {
-        Reports reps;
+        Reports? orgShell;
         if (parameter is IEnumerable enumerable)
-            reps = enumerable!.Cast<Reports>().First();
+            orgShell = enumerable.OfType<Reports>().FirstOrDefault();
         else if (parameter is Reports reports)
-            reps = reports;
-        else if (_mainWindowVM.SelectedReports is not null)
-            reps = _mainWindowVM.SelectedReports;
-        else return;
+            orgShell = reports;
+        else
+            orgShell = _mainWindowVM.SelectedReports;
 
-        if (await ReportExportLock.TryBlockOrganizationAccessAsync(reps.Id))
+        if (orgShell is null)
         {
+            ServiceExtension.LoggerManager.Warning(
+                "Удаление организации: организация не выбрана.",
+                ErrorCodeLogger.Application);
+            return;
+        }
+
+        if (await ReportExportLock.TryBlockOrganizationAccessAsync(orgShell.Id))
+        {
+            ServiceExtension.LoggerManager.Warning(
+                $"Удаление организации Id={orgShell.Id}: доступ заблокирован (экспорт/блокировка).",
+                ErrorCodeLogger.Application);
             return;
         }
 
@@ -79,55 +90,106 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
         #endregion
 
-        if (answer is not "Да") return;
+        if (answer is not "Да")
+            return;
 
+        var orgId = orgShell.Id;
         try
         {
-            var masterRep = reps.Master_DB;
-
-            var db = StaticConfiguration.DBModel;
-
-            var reportIds = await OrgReportsQuery.GetReportIdsAsync(db, reps.Id);
-            foreach (var batch in FirebirdInClause.Chunk(reportIds))
-            {
-                var toRemove = db.ReportCollectionDbSet
-                    .Where(r => batch.Contains(r.Id))
-                    .ToList();
-                db.ReportCollectionDbSet.RemoveRange(toRemove);
-            }
-
-            db.ReportCollectionDbSet.Remove(masterRep);
-            
-            db.ReportsCollectionDbSet.Remove(reps);
-            await db.SaveChangesAsync();
-
-            Forms1WarmCache.Instance.InvalidateOrg(reps.Id);
-            Forms1WarmCache.Instance.InvalidateOrgPages();
-            MainWindowListQuery.InvalidateAllOrgKeysCaches();
-
-            await ProcessDataBaseFillEmpty(db);
-
-            var mainWindow = (Desktop.MainWindow as MainWindow)!;
-            var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
-            mainWindowVM.UpdateReportsCollection();
-            mainWindowVM.UpdateOrgsPageInfo();
-            mainWindowVM.UpdateTotalReportCount();
-            mainWindowVM.UpdateTotalReportsCount();
+            await DeleteOrganizationByIdAsync(orgId).ConfigureAwait(true);
         }
         catch (Exception ex)
         {
-            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+            var msg = $"Удаление организации Id={orgId} не выполнено." +
+                      $"{Environment.NewLine}Message: {ex.Message}" +
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
         }
+    }
 
-        //await Local_Reports.Reports_Collection.QuickSortAsync();
-    
+    private async Task DeleteOrganizationByIdAsync(int orgId)
+    {
+        var db = StaticConfiguration.DBModel;
+
+        var trackedOrg = await db.ReportsCollectionDbSet
+            .FirstOrDefaultAsync(r => r.Id == orgId)
+            .ConfigureAwait(true);
+
+        if (trackedOrg is null)
+        {
+            ServiceExtension.LoggerManager.Warning(
+                $"Удаление организации Id={orgId}: запись не найдена в БД.",
+                ErrorCodeLogger.DataBase);
+            InvalidateAndRefreshUi(orgId);
+            return;
+        }
+
+        var masterId = trackedOrg.Master_DBId;
+        var reportIds = await OrgReportsQuery.GetReportIdsAsync(db, orgId).ConfigureAwait(true);
+
+        foreach (var batch in FirebirdInClause.Chunk(reportIds))
+        {
+            var toRemove = await db.ReportCollectionDbSet
+                .Where(r => batch.Contains(r.Id))
+                .ToListAsync()
+                .ConfigureAwait(true);
+            db.ReportCollectionDbSet.RemoveRange(toRemove);
+        }
+
+        // Титул (Master) может не входить в Report_Collection org — удаляем отдельно по Id.
+        if (masterId is > 0)
+        {
+            var master = db.ReportCollectionDbSet.Local.FirstOrDefault(r => r.Id == masterId.Value)
+                         ?? await db.ReportCollectionDbSet
+                             .FirstOrDefaultAsync(r => r.Id == masterId.Value)
+                             .ConfigureAwait(true);
+            if (master is not null)
+                db.ReportCollectionDbSet.Remove(master);
+
+            trackedOrg.Master_DBId = null;
+            trackedOrg.Master_DB = null!;
+        }
+
+        db.ReportsCollectionDbSet.Remove(trackedOrg);
+        await db.SaveChangesAsync().ConfigureAwait(true);
+
+        RemoveOrgFromLocalStorage(orgId);
+        await ProcessDataBaseFillEmpty(db).ConfigureAwait(true);
+        InvalidateAndRefreshUi(orgId);
+    }
+
+    private void InvalidateAndRefreshUi(int orgId)
+    {
+        Forms1WarmCache.Instance.InvalidateOrg(orgId);
+        Forms1WarmCache.Instance.InvalidateOrgPages();
+        MainWindowListQuery.InvalidateAllOrgKeysCaches();
+
+        if (_mainWindowVM.SelectedReports?.Id == orgId)
+            _mainWindowVM.SelectedReports = null;
+
+        var mainWindow = Desktop.MainWindow as MainWindow;
+        var mainWindowVM = mainWindow?.DataContext as MainWindowVM ?? _mainWindowVM;
+        mainWindowVM.UpdateReportsCollection();
+        mainWindowVM.UpdateOrgsPageInfo();
+        mainWindowVM.UpdateTotalReportCount();
+        mainWindowVM.UpdateTotalReportsCount();
+    }
+
+    private static void RemoveOrgFromLocalStorage(int orgId)
+    {
+        var local = ReportsStorage.LocalReports;
+        if (local?.Reports_Collection is null)
+            return;
+
+        foreach (var item in local.Reports_Collection.OfType<Reports>().Where(r => r.Id == orgId).ToList())
+            local.Reports_Collection.Remove(item);
     }
 
     private static async Task ProcessDataBaseFillEmpty(DataContext dbm)
     {
-        if (!dbm.DBObservableDbSet.Any()) dbm.DBObservableDbSet.Add(new DBObservable());
+        if (!dbm.DBObservableDbSet.Any())
+            dbm.DBObservableDbSet.Add(new DBObservable());
+
         foreach (var item in dbm.DBObservableDbSet)
         {
             foreach (var key in item.Reports_Collection)

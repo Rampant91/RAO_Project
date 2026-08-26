@@ -36,12 +36,19 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
     {
         if (parameter != null)
         {
-            await Execute();
+            // Открытие с главного: parameter = Report (через ICommand.Execute / async void).
+            Execute(parameter);
+            return;
         }
-        else if (formParam != null)
+
+        if (formParam?.Window != null && formParam.Parameter is Report reportToOpen)
         {
-            await Execute(formParam.Window);
+            await FormReportWindowNavigator.ReplaceAsync(formParam.Window, reportToOpen).ConfigureAwait(true);
+            return;
         }
+
+        if (formParam?.Window != null)
+            await Execute(formParam.Window);
     }
 
     #endregion

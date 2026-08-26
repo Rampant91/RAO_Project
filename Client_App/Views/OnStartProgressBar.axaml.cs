@@ -10,6 +10,9 @@ namespace Client_App.Views;
 
 public partial class OnStartProgressBar : BaseWindow<OnStartProgressBarVM>
 {
+    /// <summary>Splash должен быть виден сразу (без fade), но с корректным центром/fallback Linux.</summary>
+    protected override bool RevealOnOpen => false;
+
     public OnStartProgressBar()
     {
         InitializeComponent();

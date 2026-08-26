@@ -435,6 +435,57 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         _selectReportVM = new SelectReportPopupVM(this);
         _executorDataControlVM = new ExecutorDataControlVM(this.Report);
     }
+
+    /// <summary>
+    /// Сменить отчёт в том же окне (↑/↓ / «Выбрать» при той же FormNum).
+    /// </summary>
+    public async Task ReloadFromReportAsync(Report loadedReport)
+    {
+        Report = loadedReport;
+        Reports = loadedReport.Reports;
+
+        var formNum = FormType;
+        var isPaged = formNum is "1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8" or "1.9";
+        if (isPaged)
+        {
+            UseDbPaging = true;
+            DbTotalRows = await FormRowsPageLoader.CountAsync(StaticConfiguration.DBModel, loadedReport.Id, formNum);
+            _currentPage = 1;
+            OnPropertyChanged(nameof(CurrentPage));
+        }
+        else
+        {
+            UseDbPaging = false;
+            DbTotalRows = null;
+            _currentPage = 1;
+            OnPropertyChanged(nameof(CurrentPage));
+        }
+
+        if (loadedReport.Notes != null)
+        {
+            Report.Notes = loadedReport.Notes is ObservableCollectionWithItemPropertyChanged<Note> notes
+                ? notes
+                : new ObservableCollectionWithItemPropertyChanged<Note>(loadedReport.Notes);
+        }
+        else
+        {
+            Report.Notes = new ObservableCollectionWithItemPropertyChanged<Note>(
+                StaticConfiguration.DBModel.notes.Where(note => note.ReportId == Report.Id));
+        }
+
+        NoteList = Report.Notes;
+        SelectedForm = null;
+        SelectedForms = [];
+        SelectedNote = null!;
+        SelectedNotes = [];
+
+        UpdateFormList();
+        UpdatePageInfo();
+        InitializeUserControls();
+        OnPropertyChanged(nameof(WindowTitle));
+        OnPropertyChanged(nameof(TotalPages));
+        OnPropertyChanged(nameof(TotalRows));
+    }
     #endregion
 
     #region Commands

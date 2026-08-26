@@ -174,7 +174,10 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
         foreach (var form in formsWithCode41)
         {
             var opDate = DateOnly.Parse(form.OperationDate_DB);
-            var repInRange = SelectedReports.Report_Collection
+            // Report_Collection у org из грида часто пуст (AsNoTracking stub) — ищем периоды в БД.
+            var shells = OrgReportsQuery.LoadReportShells(
+                StaticConfiguration.DBModel, SelectedReports.Id);
+            var repInRange = shells
                 .Where(rep => (form.FormNum_DB == "1.1" && rep.FormNum_DB == "1.5"
                                || form.FormNum_DB == "1.2" && rep.FormNum_DB == "1.6"
                                || form.FormNum_DB == "1.3" && rep.FormNum_DB == "1.6"

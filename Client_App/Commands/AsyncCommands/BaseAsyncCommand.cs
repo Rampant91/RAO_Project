@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Commands.SyncCommands;
 using Client_App.Interfaces.Logger;
+using Client_App.Interfaces.Logger.EnumLogger;
 
 namespace Client_App.Commands.AsyncCommands;
 
@@ -53,7 +54,7 @@ public abstract class BaseAsyncCommand : BaseCommand
         {
             var msg = $"{Environment.NewLine}Message: {ex.Message}" +
                        $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-            ServiceExtension.LoggerManager.Warning(msg);
+            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.Application);
         }
         IsExecute = false;
     }

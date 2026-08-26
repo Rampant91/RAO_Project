@@ -1,4 +1,5 @@
 ﻿using Client_App.Resources;
+using Client_App.Services;
 using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms;
@@ -991,14 +992,9 @@ public abstract class SourceTransmissionBaseAsyncCommand : BaseAsyncCommand
     {
         rep.Reports ??= FormVM.Reports;
         var window = Desktop.Windows.First(x => x.Name is "1.1" or "1.2" or "1.3" or "1.4");
-        var vm = (BaseFormVM)window.DataContext;
+        var vm = (BaseFormVM)window.DataContext!;
         vm.SkipChangeTacking = true;
-        var windowParam = new FormParameter
-        {
-            Parameter = rep,
-            Window = window
-        };
-        await new ChangeFormAsyncCommand(windowParam).AsyncExecute(null).ConfigureAwait(false);
+        await FormReportWindowNavigator.ReplaceAsync(window, rep).ConfigureAwait(true);
         EnsureReportVisibleInMainWindow(rep);
         RefreshMainWindowReportList();
     }

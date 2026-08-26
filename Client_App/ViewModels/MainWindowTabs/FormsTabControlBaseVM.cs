@@ -90,11 +90,45 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     private int _totalReportCount;
     private int _totalRowsOrgs;
 
+    /// <summary>Задержка перед показом индикатора, чтобы не мигал на быстрых cache miss.</summary>
+    private const int LoadingIndicatorDelayMs = 180;
+
+    private bool _isOrgsLoading;
+    private bool _isReportsLoading;
+    private bool _orgLoadInProgress;
+    private bool _reportsLoadInProgress;
+
     #endregion
 
     #region Properties
 
     public MainWindowVM MainWindowVM { get; }
+
+    /// <summary>Индикатор загрузки страницы организаций (только cache miss, с задержкой).</summary>
+    public bool IsOrgsLoading
+    {
+        get => _isOrgsLoading;
+        private set
+        {
+            if (_isOrgsLoading == value)
+                return;
+            _isOrgsLoading = value;
+            OnPropertyChanged();
+        }
+    }
+
+    /// <summary>Индикатор загрузки страницы отчётов (только cache miss, с задержкой).</summary>
+    public bool IsReportsLoading
+    {
+        get => _isReportsLoading;
+        private set
+        {
+            if (_isReportsLoading == value)
+                return;
+            _isReportsLoading = value;
+            OnPropertyChanged();
+        }
+    }
 
     private protected abstract byte DefaultOrgsPerPage { get; }
 
@@ -428,6 +462,10 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
         if (_cache.TryGetOrgPage(search, pageNum, pageSize, out var cached, master))
         {
+            // Инвалидируем in-flight miss, чтобы не затёр кэш-хит и не оставил индикатор.
+            Interlocked.Increment(ref _orgLoadGeneration);
+            _orgLoadInProgress = false;
+            IsOrgsLoading = false;
             if (ReplaceCollection(_orgsCollection, cached.Items, r => r.Id))
                 OnPropertyChanged(nameof(ReportsCollection));
             SchedulePrefetchAdjacentOrgPages(search, pageNum, pageSize);
@@ -435,6 +473,8 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
         }
 
         var generation = Interlocked.Increment(ref _orgLoadGeneration);
+        _orgLoadInProgress = true;
+        ScheduleOrgsLoadingIndicator(generation);
         var dbPath = StaticConfiguration.DBPath;
 
         _ = Task.Run(() =>
@@ -447,6 +487,8 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
                 {
                     if (generation != _orgLoadGeneration)
                         return;
+                    _orgLoadInProgress = false;
+                    IsOrgsLoading = false;
                     if (ReplaceCollection(_orgsCollection, page.Items, r => r.Id))
                         OnPropertyChanged(nameof(ReportsCollection));
                     SchedulePrefetchAdjacentOrgPages(search, pageNum, pageSize);
@@ -454,9 +496,51 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
             }
             catch
             {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    if (generation != _orgLoadGeneration)
+                        return;
+                    _orgLoadInProgress = false;
+                    IsOrgsLoading = false;
+                });
                 // keep previous page visible
             }
         });
+    }
+
+    /// <summary>Показать индикатор org-грида, если загрузка ещё идёт после задержки.</summary>
+    private void ScheduleOrgsLoadingIndicator(int generation)
+    {
+        _ = Task.Delay(LoadingIndicatorDelayMs).ContinueWith(_ =>
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (generation == _orgLoadGeneration && _orgLoadInProgress)
+                    IsOrgsLoading = true;
+            });
+        });
+    }
+
+    /// <summary>Показать индикатор report-грида, если загрузка ещё идёт через задержку.</summary>
+    protected void ScheduleReportsLoadingIndicator(int generation, Func<int> currentGeneration)
+    {
+        _reportsLoadInProgress = true;
+        _ = Task.Delay(LoadingIndicatorDelayMs).ContinueWith(_ =>
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                if (generation == currentGeneration() && _reportsLoadInProgress)
+                    IsReportsLoading = true;
+            });
+        });
+    }
+
+    /// <summary>Сброс индикатора отчётов (cache hit / снятие выбора / завершение miss).</summary>
+    protected void SetReportsLoading(bool value)
+    {
+        if (!value)
+            _reportsLoadInProgress = false;
+        IsReportsLoading = value;
     }
 
     /// <summary>

@@ -21,7 +21,7 @@
     x:DataType="vm:Form_22VM"
     KeyDown="DataGrid_KeyDown"
     KeyUp="DataGrid_KeyUp"
-    WindowStartupLocation="CenterScreen"
+    WindowStartupLocation="Manual"
     mc:Ignorable="d">
 
     <Window.Resources>
