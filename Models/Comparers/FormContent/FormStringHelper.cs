@@ -1,4 +1,5 @@
 using Models.Forms;
+using System;
 
 namespace Models.Comparers.FormContent;
 
@@ -51,6 +52,19 @@ internal static class FormStringHelper
     {
         str = Form.RemoveExcelFormulaPrefix(str);
         if (float.TryParse(str, out var result))
+        {
+            return result;
+        }
+        else
+            return null;
+    }
+    #endregion
+
+    #region ConvertStringToDateOnly
+    public static DateOnly? ConvertStringToDateOnly(string str)
+    {
+        str = Form.RemoveExcelFormulaPrefix(str);
+        if (DateOnly.TryParse(str, out var result))
         {
             return result;
         }

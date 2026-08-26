@@ -360,6 +360,10 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                             .FirstOrDefault(x => x.Id == report.Id);
 
                         report.Rows31One = dbReport.Rows31One;
+
+                        foreach (var item in report.Rows31One.ExportedZriOziiiInfoCollection)
+                            item.ValidateAll();
+
                         var form31VM = new Form_31VM(report);
                         var window = new Form_31(form31VM);
                         await window.ShowDialog(t);
@@ -374,6 +378,16 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
                             .FirstOrDefault(x => x.Id == report.Id);
 
                         report.Rows32One = dbReport.Rows32One;
+
+                        foreach (var item in report.Rows32One.ExportedZriInfoCollection)
+                            item.ValidateAll();
+
+                        foreach (var item in report.Rows32One.ContainersInfoCollection)
+                            item.ValidateAll();
+
+                        foreach (var item in report.Rows32One.IdentificatorsCollection)
+                            item.ValidateAll();
+
                         var form32VM = new Form_32VM(report);
                         var window = new Form_32(form32VM);
                         await window.ShowDialog(t);
