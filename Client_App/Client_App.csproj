@@ -93,12 +93,32 @@
     <ItemGroup Condition="Exists('$(_RepoDataDir)')">
       <_RepoDataOutputFiles Include="$(_RepoDataDir)\**\*.*"
                            Exclude="$(_RepoDataDir)\REDDB\**\*.*;$(_RepoDataDir)\Updater\**\*.*;$(_RepoDataDir)\**\firebird.log" />
+      <!-- Для запуска из bin\Debug/bin\Release копируем win runtime-библиотеки Firebird -->
+      <_RepoReddbOutputFilesWin64 Include="$(_RepoDataDir)\REDDB\win-x64\**\*.*"
+                                  Exclude="$(_RepoDataDir)\REDDB\win-x64\**\firebird.log"
+                                  Condition="$([MSBuild]::IsOSPlatform('Windows')) and Exists('$(_RepoDataDir)\REDDB\win-x64')" />
+      <_RepoReddbOutputFilesWin32 Include="$(_RepoDataDir)\REDDB\win-x32\**\*.*"
+                                  Exclude="$(_RepoDataDir)\REDDB\win-x32\**\firebird.log"
+                                  Condition="$([MSBuild]::IsOSPlatform('Windows')) and Exists('$(_RepoDataDir)\REDDB\win-x32')" />
     </ItemGroup>
+    <Warning
+      Text="CopyRepoDataToOutput: не найдена папка $(_RepoDataDir)\REDDB\win-x64 (для запуска из bin может не хватить Firebird)."
+      Condition="$([MSBuild]::IsOSPlatform('Windows')) and Exists('$(_RepoDataDir)') and !Exists('$(_RepoDataDir)\REDDB\win-x64')" />
     <Copy
       SourceFiles="@(_RepoDataOutputFiles)"
       DestinationFiles="@(_RepoDataOutputFiles->'$(TargetDir)data\%(RecursiveDir)%(Filename)%(Extension)')"
       SkipUnchangedFiles="true"
       Condition="'@(_RepoDataOutputFiles)' != ''" />
+    <Copy
+      SourceFiles="@(_RepoReddbOutputFilesWin64)"
+      DestinationFiles="@(_RepoReddbOutputFilesWin64->'$(TargetDir)data\REDDB\win-x64\%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true"
+      Condition="'@(_RepoReddbOutputFilesWin64)' != ''" />
+    <Copy
+      SourceFiles="@(_RepoReddbOutputFilesWin32)"
+      DestinationFiles="@(_RepoReddbOutputFilesWin32->'$(TargetDir)data\REDDB\win-x32\%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true"
+      Condition="'@(_RepoReddbOutputFilesWin32)' != ''" />
   </Target>
   <Target Name="CopyRepoDataToPublish" AfterTargets="Publish" DependsOnTargets="_ResolveDataPublishDir">
     <Warning
