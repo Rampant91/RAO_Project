@@ -85,6 +85,21 @@
       <_DataPublishDir Condition="'$(_DataPublishDir)' == '' and '$(PublishUrl)' != ''">$(PublishUrl)</_DataPublishDir>
     </PropertyGroup>
   </Target>
+  <!--
+    Build (Debug/Release): Spravochniki, Excel и пр. рядом с exe.
+    REDDB только при Publish (нужен RID, тяжёлый).
+  -->
+  <Target Name="CopyRepoDataToOutput" AfterTargets="Build">
+    <ItemGroup Condition="Exists('$(_RepoDataDir)')">
+      <_RepoDataOutputFiles Include="$(_RepoDataDir)\**\*.*"
+                           Exclude="$(_RepoDataDir)\REDDB\**\*.*;$(_RepoDataDir)\Updater\**\*.*;$(_RepoDataDir)\**\firebird.log" />
+    </ItemGroup>
+    <Copy
+      SourceFiles="@(_RepoDataOutputFiles)"
+      DestinationFiles="@(_RepoDataOutputFiles->'$(TargetDir)data\%(RecursiveDir)%(Filename)%(Extension)')"
+      SkipUnchangedFiles="true"
+      Condition="'@(_RepoDataOutputFiles)' != ''" />
+  </Target>
   <Target Name="CopyRepoDataToPublish" AfterTargets="Publish" DependsOnTargets="_ResolveDataPublishDir">
     <Warning
       Text="CopyRepoDataToPublish: RuntimeIdentifier не задан — REDDB не скопирован. Укажите RID в publish-профиле."
@@ -122,7 +137,8 @@
       <_MpzfUpdaterFiles Include="$(_MpzfUpdaterOutDir)MpzfUpdater.pdb" Condition="Exists('$(_MpzfUpdaterOutDir)MpzfUpdater.pdb')" />
     </ItemGroup>
   </Target>
-  <Target Name="CopyMpzfUpdaterToOutput" AfterTargets="Build" DependsOnTargets="_CollectMpzfUpdaterFiles">
+  <!-- После CopyRepoDataToOutput, чтобы data\Updater всегда был свежий -->
+  <Target Name="CopyMpzfUpdaterToOutput" AfterTargets="CopyRepoDataToOutput" DependsOnTargets="_CollectMpzfUpdaterFiles">
     <MakeDir Directories="$(TargetDir)data\Updater" />
     <Copy
       SourceFiles="@(_MpzfUpdaterFiles)"
