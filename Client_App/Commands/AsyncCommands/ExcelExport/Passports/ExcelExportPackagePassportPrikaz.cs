@@ -227,6 +227,15 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
         private Task FillHeader(ExcelPackage excelPackage, PackagePassport passport)
         {
             var worksheet = excelPackage.Workbook.Worksheets[0];
+            worksheet.Cells["G1:M1"].Merge = true;
+            worksheet.Cells["G1:M1"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            worksheet.Cells["G1:M1"].Style.Font.Bold = true;
+            worksheet.Cells["G1:M1"].Value = "П  А  С  П  О  Р  Т";
+
+            worksheet.Cells["G2:M2"].Merge = true;
+            worksheet.Cells["G2:M2"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            worksheet.Cells["G2:M2"].Style.Font.Bold = true;
+            worksheet.Cells["G2:M2"].Value = "на упаковку твердых радиоактивных отходов";
 
             worksheet.Cells["H3"].Value = passport.PassportNum;
             worksheet.Cells["H3"].Style.WrapText = true;
