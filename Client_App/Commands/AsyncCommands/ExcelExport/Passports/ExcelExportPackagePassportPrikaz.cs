@@ -93,6 +93,10 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
                 GC.Collect();
                 await progressBar.CloseAsync();
             }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
             finally
             {
                 TryDeleteTempDataBase(tmpDbPath);
