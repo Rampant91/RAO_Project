@@ -371,10 +371,12 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #endregion
 
+        await CloseProgressBarBeforeResultDialog(progressBar);
+
         if (!cts.IsCancellationRequested)
         {
            
-
+           
             string? answer = null;
             if (exportOrg.Master.FormNum_DB.Split('.')[0] is "1" or "2")
             {
@@ -464,7 +466,6 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                 Process.Start("explorer", folderPath);
             }
         }
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
         }
         finally
         {

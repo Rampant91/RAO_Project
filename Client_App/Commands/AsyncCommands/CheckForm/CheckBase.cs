@@ -23,8 +23,31 @@ public abstract class CheckBase : BaseAsyncCommand
 
     protected static bool HasEarlierSiblingReport(Report rep)
     {
-        using var db = new DBModel(StaticConfiguration.DBPath);
-        return OrgReportsQuery.HasEarlierSiblingReport(db, rep);
+        var ctx = CheckRunContext.Active;
+        if (ctx?.EarlierSiblingReportCache is bool cached)
+        {
+            return cached;
+        }
+
+        var db = ctx?.QueryDb ?? new DBModel(StaticConfiguration.DBPath);
+        var disposeDb = ctx?.QueryDb == null;
+        try
+        {
+            var result = OrgReportsQuery.HasEarlierSiblingReport(db, rep);
+            if (ctx != null)
+            {
+                ctx.EarlierSiblingReportCache = result;
+            }
+
+            return result;
+        }
+        finally
+        {
+            if (disposeDb)
+            {
+                db.Dispose();
+            }
+        }
     }
 
     private protected static List<Dictionary<string, string>> OKSM = new();

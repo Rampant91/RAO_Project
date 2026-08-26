@@ -14,6 +14,7 @@
         d:DesignWidth="400" d:DesignHeight="160"
         behaviors:WindowScreenSizeBehavior.WidthRatio="0.26" behaviors:WindowScreenSizeBehavior.HeightRatio="0.15"
         WindowStartupLocation="Manual"
+        Topmost="True"
         SystemDecorations="Full">
 
     <Design.DataContext>

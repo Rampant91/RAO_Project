@@ -77,14 +77,14 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
 
         try
         {
-            progressBarVM.SetProgressBar(5, "Определение имени файла", "Выгрузка отчёта для анализа", ExportType);
-            var fileName = await GetFileName(repParam, progressBar, cts);
-
-            progressBarVM.SetProgressBar(7, "Запрос пути сохранения");
-            var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
-
-            progressBarVM.SetProgressBar(15, "Загрузка отчёта");
+            progressBarVM.SetProgressBar(5, "Загрузка отчёта", "Выгрузка отчёта для анализа", ExportType);
             var rep = await GetReportWithRows(repId, cts);
+
+            progressBarVM.SetProgressBar(10, "Определение имени файла", "Выгрузка отчёта для анализа", ExportType);
+            var fileName = await GetFileName(rep, progressBar, cts);
+
+            progressBarVM.SetProgressBar(15, "Запрос пути сохранения");
+            var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
             progressBarVM.SetProgressBar(40, "Инициализация Excel пакета");
             using var excelPackage = await InitializeExcelPackage(fullPath);
@@ -412,11 +412,27 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
     /// <returns>Имя файла.</returns>
     private async Task<string> GetFileName(Report rep, AnyTaskProgressBar progressBar, CancellationTokenSource cts)
     {
-        string fileName;
         var formNum = RemoveForbiddenChars(rep.FormNum_DB);
-        var regNum = RemoveForbiddenChars(rep.Reports.Master.RegNoRep.Value);
-        var okpo = RemoveForbiddenChars(rep.Reports.Master.OkpoRep.Value);
+        if (string.IsNullOrEmpty(formNum))
+        {
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+            return "";
+        }
+
+        var regNum = "";
+        var okpo = "";
+        if (rep.Reports?.Master?.RegNoRep != null)
+        {
+            regNum = RemoveForbiddenChars(rep.Reports.Master.RegNoRep.Value);
+        }
+
+        if (rep.Reports?.Master?.OkpoRep != null)
+        {
+            okpo = RemoveForbiddenChars(rep.Reports.Master.OkpoRep.Value);
+        }
+
         var corNum = Convert.ToString(rep.CorrectionNumber_DB);
+        string fileName;
         switch (formNum[0])
         {
             case '1':
@@ -449,7 +465,7 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
     private static async Task<Report> GetReportWithRows(int repId, CancellationTokenSource cts)
     {
         await using var db = new DBModel(StaticConfiguration.DBPath);
-        return await db.ReportCollectionDbSet
+        var rep = await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
@@ -480,6 +496,8 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
                 .Include(rep => rep.Notes.OrderBy(note => note.Order))
                 .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null)
                 .FirstAsync(rep => rep.Id == repId, cts.Token);
+        await rep.SortAsync();
+        return rep;
     }
 
     #endregion

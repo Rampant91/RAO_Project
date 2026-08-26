@@ -18,31 +18,38 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
 {
     public AnyTaskProgressBarVM AnyTaskProgressBarVM { get; }
     private readonly CancellationTokenSource? _cancellationTokenSource;
+    private bool _suppressCancelOnClose;
+
+    protected override bool RevealOnOpen => false;
 
     public AnyTaskProgressBar()
     {
-
     }
+
     public AnyTaskProgressBar(CancellationTokenSource cts, Window? owner = null, bool isShowDialog = false)
     {
         InitializeComponent();
-//#if DEBUG
-//        this.AttachDevTools();
-//#endif
         _cancellationTokenSource = cts;
         var vm = new AnyTaskProgressBarVM(this, cts, new BackgroundLoader(), isShowDialog);
         DataContext = vm;
-        AnyTaskProgressBarVM = (DataContext as AnyTaskProgressBarVM)!;
+        AnyTaskProgressBarVM = (AnyTaskProgressBarVM)DataContext!;
 
-        if (owner == null && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        var showOwner = owner;
+        if (showOwner == null && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            if (AnyTaskProgressBarVM.IsShowDialog) ShowDialog(desktop.MainWindow);
-            else Show(desktop.MainWindow);
+            showOwner = desktop.MainWindow;
         }
-        else if (owner != null)
+
+        if (AnyTaskProgressBarVM.IsShowDialog && showOwner != null)
         {
-            if (AnyTaskProgressBarVM.IsShowDialog) ShowDialog(owner);
-            else Show(owner);
+            PrepareBeforeShow(showOwner);
+            AttachOpenedPositionFallback(showOwner);
+            Opacity = 1;
+            ShowDialog(showOwner);
+        }
+        else
+        {
+            ShowCentered(showOwner);
         }
     }
 
@@ -53,51 +60,47 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
 
     #region Events
 
-    private bool _mouseDownForWindowMoving = false;
+    private bool _mouseDownForWindowMoving;
     private PointerPoint? _originalPoint;
-
-    #region OnPointerMoved
 
     private void InputElement_OnPointerMoved(object? sender, PointerEventArgs e)
     {
-        if (!_mouseDownForWindowMoving) return;
+        if (!_mouseDownForWindowMoving)
+        {
+            return;
+        }
 
         var currentPoint = e.GetCurrentPoint(this);
-        Position = new PixelPoint(Position.X + (int)(currentPoint.Position.X - _originalPoint!.Position.X),
+        Position = new PixelPoint(
+            Position.X + (int)(currentPoint.Position.X - _originalPoint!.Position.X),
             Position.Y + (int)(currentPoint.Position.Y - _originalPoint.Position.Y));
     }
 
-    #endregion
-
-    #region OnPointerPressed
-    
     private void InputElement_OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (WindowState is Maximized or FullScreen) return;
+        if (WindowState is Maximized or FullScreen)
+        {
+            return;
+        }
 
         _mouseDownForWindowMoving = true;
         _originalPoint = e.GetCurrentPoint(this);
     }
 
-    #endregion
-
-    #region OnPointerReleased
-    
     private void InputElement_OnPointerReleased(object? sender, PointerReleasedEventArgs e)
     {
         _mouseDownForWindowMoving = false;
     }
-    
-    #endregion
 
     #endregion
 
-    /// <summary>
-    /// Крестик, Escape и кнопка «Отмена» должны останавливать команду, а не только прятать окно.
-    /// </summary>
     protected override void OnClosing(CancelEventArgs e)
     {
-        TryCancelLinkedCommand();
+        if (!_suppressCancelOnClose)
+        {
+            TryCancelLinkedCommand();
+        }
+
         base.OnClosing(e);
     }
 
@@ -122,8 +125,41 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
         }
     }
 
+    public async Task BringToForegroundAsync()
+    {
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            if (!IsVisible)
+            {
+                return;
+            }
+
+            Topmost = true;
+            Activate();
+
+            // После модального диалога (выбор папки и т.п.) WM часто поднимает owner диалога — возвращаем Z-order.
+            if (OperatingSystem.IsWindows())
+            {
+                Topmost = false;
+                Topmost = true;
+            }
+        });
+    }
+
     public async Task CloseAsync()
     {
         await Dispatcher.UIThread.InvokeAsync(Close);
+    }
+
+    /// <summary>
+    /// Закрытие после успешного завершения операции — без отмены команды (иначе не покажется итоговый диалог).
+    /// </summary>
+    public async Task CloseCompletedAsync()
+    {
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            _suppressCancelOnClose = true;
+            Close();
+        });
     }
 }

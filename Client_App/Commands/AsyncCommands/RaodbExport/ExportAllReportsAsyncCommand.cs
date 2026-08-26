@@ -81,7 +81,9 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
             if (answer is not "Да") return;
         }
-        var folderPath = await new OpenFolderDialog().ShowAsync(Desktop.MainWindow);
+        var folderPath = await Dispatcher.UIThread.InvokeAsync(() =>
+            new OpenFolderDialog().ShowAsync(progressBar));
+        await progressBar.BringToForegroundAsync();
         if (string.IsNullOrEmpty(folderPath)) return;
 
         var reportsIdArray = await dbReadOnly.ReportsCollectionDbSet
@@ -251,6 +253,8 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #endregion
 
+        await CloseProgressBarBeforeResultDialog(progressBar);
+
         if (!cts.IsCancellationRequested)
         {
             #region ExportDoneMessage
@@ -280,7 +284,6 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                 Process.Start("explorer", folderPath);
             }
         }
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
         }
         finally
         {

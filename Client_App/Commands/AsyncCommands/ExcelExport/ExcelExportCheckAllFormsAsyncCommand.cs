@@ -140,33 +140,47 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
                      .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stPer) ? stPer : DateOnly.MaxValue)
                      .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endPer) ? endPer : DateOnly.MaxValue))
         {
-            progressBarVM.SetProgressBar($"Проверка отчёта {rep.FormNum_DB} {rep.StartPeriod_DB}-{rep.EndPeriod_DB}");
+            var sliceEnd = progressBarDoubleValue + (double)10 / reps.Report_Collection.Count;
+            var regNo = reps.Master_DB.RegNoRep.Value;
+            var okpo = reps.Master_DB.OkpoRep.Value;
+            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
+                $"Проверка отчёта {rep.FormNum_DB} {rep.StartPeriod_DB}-{rep.EndPeriod_DB}",
+                $"{regNo}_{okpo} — форма {rep.FormNum_DB}",
+                progressBarVM.ExportType);
+
             List<CheckError>? errorList;
             try
             {
-                errorList = rep.FormNum_DB switch
+                if (rep.FormNum_DB is "1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8")
                 {
-                    "1.1" => CheckF11.Check_Total(rep.Reports, rep),
-                    "1.2" => CheckF12.Check_Total(rep.Reports, rep),
-                    "1.3" => CheckF13.Check_Total(rep.Reports, rep),
-                    "1.4" => CheckF14.Check_Total(rep.Reports, rep),
-                    "1.5" => CheckF15.Check_Total(rep.Reports, rep),
-                    "1.6" => CheckF16.Check_Total(rep.Reports, rep),
-                    "1.7" => CheckF17.Check_Total(rep.Reports, rep),
-                    "1.8" => CheckF18.Check_Total(rep.Reports, rep),
-                    "2.1" => CheckF18.Check_Total(rep.Reports, rep),
-                    "2.2" => CheckF18.Check_Total(rep.Reports, rep),
-                    "2.3" => CheckF18.Check_Total(rep.Reports, rep),
-                    "2.4" => CheckF18.Check_Total(rep.Reports, rep),
-                    "2.5" => CheckF18.Check_Total(rep.Reports, rep),
-                    "2.6" => CheckF18.Check_Total(rep.Reports, rep),
-                    "2.7" => CheckF18.Check_Total(rep.Reports, rep),
-                    "2.8" => CheckF18.Check_Total(rep.Reports, rep),
-                    "2.9" => CheckF18.Check_Total(rep.Reports, rep),
-                    "2.10" => CheckF18.Check_Total(rep.Reports, rep),
-                    "2.11" => CheckF18.Check_Total(rep.Reports, rep),
-                    _ => []
-                };
+                    var reportProgress = ReportCheckProgress.ForExportPhase(
+                        progressBarVM,
+                        (int)Math.Floor(progressBarDoubleValue),
+                        (int)Math.Floor(sliceEnd),
+                        progressBarVM.ExportType ?? "Проверка отчётов");
+                    reportProgress.SetOrgHeader(regNo, okpo, rep.FormNum_DB, $"{rep.StartPeriod_DB}-{rep.EndPeriod_DB}");
+                    reportProgress.OnLoadComplete(Services.DataAccess.ReportCheckSnapshotLoader.CountLoadedRows(rep));
+                    errorList = await Task.Run(
+                        () => ReportCheckRunner.ExecuteCheck(rep.Reports, rep, reportProgress));
+                }
+                else
+                {
+                    errorList = rep.FormNum_DB switch
+                    {
+                        "2.1" => CheckF18.Check_Total(rep.Reports, rep),
+                        "2.2" => CheckF18.Check_Total(rep.Reports, rep),
+                        "2.3" => CheckF18.Check_Total(rep.Reports, rep),
+                        "2.4" => CheckF18.Check_Total(rep.Reports, rep),
+                        "2.5" => CheckF18.Check_Total(rep.Reports, rep),
+                        "2.6" => CheckF18.Check_Total(rep.Reports, rep),
+                        "2.7" => CheckF18.Check_Total(rep.Reports, rep),
+                        "2.8" => CheckF18.Check_Total(rep.Reports, rep),
+                        "2.9" => CheckF18.Check_Total(rep.Reports, rep),
+                        "2.10" => CheckF18.Check_Total(rep.Reports, rep),
+                        "2.11" => CheckF18.Check_Total(rep.Reports, rep),
+                        _ => []
+                    };
+                }
             }
             catch (Exception ex)
             {
@@ -197,10 +211,10 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
                 continue;
             }
             errorsDictionary.Add(rep, errorList);
-            progressBarDoubleValue += (double)10 / (reps.Report_Collection.Count);
+            progressBarDoubleValue = sliceEnd;
             progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
                 $"Проверка отчёта {rep.FormNum_DB}_{rep.StartPeriod_DB}_{rep.EndPeriod_DB}",
-                $"Проверка отчётов {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}");
+                $"Проверка отчётов {regNo}_{okpo}");
         }
         return errorsDictionary;
     }

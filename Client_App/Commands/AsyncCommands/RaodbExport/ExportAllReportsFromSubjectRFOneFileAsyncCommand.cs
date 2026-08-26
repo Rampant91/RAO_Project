@@ -120,7 +120,9 @@ public partial class ExportAllReportsFromSubjectRFOneFileAsyncCommand : ExportRa
 
             if (answer is "Отменить выгрузку") return;
         }
-        var newDbFolder = await new OpenFolderDialog().ShowAsync(Desktop.MainWindow);
+        var newDbFolder = await Dispatcher.UIThread.InvokeAsync(() =>
+            new OpenFolderDialog().ShowAsync(progressBar));
+        await progressBar.BringToForegroundAsync();
         if (string.IsNullOrEmpty(newDbFolder)) return;
         var newDbPath = Path.Combine(newDbFolder, $"{codeSubjectRF}_Region.RAODB");
 
@@ -247,6 +249,8 @@ public partial class ExportAllReportsFromSubjectRFOneFileAsyncCommand : ExportRa
 
         #endregion
 
+        await CloseProgressBarBeforeResultDialog(progressBar);
+
         if (!cts.IsCancellationRequested)
         {
             #region ExportDoneMessage
@@ -276,7 +280,6 @@ public partial class ExportAllReportsFromSubjectRFOneFileAsyncCommand : ExportRa
                 Process.Start("explorer", newDbFolder);
             }
         }
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
         }
         finally
         {

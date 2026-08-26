@@ -57,6 +57,17 @@ public abstract class ExportRaodbBaseAsyncCommand : BaseAsyncCommand
         cts.Token.ThrowIfCancellationRequested();
     }
 
+    /// <summary>
+    /// Закрывает прогрессбар перед итоговым/ошибочным диалогом — операция уже завершена, отмена не нужна.
+    /// </summary>
+    private protected static async Task CloseProgressBarBeforeResultDialog(AnyTaskProgressBar? progressBar)
+    {
+        if (progressBar is not null)
+        {
+            await progressBar.CloseCompletedAsync();
+        }
+    }
+
     #endregion
 
     /// <summary>

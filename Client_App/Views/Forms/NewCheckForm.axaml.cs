@@ -21,7 +21,10 @@ public class NewCheckForm : BaseWindow<NewCheckFormVM>
         DataContext = new NewCheckFormVM(formVM, checkError);
 
         var dataGrid = this.Get<DataGrid>("CheckErrorsDataGrid");
-        dataGrid.LoadingRow += DataGrid_LoadingRow;
+        if (dataGrid is not null)
+        {
+            dataGrid.LoadingRow += DataGrid_LoadingRow;
+        }
 
         Show();
     }
@@ -31,7 +34,7 @@ public class NewCheckForm : BaseWindow<NewCheckFormVM>
     #region Events
 
     /// <summary>
-    /// Устанавливает цвет строки в зависимости от того, является ли ошибка критической.
+    ///       ,    .
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>

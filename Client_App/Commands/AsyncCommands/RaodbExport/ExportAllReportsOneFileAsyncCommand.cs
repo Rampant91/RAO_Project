@@ -87,7 +87,9 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
 
             if (answer is "Отменить выгрузку") return;
         }
-        var newDbFolder = await new OpenFolderDialog().ShowAsync(Desktop.MainWindow);
+        var newDbFolder = await Dispatcher.UIThread.InvokeAsync(() =>
+            new OpenFolderDialog().ShowAsync(progressBar));
+        await progressBar.BringToForegroundAsync();
         if (string.IsNullOrEmpty(newDbFolder)) return;
         var newDbPath = Path.Combine(newDbFolder, "Local_0.RAODB");
 
@@ -205,6 +207,8 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
 
         #endregion
 
+        await CloseProgressBarBeforeResultDialog(progressBar);
+
         if (!cts.IsCancellationRequested)
         {
             #region ExportDoneMessage
@@ -234,7 +238,6 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
                 Process.Start("explorer", newDbFolder);
             }
         }
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
         }
         finally
         {

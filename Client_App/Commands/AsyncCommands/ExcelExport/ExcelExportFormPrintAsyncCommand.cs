@@ -86,14 +86,14 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
         try
         {
-            progressBarVM.SetProgressBar(5, "Определение имени файла");
-            var fileName = await GetFileName(repParam, progressBar, cts);
-
-            progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
-            var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
-
-            progressBarVM.SetProgressBar(15, "Загрузка отчёта", "Выгрузка отчёта для печати", ExportType);
+            progressBarVM.SetProgressBar(5, "Загрузка отчёта", "Выгрузка отчёта для печати", ExportType);
             var rep = await GetReportWithRows(repId, cts);
+
+            progressBarVM.SetProgressBar(10, "Определение имени файла", "Выгрузка отчёта для печати", ExportType);
+            var fileName = await GetFileName(rep, progressBar, cts);
+
+            progressBarVM.SetProgressBar(15, "Запрос пути сохранения");
+            var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
             progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
             using var excelPackage = await InitializeExcelPackage(fullPath, rep);
@@ -141,7 +141,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         {
             progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
             progressBarVM = progressBar.AnyTaskProgressBarVM;
-            progressBarVM.SetProgressBar(5, "Определение имени файла");
+            progressBarVM.SetProgressBar(5, "Загрузка отчёта", "Выгрузка отчёта для печати", ExportType);
         }
 
         var organizationId = ReportExportLock.ResolveOrganizationId(report, _formsTabControlVM.SelectedReports);
@@ -153,7 +153,14 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
         try
         {
-            var fileName = await GetFileName(report, progressBar, cts);
+            var rep = await GetReportWithRows(report.Id, cts);
+
+            if (!suppressDialogs && progressBarVM != null)
+            {
+                progressBarVM.SetProgressBar(10, "Определение имени файла", "Выгрузка отчёта для печати", ExportType);
+            }
+
+            var fileName = await GetFileName(rep, progressBar, cts);
             var fullPath = Path.Combine(destinationFolder, fileName + ".xlsx");
 
             // Проверяем существование файла и генерируем уникальное имя при необходимости
@@ -167,14 +174,8 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
             if (!suppressDialogs && progressBarVM != null)
             {
-                progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
+                progressBarVM.SetProgressBar(15, "Запрос пути сохранения");
             }
-
-            if (!suppressDialogs && progressBarVM != null)
-            {
-                progressBarVM.SetProgressBar(15, "Загрузка отчёта", "Выгрузка отчёта для печати", ExportType);
-            }
-            var rep = await GetReportWithRows(report.Id, cts);
 
             if (!suppressDialogs && progressBarVM != null)
             {
@@ -232,31 +233,32 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
             return;
         }
 
-        var checkTask = Task.Run(() =>
+        if (exportReport.FormNum_DB is not ("1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8"))
         {
-            var errorList = new List<CheckError>();
-            try
-            {
-                errorList.AddRange(exportReport.FormNum_DB switch
-                {
-                    "1.1" => CheckF11.Check_Total(exportReport.Reports, exportReport),
-                    "1.2" => CheckF12.Check_Total(exportReport.Reports, exportReport),
-                    "1.3" => CheckF13.Check_Total(exportReport.Reports, exportReport),
-                    "1.4" => CheckF14.Check_Total(exportReport.Reports, exportReport),
-                    "1.5" => CheckF15.Check_Total(exportReport.Reports, exportReport),
-                    "1.6" => CheckF16.Check_Total(exportReport.Reports, exportReport),
-                    "1.7" => CheckF17.Check_Total(exportReport.Reports, exportReport),
-                    "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
-                    _ => []
-                });
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
+            return;
+        }
 
-            return errorList;
-        });
+        if (progressBar is null)
+        {
+            return;
+        }
+
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
+        var checkProgress = ReportCheckProgress.ForExportPhase(
+            progressBarVM,
+            75,
+            80,
+            progressBarVM.ExportType ?? "Для_печати");
+        checkProgress.SetOrgHeader(
+            exportReport.Reports?.Master_DB?.RegNoRep?.Value ?? string.Empty,
+            exportReport.Reports?.Master_DB?.OkpoRep?.Value ?? string.Empty,
+            exportReport.FormNum_DB,
+            $"{exportReport.StartPeriod_DB}-{exportReport.EndPeriod_DB}");
+        checkProgress.OnLoadComplete(Services.DataAccess.ReportCheckSnapshotLoader.CountLoadedRows(exportReport));
+
+        var checkTask = Task.Run(
+            () => ReportCheckRunner.ExecuteCheck(exportReport.Reports, exportReport, checkProgress),
+            cts.Token);
 
         var cancelWait = Task.Delay(Timeout.Infinite, cts.Token);
         if (await Task.WhenAny(checkTask, cancelWait) != checkTask)
@@ -264,7 +266,15 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
             return;
         }
 
-        var errorList = await checkTask;
+        List<CheckError> errorList;
+        try
+        {
+            errorList = await checkTask;
+        }
+        catch (Exception)
+        {
+            return;
+        }
 
         if (cts.Token.IsCancellationRequested)
         {

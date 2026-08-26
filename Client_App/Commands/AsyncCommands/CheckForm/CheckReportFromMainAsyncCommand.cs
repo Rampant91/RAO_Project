@@ -5,9 +5,8 @@ using Client_App.ViewModels;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.MainWindowTabs;
-using DynamicData;
+using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
-using Microsoft.EntityFrameworkCore;
 using Models.CheckForm;
 using Models.Collections;
 using Models.DBRealization;
@@ -48,7 +47,7 @@ public class CheckReportFromMainAsyncCommand : BaseAsyncCommand
         IsExecute = true;
         try
         {
-            await Task.Run(() => AsyncExecute(parameter));
+            await AsyncExecute(parameter);
         }
         catch (OperationCanceledException) { }
         catch (Exception ex)
@@ -70,71 +69,39 @@ public class CheckReportFromMainAsyncCommand : BaseAsyncCommand
         else
             return;
 
-        await using var db = new DBModel(StaticConfiguration.DBPath);
-
         var cts = new CancellationTokenSource();
+        AnyTaskProgressBar? progressBar = null;
 
-        #region GetReportFromDB
-
-        var rep = await db.ReportCollectionDbSet
-            .AsNoTracking()
-            .AsQueryable()
-            .AsSplitQuery()
-            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-            .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
-            .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
-            .Include(x => x.Rows11.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows12.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows13.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows14.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows15.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows16.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows17.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows18.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows19.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows21.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows22.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows23.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows24.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows25.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows26.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows27.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows28.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows29.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
-            .Include(x => x.Notes.OrderBy(x => x.Order))
-            .Where(x => x.Reports != null && x.Reports.DBObservable != null)
-            .FirstOrDefaultAsync(x => x.Id == par.Id, cts.Token);
-
-        #endregion
-
-        if (rep is null) return;
+        Report? rep = null;
         List<CheckError> errorList = [];
         try
         {
-            errorList.Add(rep.FormNum_DB switch
+            if (par.FormNum_DB is "1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8")
             {
-                "1.1" => CheckF11.Check_Total(rep.Reports, rep),
-                "1.2" => CheckF12.Check_Total(rep.Reports, rep),
-                "1.3" => CheckF13.Check_Total(rep.Reports, rep),
-                "1.4" => CheckF14.Check_Total(rep.Reports, rep),
-                "1.5" => CheckF15.Check_Total(rep.Reports, rep),
-                "1.6" => CheckF16.Check_Total(rep.Reports, rep),
-                "1.7" => CheckF17.Check_Total(rep.Reports, rep),
-                "1.8" => CheckF18.Check_Total(rep.Reports, rep),
-                "2.1" => await new CheckF21().AsyncExecute(rep),
-                "2.2" => await new CheckF22().AsyncExecute(rep),
-                "2.3" => await new CheckF23().AsyncExecute(rep),
-                "2.6" => await new CheckF26().AsyncExecute(rep),
-                "2.7" => await new CheckF27().AsyncExecute(rep),
-                "2.8" => await new CheckF28().AsyncExecute(rep),
-                "2.9" => await new CheckF29().AsyncExecute(rep),
-                "2.10" => await new CheckF210().AsyncExecute(rep),
-                "2.11" => await new CheckF211().AsyncExecute(rep),
-                _ => throw new NotImplementedException()
-            });
+                progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
+                var checkProgress = ReportCheckProgress.ForStandalone(progressBar.AnyTaskProgressBarVM);
+                var run = await ReportCheckRunner.RunAsync(new ReportCheckRunner.Options
+                {
+                    ReportId = par.Id,
+                    FormNum = par.FormNum_DB,
+                    Progress = checkProgress,
+                    CancellationToken = cts.Token
+                });
+                rep = run.Report;
+                errorList.AddRange(run.Errors);
+            }
+            else
+            {
+                await using var db = new DBModel(StaticConfiguration.DBPath);
+                rep = await Services.DataAccess.ReportCheckSnapshotLoader.LoadAsync(
+                    db, par.Id, par.FormNum_DB, cts.Token);
+                if (rep is null)
+                {
+                    return;
+                }
+
+                errorList.AddRange(await ReportCheckRunner.RunForm2OrLegacyAsync(rep, db, cts.Token));
+            }
         }
         catch (NotImplementedException)
         {
@@ -144,7 +111,7 @@ public class CheckReportFromMainAsyncCommand : BaseAsyncCommand
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = $"Проверка формы {rep.FormNum_DB}",
+                    ContentTitle = $"Проверка формы {par.FormNum_DB}",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Функция проверки данных форм находится в процессе реализации.",
                     MinWidth = 400,
@@ -160,7 +127,7 @@ public class CheckReportFromMainAsyncCommand : BaseAsyncCommand
         }
         catch (Exception ex)
         {
-            var msg = $"{Environment.NewLine}Message: {ex.Message}" + 
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Warning(msg);
 
@@ -170,7 +137,7 @@ public class CheckReportFromMainAsyncCommand : BaseAsyncCommand
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = $"Проверка формы {rep.FormNum_DB}",
+                    ContentTitle = $"Проверка формы {par.FormNum_DB}",
                     ContentHeader = "Уведомление",
                     ContentMessage = "В ходе выполнения проверки формы возникла непредвиденная ошибка.",
                     MinWidth = 400,
@@ -184,25 +151,38 @@ public class CheckReportFromMainAsyncCommand : BaseAsyncCommand
 
             return;
         }
+        finally
+        {
+            if (progressBar is not null)
+            {
+                await progressBar.CloseAsync();
+            }
+        }
+
+        if (rep is null)
+        {
+            return;
+        }
+
         if (errorList.Count == 0)
         {
             #region MessageSourceTransmissionFailed
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = $"Проверка формы {rep.FormNum_DB}",
-                        ContentHeader = "Уведомление",
-                        ContentMessage = "По результатам проверки формы, ошибок не выявлено.",
-                        MinWidth = 400,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                        Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ContentTitle = $"Проверка формы {rep.FormNum_DB}",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "По результатам проверки формы, ошибок не выявлено.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
+                })
+                .ShowDialog(Desktop.MainWindow));
 
-                #endregion
+            #endregion
         }
         else
         {
@@ -216,7 +196,12 @@ public class CheckReportFromMainAsyncCommand : BaseAsyncCommand
                 case "1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8":
                 {
                     var vm = await CreateFormVM(rep.FormNum_DB, rep);
-                    await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList).Show());
+                    if (vm is null)
+                    {
+                        return;
+                    }
+
+                    await Dispatcher.UIThread.InvokeAsync(() => new Views.Forms.NewCheckForm(vm, errorList));
 
                     break;
                 }
@@ -237,12 +222,12 @@ public class CheckReportFromMainAsyncCommand : BaseAsyncCommand
         {
             "1.1" => new Form_11VM(rep.Reports) { Report = rep },
             "1.2" => new Form_12VM(rep.Reports) { Report = rep },
-            "1.3" => new Form_12VM(rep.Reports) { Report = rep },
-            "1.4" => new Form_12VM(rep.Reports) { Report = rep },
-            "1.5" => new Form_12VM(rep.Reports) { Report = rep },
-            "1.6" => new Form_12VM(rep.Reports) { Report = rep },
-            "1.7" => new Form_12VM(rep.Reports) { Report = rep },
-            "1.8" => new Form_12VM(rep.Reports) { Report = rep },
+            "1.3" => new Form_13VM(rep.Reports) { Report = rep },
+            "1.4" => new Form_14VM(rep.Reports) { Report = rep },
+            "1.5" => new Form_15VM(rep.Reports) { Report = rep },
+            "1.6" => new Form_16VM(rep.Reports) { Report = rep },
+            "1.7" => new Form_17VM(rep.Reports) { Report = rep },
+            "1.8" => new Form_18VM(rep.Reports) { Report = rep },
             _ => null
         };
 

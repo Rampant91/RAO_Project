@@ -141,6 +141,7 @@ public abstract class CheckF17 : CheckBase
                 //all other checks
                 errorList.AddRange(Check_001(formsList, packLines[line]));
             }
+            CheckRunContext.Active?.NotifyRowProgress(currentFormLine, formsList.Count);
         }
         errorList.AddRange(Check_031(formsList, rep));
         var index = 0;

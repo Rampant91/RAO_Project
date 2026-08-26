@@ -290,6 +290,8 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
         loadStatus = "Завершение выгрузки";
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
+        await CloseProgressBarBeforeResultDialog(progressBar);
+
         if (!cts.IsCancellationRequested)
         {
             var exportedOrgCount = exportedOrgPairs.Count;
@@ -322,9 +324,7 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
                 Process.Start("explorer", folderPath);
             }
         }
-
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
-        }
+    }
         finally
         {
             TryDeleteTempDataBase(dbReadOnlyPath);

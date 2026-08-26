@@ -19,6 +19,8 @@ public abstract class CheckF14 : CheckBase
         List<CheckError> errorList = new();
         LoadDictionaries();
         var formsList = rep.Rows14.ToList<Form14>();
+        var notes = rep.Notes.ToList<Note>();
+        var forms10 = reps.Master_DB.Rows10.ToList<Form10>();
         errorList.AddRange(Check_002(rep));
         errorList.AddRange(Check_003(formsList, rep));
         errorList.AddRange(Check_004(formsList));
@@ -26,8 +28,6 @@ public abstract class CheckF14 : CheckBase
         foreach (var key in rep.Rows14)
         {
             var form = (Form14)key;
-            var notes = rep.Notes.ToList<Note>();
-            var forms10 = reps.Master_DB.Rows10.ToList<Form10>();
             errorList.AddRange(Check_001(formsList, currentFormLine));
             errorList.AddRange(Check_005(formsList, currentFormLine));
             errorList.AddRange(Check_006(formsList, currentFormLine));
@@ -90,6 +90,7 @@ public abstract class CheckF14 : CheckBase
             errorList.AddRange(Check_064(formsList, currentFormLine));
             errorList.AddRange(Check_065(formsList, currentFormLine));
             currentFormLine++;
+            CheckRunContext.Active?.NotifyRowProgress(currentFormLine, formsList.Count);
         }
         var index = 0;
         foreach (var error in errorList)

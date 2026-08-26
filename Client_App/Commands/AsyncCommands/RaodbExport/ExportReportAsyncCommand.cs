@@ -281,6 +281,7 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
         progressBarVM.SetProgressBar(28, "Проверка отчёта");
         await CheckForm(exportReport, cts, progressBar);
+        await progressBar.BringToForegroundAsync();
         if (cts.Token.IsCancellationRequested)
         {
             return;
@@ -323,7 +324,8 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
         progressBarVM.SetProgressBar(29, "Выбор папки назначения");
         var folderPath = await Dispatcher.UIThread.InvokeAsync(() =>
-            new OpenFolderDialog().ShowAsync(Desktop.MainWindow));
+            new OpenFolderDialog().ShowAsync(progressBar));
+        await progressBar.BringToForegroundAsync();
         if (string.IsNullOrEmpty(folderPath))
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
@@ -425,6 +427,8 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
         }
         catch (Exception e)
         {
+            await CloseProgressBarBeforeResultDialog(progressBar);
+
             #region FailedCopyFromTempMessage
 
             await Dispatcher.UIThread.InvokeAsync(() =>
@@ -443,7 +447,8 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
             #endregion
 
-            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+            await cts.CancelAsync();
+            return;
         }
 
         //Создаёт .zip архив рядом с файлом выгрузки.
@@ -469,6 +474,8 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})"; 
         
         #endregion
+
+        await CloseProgressBarBeforeResultDialog(progressBar);
 
         if (!cts.IsCancellationRequested)
         {
@@ -544,8 +551,6 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
                 Process.Start("explorer", folderPath);
             }
         }
-
-        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 
     private static async Task CheckForm(Report exportReport, CancellationTokenSource cts, AnyTaskProgressBar progressBar)
@@ -555,31 +560,27 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
             return;
         }
 
-        var checkTask = Task.Run(() =>
+        if (exportReport.FormNum_DB is not ("1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8"))
         {
-            var errorList = new List<CheckError>();
-            try
-            {
-                errorList.AddRange(exportReport.FormNum_DB switch
-                {
-                    "1.1" => CheckF11.Check_Total(exportReport.Reports, exportReport),
-                    "1.2" => CheckF12.Check_Total(exportReport.Reports, exportReport),
-                    "1.3" => CheckF13.Check_Total(exportReport.Reports, exportReport),
-                    "1.4" => CheckF14.Check_Total(exportReport.Reports, exportReport),
-                    "1.5" => CheckF15.Check_Total(exportReport.Reports, exportReport),
-                    "1.6" => CheckF16.Check_Total(exportReport.Reports, exportReport),
-                    "1.7" => CheckF17.Check_Total(exportReport.Reports, exportReport),
-                    "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
-                    _ => []
-                });
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
+            return;
+        }
 
-            return errorList;
-        });
+        var progressBarVM = progressBar.AnyTaskProgressBarVM;
+        var checkProgress = ReportCheckProgress.ForExportPhase(
+            progressBarVM,
+            28,
+            35,
+            progressBarVM.ExportType ?? "Выгрузка в .raodb");
+        checkProgress.SetOrgHeader(
+            exportReport.Reports?.Master_DB?.RegNoRep?.Value ?? string.Empty,
+            exportReport.Reports?.Master_DB?.OkpoRep?.Value ?? string.Empty,
+            exportReport.FormNum_DB,
+            $"{exportReport.StartPeriod_DB}-{exportReport.EndPeriod_DB}");
+        checkProgress.OnLoadComplete(Services.DataAccess.ReportCheckSnapshotLoader.CountLoadedRows(exportReport));
+
+        var checkTask = Task.Run(
+            () => ReportCheckRunner.ExecuteCheck(exportReport.Reports, exportReport, checkProgress),
+            cts.Token);
 
         var cancelWait = Task.Delay(Timeout.Infinite, cts.Token);
         if (await Task.WhenAny(checkTask, cancelWait) != checkTask)
@@ -587,7 +588,15 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
             return;
         }
 
-        var errorList = await checkTask;
+        List<CheckError> errorList;
+        try
+        {
+            errorList = await checkTask;
+        }
+        catch (Exception)
+        {
+            return;
+        }
 
         if (cts.Token.IsCancellationRequested)
         {
