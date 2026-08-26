@@ -88,14 +88,31 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
 
                 progressBarVM.SetProgressBar(90, "Сохранение");
                 await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-
                 progressBarVM.SetProgressBar(100, "Завершение выгрузки");
                 GC.Collect();
                 await progressBar.CloseAsync();
             }
             catch(Exception ex)
             {
-                throw ex;
+                #region MessageFailedExportExcel
+
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        CanResize = true,
+                        ContentTitle = "Выгрузка в .xlsx",
+                        ContentHeader = "Ошибка",
+                        ContentMessage = "Не удалось сохранить файл по указанному пути:" +
+                                         $"{Environment.NewLine}{fullPath}",
+                        MinWidth = 400,
+                        MinHeight = 175,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
+                    })
+                    .ShowDialog(Desktop.MainWindow));
+
+                #endregion
             }
             finally
             {
