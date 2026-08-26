@@ -72,7 +72,7 @@ public class DataGridDoubleClickOpenFormBehavior : Behavior<DataGrid>
                     command = Form2InterfaceFlags.UseNewInterface
                         ? new NewChangeReportAsyncCommand(mainWindowVM.Forms2TabControlVM)
                         : new ChangeFormAsyncCommand();
-                if (report.FormNum_DB.Split('.')[0] is "3")
+                else if (report.FormNum_DB.Split('.')[0] is "3")
                     command = new NewChangeReportAsyncCommand(mainWindowVM.Forms3TabControlVM);
                 else if (report.FormNum_DB.Split('.')[0] is "4")
                     command = new NewChangeReportAsyncCommand(mainWindowVM.Forms4TabControlVM);
