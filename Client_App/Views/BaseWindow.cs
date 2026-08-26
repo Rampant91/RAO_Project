@@ -1,11 +1,15 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Data;
+using Avalonia.Layout;
 using Avalonia.ReactiveUI;
 using Avalonia.Threading;
 using Client_App.Behaviors.WindowSizing;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels;
+using Client_App.ViewModels.Forms;
+using Client_App.Views.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +43,63 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost, I
     private bool _revealOnOpenAttached;
     private bool _openedPositionFallbackAttached;
     private bool _fullscreenFallbackAttached;
+    private bool _formContentLoadingOverlayAttached;
     private Window? _positionOwnerHint;
+
+    protected BaseWindow()
+    {
+        Opened += OnOpenedAttachFormContentLoadingOverlay;
+    }
+
+    private void OnOpenedAttachFormContentLoadingOverlay(object? sender, EventArgs e)
+    {
+        Opened -= OnOpenedAttachFormContentLoadingOverlay;
+        TryAttachFormContentLoadingOverlay();
+    }
+
+    /// <summary>
+    /// Overlay «Загрузка…» для <see cref="BaseFormVM"/>.
+    /// Добавляем в существующий корневой Grid/Panel — без замены Content,
+    /// иначе ломается NameScope и ElementName-синхронизация многоуровневой шапки.
+    /// </summary>
+    private void TryAttachFormContentLoadingOverlay()
+    {
+        if (_formContentLoadingOverlayAttached)
+            return;
+        if (DataContext is not BaseFormVM)
+            return;
+        if (Content is not Control existingContent)
+            return;
+
+        var overlay = new DataGridLoadingOverlay
+        {
+            ZIndex = 1000,
+            IsVisible = false,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Stretch,
+            IsHitTestVisible = true,
+        };
+        overlay.Bind(IsVisibleProperty, new Binding(nameof(BaseFormVM.IsContentLoading)));
+
+        if (existingContent is Grid rootGrid)
+        {
+            var rowSpan = Math.Max(1, rootGrid.RowDefinitions.Count);
+            var colSpan = Math.Max(1, rootGrid.ColumnDefinitions.Count);
+            Grid.SetRow(overlay, 0);
+            Grid.SetColumn(overlay, 0);
+            Grid.SetRowSpan(overlay, rowSpan);
+            Grid.SetColumnSpan(overlay, colSpan);
+            rootGrid.Children.Add(overlay);
+            _formContentLoadingOverlayAttached = true;
+            return;
+        }
+
+        if (existingContent is Panel rootPanel)
+        {
+            rootPanel.Children.Add(overlay);
+            _formContentLoadingOverlayAttached = true;
+        }
+    }
 
     /// <summary>
     /// Задаёт финальный размер/состояние до показа окна, чтобы избежать «прыжка» layout.

@@ -118,14 +118,17 @@ public static class FormReportWindowNavigator
         main?.SetReportOpeningOverlay(true);
         try
         {
-            if (await ReportExportLock.TryBlockReportAccessAsync(targetReport.Id))
-                return;
+            await formVm.WithContentLoadingAsync(async () =>
+            {
+                if (await ReportExportLock.TryBlockReportAccessAsync(targetReport.Id))
+                    return;
 
-            var loaded = await FormReportWindowOpener.LoadReportDataAsync(targetReport).ConfigureAwait(true);
-            if (loaded == null)
-                return;
+                var loaded = await FormReportWindowOpener.LoadReportDataAsync(targetReport).ConfigureAwait(true);
+                if (loaded == null)
+                    return;
 
-            await formVm.ReloadFromReportAsync(loaded).ConfigureAwait(true);
+                await formVm.ReloadFromReportAsync(loaded).ConfigureAwait(true);
+            }).ConfigureAwait(true);
         }
         finally
         {

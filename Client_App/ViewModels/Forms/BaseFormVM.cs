@@ -336,6 +336,59 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     public int? DbTotalRows { get; set; }
 
+    /// <summary>Индикатор загрузки содержимого окна (смена отчёта, страница строк, догрузка).</summary>
+    public bool IsContentLoading
+    {
+        get => _isContentLoading;
+        private set
+        {
+            if (_isContentLoading == value)
+                return;
+            _isContentLoading = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _isContentLoading;
+    private bool _contentLoadInProgress;
+    private int _contentLoadGeneration;
+    private const int ContentLoadingDelayMs = 150;
+
+    /// <summary>
+    /// Показать overlay «Загрузка…» на время <paramref name="work"/> (с задержкой, без мигания).
+    /// </summary>
+    public async Task WithContentLoadingAsync(Func<Task> work)
+    {
+        ArgumentNullException.ThrowIfNull(work);
+        var generation = Interlocked.Increment(ref _contentLoadGeneration);
+        _contentLoadInProgress = true;
+        ScheduleContentLoadingIndicator(generation);
+        try
+        {
+            await work().ConfigureAwait(true);
+        }
+        finally
+        {
+            if (generation == _contentLoadGeneration)
+            {
+                _contentLoadInProgress = false;
+                IsContentLoading = false;
+            }
+        }
+    }
+
+    private void ScheduleContentLoadingIndicator(int generation)
+    {
+        _ = Task.Delay(ContentLoadingDelayMs).ContinueWith(_ =>
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                if (generation == _contentLoadGeneration && _contentLoadInProgress)
+                    IsContentLoading = true;
+            });
+        });
+    }
+
     public int TotalPages
     {
         get
@@ -579,12 +632,15 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     /// </summary>
     public async Task EnsureAllRowsForMutationAsync()
     {
-        await FormRowsEnsureService.EnsureAllRowsLoadedAsync(Report);
-        UseDbPaging = false;
-        DbTotalRows = null;
-        ClearFormPageCache();
-        UpdateFormList();
-        UpdatePageInfo();
+        await WithContentLoadingAsync(async () =>
+        {
+            await FormRowsEnsureService.EnsureAllRowsLoadedAsync(Report);
+            UseDbPaging = false;
+            DbTotalRows = null;
+            ClearFormPageCache();
+            UpdateFormList();
+            UpdatePageInfo();
+        });
     }
 
     private bool ShouldBlockPageChange()
@@ -638,30 +694,33 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     private async Task RefreshFormListForPagingAsync()
     {
-        if (UseDbPaging && FormRowsPageLoader.SupportsDbPaging(FormType) && Report?.Id > 0)
+        await WithContentLoadingAsync(async () =>
         {
-            var key = (CurrentPage, RowCount);
-            List<Form>? cached;
-            lock (_formPageCacheGate)
-                _formPageCache.TryGetValue(key, out cached);
-
-            if (cached != null)
+            if (UseDbPaging && FormRowsPageLoader.SupportsDbPaging(FormType) && Report?.Id > 0)
             {
-                FormRowsPageLoader.ApplyPageToReport(Report, FormType, cached);
-            }
-            else
-            {
-                var skip = (CurrentPage - 1) * RowCount;
-                await FormRowsPageLoader.LoadPageIntoReportAsync(
-                    StaticConfiguration.DBModel, Report, FormType, skip, RowCount);
-                CacheCurrentFormPage();
+                var key = (CurrentPage, RowCount);
+                List<Form>? cached;
+                lock (_formPageCacheGate)
+                    _formPageCache.TryGetValue(key, out cached);
+
+                if (cached != null)
+                {
+                    FormRowsPageLoader.ApplyPageToReport(Report, FormType, cached);
+                }
+                else
+                {
+                    var skip = (CurrentPage - 1) * RowCount;
+                    await FormRowsPageLoader.LoadPageIntoReportAsync(
+                        StaticConfiguration.DBModel, Report, FormType, skip, RowCount);
+                    CacheCurrentFormPage();
+                }
+
+                ScheduleFormPagePrefetch();
             }
 
-            ScheduleFormPagePrefetch();
-        }
-
-        UpdateFormList();
-        UpdatePageInfo();
+            UpdateFormList();
+            UpdatePageInfo();
+        });
     }
 
     private void CacheCurrentFormPage()
