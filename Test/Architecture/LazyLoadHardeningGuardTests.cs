@@ -244,4 +244,37 @@ public class LazyLoadHardeningGuardTests
         Assert.DoesNotContain("UpdateOrgsPageInfo()", setterBlock);
         Assert.DoesNotContain("UpdateReportsCollection()", setterBlock);
     }
+
+    [Fact]
+    public void FormPaging_ShowsOverlayClearsFormListAndUsesPageCache()
+    {
+        var baseForm = ReadClient("ViewModels", "Forms", "BaseFormVM.cs");
+        var loader = ReadClient("Services", "DataAccess", "FormRowsPageLoader.cs");
+        var opener = ReadClient("Services", "FormReportWindowOpener.cs");
+
+        Assert.Contains("WarmVisiblePageCache", baseForm);
+        Assert.Contains("WarmVisiblePageCache()", opener);
+        Assert.Contains("IsContentLoading = true", baseForm);
+        var pagingMethod = baseForm.IndexOf("RefreshFormListForPagingAsync", StringComparison.Ordinal);
+        Assert.True(pagingMethod >= 0);
+        Assert.True(
+            baseForm.IndexOf("_formList.Clear()", pagingMethod, StringComparison.Ordinal) > pagingMethod,
+            "Paging refresh should clear visible FormList like main-window reports grid");
+        Assert.Contains("PagingDebounceMs", baseForm);
+        Assert.Contains("FlushPendingPagingRefresh", baseForm);
+        Assert.Contains("FlushPendingPagingRefresh", ReadClient("Views", "Controls", "NumericLeftRight.axaml.cs"));
+        Assert.DoesNotContain("_formPageNavigating", baseForm);
+        Assert.DoesNotContain("IsPageNavigationEnabled", baseForm);
+        Assert.DoesNotContain("TryBumpPagingFromControl", baseForm);
+        Assert.DoesNotContain("_formPageRequestPending", baseForm);
+        Assert.DoesNotContain("RequestFormPageRefresh", baseForm);
+        Assert.DoesNotContain("ScheduleFormPagingIndicator", baseForm);
+        Assert.Contains("CapturePending", baseForm);
+        Assert.Contains("NeighborFormPages(current, radius: 2)", baseForm);
+        Assert.Contains("LoadMergedVisiblePageAsync", baseForm);
+        Assert.DoesNotContain("HasPendingAddOrDelete", baseForm);
+        Assert.Contains("GetOrLoadOrderedDbIdsAsync", loader);
+        Assert.Contains("FormRowOrderedIdsCache", loader);
+        Assert.Contains("FormRowOrderedIdsCache.Invalidate()", baseForm);
+    }
 }

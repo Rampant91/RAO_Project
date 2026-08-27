@@ -12,6 +12,13 @@ using Models.Interfaces;
 
 namespace Client_App.Services.DataAccess;
 
+public sealed class FormRowPendingSnapshot
+{
+    public required List<Form> Added { get; init; }
+    public required Dictionary<int, Form> TrackedById { get; init; }
+    public required HashSet<int> ExcludeIds { get; init; }
+}
+
 /// <summary>
 /// Постраничная загрузка строк форм 1.x из БД (без полного Include всех строк).
 /// Страницы грузятся AsNoTracking и затем Attach как Unchanged к tracked Report.
@@ -179,14 +186,59 @@ public static class FormRowsPageLoader
         };
     }
 
+    private static async Task<IReadOnlyList<int>> GetOrLoadOrderedDbIdsAsync(
+        int reportId, string formNum, CancellationToken ct)
+    {
+        if (FormRowOrderedIdsCache.TryGet(reportId, formNum, out var cached))
+            return cached;
+
+        List<int> dbIds;
+        await using (var snap = new DBModel(StaticConfiguration.DBPath))
+        {
+            dbIds = await LoadOrderedIdsAsync(snap, reportId, formNum, ct).ConfigureAwait(false);
+        }
+
+        FormRowOrderedIdsCache.Store(reportId, formNum, dbIds);
+        return dbIds;
+    }
+
+    public static FormRowPendingSnapshot CapturePending(DBModel uiDb, int reportId, string formNum)
+    {
+        FormRowMutationService.CollectPending(uiDb, reportId, formNum,
+            out var added, out var trackedById, out var excludeIds);
+        return new FormRowPendingSnapshot
+        {
+            Added = added,
+            TrackedById = trackedById,
+            ExcludeIds = excludeIds
+        };
+    }
+
     /// <summary>
     /// Текущая страница живого набора: Deleted исключены, Added вставлены, Modified — tracked instance.
     /// </summary>
     public static async Task<List<Form>> LoadMergedVisiblePageAsync(
         DBModel uiDb, int reportId, string formNum, int skip, int take, CancellationToken ct = default)
     {
-        FormRowMutationService.CollectPending(uiDb, reportId, formNum,
-            out var added, out var trackedById, out var excludeIds);
+        var pending = CapturePending(uiDb, reportId, formNum);
+        return await LoadMergedVisiblePageAsync(pending, reportId, formNum, skip, take, ct)
+            .ConfigureAwait(false);
+    }
+
+    public static async Task<List<Form>> LoadMergedVisiblePageAsync(
+        FormRowPendingSnapshot pending, int reportId, string formNum, int skip, int take,
+        CancellationToken ct = default)
+    {
+        pending ??= new FormRowPendingSnapshot
+        {
+            Added = [],
+            TrackedById = [],
+            ExcludeIds = []
+        };
+
+        var added = pending.Added;
+        var trackedById = pending.TrackedById;
+        var excludeIds = pending.ExcludeIds;
 
         if (added.Count == 0 && excludeIds.Count == 0)
         {
@@ -200,11 +252,8 @@ public static class FormRowsPageLoader
             return FormRowMutationService.PreferTracked(page, trackedById);
         }
 
-        List<int> dbIds;
-        await using (var snap = new DBModel(StaticConfiguration.DBPath))
-        {
-            dbIds = await LoadOrderedIdsAsync(snap, reportId, formNum, ct).ConfigureAwait(false);
-        }
+        var dbIds = await GetOrLoadOrderedDbIdsAsync(reportId, formNum, ct)
+            .ConfigureAwait(false);
 
         var slots = FormRowMutationService.BuildLiveSlots(dbIds, added, excludeIds);
         if (skip >= slots.Count || take <= 0)
@@ -255,11 +304,8 @@ public static class FormRowsPageLoader
         FormRowMutationService.CollectPending(uiDb, reportId, formNum,
             out var added, out var trackedById, out var excludeIds);
 
-        List<int> dbIds;
-        await using (var snap = new DBModel(StaticConfiguration.DBPath))
-        {
-            dbIds = await LoadOrderedIdsAsync(snap, reportId, formNum, ct).ConfigureAwait(false);
-        }
+        var dbIds = await GetOrLoadOrderedDbIdsAsync(reportId, formNum, ct)
+            .ConfigureAwait(false);
 
         var slots = FormRowMutationService.BuildLiveSlots(dbIds, added, excludeIds);
         var idsToLoad = new List<int>();

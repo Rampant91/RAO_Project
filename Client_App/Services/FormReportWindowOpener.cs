@@ -357,6 +357,7 @@ public static class FormReportWindowOpener
         vm.RowCount = DefaultPageSize;
         vm.UpdateFormList();
         vm.UpdatePageInfo();
+        vm.WarmVisiblePageCache();
 
         return createWindow(vm);
     }

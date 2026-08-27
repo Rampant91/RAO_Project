@@ -23,6 +23,7 @@ using System.Windows.Input;
 using Models.Attributes;
 using Models.DBRealization;
 using Microsoft.EntityFrameworkCore;
+using Avalonia.Threading;
 
 namespace Client_App.ViewModels.Forms;
 
@@ -290,7 +291,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             {
                 _rowCount = result;
                 OnPropertyChanged();
-                _ = RefreshVisibleRowsAsync();
+                SchedulePagingRefresh();
             }
         }
     }
@@ -312,8 +313,59 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
             _currentPage = result;
             OnPropertyChanged();
-            _ = RefreshVisibleRowsAsync();
+            // Debounce typed CurrentPage/RowCount (e.g. "66" / "30") like org SearchText — 300ms.
+            SchedulePagingRefresh();
         }
+    }
+
+    private CancellationTokenSource? _pagingDebounceCts;
+    private const int PagingDebounceMs = 300;
+
+    /// <summary>
+    /// Cancel pending typed CurrentPage/RowCount debounce and refresh now (◀/▶).
+    /// </summary>
+    public void FlushPendingPagingRefresh()
+    {
+        CancelPagingDebounce();
+        _ = RefreshVisibleRowsAsync();
+    }
+
+    private void CancelPagingDebounce()
+    {
+        try { _pagingDebounceCts?.Cancel(); } catch { /* ignore */ }
+        _pagingDebounceCts = null;
+    }
+
+    private void SchedulePagingRefresh()
+    {
+        if (!UseDbPaging)
+        {
+            CancelPagingDebounce();
+            _ = RefreshVisibleRowsAsync();
+            return;
+        }
+
+        CancelPagingDebounce();
+        var cts = new CancellationTokenSource();
+        _pagingDebounceCts = cts;
+        _ = DebouncedPagingRefreshAsync(cts);
+    }
+
+    private async Task DebouncedPagingRefreshAsync(CancellationTokenSource cts)
+    {
+        try
+        {
+            await Task.Delay(PagingDebounceMs, cts.Token).ConfigureAwait(true);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+
+        if (cts.IsCancellationRequested || !ReferenceEquals(_pagingDebounceCts, cts))
+            return;
+
+        await RefreshVisibleRowsAsync().ConfigureAwait(true);
     }
 
     /// <summary>
@@ -511,6 +563,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     {
         Report = loadedReport;
         Reports = loadedReport.Reports;
+        FormRowOrderedIdsCache.Invalidate();
 
         var formNum = FormType;
         var isPaged = formNum is "1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8" or "1.9";
@@ -555,6 +608,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         OnPropertyChanged(nameof(WindowTitle));
         OnPropertyChanged(nameof(TotalPages));
         OnPropertyChanged(nameof(TotalRows));
+        if (isPaged)
+            WarmVisiblePageCache();
     }
     #endregion
 
@@ -755,8 +810,10 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             .LoadMergedVisiblePageAsync(StaticConfiguration.DBModel, report.Id, FormType, skip, RowCount)
             .ConfigureAwait(true);
         FormRowsPageLoader.ApplyPageToReport(report, FormType, items);
+        CacheCurrentFormPage();
         UpdateFormList();
         UpdatePageInfo();
+        ScheduleFormPagePrefetch();
     }
 
     /// <summary>
@@ -765,6 +822,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public async Task OnRowsSavedAsync()
     {
         ClearFormPageCache();
+        FormRowOrderedIdsCache.Invalidate();
         _rowSessionActive = false;
         if (Report?.Id > 0 && FormRowsPageLoader.SupportsDbPaging(FormType))
         {
@@ -788,6 +846,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
         UpdateFormList();
         UpdatePageInfo();
+        if (UseDbPaging)
+            WarmVisiblePageCache();
     }
 
     /// <summary>
@@ -801,6 +861,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         db.Restore();
         _rowSessionActive = false;
         ClearFormPageCache();
+        FormRowOrderedIdsCache.Invalidate();
 
         if (isDraft)
         {
@@ -863,18 +924,31 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         UpdateNoteList();
         UpdatePageInfo();
         IsCanSaveReportEnabled = false;
+        if (UseDbPaging)
+            WarmVisiblePageCache();
     }
 
     private readonly object _formPageCacheGate = new();
     private readonly Dictionary<(int Page, int RowCount), List<Form>> _formPageCache = new();
     private CancellationTokenSource? _formPrefetchCts;
 
+    public void WarmVisiblePageCache()
+    {
+        if (!UseDbPaging || Report?.Id <= 0 || !FormRowsPageLoader.SupportsDbPaging(FormType))
+            return;
+        CacheCurrentFormPage();
+        ScheduleFormPagePrefetch();
+    }
+
     private void ClearFormPageCache()
     {
-        lock (_formPageCacheGate)
-            _formPageCache.Clear();
+        Interlocked.Increment(ref _contentLoadGeneration);
+        CancelPagingDebounce();
+        IsContentLoading = false;
         try { _formPrefetchCts?.Cancel(); } catch { /* ignore */ }
         _formPrefetchCts = null;
+        lock (_formPageCacheGate)
+            _formPageCache.Clear();
     }
 
     private async Task RefreshVisibleRowsAsync()
@@ -889,85 +963,124 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         await RefreshFormListForPagingAsync().ConfigureAwait(true);
     }
 
+    /// <summary>
+    /// Смена страницы: очистить видимый FormList, overlay, затем Apply/UpdateFormList.
+    /// </summary>
     private async Task RefreshFormListForPagingAsync()
     {
-        await WithContentLoadingAsync(async () =>
+        if (!UseDbPaging || !FormRowsPageLoader.SupportsDbPaging(FormType) || Report?.Id <= 0)
         {
-            if (UseDbPaging && FormRowsPageLoader.SupportsDbPaging(FormType) && Report?.Id > 0)
-            {
-                var pendingMut = FormRowsPageLoader.HasPendingAddOrDelete(
-                    StaticConfiguration.DBModel, Report.Id, FormType);
-                var key = (CurrentPage, RowCount);
-                List<Form>? cached = null;
-                if (!pendingMut)
-                {
-                    lock (_formPageCacheGate)
-                        _formPageCache.TryGetValue(key, out cached);
-                }
-
-                if (cached != null)
-                {
-                    FormRowsPageLoader.ApplyPageToReport(Report, FormType, cached);
-                }
-                else
-                {
-                    var skip = (CurrentPage - 1) * RowCount;
-                    var take = RowCount;
-                    var reportId = Report.Id;
-                    var formType = FormType;
-                    var pageGen = _contentLoadGeneration;
-                    var uiDb = StaticConfiguration.DBModel;
-
-                    var items = await FormRowsPageLoader
-                        .LoadMergedVisiblePageAsync(uiDb, reportId, formType, skip, take)
-                        .ConfigureAwait(true);
-
-                    if (pageGen != _contentLoadGeneration)
-                        return;
-
-                    FormRowsPageLoader.ApplyPageToReport(Report, FormType, items);
-                    if (!pendingMut)
-                        CacheCurrentFormPage();
-                }
-
-                if (!pendingMut)
-                    ScheduleFormPagePrefetch();
-            }
-
             UpdateFormList();
             UpdatePageInfo();
-        });
+            return;
+        }
+
+        var generation = Interlocked.Increment(ref _contentLoadGeneration);
+        ContentLoadingMessage = "Загрузка…";
+        IsContentLoading = true;
+        if (_formList.Count > 0)
+            _formList.Clear();
+
+        try
+        {
+            await Dispatcher.UIThread
+                .InvokeAsync(static () => { }, DispatcherPriority.Render)
+                .ConfigureAwait(true);
+
+            if (generation != _contentLoadGeneration || Report?.Id <= 0)
+                return;
+
+            var page = CurrentPage;
+            var rowCount = RowCount;
+            var key = (page, rowCount);
+            var reportId = Report.Id;
+            var formType = FormType;
+            var skip = Math.Max(0, (page - 1) * rowCount);
+
+            List<Form>? cached;
+            lock (_formPageCacheGate)
+                _formPageCache.TryGetValue(key, out cached);
+
+            List<Form>? items;
+            if (cached != null)
+            {
+                items = cached;
+            }
+            else
+            {
+                var pending = FormRowsPageLoader.CapturePending(
+                    StaticConfiguration.DBModel, reportId, formType);
+                items = await Task.Run(async () =>
+                        await FormRowsPageLoader
+                            .LoadMergedVisiblePageAsync(pending, reportId, formType, skip, rowCount)
+                            .ConfigureAwait(false))
+                    .ConfigureAwait(true);
+
+                if (generation != _contentLoadGeneration)
+                    return;
+                if (items == null || Report?.Id != reportId)
+                    return;
+            }
+
+            FormRowsPageLoader.ApplyPageToReport(Report, FormType, items);
+            if (cached == null)
+                PutFormPageCache(key, items);
+            UpdateFormList();
+            UpdatePageInfo();
+            ScheduleFormPagePrefetch();
+        }
+        finally
+        {
+            if (generation == _contentLoadGeneration)
+                IsContentLoading = false;
+        }
+    }
+
+    private void PutFormPageCache((int Page, int RowCount) key, List<Form> items)
+    {
+        lock (_formPageCacheGate)
+        {
+            _formPageCache[key] = items;
+            TrimFormPageCache_NoLock();
+        }
     }
 
     private void CacheCurrentFormPage()
     {
         if (Report?.Rows == null) return;
-        var key = (CurrentPage, RowCount);
-        lock (_formPageCacheGate)
-        {
-            _formPageCache[key] = Report.Rows.ToList<Form>();
-            TrimFormPageCache_NoLock();
-        }
+        PutFormPageCache((CurrentPage, RowCount), Report.Rows.ToList<Form>());
     }
 
     private void TrimFormPageCache_NoLock()
     {
-        if (_formPageCache.Count <= 4) return;
+        var current = CurrentPage;
+        var rowCount = RowCount;
+        if (_formPageCache.Count <= 9) return;
         var keep = new HashSet<(int, int)>
         {
-            (CurrentPage, RowCount),
-            (CurrentPage - 1, RowCount),
-            (CurrentPage + 1, RowCount)
+            (current, rowCount),
+            (current - 1, rowCount),
+            (current + 1, rowCount),
+            (current - 2, rowCount),
+            (current + 2, rowCount)
         };
         foreach (var k in _formPageCache.Keys.Where(k => !keep.Contains(k)).ToList())
             _formPageCache.Remove(k);
     }
 
+    private static IEnumerable<int> NeighborFormPages(int current, int radius)
+    {
+        for (var d = 1; d <= radius; d++)
+        {
+            yield return current - d;
+            yield return current + d;
+        }
+    }
+
     private void ScheduleFormPagePrefetch()
     {
         if (!UseDbPaging || Report?.Id <= 0) return;
-        if (FormRowsPageLoader.HasPendingAddOrDelete(StaticConfiguration.DBModel, Report.Id, FormType))
-            return;
+        if (!FormRowsPageLoader.SupportsDbPaging(FormType)) return;
         try { _formPrefetchCts?.Cancel(); } catch { /* ignore */ }
         var cts = new CancellationTokenSource();
         _formPrefetchCts = cts;
@@ -976,7 +1089,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         var rowCount = RowCount;
         var totalPages = TotalPages;
         var current = CurrentPage;
-        var dbPath = StaticConfiguration.DBPath;
+        var pending = FormRowsPageLoader.CapturePending(StaticConfiguration.DBModel, reportId, formType);
         var gate = _formPageCacheGate;
         var cache = _formPageCache;
 
@@ -984,8 +1097,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         {
             try
             {
-                await using var db = new DBModel(dbPath);
-                foreach (var p in new[] { current - 1, current + 1 })
+                foreach (var p in NeighborFormPages(current, radius: 2))
                 {
                     if (cts.IsCancellationRequested || p < 1 || p > totalPages) continue;
                     var key = (p, rowCount);
@@ -995,11 +1107,14 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
                     }
 
                     var skip = (p - 1) * rowCount;
-                    var items = await FormRowsPageLoader.LoadPageListAsync(
-                        db, reportId, formType, skip, rowCount, cts.Token);
+                    var items = await FormRowsPageLoader.LoadMergedVisiblePageAsync(
+                        pending, reportId, formType, skip, rowCount, cts.Token)
+                        .ConfigureAwait(false);
+                    if (cts.IsCancellationRequested) continue;
                     lock (gate)
                     {
-                        cache[key] = items;
+                        if (!cache.ContainsKey(key))
+                            cache[key] = items;
                     }
                 }
             }

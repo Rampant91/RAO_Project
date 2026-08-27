@@ -70,7 +70,7 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
-        args.Cancel = true; // Сразу запрещаем закрытие окна, т.к. из-за асинхроности окно может закрыться в любой момент
+        args.Cancel = true; // Сразу запрещаем закрытие окна, т.к., из-за асинхронности окно может закрыться в любой момент
 
 
         _isCloseConfirmed = true; // перед выходом из обработчика события стоит проверка на _isCloseConfirmed,

@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
 using Avalonia.Markup.Xaml;
+using Client_App.ViewModels.Forms;
 using ReactiveUI;
 using System.Windows.Input;
 
@@ -10,7 +11,7 @@ namespace Client_App.Views.Controls;
 public partial class NumericLeftRight : UserControl
 {
     #region Property
-    // Определение StyledProperty для Value
+
     public static readonly StyledProperty<int> ValueProperty =
         AvaloniaProperty.Register<NumericLeftRight, int>(
             nameof(Value),
@@ -23,7 +24,6 @@ public partial class NumericLeftRight : UserControl
         set => SetValue(ValueProperty, CoerceValue(value));
     }
 
-    // Свойство Minimum
     public static readonly StyledProperty<int> MinimumProperty =
         AvaloniaProperty.Register<NumericLeftRight, int>(
             nameof(Minimum),
@@ -36,7 +36,6 @@ public partial class NumericLeftRight : UserControl
         set => SetValue(MinimumProperty, value);
     }
 
-    // Свойство Maximum
     public static readonly StyledProperty<int> MaximumProperty =
         AvaloniaProperty.Register<NumericLeftRight, int>(
             nameof(Maximum),
@@ -49,7 +48,6 @@ public partial class NumericLeftRight : UserControl
         set => SetValue(MaximumProperty, value);
     }
 
-    // Свойство Increment
     public static readonly StyledProperty<int> IncrementProperty =
         AvaloniaProperty.Register<NumericLeftRight, int>(
             nameof(Increment),
@@ -64,9 +62,10 @@ public partial class NumericLeftRight : UserControl
     #endregion
 
     #region Commands
+
     public ICommand Decrease { get; set; }
     public ICommand Increase { get; set; }
-        
+
     #endregion
 
     public NumericLeftRight()
@@ -74,21 +73,31 @@ public partial class NumericLeftRight : UserControl
         Decrease = ReactiveCommand.Create(() =>
         {
             Value -= Increment;
+            FlushFormPagingIfNeeded();
         });
 
         Increase = ReactiveCommand.Create(() =>
         {
             Value += Increment;
+            FlushFormPagingIfNeeded();
         });
         InitializeComponent();
+    }
+
+    /// <summary>
+    /// Buttons should not wait for typed-page debounce on BaseFormVM.
+    /// </summary>
+    private void FlushFormPagingIfNeeded()
+    {
+        if (DataContext is BaseFormVM vm)
+            vm.FlushPendingPagingRefresh();
     }
 
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
-
     }
-    // Метод для ограничения значения в пределах Minimum/Maximum
+
     private int CoerceValue(int value)
     {
         if (value < Minimum)
