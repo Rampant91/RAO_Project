@@ -129,7 +129,7 @@
       Condition="'$(_DataPublishDir)' != '' and '$(_ReddbSourceFolder)' != '' and !Exists('$(_RepoDataDir)\REDDB\$(_ReddbSourceFolder)')" />
     <ItemGroup Condition="'$(_DataPublishDir)' != '' and Exists('$(_RepoDataDir)')">
       <_RepoDataFiles Include="$(_RepoDataDir)\**\*.*"
-                      Exclude="$(_RepoDataDir)\REDDB\**\*.*;$(_RepoDataDir)\Updater\**\*.*;$(_RepoDataDir)\**\firebird.log" />
+                      Exclude="$(_RepoDataDir)\REDDB\**\*.*;$(_RepoDataDir)\Updater\**\*.*;$(_RepoDataDir)\AstraLegacy\**\*.*;$(_RepoDataDir)\**\firebird.log" />
       <_RepoReddbFiles Include="$(_RepoDataDir)\REDDB\$(_ReddbSourceFolder)\**\*.*"
                        Exclude="$(_RepoDataDir)\REDDB\$(_ReddbSourceFolder)\**\firebird.log"
                        Condition="'$(_ReddbSourceFolder)' != '' and Exists('$(_RepoDataDir)\REDDB\$(_ReddbSourceFolder)')" />
@@ -144,6 +144,23 @@
       DestinationFiles="@(_RepoReddbFiles->'$(_DataPublishDir)data\REDDB\$(_ReddbDestFolder)\%(RecursiveDir)%(Filename)%(Extension)')"
       SkipUnchangedFiles="true"
       Condition="'$(_DataPublishDir)' != '' and '@(_RepoReddbFiles)' != ''" />
+  </Target>
+  <!-- Astra 1.6: libtommath0.deb рядом с исполняемым (не в data\) -->
+  <Target Name="CopyAstraLegacyDebToPublish"
+          AfterTargets="Publish"
+          DependsOnTargets="_ResolveDataPublishDir"
+          Condition="'$(AstraLegacy)' == 'true'">
+    <PropertyGroup>
+      <_AstraLegacyDeb>$(_RepoDataDir)\AstraLegacy\libtommath0.deb</_AstraLegacyDeb>
+    </PropertyGroup>
+    <Warning
+      Text="CopyAstraLegacyDebToPublish: не найден $(_AstraLegacyDeb)"
+      Condition="'$(_DataPublishDir)' != '' and !Exists('$(_AstraLegacyDeb)')" />
+    <Copy
+      SourceFiles="$(_AstraLegacyDeb)"
+      DestinationFolder="$(_DataPublishDir)"
+      SkipUnchangedFiles="true"
+      Condition="'$(_DataPublishDir)' != '' and Exists('$(_AstraLegacyDeb)')" />
   </Target>
   <Target Name="_CollectMpzfUpdaterFiles">
     <PropertyGroup>
