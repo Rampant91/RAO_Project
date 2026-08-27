@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Models.Helpers;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -154,14 +155,14 @@ public class CheckF23 : CheckBase
         List<string> Storages23 = new();
         foreach (Form23 row in Rows23Cur)
         {
-            if (string.IsNullOrWhiteSpace(row.StoragePlaceName_DB) || row.StoragePlaceName_DB.Trim() == "-") continue;
+            if (DashStringHelper.IsNullOrWhiteSpaceOrDash(row.StoragePlaceName_DB)) continue;
             Storages23.Add(
                 $"{row.StoragePlaceName_DB.Trim().ToLowerInvariant()}{row.StoragePlaceCode_DB.Trim().ToLowerInvariant()}"
             );
         }
         foreach (Form22 row in Rows22Cur)
         {
-            if (string.IsNullOrWhiteSpace(row.StoragePlaceName_DB) || row.StoragePlaceName_DB.Trim() == "-") continue;
+            if (DashStringHelper.IsNullOrWhiteSpaceOrDash(row.StoragePlaceName_DB)) continue;
             Storages22.Add((
                 $"{row.StoragePlaceName_DB} {row.StoragePlaceCode_DB}",
                 $"{row.StoragePlaceName_DB.Trim().ToLowerInvariant()}{row.StoragePlaceCode_DB.Trim().ToLowerInvariant()}"
@@ -193,8 +194,7 @@ public class CheckF23 : CheckBase
         DateTime YearEnd = new(yearCurRaw, 12, DateTime.DaysInMonth(yearCurRaw, 12));
         foreach (Form23 row in Rows23Cur)
         {
-            if (string.IsNullOrWhiteSpace(row.ExpirationDate_DB)
-                || row.ExpirationDate_DB.Trim() == "-"
+            if (DashStringHelper.IsNullOrWhiteSpaceOrDash(row.ExpirationDate_DB)
                 || !DateTime.TryParse(row.ExpirationDate_DB, out DateTime ExpirationDate)) continue;
             if (ExpirationDate < YearEnd)
             {
@@ -220,7 +220,7 @@ public class CheckF23 : CheckBase
         List<(string, double, string, int)> Storages23Cur = new();
         foreach (Form23 row in Rows23Cur)
         {
-            if (string.IsNullOrWhiteSpace(row.StoragePlaceName_DB) || row.StoragePlaceName_DB.Trim() == "-") continue;
+            if (DashStringHelper.IsNullOrWhiteSpaceOrDash(row.StoragePlaceName_DB)) continue;
             double.TryParse(row.ProjectVolume_DB.ToLowerInvariant().Replace("(", "").Replace(")", "").Replace(".", ",").Replace("е", "e").Replace(" ", "")
                 .Replace("e+", "e*").Replace("e", "e+").Replace("e+*", "e+"), out var volume);
             Storages23Cur.Add((
@@ -232,7 +232,7 @@ public class CheckF23 : CheckBase
         }
         foreach (Form23 row in Rows23Prev)
         {
-            if (string.IsNullOrWhiteSpace(row.StoragePlaceName_DB) || row.StoragePlaceName_DB.Trim() == "-") continue;
+            if (DashStringHelper.IsNullOrWhiteSpaceOrDash(row.StoragePlaceName_DB)) continue;
             double.TryParse(row.ProjectVolume_DB.ToLowerInvariant().Replace("(", "").Replace(")", "").Replace(".", ",").Replace("е", "e").Replace(" ", "")
                 .Replace("e+", "e*").Replace("e", "e+").Replace("e+*", "e+"), out var volume);
             Storages23Prev.Add((
@@ -269,14 +269,14 @@ public class CheckF23 : CheckBase
         List<string> Storages23 = new();
         foreach (Form23 row in Rows23Cur)
         {
-            if (string.IsNullOrWhiteSpace(row.StoragePlaceName_DB) || row.StoragePlaceName_DB.Trim() == "-") continue;
+            if (DashStringHelper.IsNullOrWhiteSpaceOrDash(row.StoragePlaceName_DB)) continue;
             Storages23.Add(
                 $"{row.StoragePlaceName_DB.Trim().ToLowerInvariant()}{row.StoragePlaceCode_DB.Trim().ToLowerInvariant()}"
             );
         }
         foreach (Form22 row in Rows22Cur)
         {
-            if (string.IsNullOrWhiteSpace(row.StoragePlaceName_DB) || row.StoragePlaceName_DB.Trim() == "-") continue;
+            if (DashStringHelper.IsNullOrWhiteSpaceOrDash(row.StoragePlaceName_DB)) continue;
             Storages22.Add((
                 $"{row.StoragePlaceName_DB} {row.StoragePlaceCode_DB}",
                 $"{row.StoragePlaceName_DB.Trim().ToLowerInvariant()}{row.StoragePlaceCode_DB.Trim().ToLowerInvariant()}"
@@ -365,7 +365,8 @@ public class CheckF23 : CheckBase
                 ContentHeader = "Уведомление",
                 ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
                 MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(Desktop.MainWindow));
 
@@ -424,7 +425,8 @@ public class CheckF23 : CheckBase
                                         $"{Environment.NewLine}и используется другим процессом.",
                                     MinWidth = 400,
                                     MinHeight = 150,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                    Topmost = true,
                                 })
                                 .ShowDialog(Desktop.MainWindow));
 

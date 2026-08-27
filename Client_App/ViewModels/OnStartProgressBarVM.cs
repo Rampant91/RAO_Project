@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using ReactiveUI;
@@ -11,6 +12,7 @@ using Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 using Client_App.Interfaces.BackgroundLoader;
 using Client_App.Interfaces.Logger;
 using Client_App.Properties;
+using Avalonia.Threading;
 
 namespace Client_App.ViewModels;
 
@@ -33,9 +35,21 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
             ServiceExtension.LoggerManager.CreateFile("Crash.log");
         }, () =>
         {
-            MainTask = new Task(async () => await Start().ConfigureAwait(false));
-            MainTask.GetAwaiter().OnCompleted(async () => await ShowDialog.Handle(MainWindowVM));
-            MainTask.Start();
+            // Task.Run дожидается полного завершения Start(); иначе главное окно открывалось бы до инициализации БД.
+            MainTask = Task.Run(async () => await Start().ConfigureAwait(false));
+            _ = MainTask.ContinueWith(t =>
+            {
+                Dispatcher.UIThread.InvokeAsync(async () =>
+                {
+                    if (t.IsFaulted)
+                    {
+                        Environment.Exit(1);
+                        return;
+                    }
+
+                    await ShowDialog.Handle(MainWindowVM);
+                });
+            }, TaskContinuationOptions.None);
         });
     }
 
@@ -71,28 +85,34 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
 
     private async Task Start()
     {
-        Settings.Default.AppLaunchedInNorao = Settings.Default.AppStartupParameters
-            .Trim()
-            .Split(',')
-            .Any(x => x is "-n");
-        
+        Settings.Default.AppLaunchedInNorao = AppIsLaunchedInNorao();
         Settings.Default.Save(); // Сохраняем настройки
 
         MainWindowVM = new MainWindowVM();
         MainWindowVM.PropertyChanged += OnMainWindowVMPropertyChanged;
         await new InitializationAsyncCommand(MainWindowVM).AsyncExecute(this);
 
-        if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-p"))
+        if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-p" or "-y"))
         {
             await BackgroundWorkThenAppLaunchedWithOperParameter();
             Environment.Exit(0);
         }
-        else if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-y"))
-        {
-            await BackgroundWorkThenAppLaunchedWithYearParameter();
-            Environment.Exit(0);
-        }
+        //else if (Settings.Default.AppStartupParameters.Trim().Split(',').Any(x => x is "-y"))
+        //{
+        //    await BackgroundWorkThenAppLaunchedWithYearParameter();
+        //    Environment.Exit(0);
+        //}
         
+    }
+
+    private static bool AppIsLaunchedInNorao()
+    {
+        var appIsLaunchedInNorao = Settings.Default.AppStartupParameters
+            .Trim()
+            .Split(',')
+            .Any(x => x is "-n");
+
+        return appIsLaunchedInNorao || File.Exists(@"Y:\АЧ 2021\Программа\developer.mode");
     }
 
     #region BackgroundWork
@@ -109,6 +129,7 @@ public class OnStartProgressBarVM : BaseVM, INotifyPropertyChanged
         await new ExcelExportExecutorsAsyncCommand().AsyncExecute(null);
         await new ExcelExportIntersectionsAsyncCommand().AsyncExecute(null);
         await new ExcelExportListOfForms1AsyncCommand().AsyncExecute(null);
+        await new ExcelExportListOfForms2AsyncCommand().AsyncExecute(null);
         await new ExcelExportAllAsyncCommand(MainWindowVM).AsyncExecute(null);
     }
 

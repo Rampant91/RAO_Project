@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -14,13 +15,13 @@ using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
-using Microsoft.CodeAnalysis.Operations;
 using Models.Collections;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.Forms.Form4;
 using Models.Forms.Form5;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -120,7 +121,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 ContentHeader = "Уведомление",
                 ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
                 MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(Desktop.MainWindow));
 
@@ -179,7 +181,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                                     $"{Environment.NewLine}и используется другим процессом.",
                                 MinWidth = 400,
                                 MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                Topmost = true,
                             })
                             .ShowDialog(Desktop.MainWindow));
 
@@ -215,6 +218,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     {
         if (formNum.Split('.')[0] == "2")
         {
+            if (master.Rows20.Count < 2)
+                throw new InvalidOperationException("В титульной форме 2.0 недостаточно строк организации (ожидаются юрлицо и обособленное подразделение).");
+
             var frmYur = master.Rows20[0];
             var frmObosob = master.Rows20[1];
             worksheet.Cells["G10"].Value = rep.Year_DB;
@@ -260,6 +266,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         }
         else if (formNum.Split('.')[0] == "1")
         {
+            if (master.Rows10.Count < 2)
+                throw new InvalidOperationException("В титульной форме 1.0 недостаточно строк организации (ожидаются юрлицо и обособленное подразделение).");
+
             var frmYur = master.Rows10[0];
             var frmObosob = master.Rows10[1];
 
@@ -304,6 +313,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         }
         else if (formNum.Split('.')[0] == "4")
         {
+            if (master.Rows40.Count < 1)
+                throw new InvalidOperationException("В титульной форме 4.0 отсутствует строка организации.");
+
             var form40 = master.Rows40[0];
 
             worksheet.Cells["B8"].Value = form40.CodeSubjectRF_DB;
@@ -332,6 +344,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         }
         else if (formNum.Split('.')[0] == "5")
         {
+            if (master.Rows50.Count < 1)
+                throw new InvalidOperationException("В титульной форме 5.0 отсутствует строка организации.");
+
             var form50 = master.Rows50[0];
 
             worksheet.Cells["B16"].Value = rep.Year_DB;
@@ -478,6 +493,106 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         }
     }
 
+    /// <summary>
+    /// Включает перенос текста для ячеек блока исполнителя (должность, ФИО, телефон, e-mail).
+    /// Вызывать после вставки строк примечаний и таблицы, чтобы адреса и высота строк были корректны.
+    /// </summary>
+    private protected static void ApplyExcelExecutorWrapText(
+        string formNum,
+        ExcelWorksheet worksheet,
+        Report rep,
+        bool notesExported)
+    {
+        var cells = GetExecutorCellAddresses(formNum, worksheet, rep, notesExported);
+        ApplyExcelCellsWrapText(worksheet, ExcelVerticalAlignment.Bottom, resizeOnlyWhenWrapped: true, cells);
+    }
+
+    /// <summary>
+    /// Возвращает адреса ячеек блока исполнителя с учётом сдвига после вставки строк.
+    /// </summary>
+    private static string[] GetExecutorCellAddresses(
+        string formNum,
+        ExcelWorksheet worksheet,
+        Report rep,
+        bool notesExported)
+    {
+        var notesStart = formNum switch
+        {
+            "2.8" => 18,
+            _ when formNum is "5.1" or "5.2" or "5.3" or "5.4" or "5.5" or "5.6" or "5.7" => 17,
+            _ => 15
+        };
+
+        var tableStart = formNum switch
+        {
+            "2.8" => 14,
+            "4.1" => 9,
+            _ when formNum.Split('.')[0] == "5" => 12,
+            _ => 11
+        };
+
+        var notesShift = notesExported && rep.Notes.Count > 0 ? rep.Notes.Count - 1 : 0;
+        var tableShift = rep[formNum].Count > 0 ? rep[formNum].Count - 1 : 0;
+
+        int ShiftRow(int baseRow)
+        {
+            var row = baseRow;
+            if (notesExported && notesShift > 0 && row >= notesStart + 1)
+                row += notesShift;
+            if (tableShift > 0 && row >= tableStart + 1)
+                row += tableShift;
+            return row;
+        }
+
+        string Cell(int row, int col) => worksheet.Cells[row, col].Address;
+
+        return formNum switch
+        {
+            "2.8" =>
+            [
+                Cell(ShiftRow(21), 4),
+                Cell(ShiftRow(21), 6),
+                Cell(ShiftRow(21), 9),
+                Cell(ShiftRow(21), 11)
+            ],
+            "5.7" =>
+            [
+                Cell(ShiftRow(16), 2),
+                Cell(ShiftRow(17), 2),
+                Cell(ShiftRow(18), 2),
+                Cell(ShiftRow(19), 2)
+            ],
+            _ when formNum.Split('.')[0] == "4" =>
+            [
+                Cell(ShiftRow(12), 2),
+                Cell(ShiftRow(13), 2),
+                Cell(ShiftRow(14), 2),
+                Cell(ShiftRow(15), 2)
+            ],
+            _ when formNum.Split('.')[0] == "5" =>
+            [
+                Cell(ShiftRow(21), 2),
+                Cell(ShiftRow(22), 2),
+                Cell(ShiftRow(23), 2),
+                Cell(ShiftRow(24), 2)
+            ],
+            _ when formNum.Split('.')[0] is "1" or "2" =>
+            [
+                Cell(ShiftRow(18), 4),
+                Cell(ShiftRow(18), 6),
+                Cell(ShiftRow(18), 9),
+                Cell(ShiftRow(18), 11)
+            ],
+            _ =>
+            [
+                Cell(ShiftRow(18), 4),
+                Cell(ShiftRow(18), 6),
+                Cell(ShiftRow(18), 9),
+                Cell(ShiftRow(18), 11)
+            ]
+        };
+    }
+
     #endregion
 
     #region ExcelPrintNotesExport
@@ -529,25 +644,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
                 top.Color.SetColor(255, 0, 0, 0);
             }
-
-            string range = formNum.Split('.')[0] is "1" or "2"
-                ? $"C{start + 1}:L{start + 1}"
-                : $"C{start + 1}";
-            var cellCL = worksheet.Cells[range];
-            cellCL.Merge = true;
-            var btmCL = cellCL.Style.Border.Bottom;
-            var lftCL = cellCL.Style.Border.Left;
-            var rgtCL = cellCL.Style.Border.Right;
-            var topCL = cellCL.Style.Border.Top;
-            btmCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-            btmCL.Color.SetColor(255, 0, 0, 0);
-            lftCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-            lftCL.Color.SetColor(255, 0, 0, 0);
-            rgtCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-            rgtCL.Color.SetColor(255, 0, 0, 0);
-            topCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-            topCL.Color.SetColor(255, 0, 0, 0);
         }
+
+        // DeleteRow в костыле уничтожает merge первой строки шаблона — восстанавливаем для всех строк примечаний.
+        for (var row = start; row < start + rep.Notes.Count; row++)
+            ApplyNotesExplanationRowStyle(worksheet, formNum, row);
 
         var count = start;
         foreach (var note in rep.Notes)
@@ -555,6 +656,42 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             note.ExcelRow(worksheet, count, 1);
             count++;
         }
+
+        if (count > start && worksheet.Dimension is not null)
+            ApplyExcelDataRowsWrapText(worksheet, start, count - 1, worksheet.Dimension.End.Column);
+    }
+
+    /// <summary>
+    /// Объединяет колонку пояснения примечания (C:L для форм 1.x/2.x) и задаёт границы.
+    /// </summary>
+    private static void ApplyNotesExplanationRowStyle(ExcelWorksheet worksheet, string formNum, int row)
+    {
+        var range = formNum.Split('.')[0] is "1" or "2"
+            ? $"C{row}:L{row}"
+            : $"C{row}";
+        var cellCL = worksheet.Cells[range];
+        try
+        {
+            if (!cellCL.Merge)
+                cellCL.Merge = true;
+        }
+        catch (ArgumentException)
+        {
+            // Диапазон частично пересекается с существующим merge — оставляем как есть.
+        }
+
+        var btmCL = cellCL.Style.Border.Bottom;
+        var lftCL = cellCL.Style.Border.Left;
+        var rgtCL = cellCL.Style.Border.Right;
+        var topCL = cellCL.Style.Border.Top;
+        btmCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+        btmCL.Color.SetColor(255, 0, 0, 0);
+        lftCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+        lftCL.Color.SetColor(255, 0, 0, 0);
+        rgtCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+        rgtCL.Color.SetColor(255, 0, 0, 0);
+        topCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
+        topCL.Color.SetColor(255, 0, 0, 0);
     }
 
     #endregion
@@ -760,6 +897,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 count++;
             }
         }
+
+        if (count > start && worksheet.Dimension is not null)
+            ApplyExcelDataRowsWrapText(worksheet, start, count - 1, worksheet.Dimension.End.Column);
     }
 
     #endregion
@@ -802,7 +942,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                                      $"{Environment.NewLine}{fullPath}",
                     MinWidth = 400,
                     MinHeight = 175,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -837,7 +978,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                     ContentMessage = "Выгрузка сохранена по пути:" +
                                      $"{Environment.NewLine}{fullPath}",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -848,6 +990,39 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 Process.Start(new ProcessStartInfo { FileName = fullPath, UseShellExecute = true });
             }
         }
+    }
+
+    #endregion
+
+    #region FilePath
+
+    /// <summary>
+    /// Возвращает путь к файлу, не совпадающий с уже существующим в каталоге.
+    /// </summary>
+    /// <param name="fullPath">Исходный путь к файлу.</param>
+    /// <param name="fallbackDirectory">Каталог по умолчанию, если в пути не указан.</param>
+    private protected static string ResolveUniqueFilePath(string fullPath, string? fallbackDirectory)
+    {
+        if (!File.Exists(fullPath))
+            return fullPath;
+
+        var directory = Path.GetDirectoryName(fullPath);
+        if (string.IsNullOrEmpty(directory))
+            directory = string.IsNullOrEmpty(fallbackDirectory) ? Environment.CurrentDirectory : fallbackDirectory;
+
+        var baseName = Path.GetFileNameWithoutExtension(fullPath);
+        var extension = Path.GetExtension(fullPath);
+        if (string.IsNullOrEmpty(extension))
+            extension = ".xlsx";
+
+        var count = 0;
+        var resolvedPath = fullPath;
+        while (File.Exists(resolvedPath))
+        {
+            resolvedPath = Path.Combine(directory, $"{baseName}_{++count}{extension}");
+        }
+
+        return resolvedPath;
     }
 
     #endregion
@@ -892,7 +1067,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                                          $"{Environment.NewLine}Операция выгрузки принудительно завершена.",
                         MinHeight = 150,
                         MinWidth = 250,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(progressBar ?? Desktop.MainWindow));
 
@@ -901,6 +1077,41 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
         return tmpDbPath;
+    }
+
+    /// <summary>
+    /// Безвозвратно удаляет временную копию основной БД после завершения работы с ней.
+    /// Повторяет попытку при кратковременной блокировке файла Firebird.
+    /// </summary>
+    /// <param name="tmpDbPath">Путь к временной копии (или null/пусто — no-op).</param>
+    private protected static void TryDeleteTempDataBase(string? tmpDbPath)
+    {
+        if (string.IsNullOrEmpty(tmpDbPath))
+        {
+            return;
+        }
+
+        for (var attempt = 0; attempt < 5; attempt++)
+        {
+            try
+            {
+                if (File.Exists(tmpDbPath))
+                {
+                    File.Delete(tmpDbPath);
+                }
+
+                return;
+            }
+            catch
+            {
+                if (attempt == 4)
+                {
+                    return;
+                }
+
+                Thread.Sleep(100);
+            }
+        }
     }
 
     #endregion
@@ -936,7 +1147,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                                      $"{Environment.NewLine}{pasFolderDirectory.FullName}",
                     MinWidth = 400,
                     MinHeight = 170,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(progressBar ?? Desktop.MainWindow));
 
@@ -964,6 +1176,323 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         excelPackage.Workbook.Properties.Title = "Report";
         excelPackage.Workbook.Properties.Created = DateTime.Now;
         return Task.FromResult(excelPackage);
+    }
+
+    #endregion
+
+    #region ExcelHeaderStyle
+
+    /// <summary>
+    /// Заливка строки заголовков (стиль Excel Table Medium — синий акцент).
+    /// </summary>
+    private protected static readonly Color ExcelHeaderFillColor = Color.FromArgb(68, 114, 196);
+
+    /// <summary>
+    /// Цвет шрифта заголовков.
+    /// </summary>
+    private protected static readonly Color ExcelHeaderFontColor = Color.White;
+
+    /// <summary>
+    /// Цвет нижней границы строки заголовков.
+    /// </summary>
+    private protected static readonly Color ExcelHeaderBorderColor = Color.FromArgb(47, 84, 150);
+
+    /// <summary>
+    /// Минимальная высота строки заголовков (в пунктах).
+    /// </summary>
+    private protected const double ExcelHeaderRowMinHeight = 36;
+
+    /// <summary>
+    /// Размер шрифта заголовков.
+    /// </summary>
+    private protected const float ExcelHeaderFontSize = 11f;
+
+    /// <summary>
+    /// Дополнительный запас по высоте для стрелки AutoFilter в узких колонках (в пунктах).
+    /// </summary>
+    private const double ExcelHeaderFilterClearance = 10;
+
+    /// <summary>
+    /// Оформляет строку заголовков по распространённому стилю Excel-таблиц:
+    /// синяя заливка, белый жирный шрифт, выравнивание по центру, перенос текста,
+    /// увеличенная высота строки (чтобы стрелка фильтра не перекрывала подпись).
+    /// Вызывать после заполнения данных и подбора ширины колонок.
+    /// </summary>
+    /// <param name="lastColumn">Номер последней колонки заголовка.</param>
+    /// <param name="enableAutoFilter">Включить автофильтр по диапазону листа.</param>
+    /// <param name="headerRow">Номер строки заголовков.</param>
+    /// <param name="headerRowHeight">Фиксированная высота строки заголовков (в пунктах); null — автооценка.</param>
+    private protected void ApplyExcelHeaderRowStyle(
+        int lastColumn,
+        bool enableAutoFilter = true,
+        int headerRow = 1,
+        double? headerRowHeight = null) =>
+        ApplyExcelHeaderRowStyle(Worksheet, lastColumn, enableAutoFilter, headerRow, headerRowHeight);
+
+    /// <summary>
+    /// Оформляет строку заголовков на указанном листе Excel.
+    /// </summary>
+    private protected static void ApplyExcelHeaderRowStyle(
+        ExcelWorksheet worksheet,
+        int lastColumn,
+        bool enableAutoFilter = true,
+        int headerRow = 1,
+        double? headerRowHeight = null)
+    {
+        if (lastColumn < 1)
+            return;
+
+        var headerRange = worksheet.Cells[headerRow, 1, headerRow, lastColumn];
+
+        headerRange.Style.Fill.PatternType = ExcelFillStyle.Solid;
+        headerRange.Style.Fill.BackgroundColor.SetColor(ExcelHeaderFillColor);
+        headerRange.Style.Font.Bold = true;
+        headerRange.Style.Font.Size = ExcelHeaderFontSize;
+        headerRange.Style.Font.Color.SetColor(ExcelHeaderFontColor);
+        headerRange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+        headerRange.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+        headerRange.Style.WrapText = true;
+
+        var border = headerRange.Style.Border;
+        border.Bottom.Style = ExcelBorderStyle.Thin;
+        border.Bottom.Color.SetColor(ExcelHeaderBorderColor);
+        border.Top.Style = ExcelBorderStyle.Thin;
+        border.Top.Color.SetColor(ExcelHeaderBorderColor);
+
+        worksheet.Row(headerRow).CustomHeight = true;
+        worksheet.Row(headerRow).Height = headerRowHeight
+                                            ?? CalculateExcelHeaderRowHeight(worksheet, headerRow, lastColumn);
+
+        if (enableAutoFilter && worksheet.Dimension is not null)
+            worksheet.Cells[worksheet.Dimension.Address].AutoFilter = true;
+
+        worksheet.View.FreezePanes(headerRow + 1, 1);
+    }
+
+    /// <summary>
+    /// Оценивает необходимую высоту строки заголовков с учётом переноса текста и стрелок фильтра.
+    /// </summary>
+    private static double CalculateExcelHeaderRowHeight(ExcelWorksheet worksheet, int headerRow, int lastColumn)
+    {
+        var maxHeight = ExcelHeaderRowMinHeight;
+
+        for (var col = 1; col <= lastColumn; col++)
+        {
+            var text = worksheet.Cells[headerRow, col].Value?.ToString();
+            if (string.IsNullOrEmpty(text))
+                continue;
+
+            var columnWidth = worksheet.Column(col).Width;
+            if (columnWidth <= 0)
+                columnWidth = 8;
+
+            var approxCharsPerLine = Math.Max(2, (int)Math.Floor(columnWidth * 0.85));
+            var lineCount = EstimateWrappedLineCount(text, approxCharsPerLine);
+            var cellHeight = lineCount * 15.0 + (lineCount == 1 ? ExcelHeaderFilterClearance : 4);
+            maxHeight = Math.Max(maxHeight, cellHeight);
+        }
+
+        return maxHeight;
+    }
+
+    /// <summary>
+    /// Оценивает число строк при переносе текста по словам.
+    /// </summary>
+    private static int EstimateWrappedLineCount(string text, int approxCharsPerLine)
+    {
+        if (text.Length <= approxCharsPerLine)
+            return 1;
+
+        if (!text.Contains(' '))
+            return (int)Math.Ceiling((double)text.Length / approxCharsPerLine);
+
+        var lineCount = 1;
+        var currentLineLength = 0;
+        foreach (var word in text.Split(' '))
+        {
+            var wordLength = word.Length;
+            if (currentLineLength == 0)
+            {
+                currentLineLength = wordLength;
+                continue;
+            }
+
+            if (currentLineLength + 1 + wordLength > approxCharsPerLine)
+            {
+                lineCount++;
+                currentLineLength = wordLength;
+            }
+            else
+            {
+                currentLineLength += 1 + wordLength;
+            }
+        }
+
+        return lineCount;
+    }
+
+    /// <summary>
+    /// Минимальная высота строки данных (в пунктах).
+    /// </summary>
+    private const double ExcelDataRowMinHeight = 15;
+
+    /// <summary>
+    /// Включает перенос текста для указанных ячеек и при необходимости подбирает высоту их строк.
+    /// </summary>
+    /// <param name="resizeOnlyWhenWrapped">Увеличивать высоту строки только при многострочном тексте.</param>
+    private protected static void ApplyExcelCellsWrapText(
+        ExcelWorksheet worksheet,
+        ExcelVerticalAlignment verticalAlignment,
+        bool resizeOnlyWhenWrapped,
+        params string[] cellAddresses)
+    {
+        if (cellAddresses.Length == 0)
+            return;
+
+        var validAddresses = cellAddresses
+            .Where(address => !string.IsNullOrWhiteSpace(address))
+            .ToArray();
+        if (validAddresses.Length == 0)
+            return;
+
+        var rowsToResize = new HashSet<int>();
+        foreach (var address in validAddresses)
+        {
+            var cell = worksheet.Cells[address];
+            cell.Style.WrapText = true;
+            cell.Style.ShrinkToFit = false;
+            cell.Style.VerticalAlignment = verticalAlignment;
+            rowsToResize.Add(cell.Start.Row);
+        }
+
+        foreach (var row in rowsToResize)
+        {
+            var rowCells = validAddresses
+                .Where(address => worksheet.Cells[address].Start.Row == row)
+                .ToArray();
+            var requiredHeight = TryCalculateExcelCellsRowHeight(worksheet, row, rowCells);
+            if (requiredHeight is null)
+                continue;
+
+            var currentHeight = worksheet.Row(row).Height;
+            if (requiredHeight.Value > currentHeight + 0.5)
+            {
+                worksheet.Row(row).CustomHeight = true;
+                worksheet.Row(row).Height = requiredHeight.Value;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Оценивает необходимую высоту строки по указанным ячейкам; null — перенос не требует увеличения высоты.
+    /// </summary>
+    private static double? TryCalculateExcelCellsRowHeight(
+        ExcelWorksheet worksheet,
+        int row,
+        IEnumerable<string> cellAddresses)
+    {
+        double? maxHeight = null;
+
+        foreach (var address in cellAddresses)
+        {
+            if (string.IsNullOrWhiteSpace(address))
+                continue;
+
+            var cell = worksheet.Cells[address];
+            if (cell.Start.Row != row)
+                continue;
+
+            var text = cell.Value?.ToString();
+            if (string.IsNullOrEmpty(text))
+                continue;
+
+            var wrapWidth = GetEffectiveWrapWidth(worksheet, cell.Start.Row, cell.Start.Column);
+            var approxCharsPerLine = Math.Max(2, (int)Math.Floor(wrapWidth * 0.85));
+            var lineCount = EstimateWrappedLineCount(text, approxCharsPerLine);
+            if (lineCount <= 1)
+                continue;
+
+            var cellHeight = lineCount * 15.0 + 2;
+            maxHeight = Math.Max(maxHeight ?? ExcelDataRowMinHeight, cellHeight);
+        }
+
+        return maxHeight;
+    }
+
+    /// <summary>
+    /// Включает перенос текста по ширине колонки для строк данных (без заголовков формы).
+    /// </summary>
+    private protected static void ApplyExcelDataRowsWrapText(
+        ExcelWorksheet worksheet,
+        int firstRow,
+        int lastRow,
+        int lastColumn)
+    {
+        if (firstRow < 1 || lastRow < firstRow || lastColumn < 1)
+            return;
+
+        for (var row = firstRow; row <= lastRow; row++)
+        {
+            for (var col = 1; col <= lastColumn; col++)
+            {
+                var cell = worksheet.Cells[row, col];
+                cell.Style.WrapText = true;
+                cell.Style.ShrinkToFit = false;
+                cell.Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+            }
+
+            worksheet.Row(row).CustomHeight = true;
+            worksheet.Row(row).Height = CalculateExcelDataRowHeight(worksheet, row, lastColumn);
+        }
+    }
+
+    /// <summary>
+    /// Оценивает необходимую высоту строки данных с учётом переноса текста.
+    /// </summary>
+    private static double CalculateExcelDataRowHeight(ExcelWorksheet worksheet, int row, int lastColumn)
+    {
+        var maxHeight = ExcelDataRowMinHeight;
+
+        for (var col = 1; col <= lastColumn; col++)
+        {
+            var text = worksheet.Cells[row, col].Value?.ToString();
+            if (string.IsNullOrEmpty(text))
+                continue;
+
+            var wrapWidth = GetEffectiveWrapWidth(worksheet, row, col);
+            var approxCharsPerLine = Math.Max(2, (int)Math.Floor(wrapWidth * 0.85));
+            var lineCount = EstimateWrappedLineCount(text, approxCharsPerLine);
+            var cellHeight = lineCount * 15.0 + 4;
+            maxHeight = Math.Max(maxHeight, cellHeight);
+        }
+
+        return maxHeight;
+    }
+
+    /// <summary>
+    /// Возвращает эффективную ширину ячейки с учётом объединённых диапазонов.
+    /// EPPlus может оставлять null в MergedCells после DeleteRow/Clear merge — индексер по (row,col)
+    /// безопаснее полного перебора коллекции.
+    /// </summary>
+    private static double GetEffectiveWrapWidth(ExcelWorksheet worksheet, int row, int col)
+    {
+        // Индексер возвращает адрес merge для ячейки или null (в т.ч. для «дырок» после удаления merge).
+        var mergedAddress = worksheet.MergedCells[row, col];
+        if (!string.IsNullOrEmpty(mergedAddress))
+        {
+            var range = worksheet.Cells[mergedAddress];
+            var totalWidth = 0.0;
+            for (var c = range.Start.Column; c <= range.End.Column; c++)
+            {
+                var width = worksheet.Column(c).Width;
+                totalWidth += width > 0 ? width : 8;
+            }
+
+            return totalWidth > 0 ? totalWidth : 8;
+        }
+
+        var columnWidth = worksheet.Column(col).Width;
+        return columnWidth > 0 ? columnWidth : 8;
     }
 
     #endregion

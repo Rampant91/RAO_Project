@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:local="using:Client_App.Behaviors"
+			 xmlns:inputBehaviors="using:Client_App.Behaviors.Input"
 			 xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Client_App.Views.Controls.NumericLeftRight">
@@ -13,7 +14,7 @@
 					  Content="❮" />
 		<TextBox Grid.Column="1" Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}}">
 			<interactivity:Interaction.Behaviors>
-				<local:TextBoxDigitValidationBehavior/>
+				<inputBehaviors:TextBoxDigitValidationBehavior/>
 			</interactivity:Interaction.Behaviors>
 		</TextBox>
 		<Button Grid.Column="2" 

@@ -8,6 +8,7 @@ using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
+using Models.Helpers;
 using OfficeOpenXml;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
@@ -538,13 +539,15 @@ public abstract class CheckBase : BaseAsyncCommand
                 {"decay", worksheet.Cells[i, 7].Text},
                 {"code", worksheet.Cells[i, 8].Text},
                 {"D", worksheet.Cells[i, 15].Text},
-                {"MZUA", worksheet.Cells[i, 16].Text},
-                {"MZA", worksheet.Cells[i, 17].Text},
-                {"A_Liquid", worksheet.Cells[i, 18].Text},
-                {"A_Solid", worksheet.Cells[i, 20].Text},
-                {"OSPORB_Solid", worksheet.Cells[i, 22].Text},
-                {"OSPORB_Liquid", worksheet.Cells[i, 23].Text},
-                {"Ki", worksheet.Cells[i, 25].Text}
+                {"MZUA_Solid", worksheet.Cells[i, 16].Text},
+                {"MZUA_Liquid", worksheet.Cells[i, 17].Text},
+                {"MZOA_Gas", worksheet.Cells[i, 18].Text},
+                {"MZA", worksheet.Cells[i, 19].Text},
+                {"A_Liquid", worksheet.Cells[i, 21].Text},
+                {"A_Solid", worksheet.Cells[i, 22].Text},
+                {"OSPORB_Solid", worksheet.Cells[i, 24].Text},
+                {"OSPORB_Liquid", worksheet.Cells[i, 25].Text},
+                {"Ki", worksheet.Cells[i, 27].Text}
             });
             if (string.IsNullOrWhiteSpace(R[^1]["D"]) || !double.TryParse(R[^1]["D"], out var val1) || val1 < 0)
             {
@@ -707,21 +710,19 @@ public abstract class CheckBase : BaseAsyncCommand
     #region StringRemoveSpecials
 
     protected static string StringRemoveSpecials(string? str) =>
-        (str ?? string.Empty)
+        DashStringHelper.RemoveDashes(str)
         .Replace("\\", "")
         .Replace("(", "")
         .Replace(")", "")
         .Replace("/", "")
         .Replace(".", "")
         .Replace(",", "")
-        .Replace("-", "")
         .Replace("_", "")
         .Replace(" ", "")
         .Replace("`", "")
         .Replace("'", "")
         .Replace("\"", "")
-        .Replace("ё", "е")
-        .Replace("—", "");
+        .Replace("ё", "е");
 
     #endregion
 

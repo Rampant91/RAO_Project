@@ -48,7 +48,7 @@ namespace Client_App.ViewModels.Forms.Forms4
         public ICommand CopyPasName => new CopyPasNameAsyncCommand();
         public ICommand ExcelExportSourceMovementHistory => new ExcelExportSourceMovementHistoryAsyncCommand();
         public ICommand OpenPas => new OpenPasAsyncCommand();
-        public ICommand SourceTransmission => new NewSourceTransmissionAsyncCommand(this);
+        public ICommand SourceTransmission => new SourceTransmissionAsyncCommand(this);
         public ICommand GenerateForm41 => new GenerateForm41AsyncCommand(this);
         
         #endregion

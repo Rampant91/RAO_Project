@@ -13,8 +13,9 @@ using System.Threading.Tasks;
 
 namespace Client_App.Views;
 
-public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>
+public abstract class BaseWindow<T> : ReactiveWindow<BaseVM> where T : class
 {
+    public T? VM => DataContext as T;
     public WindowState OwnerPrevState;
 
     protected virtual bool IsFullScreenWindow => false;

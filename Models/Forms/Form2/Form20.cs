@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -7,6 +7,7 @@ using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form2;
 
@@ -1144,4 +1145,29 @@ public partial class Form20 : Form
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form20 formToCompare) return false;
+
+        return FormTextEquality.Equals(RegNo_DB, formToCompare.RegNo_DB)
+               && FormTextEquality.Equals(OrganUprav_DB, formToCompare.OrganUprav_DB)
+               && FormTextEquality.Equals(SubjectRF_DB, formToCompare.SubjectRF_DB)
+               && FormTextEquality.Equals(JurLico_DB, formToCompare.JurLico_DB)
+               && FormTextEquality.Equals(ShortJurLico_DB, formToCompare.ShortJurLico_DB)
+               && FormTextEquality.Equals(JurLicoAddress_DB, formToCompare.JurLicoAddress_DB)
+               && FormTextEquality.Equals(JurLicoFactAddress_DB, formToCompare.JurLicoFactAddress_DB)
+               && FormTextEquality.Equals(GradeFIO_DB, formToCompare.GradeFIO_DB)
+               && FormTextEquality.Equals(Telephone_DB, formToCompare.Telephone_DB)
+               && FormTextEquality.Equals(Fax_DB, formToCompare.Fax_DB)
+               && FormTextEquality.Equals(Email_DB, formToCompare.Email_DB)
+               && FormTextEquality.Equals(Okpo_DB, formToCompare.Okpo_DB)
+               && FormTextEquality.Equals(Okved_DB, formToCompare.Okved_DB)
+               && FormTextEquality.Equals(Okogu_DB, formToCompare.Okogu_DB)
+               && FormTextEquality.Equals(Oktmo_DB, formToCompare.Oktmo_DB)
+               && FormTextEquality.Equals(Inn_DB, formToCompare.Inn_DB)
+               && FormTextEquality.Equals(Kpp_DB, formToCompare.Kpp_DB)
+               && FormTextEquality.Equals(Okopf_DB, formToCompare.Okopf_DB)
+               && FormTextEquality.Equals(Okfs_DB, formToCompare.Okfs_DB);
+    }
 }

@@ -251,7 +251,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 "Вы уверены, что хотите продолжить?",
                 MinWidth = 300,
                 MinHeight = 125,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(owner));
 
@@ -275,7 +276,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 ContentMessage = "Вы хотите сформировать отчет на основе другого отчета?",
                 MinWidth = 300,
                 MinHeight = 125,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(owner));
 
@@ -320,7 +322,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 ContentMessage = "Вы хотите сформировать отчет по конкретному субъекту Российской Федерации?",
                 MinWidth = 300,
                 MinHeight = 125,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(owner));
 
@@ -353,7 +356,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 ContentMessage = "Хотите указать путь к базе данных с годовыми отчетами по форме 2.12?",
                 MinWidth = 300,
                 MinHeight = 125,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(owner));
 
@@ -571,7 +575,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                    "Не удалось открыть базу данных с годовыми отчетами",
                    MinWidth = 300,
                    MinHeight = 125,
-                   WindowStartupLocation = WindowStartupLocation.CenterOwner
+                   WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                   Topmost = true,
                })
                .ShowDialog(owner));
             return [];

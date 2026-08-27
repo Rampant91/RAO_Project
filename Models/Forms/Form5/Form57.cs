@@ -137,11 +137,12 @@ namespace Models.Forms.Form5
 
         #region Name (4)
 
-        public string Name_DB { get; set; } = "";
-
 
         [MaxLength(64)]
         [Column(TypeName = "varchar(64)")]
+        public string Name_DB { get; set; } = "";
+
+
         [NotMapped]
         public RamAccess<string> Name
         {
@@ -521,5 +522,19 @@ namespace Models.Forms.Form5
         }
 
         #endregion
+
+        public override bool IsContentEqual(Form otherForm)
+        {
+            if (otherForm is not Form57 formToCompare) return false;
+
+            return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+                   && RegNo_DB == formToCompare.RegNo_DB
+                   && OKPO_DB == formToCompare.OKPO_DB
+                   && Name_DB == formToCompare.Name_DB
+                   && Recognizance_DB == formToCompare.Recognizance_DB
+                   && License_DB == formToCompare.License_DB
+                   && Practice_DB == formToCompare.Practice_DB
+                   && Note_DB == formToCompare.Note_DB;
+        }
     }
 }

@@ -17,6 +17,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Models.Attributes;
+using Models.DBRealization;
 
 namespace Client_App.ViewModels.Forms;
 
@@ -378,6 +379,11 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         //_DBO = report.Reports.DBObservable;
         UpdateFormList();
         UpdatePageInfo();
+
+        //Загружаем примечаний
+        Report.Notes = new ObservableCollectionWithItemPropertyChanged<Note>(
+            StaticConfiguration.DBModel.notes
+            .Where(note => note.ReportId == Report.Id));
         NoteList = Report.Notes;
 
         SubscribeSelectedForms(_selectedForms);
@@ -395,7 +401,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     public ICommand CheckForm => new NewCheckFormAsyncCommand(this);    //  Кнопка "Проверить"
     //public ICommand CopyExecutorDate => new NewCopyExecutorDataAsyncCommand(this); //После привязки кнопка неактивна
-    public ICommand SourceTransmissionAll => new NewSourceTransmissionAllAsyncCommand(this);    //  Кнопка "Перевести данные предыдущей формы"
+    public ICommand SourceTransmissionAll => new SourceTransmissionAllAsyncCommand(this);    //  Кнопка "Перевести данные предыдущей формы"
     public ICommand AddRow => new NewAddRowAsyncCommand(this);
     public ICommand AddRows => new NewAddRowsAsyncCommand(this);
     public ICommand AddRowsIn => new NewAddRowsInAsyncCommand(this);

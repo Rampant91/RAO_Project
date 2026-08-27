@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -7,6 +7,7 @@ using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form2;
 
@@ -236,7 +237,7 @@ public partial class Form24 : Form2
     {
         if (args.PropertyName == "Value")
         {
-            QuantityCreated_DB = ((RamAccess<string>)value).Value;
+            QuantityCreated_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -327,7 +328,7 @@ public partial class Form24 : Form2
     {
         if (args.PropertyName == "Value")
         {
-            QuantityFromAnothers_DB = ((RamAccess<string>)value).Value;
+            QuantityFromAnothers_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -417,7 +418,7 @@ public partial class Form24 : Form2
     {
         if (args.PropertyName == "Value")
         {
-            QuantityFromAnothersImported_DB = ((RamAccess<string>)value).Value;
+            QuantityFromAnothersImported_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -507,7 +508,7 @@ public partial class Form24 : Form2
     {
         if (args.PropertyName == "Value")
         {
-            QuantityAnotherReasons_DB = ((RamAccess<string>)value).Value;
+            QuantityAnotherReasons_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -597,7 +598,7 @@ public partial class Form24 : Form2
     {
         if (args.PropertyName == "Value")
         {
-            QuantityTransferredToAnother_DB = ((RamAccess<string>)value).Value;
+            QuantityTransferredToAnother_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -688,7 +689,7 @@ public partial class Form24 : Form2
     {
         if (args.PropertyName == "Value")
         {
-            QuantityRefined_DB = ((RamAccess<string>)value).Value;
+            QuantityRefined_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -778,7 +779,7 @@ public partial class Form24 : Form2
     {
         if (args.PropertyName == "Value")
         {
-            QuantityRemovedFromAccount_DB = ((RamAccess<string>)value).Value;
+            QuantityRemovedFromAccount_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -1281,4 +1282,26 @@ public partial class Form24 : Form2
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form24 formToCompare) return false;
+
+        return FormTextEquality.Equals(CodeOYAT_DB, formToCompare.CodeOYAT_DB)
+               && FormTextEquality.Equals(FcpNumber_DB, formToCompare.FcpNumber_DB)
+               && FormExponentialEquality.Equals(MassCreated_DB, formToCompare.MassCreated_DB)
+               && FormTextEquality.Equals(QuantityCreated_DB, formToCompare.QuantityCreated_DB)
+               && FormExponentialEquality.Equals(MassFromAnothers_DB, formToCompare.MassFromAnothers_DB)
+               && FormTextEquality.Equals(QuantityFromAnothers_DB, formToCompare.QuantityFromAnothers_DB)
+               && FormExponentialEquality.Equals(MassFromAnothersImported_DB, formToCompare.MassFromAnothersImported_DB)
+               && FormTextEquality.Equals(QuantityFromAnothersImported_DB, formToCompare.QuantityFromAnothersImported_DB)
+               && FormExponentialEquality.Equals(MassAnotherReasons_DB, formToCompare.MassAnotherReasons_DB)
+               && FormTextEquality.Equals(QuantityAnotherReasons_DB, formToCompare.QuantityAnotherReasons_DB)
+               && FormExponentialEquality.Equals(MassTransferredToAnother_DB, formToCompare.MassTransferredToAnother_DB)
+               && FormTextEquality.Equals(QuantityTransferredToAnother_DB, formToCompare.QuantityTransferredToAnother_DB)
+               && FormExponentialEquality.Equals(MassRefined_DB, formToCompare.MassRefined_DB)
+               && FormTextEquality.Equals(QuantityRefined_DB, formToCompare.QuantityRefined_DB)
+               && FormExponentialEquality.Equals(MassRemovedFromAccount_DB, formToCompare.MassRemovedFromAccount_DB)
+               && FormTextEquality.Equals(QuantityRemovedFromAccount_DB, formToCompare.QuantityRemovedFromAccount_DB);
+    }
 }

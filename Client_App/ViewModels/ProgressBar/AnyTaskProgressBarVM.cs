@@ -105,8 +105,12 @@ public class AnyTaskProgressBarVM : BaseVM, INotifyPropertyChanged
             if (_valueBar == value) return;
             _valueBar = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(ValueBarPercentText));
         }
     }
+
+    /// <summary>Процент на полосе прогресса («42%»).</summary>
+    public string ValueBarPercentText => $"{ValueBar}%";
 
     #endregion
 
@@ -129,7 +133,7 @@ public class AnyTaskProgressBarVM : BaseVM, INotifyPropertyChanged
     /// <param name="loadStatus">Статус операции.</param>
     public void SetProgressBar(string loadStatus)
     {
-        LoadStatus = $"{ValueBar}% ({loadStatus})";
+        LoadStatus = loadStatus;
     }
 
     /// <summary>
@@ -140,7 +144,7 @@ public class AnyTaskProgressBarVM : BaseVM, INotifyPropertyChanged
     public void SetProgressBar(int percentValue, string loadStatus)
     {
         ValueBar = percentValue;
-        LoadStatus = $"{percentValue}% ({loadStatus})";
+        LoadStatus = loadStatus;
     }
 
     /// <summary>
@@ -153,7 +157,7 @@ public class AnyTaskProgressBarVM : BaseVM, INotifyPropertyChanged
     {
         ExportName = exportName;
         ValueBar = percentValue;
-        LoadStatus = $"{percentValue}% ({loadStatus})";
+        LoadStatus = loadStatus;
     }
 
     /// <summary>
@@ -167,9 +171,8 @@ public class AnyTaskProgressBarVM : BaseVM, INotifyPropertyChanged
     {
         ExportType = exportType;
         ExportName = exportName;
-        ExportType = exportType;
         ValueBar = percentValue;
-        LoadStatus = $"{percentValue}% ({loadStatus})";
+        LoadStatus = loadStatus;
     }
 
     #endregion

@@ -10,14 +10,12 @@ using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
 using Client_App.Interfaces.Logger;
-using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms4;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.Forms;
-using Models.Forms.Form1;
 using Models.Forms.Form4;
 using System;
 using System.Collections.Generic;
@@ -230,7 +228,8 @@ public partial class Form_41 : BaseWindow<Form_41VM>
                 ContentHeader = "Уведомление",
                 ContentMessage = $"Сохранить форму {vm.FormType}?",
                 MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(desktop.MainWindow));
 
@@ -363,7 +362,8 @@ public partial class Form_41 : BaseWindow<Form_41VM>
                                              $"{rep.StartPeriod_DB}-{rep.EndPeriod_DB}.",
                             MinWidth = 450,
                             MinHeight = 170,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(desktop.MainWindow));
 
@@ -421,7 +421,8 @@ public partial class Form_41 : BaseWindow<Form_41VM>
                     ContentMessage = $"В форме {vm.FormType} присутствуют пустые строчки." +
                                      $"{Environment.NewLine}Вы хотите их удалить?",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(desktop.MainWindow));
 

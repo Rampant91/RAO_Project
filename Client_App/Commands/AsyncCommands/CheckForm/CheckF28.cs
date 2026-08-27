@@ -354,7 +354,8 @@ public class CheckF28 : CheckBase
                 ContentHeader = "Уведомление",
                 ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
                 MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(Desktop.MainWindow));
 
@@ -413,7 +414,8 @@ public class CheckF28 : CheckBase
                                         $"{Environment.NewLine}и используется другим процессом.",
                                     MinWidth = 400,
                                     MinHeight = 150,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                    Topmost = true,
                                 })
                                 .ShowDialog(Desktop.MainWindow));
 

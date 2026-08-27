@@ -5,8 +5,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 using Models.DTO;
-using Client_App.Properties;
 using Client_App.Services;
+using Client_App.Services.Updates;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Client_App.ViewModels.Messages;
@@ -155,9 +155,7 @@ public class UpdateNotificationVM : INotifyPropertyChanged
     {
         try
         {
-            // Сохраняем версию, которую нужно пропустить
-            Settings.Default.SkippedVersion = UpdateInfo.Version.ToString();
-            Settings.Default.Save();
+            new LocalUpdatePrefsStore().SetSkippedWebsiteVersion(UpdateInfo.Version.ToString());
         }
         catch (Exception ex)
         {

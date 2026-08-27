@@ -1,0 +1,2 @@
+M:Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions.Migrate(Microsoft.EntityFrameworkCore.Infrastructure.DatabaseFacade);Используйте DataContext.MigrateDatabase() или DatabaseMigrationHelper.Migrate() вместо прямого Database.Migrate()
+M:Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions.MigrateAsync(Microsoft.EntityFrameworkCore.Infrastructure.DatabaseFacade,System.Threading.CancellationToken);Используйте DataContext.MigrateDatabaseAsync() или DatabaseMigrationHelper.MigrateAsync() вместо прямого Database.MigrateAsync()

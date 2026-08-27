@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,12 +10,16 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
+using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
 using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
@@ -23,6 +28,95 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// </summary>
 public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 {
+    /// <summary>
+    /// Номера форм, количество которых подсчитывается при выгрузке.
+    /// </summary>
+    private static readonly string[] ExportFormNumbers =
+    [
+        "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9",
+        "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8", "2.9", "2.10", "2.11", "2.12"
+    ];
+
+    /// <summary>
+    /// Firebird ограничивает список значений в IN (...) ~1500 элементами.
+    /// </summary>
+    private const int FirebirdInClauseBatchSize = 1000;
+
+    /// <summary>
+    /// Максимальная ширина колонки после AutoFit (в символах стандартного шрифта Excel).
+    /// </summary>
+    private const double MaxAutoFitColumnWidth = 35;
+
+    /// <summary>
+    /// Интервал обновления прогрессбара при записи строк в Excel (в организациях).
+    /// </summary>
+    private const int ProgressUpdateRowInterval = 50;
+
+    /// <summary>
+    /// Ширина колонок счётчиков форм (в символах стандартного шрифта Excel).
+    /// </summary>
+    private const double FormCountColumnWidth = 10;
+
+    /// <summary>
+    /// Высота строки заголовков (в пунктах).
+    /// </summary>
+    private const double HeaderRowHeight = 40;
+
+    /// <summary>
+    /// Начало диапазона прогрессбара при загрузке данных из БД.
+    /// </summary>
+    private const int ProgressDbLoadStart = 18;
+
+    /// <summary>
+    /// Прогрессбар после загрузки организаций формы 1.0.
+    /// </summary>
+    private const int ProgressForm10Loaded = 28;
+
+    /// <summary>
+    /// Прогрессбар после загрузки организаций формы 2.0.
+    /// </summary>
+    private const int ProgressForm20Loaded = 38;
+
+    /// <summary>
+    /// Прогрессбар после загрузки отчётов для подсчёта форм.
+    /// </summary>
+    private const int ProgressFormReportsLoadEnd = 72;
+
+    /// <summary>
+    /// Прогрессбар после завершения загрузки данных из БД.
+    /// </summary>
+    private const int ProgressDbLoadEnd = 74;
+
+    /// <summary>
+    /// Прогрессбар после записи данных в Excel.
+    /// </summary>
+    private const int ProgressExcelFillEnd = 92;
+
+    /// <summary>
+    /// Цвет фона чередующихся строк данных.
+    /// </summary>
+    private static readonly Color AlternatingRowFill = Color.FromArgb(221, 235, 247); // #DDEBF7
+
+    /// <summary>
+    /// Начало периода фильтрации для форм 1 (MinValue — без нижней границы).
+    /// </summary>
+    private DateOnly _form1Start = DateOnly.MinValue;
+
+    /// <summary>
+    /// Конец периода фильтрации для форм 1 (MaxValue — без верхней границы).
+    /// </summary>
+    private DateOnly _form1End = DateOnly.MaxValue;
+
+    /// <summary>
+    /// Начальный год фильтрации для форм 2 (MinValue — без нижней границы).
+    /// </summary>
+    private int _form2YearStart = int.MinValue;
+
+    /// <summary>
+    /// Конечный год фильтрации для форм 2 (MaxValue — без верхней границы).
+    /// </summary>
+    private int _form2YearEnd = int.MaxValue;
+
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
@@ -38,485 +132,243 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         var folderPath = await CheckAppParameter();
         var isBackgroundCommand = folderPath != string.Empty;
 
-        progressBarVM.SetProgressBar(5, "Создание временной БД");
-        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        progressBarVM.SetProgressBar(10, "Подсчёт количества организаций");
-        await ReportsCountCheck(db, progressBar, cts);
-
-        progressBarVM.SetProgressBar(13, "Запрос пути сохранения");
-        var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
-
-        var (fullPath, openTemp) = !isBackgroundCommand
-            ? await ExcelGetFullPath(fileName, cts, progressBar)
-            : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
-
-        var count = 0;
-        while (File.Exists(fullPath))
+        progressBarVM.SetProgressBar(5, "Запрос периода фильтрации");
+        if (!isBackgroundCommand)
         {
-            fullPath = Path.Combine(folderPath, fileName + $"_{++count}.xlsx");
+            await InputPeriodFilter(progressBar, cts);
         }
 
-        progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-
-        progressBarVM.SetProgressBar(18, "Заполнение заголовков");
-        await FillExcelHeaders(excelPackage, parameter);
-
-        progressBarVM.SetProgressBar(20, "Получение списка организаций");
-        var repsList = await GetReportsList(db, cts);
-
-        progressBarVM.SetProgressBar(30, "Заполнение строчек в .xlsx");
-        await FillExcel(repsList, parameter, progressBarVM);
-
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
-
-        progressBarVM.SetProgressBar(98, "Очистка временных данных");
+        progressBarVM.SetProgressBar(8, "Создание временной БД");
+        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
         try
         {
-            File.Delete(tmpDbPath);
-        }
-        catch
-        {
-            // ignored
-        }
+            await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-        await progressBar.CloseAsync();
+            progressBarVM.SetProgressBar(10, "Подсчёт количества организаций");
+            await ReportsCountCheck(db, progressBar, cts);
+
+            progressBarVM.SetProgressBar(13, "Запрос пути сохранения");
+            var fileName = $"{ExportType}_{BaseVM.DbFileName}_{Assembly.GetExecutingAssembly().GetName().Version}";
+
+            var (fullPath, openTemp) = !isBackgroundCommand
+                ? await ExcelGetFullPath(fileName, cts, progressBar)
+                : (Path.Combine(folderPath, $"{fileName}.xlsx"), true);
+
+            fullPath = ResolveUniqueFilePath(fullPath, isBackgroundCommand ? folderPath : null);
+
+            progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(fullPath);
+
+            progressBarVM.SetProgressBar(18, "Заполнение заголовков");
+            await FillExcelHeaders(excelPackage, parameter);
+
+            progressBarVM.SetProgressBar(ProgressDbLoadStart, "Получение списка организаций");
+            var repsList = await GetReportsList(db, progressBarVM, cts);
+
+            progressBarVM.SetProgressBar(ProgressDbLoadEnd, "Заполнение строчек в .xlsx");
+            await FillExcel(repsList, parameter, progressBarVM);
+
+            progressBarVM.SetProgressBar(95, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar, isBackgroundCommand);
+
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            await progressBar.CloseAsync();
+        }
+        finally
+        {
+            TryDeleteTempDataBase(tmpDbPath);
+        }
     }
 
-    #region FillExcel
+    #region ReportsCountCheck
 
     /// <summary>
-    /// Выгружает в .xlsx требуемые значения.
+    /// Подсчёт количества организаций. При количестве равном 0, выводится сообщение, операция завершается.
     /// </summary>
-    /// <param name="repsList">Список организаций.</param>
-    /// <param name="parameter">Параметр команды (full - выгрузка с дополнительными полями)</param>
-    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
-    private Task FillExcel(IReadOnlyCollection<Reports> repsList, object? parameter, AnyTaskProgressBarVM progressBarVM)
+    /// <param name="db">Модель БД.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
+    private static async Task ReportsCountCheck(DBModel db, AnyTaskProgressBar? progressBar, CancellationTokenSource cts)
     {
-        var checkedLst = new List<Reports>();
-        var row = 2;
-        double progressBarDoubleValue = progressBarVM.ValueBar;
+        var countReports = await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .Where(x => x.DBObservableId != null)
+            .Where(x => x.Master_DB.FormNum_DB == "1.0" || x.Master_DB.FormNum_DB == "2.0")
+            .CountAsync(cts.Token);
 
-        foreach (var reps in repsList
-                     .Where(reps => reps.Master.FormNum_DB[0] is '1' or '2')
-                     .OrderBy(x => x.Master_DB.RegNoRep?.Value)
-                     .ThenBy(x => x.Master_DB.OkpoRep?.Value))
+        if (countReports == 0)
         {
-            if (checkedLst.Any(x => x.Master_DB.RegNoRep == reps.Master_DB.RegNoRep
-                                    && x.Master_DB.OkpoRep == reps.Master_DB.OkpoRep))
-            {
-                row--;
+            #region MessageRepsNotFound
 
-                if (parameter?.ToString() != "full")
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
-                    #region BindingCells
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в .xlsx",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        "Не удалось совершить выгрузку списка всех отчетов по форме 1 с указанием количества строк," +
+                        $"{Environment.NewLine}поскольку в текущей базе отсутствуют формы организаций.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(progressBar ?? Desktop.MainWindow));
 
-                    Worksheet.Cells[row, 8].Value =
-                        (int)Worksheet.Cells[row, 8].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.1"));
-                    Worksheet.Cells[row, 9].Value =
-                        (int)Worksheet.Cells[row, 9].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.2"));
-                    Worksheet.Cells[row, 10].Value =
-                        (int)Worksheet.Cells[row, 10].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.3"));
-                    Worksheet.Cells[row, 11].Value =
-                        (int)Worksheet.Cells[row, 11].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.4"));
-                    Worksheet.Cells[row, 12].Value =
-                        (int)Worksheet.Cells[row, 12].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.5"));
-                    Worksheet.Cells[row, 13].Value =
-                        (int)Worksheet.Cells[row, 13].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.6"));
-                    Worksheet.Cells[row, 14].Value =
-                        (int)Worksheet.Cells[row, 14].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.7"));
-                    Worksheet.Cells[row, 15].Value =
-                        (int)Worksheet.Cells[row, 15].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.8"));
-                    Worksheet.Cells[row, 16].Value =
-                        (int)Worksheet.Cells[row, 16].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.9"));
-                    Worksheet.Cells[row, 17].Value =
-                        (int)Worksheet.Cells[row, 17].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.1"));
-                    Worksheet.Cells[row, 18].Value =
-                        (int)Worksheet.Cells[row, 18].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.2"));
-                    Worksheet.Cells[row, 19].Value =
-                        (int)Worksheet.Cells[row, 19].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.3"));
-                    Worksheet.Cells[row, 20].Value =
-                        (int)Worksheet.Cells[row, 20].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.4"));
-                    Worksheet.Cells[row, 21].Value =
-                        (int)Worksheet.Cells[row, 21].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.5"));
-                    Worksheet.Cells[row, 22].Value =
-                        (int)Worksheet.Cells[row, 22].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.6"));
-                    Worksheet.Cells[row, 23].Value =
-                        (int)Worksheet.Cells[row, 23].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.7"));
-                    Worksheet.Cells[row, 24].Value =
-                        (int)Worksheet.Cells[row, 24].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.8"));
-                    Worksheet.Cells[row, 25].Value =
-                        (int)Worksheet.Cells[row, 25].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.9"));
-                    Worksheet.Cells[row, 26].Value =
-                        (int)Worksheet.Cells[row, 26].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.10"));
-                    Worksheet.Cells[row, 27].Value =
-                        (int)Worksheet.Cells[row, 27].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.11"));
-                    Worksheet.Cells[row, 28].Value =
-                        (int)Worksheet.Cells[row, 28].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.12"));
+            #endregion
 
-                    #endregion
-                }
-                else
-                {
-                    #region BindingCells
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+    }
 
-                    Worksheet.Cells[row, 42].Value =
-                        (int)Worksheet.Cells[row, 42].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.1"));
-                    Worksheet.Cells[row, 43].Value =
-                        (int)Worksheet.Cells[row, 43].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.2"));
-                    Worksheet.Cells[row, 44].Value =
-                        (int)Worksheet.Cells[row, 44].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.3"));
-                    Worksheet.Cells[row, 45].Value =
-                        (int)Worksheet.Cells[row, 45].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.4"));
-                    Worksheet.Cells[row, 46].Value =
-                        (int)Worksheet.Cells[row, 46].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.5"));
-                    Worksheet.Cells[row, 47].Value =
-                        (int)Worksheet.Cells[row, 47].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.6"));
-                    Worksheet.Cells[row, 48].Value =
-                        (int)Worksheet.Cells[row, 48].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.7"));
-                    Worksheet.Cells[row, 49].Value =
-                        (int)Worksheet.Cells[row, 49].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.8"));
-                    Worksheet.Cells[row, 50].Value =
-                        (int)Worksheet.Cells[row, 50].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("1.9"));
-                    Worksheet.Cells[row, 51].Value =
-                        (int)Worksheet.Cells[row, 51].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.1"));
-                    Worksheet.Cells[row, 52].Value =
-                        (int)Worksheet.Cells[row, 52].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.2"));
-                    Worksheet.Cells[row, 53].Value =
-                        (int)Worksheet.Cells[row, 53].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.3"));
-                    Worksheet.Cells[row, 54].Value =
-                        (int)Worksheet.Cells[row, 54].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.4"));
-                    Worksheet.Cells[row, 55].Value =
-                        (int)Worksheet.Cells[row, 55].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.5"));
-                    Worksheet.Cells[row, 56].Value =
-                        (int)Worksheet.Cells[row, 56].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.6"));
-                    Worksheet.Cells[row, 57].Value =
-                        (int)Worksheet.Cells[row, 57].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.7"));
-                    Worksheet.Cells[row, 58].Value =
-                        (int)Worksheet.Cells[row, 58].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.8"));
-                    Worksheet.Cells[row, 59].Value =
-                        (int)Worksheet.Cells[row, 59].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.9"));
-                    Worksheet.Cells[row, 60].Value =
-                        (int)Worksheet.Cells[row, 60].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.10"));
-                    Worksheet.Cells[row, 61].Value =
-                        (int)Worksheet.Cells[row, 61].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.11"));
-                    Worksheet.Cells[row, 62].Value =
-                        (int)Worksheet.Cells[row, 62].Value
-                        + reps.Report_Collection.Count(x => x.FormNum_DB.Equals("2.12"));
+    #endregion
 
-                    #endregion
-                }
+    #region InputPeriodFilter
 
-                row++;
-            }
-            else
-            {
-                #region BindingCells
+    /// <summary>
+    /// Запрашивает у пользователя период фильтрации в одном окне:
+    /// даты начала/конца для форм 1 и годы начала/конца для форм 2.
+    /// Пустые поля означают отсутствие соответствующей границы.
+    /// </summary>
+    private async Task InputPeriodFilter(AnyTaskProgressBar progressBar, CancellationTokenSource cts)
+    {
+        var res = await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var window = new AskListOfOrgsPeriodMessageWindow();
+            return window.ShowDialog<(string command, DateOnly form1Start, DateOnly form1End, int form2Start, int form2End)>(Desktop.MainWindow);
+        });
 
-                Worksheet.Cells[row, 1].Value = reps.Master.RegNoRep.Value;
-                Worksheet.Cells[row, 2].Value = reps.Master.RegNoRep.Value.Length >= 2
-                    ? reps.Master.RegNoRep.Value[..2]
-                    : reps.Master.RegNoRep.Value;
-                Worksheet.Cells[row, 3].Value = !string.IsNullOrEmpty(reps.Master.Rows10[0]?.OrganUprav_DB)
-                    ? reps.Master.Rows10[0].OrganUprav_DB
-                    : !string.IsNullOrEmpty(reps.Master.Rows10[1]?.OrganUprav_DB)
-                        ? reps.Master.Rows10[1].OrganUprav_DB
-                        : !string.IsNullOrEmpty(reps.Master.Rows20[0]?.OrganUprav_DB)
-                            ? reps.Master.Rows20[0]?.OrganUprav_DB
-                            : !string.IsNullOrEmpty(reps.Master.Rows20[1]?.OrganUprav_DB)
-                                ? reps.Master.Rows20[1]?.OrganUprav_DB
-                                : string.Empty;
-                Worksheet.Cells[row, 4].Value = reps.Master.OkpoRep.Value;
-                Worksheet.Cells[row, 5].Value = reps.Master.ShortJurLicoRep.Value;
-                Worksheet.Cells[row, 6].Value =
-                    !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoFactAddress_DB) &&
-                    !reps.Master.Rows10[1].JurLicoFactAddress_DB.Equals("-")
-                        ? reps.Master.Rows10[1].JurLicoFactAddress_DB
-                        : !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoFactAddress_DB) &&
-                          !reps.Master.Rows20[1].JurLicoFactAddress_DB.Equals("-")
-                            ? reps.Master.Rows20[1].JurLicoFactAddress_DB
-                            : !string.IsNullOrEmpty(reps.Master.Rows10[1].JurLicoAddress_DB) &&
-                              !reps.Master.Rows10[1].JurLicoAddress_DB.Equals("-")
-                                ? reps.Master.Rows10[1].JurLicoAddress_DB
-                                : !string.IsNullOrEmpty(reps.Master.Rows20[1].JurLicoAddress_DB) &&
-                                  !reps.Master.Rows20[1].JurLicoAddress_DB.Equals("-")
-                                    ? reps.Master.Rows20[1].JurLicoAddress_DB
-                                    : !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoFactAddress_DB) &&
-                                      !reps.Master.Rows10[0].JurLicoFactAddress_DB.Equals("-")
-                                        ? reps.Master.Rows10[0].JurLicoFactAddress_DB
-                                        : !string.IsNullOrEmpty(reps.Master.Rows20[0].JurLicoFactAddress_DB) &&
-                                          !reps.Master.Rows20[0].JurLicoFactAddress_DB.Equals("-")
-                                            ? reps.Master.Rows20[0].JurLicoFactAddress_DB
-                                            : !string.IsNullOrEmpty(reps.Master.Rows10[0].JurLicoAddress_DB) &&
-                                              !reps.Master.Rows10[0].JurLicoAddress_DB.Equals("-")
-                                                ? reps.Master.Rows10[0].JurLicoAddress_DB
-                                                : reps.Master.Rows20[0].JurLicoAddress_DB;
-                Worksheet.Cells[row, 7].Value = !string.IsNullOrEmpty(reps.Master.Rows10[0].Inn_DB)
-                    ? reps.Master.Rows10[0].Inn_DB
-                    : !string.IsNullOrEmpty(reps.Master.Rows10[1].Inn_DB)
-                        ? reps.Master.Rows10[1].Inn_DB
-                        : !string.IsNullOrEmpty(reps.Master.Rows20[0].Inn_DB)
-                            ? reps.Master.Rows20[0].Inn_DB
-                            : reps.Master.Rows20[1].Inn_DB;
-                if (parameter?.ToString() != "full")
-                {
-                    Worksheet.Cells[row, 8].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.1"));
-                    Worksheet.Cells[row, 9].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.2"));
-                    Worksheet.Cells[row, 10].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.3"));
-                    Worksheet.Cells[row, 11].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.4"));
-                    Worksheet.Cells[row, 12].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.5"));
-                    Worksheet.Cells[row, 13].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.6"));
-                    Worksheet.Cells[row, 14].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.7"));
-                    Worksheet.Cells[row, 15].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.8"));
-                    Worksheet.Cells[row, 16].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.9"));
-                    Worksheet.Cells[row, 17].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.1"));
-                    Worksheet.Cells[row, 18].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.2"));
-                    Worksheet.Cells[row, 19].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.3"));
-                    Worksheet.Cells[row, 20].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.4"));
-                    Worksheet.Cells[row, 21].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.5"));
-                    Worksheet.Cells[row, 22].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.6"));
-                    Worksheet.Cells[row, 23].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.7"));
-                    Worksheet.Cells[row, 24].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.8"));
-                    Worksheet.Cells[row, 25].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.9"));
-                    Worksheet.Cells[row, 26].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.10"));
-                    Worksheet.Cells[row, 27].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.11"));
-                    Worksheet.Cells[row, 28].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.12"));
-                }
-                else
-                {
-                    Worksheet.Cells[row, 8].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].SubjectRF_DB
-                        : reps.Master.Rows20[0].SubjectRF_DB;
-                    Worksheet.Cells[row, 9].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].JurLico_DB
-                        : reps.Master.Rows20[0].JurLico_DB;
-                    Worksheet.Cells[row, 10].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].ShortJurLico_DB
-                        : reps.Master.Rows20[0].ShortJurLico_DB;
-                    Worksheet.Cells[row, 11].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].JurLicoAddress_DB
-                        : reps.Master.Rows20[0].JurLicoAddress_DB;
-                    Worksheet.Cells[row, 12].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].JurLicoFactAddress_DB
-                        : reps.Master.Rows20[0].JurLicoFactAddress_DB;
-                    Worksheet.Cells[row, 13].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].GradeFIO_DB
-                        : reps.Master.Rows20[0].GradeFIO_DB;
-                    Worksheet.Cells[row, 14].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Telephone_DB
-                        : reps.Master.Rows20[0].Telephone_DB;
-                    Worksheet.Cells[row, 15].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Fax_DB
-                        : reps.Master.Rows20[0].Fax_DB;
-                    Worksheet.Cells[row, 16].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Email_DB
-                        : reps.Master.Rows20[0].Email_DB;
-                    Worksheet.Cells[row, 17].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Okpo_DB
-                        : reps.Master.Rows20[0].Okpo_DB;
-                    Worksheet.Cells[row, 18].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Okved_DB
-                        : reps.Master.Rows20[0].Okved_DB;
-                    Worksheet.Cells[row, 19].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Okogu_DB
-                        : reps.Master.Rows20[0].Okogu_DB;
-                    Worksheet.Cells[row, 20].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Oktmo_DB
-                        : reps.Master.Rows20[0].Oktmo_DB;
-                    Worksheet.Cells[row, 21].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Inn_DB
-                        : reps.Master.Rows20[0].Inn_DB;
-                    Worksheet.Cells[row, 22].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Kpp_DB
-                        : reps.Master.Rows20[0].Kpp_DB;
-                    Worksheet.Cells[row, 23].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Okopf_DB
-                        : reps.Master.Rows20[0].Okopf_DB;
-                    Worksheet.Cells[row, 24].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[0].Okfs_DB
-                        : reps.Master.Rows20[0].Okfs_DB;
-                    Worksheet.Cells[row, 25].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].SubjectRF_DB
-                        : reps.Master.Rows20[1].SubjectRF_DB;
-                    Worksheet.Cells[row, 26].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].JurLico_DB
-                        : reps.Master.Rows20[1].JurLico_DB;
-                    Worksheet.Cells[row, 27].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].ShortJurLico_DB
-                        : reps.Master.Rows20[1].ShortJurLico_DB;
-                    Worksheet.Cells[row, 28].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].JurLicoAddress_DB
-                        : reps.Master.Rows20[1].JurLicoAddress_DB;
-                    Worksheet.Cells[row, 29].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].JurLicoFactAddress_DB
-                        : reps.Master.Rows20[1].JurLicoFactAddress_DB;
-                    Worksheet.Cells[row, 30].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].GradeFIO_DB
-                        : reps.Master.Rows20[1].GradeFIO_DB;
-                    Worksheet.Cells[row, 31].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Telephone_DB
-                        : reps.Master.Rows20[1].Telephone_DB;
-                    Worksheet.Cells[row, 32].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Fax_DB
-                        : reps.Master.Rows20[1].Fax_DB;
-                    Worksheet.Cells[row, 33].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Email_DB
-                        : reps.Master.Rows20[1].Email_DB;
-                    Worksheet.Cells[row, 34].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Okpo_DB
-                        : reps.Master.Rows20[1].Okpo_DB;
-                    Worksheet.Cells[row, 35].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Okved_DB
-                        : reps.Master.Rows20[1].Okved_DB;
-                    Worksheet.Cells[row, 36].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Okogu_DB
-                        : reps.Master.Rows20[1].Okogu_DB;
-                    Worksheet.Cells[row, 37].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Oktmo_DB
-                        : reps.Master.Rows20[1].Oktmo_DB;
-                    Worksheet.Cells[row, 38].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Inn_DB
-                        : reps.Master.Rows20[1].Inn_DB;
-                    Worksheet.Cells[row, 39].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Kpp_DB
-                        : reps.Master.Rows20[1].Kpp_DB;
-                    Worksheet.Cells[row, 40].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Okopf_DB
-                        : reps.Master.Rows20[1].Okopf_DB;
-                    Worksheet.Cells[row, 41].Value = reps.Master.FormNum_DB == "1.0"
-                        ? reps.Master.Rows10[1].Okfs_DB
-                        : reps.Master.Rows20[1].Okfs_DB;
-                    Worksheet.Cells[row, 42].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.1"));
-                    Worksheet.Cells[row, 43].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.2"));
-                    Worksheet.Cells[row, 44].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.3"));
-                    Worksheet.Cells[row, 45].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.4"));
-                    Worksheet.Cells[row, 46].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.5"));
-                    Worksheet.Cells[row, 47].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.6"));
-                    Worksheet.Cells[row, 48].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.7"));
-                    Worksheet.Cells[row, 49].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.8"));
-                    Worksheet.Cells[row, 50].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("1.9"));
-                    Worksheet.Cells[row, 51].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.1"));
-                    Worksheet.Cells[row, 52].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.2"));
-                    Worksheet.Cells[row, 53].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.3"));
-                    Worksheet.Cells[row, 54].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.4"));
-                    Worksheet.Cells[row, 55].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.5"));
-                    Worksheet.Cells[row, 56].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.6"));
-                    Worksheet.Cells[row, 57].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.7"));
-                    Worksheet.Cells[row, 58].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.8"));
-                    Worksheet.Cells[row, 59].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.9"));
-                    Worksheet.Cells[row, 60].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.10"));
-                    Worksheet.Cells[row, 61].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.11"));
-                    Worksheet.Cells[row, 62].Value = reps.Report_Collection
-                        .Count(x => x.FormNum_DB.Equals("2.12"));
-                }
-
-                #endregion
-
-                row++;
-                checkedLst.Add(reps);
-            }
-            progressBarDoubleValue += (double)65 / (repsList.Count);
-            progressBarVM.SetProgressBar((int)Math.Floor(progressBarDoubleValue),
-                $"Выгрузка {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}");
+        if (res.command is not "Ок")
+        {
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+            return;
         }
 
-        for (var col = 1; col <= Worksheet.Dimension.End.Column; col++)
+        _form1Start = res.form1Start;
+        _form1End = res.form1End;
+        _form2YearStart = res.form2Start;
+        _form2YearEnd = res.form2End;
+    }
+
+    #endregion
+
+    #region GetReportsList
+
+    /// <summary>
+    /// Получение списка организаций: титульные данные и облегчённый набор полей дочерних отчётов для подсчёта форм.
+    /// </summary>
+    private async Task<IReadOnlyCollection<OrgExportData>> GetReportsList(
+        DBModel db,
+        AnyTaskProgressBarVM progressBarVM,
+        CancellationTokenSource cts)
+    {
+        var token = cts.Token;
+
+        progressBarVM.SetProgressBar(ProgressDbLoadStart, "Загрузка организаций по форме 1");
+        var form10Orgs = await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Where(reps => reps.DBObservableId != null)
+            .Where(reps => reps.Master_DB.FormNum_DB == "1.0")
+            .Include(reps => reps.Master_DB)
+                .ThenInclude(x => x.Rows10)
+            .ToListAsync(token);
+
+        progressBarVM.SetProgressBar(ProgressForm10Loaded, "Загрузка организаций по форме 2");
+        var form20Orgs = await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Where(reps => reps.DBObservableId != null)
+            .Where(reps => reps.Master_DB.FormNum_DB == "2.0")
+            .Include(reps => reps.Master_DB)
+                .ThenInclude(x => x.Rows20)
+            .ToListAsync(token);
+
+        progressBarVM.SetProgressBar(ProgressForm20Loaded, "Загрузка отчётов форм 1 и 2");
+
+        var orgIds = new HashSet<int>(form10Orgs.Count + form20Orgs.Count);
+        foreach (var org in form10Orgs)
+            orgIds.Add(org.Id);
+        foreach (var org in form20Orgs)
+            orgIds.Add(org.Id);
+
+        var formReportsByOrgId = await LoadFormReportsForCount(db, orgIds, progressBarVM, token);
+
+        progressBarVM.SetProgressBar(ProgressFormReportsLoadEnd, "Подготовка списка организаций");
+        var result = new List<OrgExportData>(form10Orgs.Count + form20Orgs.Count);
+        foreach (var org in form10Orgs)
         {
-            if (Worksheet.Cells[1, col].Value is "Сокращенное наименование" or "Адрес" or "Орган управления") continue;
-            if (OperatingSystem.IsWindows()) // Под Astra Linux эта команда крашит программу без GDI дров
+            formReportsByOrgId.TryGetValue(org.Id, out var formReports);
+            result.Add(new OrgExportData(org, formReports ?? []));
+        }
+
+        foreach (var org in form20Orgs)
+        {
+            formReportsByOrgId.TryGetValue(org.Id, out var formReports);
+            result.Add(new OrgExportData(org, formReports ?? []));
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Загружает только поля, необходимые для подсчёта количества форм по организации.
+    /// Запрос выполняется пакетами из-за ограничения Firebird на размер IN (...).
+    /// </summary>
+    private static async Task<Dictionary<int, List<FormReportCountInfo>>> LoadFormReportsForCount(
+        DBModel db,
+        HashSet<int> orgIds,
+        AnyTaskProgressBarVM progressBarVM,
+        CancellationToken token)
+    {
+        if (orgIds.Count == 0)
+            return [];
+
+        var orgIdList = orgIds.ToList();
+        var batchCount = (orgIdList.Count + FirebirdInClauseBatchSize - 1) / FirebirdInClauseBatchSize;
+        var result = new Dictionary<int, List<FormReportCountInfo>>(orgIds.Count);
+
+        for (var batchIndex = 0; batchIndex < batchCount; batchIndex++)
+        {
+            var batch = orgIdList
+                .Skip(batchIndex * FirebirdInClauseBatchSize)
+                .Take(FirebirdInClauseBatchSize)
+                .ToList();
+
+            var status = batchCount == 1
+                ? "Загрузка отчётов форм 1 и 2 для подсчёта"
+                : $"Загрузка отчётов форм 1 и 2 для подсчёта (пакет {batchIndex + 1}/{batchCount})";
+            var batchRange = ProgressFormReportsLoadEnd - ProgressForm20Loaded;
+            var percent = ProgressForm20Loaded
+                            + (int)Math.Floor(batchRange * (batchIndex + 1) / (double)batchCount);
+            progressBarVM.SetProgressBar(percent, status);
+
+            var rows = await db.ReportCollectionDbSet
+                .AsNoTracking()
+                .Where(r => r.Reports != null && batch.Contains(r.Reports.Id))
+                .Where(r => ExportFormNumbers.Contains(r.FormNum_DB))
+                .Select(r => new FormReportCountInfo(
+                    r.Reports!.Id,
+                    r.FormNum_DB,
+                    r.StartPeriod_DB,
+                    r.EndPeriod_DB,
+                    r.Year_DB))
+                .ToListAsync(token);
+
+            foreach (var row in rows)
             {
-                Worksheet.Column(col).AutoFit();
+                if (!result.TryGetValue(row.OrgId, out var list))
+                {
+                    list = [];
+                    result[row.OrgId] = list;
+                }
+
+                list.Add(row);
             }
         }
-        Worksheet.View.FreezePanes(2, 1);
 
-        return Task.CompletedTask;
+        return result;
     }
 
     #endregion
@@ -527,7 +379,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
     /// Заполнение заголовков в .xlsx.
     /// </summary>
     /// <param name="excelPackage">Excel пакет.</param>
-    /// <param name="parameter">Параметр команды (full - выгрузка с дополнительными полями)</param>
+    /// <param name="parameter">Параметр команды (full — выгрузка с дополнительными полями).</param>
     private Task FillExcelHeaders(ExcelPackage excelPackage, object? parameter)
     {
         Worksheet = excelPackage.Workbook.Worksheets.Add("Список всех организаций");
@@ -633,85 +485,502 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
 
         #endregion
 
-        if (OperatingSystem.IsWindows())    // Под Astra Linux эта команда крашит программу без GDI дров
-        {
-            Worksheet.Column(3).AutoFit();
-            Worksheet.Column(5).AutoFit();
-            Worksheet.Column(6).AutoFit();
-        }
-
         return Task.CompletedTask;
     }
 
     #endregion
 
-    #region GetReportsList
+    #region FillExcel
 
     /// <summary>
-    /// Получение списка организаций.
+    /// Выгружает в .xlsx требуемые значения.
     /// </summary>
-    /// <param name="db">Модель БД.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Коллекция организаций.</returns>
-    private static async Task<IReadOnlyCollection<Reports>> GetReportsList(DBModel db, CancellationTokenSource cts)
+    /// <param name="repsList">Список организаций.</param>
+    /// <param name="parameter">Параметр команды (full - выгрузка с дополнительными полями)</param>
+    /// <param name="progressBarVM">ViewModel прогрессбара.</param>
+    private Task FillExcel(IReadOnlyCollection<OrgExportData> repsList, object? parameter, AnyTaskProgressBarVM progressBarVM)
     {
-        return await db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(reps => reps.DBObservable)
-            .Include(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
-            .Include(reps => reps.Master_DB).ThenInclude(x => x.Rows20)
-            .Include(reps => reps.Report_Collection)
-            .Where(reps => reps.DBObservable != null)
-            .ToListAsync(cts.Token);
+        var isFullExport = parameter?.ToString() == "full";
+        var formCountsStartColumn = isFullExport ? 42 : 8;
+        var checkedLst = new List<OrgExportData>();
+        var row = 2;
+        var firstDataRow = row;
+        var excelFillRange = ProgressExcelFillEnd - ProgressDbLoadEnd;
+        double progressBarDoubleValue = ProgressDbLoadEnd;
+        var rowsProcessed = 0;
+
+        foreach (var org in repsList
+                     .OrderBy(x => GetRegNoRep(x.Reps.Master))
+                     .ThenBy(x => GetOkpoRep(x.Reps.Master)))
+        {
+            var regNo = GetRegNoRep(org.Reps.Master);
+            var okpo = GetOkpoRep(org.Reps.Master);
+            var isDuplicate = checkedLst.Any(x =>
+                GetRegNoRep(x.Reps.Master) == regNo && GetOkpoRep(x.Reps.Master) == okpo);
+
+            if (isDuplicate)
+            {
+                row--;
+                AccumulateFormCounts(row, formCountsStartColumn, org);
+                row++;
+            }
+            else
+            {
+                WriteOrgRow(row, org, isFullExport);
+                row++;
+                checkedLst.Add(org);
+            }
+
+            if (repsList.Count > 0)
+            {
+                progressBarDoubleValue += (double)excelFillRange / repsList.Count;
+                rowsProcessed++;
+                if (rowsProcessed % ProgressUpdateRowInterval == 0 || rowsProcessed == repsList.Count)
+                {
+                    progressBarVM.SetProgressBar(
+                        Math.Min(ProgressExcelFillEnd, (int)Math.Floor(progressBarDoubleValue)),
+                        $"Запись в Excel: {regNo}_{okpo}");
+                }
+            }
+        }
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
+
+        if (row > firstDataRow)
+            ApplyAlternatingRowColors(firstDataRow, row - 1);
+
+        ApplyColumnWidths();
+        ApplyExcelHeaderRowStyle(Worksheet.Dimension.End.Column, headerRowHeight: HeaderRowHeight);
+
+        return Task.CompletedTask;
     }
+
+    /// <summary>
+    /// Записывает строку организации в лист Excel.
+    /// </summary>
+    private void WriteOrgRow(int row, OrgExportData org, bool isFullExport)
+    {
+        var master = org.Reps.Master;
+        var regNo = GetRegNoRep(master);
+
+        Worksheet.Cells[row, 1].Value = regNo;
+        Worksheet.Cells[row, 2].Value = regNo.Length >= 2 ? regNo[..2] : regNo;
+        Worksheet.Cells[row, 3].Value = GetOrganUprav(master);
+        Worksheet.Cells[row, 4].Value = GetOkpoRep(master);
+        Worksheet.Cells[row, 5].Value = GetShortJurLicoRep(master);
+        Worksheet.Cells[row, 6].Value = GetJurAddress(master);
+        Worksheet.Cells[row, 7].Value = GetInn(master);
+
+        if (isFullExport)
+        {
+            WriteTitleRowFields(row, master, startColumn: 8, rowIndex: 0);
+            WriteTitleRowFields(row, master, startColumn: 25, rowIndex: 1);
+        }
+
+        SetFormCounts(row, isFullExport ? 42 : 8, org);
+    }
+
+    /// <summary>
+    /// Записывает поля титульной строки формы 1.0 или 2.0.
+    /// </summary>
+    private void WriteTitleRowFields(int row, Report master, int startColumn, int rowIndex)
+    {
+        Worksheet.Cells[row, startColumn].Value = GetTitleField(master, rowIndex, r => r.SubjectRF_DB, r => r.SubjectRF_DB);
+        Worksheet.Cells[row, startColumn + 1].Value = GetTitleField(master, rowIndex, r => r.JurLico_DB, r => r.JurLico_DB);
+        Worksheet.Cells[row, startColumn + 2].Value = GetTitleField(master, rowIndex, r => r.ShortJurLico_DB, r => r.ShortJurLico_DB);
+        Worksheet.Cells[row, startColumn + 3].Value = GetTitleField(master, rowIndex, r => r.JurLicoAddress_DB, r => r.JurLicoAddress_DB);
+        Worksheet.Cells[row, startColumn + 4].Value = GetTitleField(master, rowIndex, r => r.JurLicoFactAddress_DB, r => r.JurLicoFactAddress_DB);
+        Worksheet.Cells[row, startColumn + 5].Value = GetTitleField(master, rowIndex, r => r.GradeFIO_DB, r => r.GradeFIO_DB);
+        Worksheet.Cells[row, startColumn + 6].Value = GetTitleField(master, rowIndex, r => r.Telephone_DB, r => r.Telephone_DB);
+        Worksheet.Cells[row, startColumn + 7].Value = GetTitleField(master, rowIndex, r => r.Fax_DB, r => r.Fax_DB);
+        Worksheet.Cells[row, startColumn + 8].Value = GetTitleField(master, rowIndex, r => r.Email_DB, r => r.Email_DB);
+        Worksheet.Cells[row, startColumn + 9].Value = GetTitleField(master, rowIndex, r => r.Okpo_DB, r => r.Okpo_DB);
+        Worksheet.Cells[row, startColumn + 10].Value = GetTitleField(master, rowIndex, r => r.Okved_DB, r => r.Okved_DB);
+        Worksheet.Cells[row, startColumn + 11].Value = GetTitleField(master, rowIndex, r => r.Okogu_DB, r => r.Okogu_DB);
+        Worksheet.Cells[row, startColumn + 12].Value = GetTitleField(master, rowIndex, r => r.Oktmo_DB, r => r.Oktmo_DB);
+        Worksheet.Cells[row, startColumn + 13].Value = GetTitleField(master, rowIndex, r => r.Inn_DB, r => r.Inn_DB);
+        Worksheet.Cells[row, startColumn + 14].Value = GetTitleField(master, rowIndex, r => r.Kpp_DB, r => r.Kpp_DB);
+        Worksheet.Cells[row, startColumn + 15].Value = GetTitleField(master, rowIndex, r => r.Okopf_DB, r => r.Okopf_DB);
+        Worksheet.Cells[row, startColumn + 16].Value = GetTitleField(master, rowIndex, r => r.Okfs_DB, r => r.Okfs_DB);
+    }
+
+    /// <summary>
+    /// Записывает счётчики форм по организации в строку Excel.
+    /// </summary>
+    private void SetFormCounts(int row, int startColumn, OrgExportData org)
+    {
+        for (var i = 0; i < ExportFormNumbers.Length; i++)
+        {
+            Worksheet.Cells[row, startColumn + i].Value =
+                CountFormReports(org.FormReports, ExportFormNumbers[i]);
+        }
+    }
+
+    /// <summary>
+    /// Суммирует счётчики форм при объединении дубликатов организации.
+    /// </summary>
+    private void AccumulateFormCounts(int row, int startColumn, OrgExportData org)
+    {
+        for (var i = 0; i < ExportFormNumbers.Length; i++)
+        {
+            var column = startColumn + i;
+            Worksheet.Cells[row, column].Value = GetCellInt(Worksheet.Cells[row, column].Value)
+                                                   + CountFormReports(org.FormReports, ExportFormNumbers[i]);
+        }
+    }
+
+    private static Form10? GetForm10Row(Report master, int index) =>
+        master.Rows10.OrderBy(r => r.NumberInOrder_DB).ElementAtOrDefault(index);
+
+    private static Form20? GetForm20Row(Report master, int index) =>
+        master.Rows20.OrderBy(r => r.NumberInOrder_DB).ElementAtOrDefault(index);
+
+    private static string GetOrganUprav(Report master) => master.FormNum_DB switch
+    {
+        "1.0" => master.Rows10
+            .OrderBy(r => r.NumberInOrder_DB)
+            .Select(r => r.OrganUprav_DB)
+            .FirstOrDefault(v => !string.IsNullOrEmpty(v)) ?? string.Empty,
+        "2.0" => master.Rows20
+            .OrderBy(r => r.NumberInOrder_DB)
+            .Select(r => r.OrganUprav_DB)
+            .FirstOrDefault(v => !string.IsNullOrEmpty(v)) ?? string.Empty,
+        _ => string.Empty
+    };
+
+    private static string GetInn(Report master) => master.FormNum_DB switch
+    {
+        "1.0" => master.Rows10
+            .OrderBy(r => r.NumberInOrder_DB)
+            .Select(r => r.Inn_DB)
+            .FirstOrDefault(v => !string.IsNullOrEmpty(v)) ?? string.Empty,
+        "2.0" => master.Rows20
+            .OrderBy(r => r.NumberInOrder_DB)
+            .Select(r => r.Inn_DB)
+            .FirstOrDefault(v => !string.IsNullOrEmpty(v)) ?? string.Empty,
+        _ => string.Empty
+    };
+
+    private static string GetJurAddress(Report master) => master.FormNum_DB switch
+    {
+        "1.0" => GetJurAddress(
+            GetForm10Row(master, 1),
+            GetForm10Row(master, 0),
+            r => r.JurLicoFactAddress_DB,
+            r => r.JurLicoAddress_DB),
+        "2.0" => GetJurAddress(
+            GetForm20Row(master, 1),
+            GetForm20Row(master, 0),
+            r => r.JurLicoFactAddress_DB,
+            r => r.JurLicoAddress_DB),
+        _ => string.Empty
+    };
+
+    private static string GetJurAddress<T>(
+        T? branch,
+        T? head,
+        Func<T, string?> factAddress,
+        Func<T, string?> jurAddress)
+    {
+        if (branch is not null)
+        {
+            if (IsValidAddress(factAddress(branch))) return factAddress(branch)!;
+            if (IsValidAddress(jurAddress(branch))) return jurAddress(branch)!;
+        }
+
+        if (head is not null)
+        {
+            if (IsValidAddress(factAddress(head))) return factAddress(head)!;
+            if (IsValidAddress(jurAddress(head))) return jurAddress(head)!;
+            return jurAddress(head) ?? string.Empty;
+        }
+
+        return string.Empty;
+    }
+
+    private static bool IsValidAddress(string? value) =>
+        !string.IsNullOrEmpty(value) && !value.Equals("-");
+
+    private static string GetTitleField(
+        Report master,
+        int rowIndex,
+        Func<Form10, string?> form10Selector,
+        Func<Form20, string?> form20Selector) =>
+        master.FormNum_DB switch
+        {
+            "1.0" when GetForm10Row(master, rowIndex) is { } row => form10Selector(row) ?? string.Empty,
+            "2.0" when GetForm20Row(master, rowIndex) is { } row => form20Selector(row) ?? string.Empty,
+            _ => string.Empty
+        };
+
+    /// <summary>
+    /// Возвращает целочисленное значение ячейки Excel или 0, если значение отсутствует.
+    /// </summary>
+    private static int GetCellInt(object? value) => value switch
+    {
+        int i => i,
+        long l => (int)l,
+        double d => (int)d,
+        float f => (int)f,
+        decimal m => (int)m,
+        null => 0,
+        _ => int.TryParse(value.ToString(), out var n) ? n : 0
+    };
+
+    #region MasterTitleFields
+
+    /// <summary>
+    /// Безопасное чтение регистрационного номера представительной формы организации.
+    /// </summary>
+    private static string GetRegNoRep(Report master) => master.FormNum_DB switch
+    {
+        "1.0" => GetRegNoRepForm10(master),
+        "2.0" => GetRegNoRepForm20(master),
+        _ => string.Empty
+    };
+
+    private static string GetOkpoRep(Report master) => master.FormNum_DB switch
+    {
+        "1.0" => GetOkpoRepForm10(master),
+        "2.0" => GetOkpoRepForm20(master),
+        _ => string.Empty
+    };
+
+    private static string GetShortJurLicoRep(Report master) => master.FormNum_DB switch
+    {
+        "1.0" => GetShortJurLicoRepForm10(master),
+        "2.0" => GetShortJurLicoRepForm20(master),
+        _ => string.Empty
+    };
+
+    private static string GetRegNoRepForm10(Report master)
+    {
+        var branch = GetForm10Row(master, 1);
+        var head = GetForm10Row(master, 0);
+        if (branch is not null
+            && (GetForm10RowRegNo(branch) != "" || branch.Okpo_DB == "-")
+            && GetForm10RowOkpo(branch) != "")
+        {
+            return GetForm10RowRegNo(branch);
+        }
+
+        return head is not null ? GetForm10RowRegNo(head) : string.Empty;
+    }
+
+    private static string GetRegNoRepForm20(Report master)
+    {
+        var branch = GetForm20Row(master, 1);
+        var head = GetForm20Row(master, 0);
+        if (branch is not null
+            && (GetForm20RowRegNo(branch) != "" || branch.Okpo_DB == "-")
+            && GetForm20RowOkpo(branch) != "")
+        {
+            return GetForm20RowRegNo(branch);
+        }
+
+        return head is not null ? GetForm20RowRegNo(head) : string.Empty;
+    }
+
+    private static string GetOkpoRepForm10(Report master)
+    {
+        var branch = GetForm10Row(master, 1);
+        var head = GetForm10Row(master, 0);
+        if (branch is not null && branch.Okpo_DB is not ("" or "-"))
+            return GetForm10RowOkpo(branch);
+
+        return head is not null ? GetForm10RowOkpo(head) : string.Empty;
+    }
+
+    private static string GetOkpoRepForm20(Report master)
+    {
+        var branch = GetForm20Row(master, 1);
+        var head = GetForm20Row(master, 0);
+        if (branch is not null && branch.Okpo_DB is not ("" or "-"))
+            return GetForm20RowOkpo(branch);
+
+        return head is not null ? GetForm20RowOkpo(head) : string.Empty;
+    }
+
+    private static string GetShortJurLicoRepForm10(Report master)
+    {
+        var branch = GetForm10Row(master, 1);
+        var head = GetForm10Row(master, 0);
+        if (branch is not null && branch.Okpo_DB is not ("" or "-"))
+            return GetForm10ShortJurLico(branch);
+
+        return head is not null ? GetForm10ShortJurLico(head) : string.Empty;
+    }
+
+    private static string GetShortJurLicoRepForm20(Report master)
+    {
+        var branch = GetForm20Row(master, 1);
+        var head = GetForm20Row(master, 0);
+        if (branch is not null && branch.Okpo_DB is not ("" or "-"))
+            return GetForm20ShortJurLico(branch);
+
+        return head is not null ? GetForm20ShortJurLico(head) : string.Empty;
+    }
+
+    private static string GetForm10RowOkpo(Form10 row) =>
+        string.IsNullOrWhiteSpace(row.Okpo_DB) ? (row.Okpo?.Value ?? "").Trim() : row.Okpo_DB.Trim();
+
+    private static string GetForm10RowRegNo(Form10 row) =>
+        string.IsNullOrWhiteSpace(row.RegNo_DB) ? (row.RegNo?.Value ?? "").Trim() : row.RegNo_DB.Trim();
+
+    private static string GetForm20RowOkpo(Form20 row) =>
+        string.IsNullOrWhiteSpace(row.Okpo_DB) ? (row.Okpo?.Value ?? "").Trim() : row.Okpo_DB.Trim();
+
+    private static string GetForm20RowRegNo(Form20 row) =>
+        string.IsNullOrWhiteSpace(row.RegNo_DB) ? (row.RegNo?.Value ?? "").Trim() : row.RegNo_DB.Trim();
+
+    private static string GetForm10ShortJurLico(Form10 row) =>
+        string.IsNullOrWhiteSpace(row.ShortJurLico_DB)
+            ? (row.ShortJurLico?.Value ?? "").Trim()
+            : row.ShortJurLico_DB.Trim();
+
+    private static string GetForm20ShortJurLico(Form20 row) =>
+        string.IsNullOrWhiteSpace(row.ShortJurLico_DB)
+            ? (row.ShortJurLico?.Value ?? "").Trim()
+            : row.ShortJurLico_DB.Trim();
 
     #endregion
 
-    #region ReportsCountCheck
-
     /// <summary>
-    /// Подсчёт количества организаций. При количестве равном 0, выводится сообщение, операция завершается.
+    /// Чередует белый и светло-голубой фон строк данных.
     /// </summary>
-    /// <param name="db">Модель БД.</param>
-    /// <param name="progressBar">Окно прогрессбара.</param>
-    /// <param name="cts">Токен.</param>
-    private static async Task ReportsCountCheck(DBModel db, AnyTaskProgressBar? progressBar, CancellationTokenSource cts)
+    private void ApplyAlternatingRowColors(int firstRow, int lastRow)
     {
-        var countReports = await db.ReportsCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.DBObservable)
-            .Where(x => x.DBObservable != null)
-            .CountAsync(cts.Token);
+        var lastColumn = Worksheet.Dimension.End.Column;
 
-        if (countReports == 0)
+        for (var row = firstRow; row <= lastRow; row++)
         {
-            #region MessageRepsNotFound
-
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    CanResize = true,
-                    ContentTitle = "Выгрузка в .xlsx",
-                    ContentHeader = "Уведомление",
-                    ContentMessage =
-                        "Не удалось совершить выгрузку списка всех отчетов по форме 1 с указанием количества строк," +
-                        $"{Environment.NewLine}поскольку в текущей базе отсутствуют формы организаций./",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
-
-            #endregion
-
-            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+            if ((row - firstRow) % 2 != 0)
+            {
+                Worksheet.Cells[row, 1, row, lastColumn].Style.Fill.SetBackground(
+                    AlternatingRowFill,
+                    ExcelFillStyle.Solid);
+            }
         }
     }
+
+    /// <summary>
+    /// Подбирает ширину колонок: счётчики форм — фиксированная ширина;
+    /// текстовые — AutoFit с ограничением сверху (только Windows; на Linux — ширина по умолчанию) и перенос строк.
+    /// </summary>
+    private void ApplyColumnWidths()
+    {
+        var canAutoFit = OperatingSystem.IsWindows();
+
+        for (var col = 1; col <= Worksheet.Dimension.End.Column; col++)
+        {
+            var header = Worksheet.Cells[1, col].Value?.ToString();
+            var column = Worksheet.Column(col);
+
+            if (header?.StartsWith("Форма ", StringComparison.Ordinal) == true)
+            {
+                column.Width = FormCountColumnWidth;
+                continue;
+            }
+
+            if (canAutoFit)
+            {
+                column.AutoFit();
+                if (column.Width > MaxAutoFitColumnWidth)
+                    column.Width = MaxAutoFitColumnWidth;
+            }
+            else if (IsTextColumn(header))
+            {
+                column.Width = MaxAutoFitColumnWidth;
+            }
+
+            if (IsTextColumn(header))
+                column.Style.WrapText = true;
+        }
+    }
+
+    /// <summary>
+    /// Определяет, является ли колонка текстовой (с переносом длинного содержимого).
+    /// </summary>
+    private static bool IsTextColumn(string? header) =>
+        !string.IsNullOrEmpty(header) && !header.StartsWith("Форма ", StringComparison.Ordinal);
+
+    #endregion
+
+    #region PeriodFilter
+
+    /// <summary>
+    /// Проверяет, попадает ли отчёт в заданный пользователем период фильтрации.
+    /// </summary>
+    private bool MatchesExportPeriodFilter(FormReportCountInfo report) =>
+        MatchesExportPeriodFilter(report.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, report.Year_DB);
+
+    /// <summary>
+    /// Проверяет, попадает ли отчёт в заданный пользователем период фильтрации.
+    /// </summary>
+    private bool MatchesExportPeriodFilter(string formNum, string? startPeriod, string? endPeriod, string? year)
+    {
+        if (string.IsNullOrEmpty(formNum))
+            return false;
+
+        if (formNum.StartsWith("1.", StringComparison.Ordinal))
+        {
+            if (_form1Start == DateOnly.MinValue && _form1End == DateOnly.MaxValue)
+                return true;
+
+            if (!DateOnly.TryParse(endPeriod, out var repEnd))
+                return false;
+
+            var repStart = DateOnly.TryParse(startPeriod, out var rs) ? rs : DateOnly.MinValue;
+            return _form1Start <= repEnd && _form1End >= repStart;
+        }
+
+        if (formNum.StartsWith("2.", StringComparison.Ordinal))
+        {
+            if (_form2YearStart == int.MinValue && _form2YearEnd == int.MaxValue)
+                return true;
+
+            return int.TryParse(year, out var reportYear)
+                   && reportYear >= _form2YearStart
+                   && reportYear <= _form2YearEnd;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Подсчитывает количество отчётов указанной формы с учётом фильтра периода.
+    /// </summary>
+    private int CountFormReports(IReadOnlyList<FormReportCountInfo> collection, string formNum) =>
+        collection.Count(x => x.FormNum_DB.Equals(formNum) && MatchesExportPeriodFilter(x));
+
+    #endregion
+
+    #region ExportData
+
+    /// <summary>
+    /// Данные организации и облегчённый список её отчётов для подсчёта форм.
+    /// </summary>
+    private sealed class OrgExportData(Reports reps, IReadOnlyList<FormReportCountInfo> formReports)
+    {
+        /// <summary>
+        /// Организация.
+        /// </summary>
+        public Reports Reps { get; } = reps;
+
+        /// <summary>
+        /// Отчёты организации с полями, необходимыми для подсчёта форм.
+        /// </summary>
+        public IReadOnlyList<FormReportCountInfo> FormReports { get; } = formReports;
+    }
+
+    /// <summary>
+    /// Облегчённая проекция отчёта с полями, необходимыми для подсчёта форм.
+    /// </summary>
+    private readonly record struct FormReportCountInfo(
+        int OrgId,
+        string FormNum_DB,
+        string? StartPeriod_DB,
+        string? EndPeriod_DB,
+        string? Year_DB);
 
     #endregion
 }

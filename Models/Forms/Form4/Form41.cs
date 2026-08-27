@@ -1,4 +1,4 @@
-﻿using Models.Attributes;
+using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
@@ -6,11 +6,9 @@ using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Security.AccessControl;
-using System.Text.RegularExpressions;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form4;
 
@@ -429,7 +427,7 @@ public partial class Form41 : Form
                 && NumOfForms212.Value <= 0
                 && Note.Value is "" or null)
             {
-                ToolTipText = "Если у организации нет отчетов и сведений о лицензии, необходимо заполнить ячейку \"Примечение\"";
+                ToolTipText = "Если у организации нет отчетов и сведений о лицензии, необходимо заполнить ячейку \"Примечание\"";
                 return Color.FromArgb(50, 255, 255, 0);
             }
 
@@ -442,13 +440,12 @@ public partial class Form41 : Form
             if ((NumOfFormsWithInventarizationInfo.Value > 0
                 || NumOfFormsWithoutInventarizationInfo.Value > 0
                 || NumOfForms212.Value > 0)
-                && LicenseOrRegistrationInfo.Value is "" or null)
+                && string.IsNullOrEmpty(LicenseOrRegistrationInfo.Value)
+                && string.IsNullOrEmpty(Note.Value))
             {
                 ToolTipText = "Если у организации есть, хотя бы 1 отчет, то необходимо заполнить \"Сведения о лицензии\"";
                 return Color.FromArgb(50, 139, 0, 255);
             }
-
-
 
             ToolTipText = "";
             return Color.FromArgb(0,255,255,255); // Значение по умолчанию
@@ -472,6 +469,7 @@ public partial class Form41 : Form
         }
     }
     #endregion 
+
     #endregion
 
     #region Validation
@@ -583,4 +581,18 @@ public partial class Form41 : Form
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form41 formToCompare) return false;
+
+        return FormTextEquality.Equals(RegNo_DB, formToCompare.RegNo_DB)
+               && FormTextEquality.Equals(Okpo_DB, formToCompare.Okpo_DB)
+               && FormTextEquality.Equals(OrganizationName_DB, formToCompare.OrganizationName_DB)
+               && FormTextEquality.Equals(LicenseOrRegistrationInfo_DB, formToCompare.LicenseOrRegistrationInfo_DB)
+               && NumOfFormsWithInventarizationInfo_DB == formToCompare.NumOfFormsWithInventarizationInfo_DB
+               && NumOfFormsWithoutInventarizationInfo_DB == formToCompare.NumOfFormsWithoutInventarizationInfo_DB
+               && NumOfForms212_DB == formToCompare.NumOfForms212_DB
+               && FormTextEquality.Equals(Note_DB, formToCompare.Note_DB);
+    }
 }

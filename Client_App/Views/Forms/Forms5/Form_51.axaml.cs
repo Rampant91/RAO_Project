@@ -10,7 +10,6 @@ using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
 using Client_App.Interfaces.Logger;
-using Client_App.ViewModels.Forms.Forms4;
 using Client_App.ViewModels.Forms.Forms5;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
@@ -260,7 +259,8 @@ public partial class Form_51 : BaseWindow<Form_51VM>
                 ContentHeader = "Уведомление",
                 ContentMessage = $"Сохранить форму {vm.FormType}?",
                 MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(this));
 
@@ -398,7 +398,8 @@ public partial class Form_51 : BaseWindow<Form_51VM>
                                              $"{rep.StartPeriod_DB}-{rep.EndPeriod_DB}.",
                             MinWidth = 450,
                             MinHeight = 170,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(this));
 
@@ -454,7 +455,8 @@ public partial class Form_51 : BaseWindow<Form_51VM>
                     ContentMessage = $"В форме {vm.FormType} присутствуют пустые строчки." +
                                      $"{Environment.NewLine}Вы хотите их удалить?",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(this));
 

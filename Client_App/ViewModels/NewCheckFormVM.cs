@@ -1,8 +1,11 @@
 ﻿using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.ViewModels.Forms;
 using Models.CheckForm;
+using Models.DBRealization;
+using Models.Forms.Form4;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
@@ -39,15 +42,42 @@ public class NewCheckFormVM : BaseVM, INotifyPropertyChanged
     {
         get
         {
-            string title = "Проверка_формы_";
-            if (FormVM.Reports.Master_DB.RegNoRep != null)
-                title = title + $"{FormVM.Reports.Master_DB.RegNoRep.Value}_";
+            string title = $"Проверка_формы_{FormVM.Report.FormNum_DB}_";
+            switch (FormVM.FormType[0])
+            {
+                case '1' or '2':
+                    {
+                        if (FormVM.Reports.Master_DB.RegNoRep != null)
+                            title = title + $"{FormVM.Reports.Master_DB.RegNoRep.Value}_";
 
-            if (FormVM.Reports.Master_DB.OkpoRep != null)
-                title = title + $"{FormVM.Reports.Master_DB.OkpoRep.Value}_";
-            title = title + $"{FormVM.Report.FormNum_DB}_";
+                        if (FormVM.Reports.Master_DB.OkpoRep != null)
+                            title = title + $"{FormVM.Reports.Master_DB.OkpoRep.Value}_";
+                        break;
+                    }
 
-            if (FormVM.Report.FormNum_DB[..1] == "1")
+                case '4':
+                    {
+                        var form40 = FormVM.Reports.Master_DB.Rows40[0];
+                        title += $"{form40.CodeSubjectRF_DB}_";
+                        title += $"{form40.SubjectRF_DB.Replace(" ", "_")}_";
+                        break;
+                    }
+
+                case '5':
+                    {
+                        var form50 = FormVM.Reports.Master_DB.Rows50[0];
+                        if (form50.Rosatom_DB)
+                            title += $"ВИАЦ_Госкорпорации_Росатом_";
+                        else if (form50.MinObr_DB)
+                            title += $"ВИАЦ_Министерства_обороны_РФ";
+                        else
+                            title += $"{form50.ExecutiveAuthority_DB}";
+                        break;
+                    }
+            }
+
+
+            if (FormVM.FormType[0] == '1')
                 title = title + $"{FormVM.Report.StartPeriod_DB}-{FormVM.Report.EndPeriod_DB}";
             else
                 title = title + $"{FormVM.Report.Year_DB}";
@@ -73,22 +103,6 @@ public class NewCheckFormVM : BaseVM, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
-
-    #region Column
-
-    private string _column;
-    public string Column
-    {
-        get => _column;
-        set
-        {
-            if (_column == value) return;
-            _column = value;
-            OnPropertyChanged();
-        }
-    }
-
-    #endregion
 
     #region FormNum
 
@@ -121,17 +135,67 @@ public class NewCheckFormVM : BaseVM, INotifyPropertyChanged
     }
 
     #endregion
+    
+    #region Column
 
-    #region Message
-
-    private string _message;
-    public string Message
+    private string _column;
+    public string Column
     {
-        get => _message;
+        get => _column;
         set
         {
-            if (_message == value) return;
-            _message = value;
+            if (_column == value) return;
+            _column = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
+    #region Row
+
+    private string _row;
+    public string Row
+    {
+        get => _row;
+        set
+        {
+            if (_row == value) return;
+            _row = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
+    //Для формы 4.1
+    #region RegNo
+
+    private string _regNo;
+    public string RegNo
+    {
+        get => _regNo;
+        set
+        {
+            if (_regNo == value) return;
+            _regNo = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
+    //Для формы 4.1
+    #region Okpo
+
+    private string _okpo;
+    public string Okpo
+    {
+        get => _okpo;
+        set
+        {
+            if (_okpo == value) return;
+            _okpo = value;
             OnPropertyChanged();
         }
     }
@@ -154,21 +218,39 @@ public class NewCheckFormVM : BaseVM, INotifyPropertyChanged
 
     #endregion
 
-    #region Row
+    //Для формы 4.1
+    #region DbValue
 
-    private string _row;
-    public string Row
+    private string _dbValue;
+    public string? DbValue
     {
-        get => _row;
+        get => _dbValue;
         set
         {
-            if (_row == value) return;
-            _row = value;
+            if (_dbValue == value) return;
+            _dbValue = value;
             OnPropertyChanged();
         }
     }
 
     #endregion
+
+    #region Message
+
+    private string _message;
+    public string Message
+    {
+        get => _message;
+        set
+        {
+            if (_message == value) return;
+            _message = value;
+            OnPropertyChanged();
+        }
+    }
+
+    #endregion
+
 
     #endregion
 

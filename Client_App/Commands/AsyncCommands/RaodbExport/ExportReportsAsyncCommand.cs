@@ -25,6 +25,24 @@ namespace Client_App.Commands.AsyncCommands.RaodbExport;
 /// </summary>
 public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 {
+    private readonly MainWindowVM _mainWindowVM;
+
+    public ExportReportsAsyncCommand(MainWindowVM mainWindowVM)
+    {
+        _mainWindowVM = mainWindowVM;
+
+        // Подписываемся на изменение SelectedReports для обновления CanExecute
+        mainWindowVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(MainWindowVM.SelectedReports))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+
+    public override bool CanExecute(object? parameter) => _mainWindowVM.SelectedReports is not null;
+
     public override async Task AsyncExecute(object? parameter)
     {
         var cts = new CancellationTokenSource();
@@ -79,8 +97,9 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #endregion
 
-        var dbReadOnlyPath = CreateTempDataBase();
-
+        var dbReadOnlyPath = await CreateTempDataBase(progressBar, cts);
+        try
+        {
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
 
         #region Progress = 10
@@ -260,7 +279,8 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                                 $"{Environment.NewLine}и используется другим процессом.",
                             MinWidth = 400,
                             MinHeight = 150,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         }).ShowDialog(Desktop.MainWindow));
 
                 #endregion
@@ -279,7 +299,7 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #endregion
 
-        await tempDb.Database.MigrateAsync(cancellationToken: cts.Token);
+        await tempDb.MigrateDatabaseAsync(cts.Token);
 
         #region Progress = 60
 
@@ -322,7 +342,6 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         {
             File.Copy(fullPathTmp, fullPath);
             File.Delete(fullPathTmp);
-            File.Delete(dbReadOnlyPath);
         }
         catch (Exception ex)
         {
@@ -446,5 +465,10 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
             }
         }
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+        }
+        finally
+        {
+            TryDeleteTempDataBase(dbReadOnlyPath);
+        }
     }
 }

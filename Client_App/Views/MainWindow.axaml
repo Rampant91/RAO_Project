@@ -7,10 +7,11 @@
         xmlns:converter="clr-namespace:Client_App.Resources.CustomConverters"
         xmlns:tabs="clr-namespace:Client_App.Views.MainWindowTabs"
         xmlns:behaviors="clr-namespace:Client_App.Behaviors"
+        xmlns:windowSizingBehaviors="using:Client_App.Behaviors.WindowSizing"
         Title="{Binding Current_Db, Mode=OneWay}"
         d:DesignHeight="600"
         d:DesignWidth="800"
-        behaviors:WindowScreenSizeBehavior.WidthRatio="0.75" behaviors:WindowScreenSizeBehavior.HeightRatio="0.83"
+        windowSizingBehaviors:WindowScreenSizeBehavior.WidthRatio="0.75" windowSizingBehaviors:WindowScreenSizeBehavior.HeightRatio="0.87"
         MinWidth="200"
         MinHeight="200"
         x:CompileBindings="True"
@@ -53,231 +54,279 @@
                 <MenuItem Header="Из RAODB" 
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
                     <MenuItem Header="Импорт с авто выбором организации"
-                              Command="{Binding ImportRaodb}" 
+                              Command="{Binding ImportRaodb, Mode=OneWay}" 
                               CommandParameter="Auto"/>
                     <MenuItem Header="Импорт в организацию из списка"
-                              Command="{Binding ImportRaodb}"
+                              Command="{Binding ImportRaodb, Mode=OneWay}"
                               CommandParameter="FromList"/>
                 </MenuItem>
                 <MenuItem Header="Из RAODB"
-                          Command="{Binding ImportRaodb}"
+                          Command="{Binding ImportRaodb, Mode=OneWay}"
                           CommandParameter="Auto"
-                          IsVisible="{Binding AppLaunchedAtNorao, Converter={StaticResource BoolInverterConverter}}"/>
+                          IsVisible="{Binding AppLaunchedAtNorao, 
+                            Converter={StaticResource BoolInverterConverter}, 
+                            Mode=OneWay}"/>
 
                 <MenuItem Header="Из Excel"
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
                     <MenuItem Header="Импорт с авто выбором организации"
-                              Command="{Binding ImportExcel}"
+                              Command="{Binding ImportExcel, Mode=OneWay}"
                               CommandParameter="Auto"/>
                     <MenuItem Header="Импорт в организацию из списка"
-                              Command="{Binding ImportExcel}"
+                              Command="{Binding ImportExcel, Mode=OneWay}"
                               CommandParameter="FromList"/>
                 </MenuItem>
                 <MenuItem Header="Из Excel"
-                          Command="{Binding ImportExcel}"
+                          Command="{Binding ImportExcel, Mode=OneWay}"
                           CommandParameter="Auto"
-                          IsVisible="{Binding AppLaunchedAtNorao, Converter={StaticResource BoolInverterConverter}}"/>
+                          IsVisible="{Binding AppLaunchedAtNorao, 
+                            Converter={StaticResource BoolInverterConverter}, 
+                            Mode=OneWay}"/>
 
                 <MenuItem Header="Из Json"
-                          Command="{Binding ImportJson}"/>
+                          Command="{Binding ImportJson, Mode=OneWay}"/>
             </MenuItem>
 
             <MenuItem Name="ExcelMenu"
                       Header="_Аналитика">
-                <MenuItem Header="Список организаций">
-                    <MenuItem Command="{Binding ExcelExportListOfOrgs}" 
+                <MenuItem Header="Список организаций"
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
+                    <MenuItem Command="{Binding ExcelExportListOfOrgs, Mode=OneWay}" 
                               Header="Количество форм"/>
-                    <MenuItem Command="{Binding ExcelExportListOfOrgs}"
+                    <MenuItem Command="{Binding ExcelExportListOfOrgs, Mode=OneWay}"
                               CommandParameter="full"
                               Header="Список с доп. полями"/>
                 </MenuItem>
-                <MenuItem Command="{Binding ExcelExportExecutors}"
+                <MenuItem Command="{Binding ExcelExportExecutors, Mode=OneWay}"
                           CommandParameter="Executors"
-                          Header="Список исполнителей"/>
-                <MenuItem Command="{Binding ExcelExportListOfForms1}" 
-                          Header="Список форм 1"/>
-                <MenuItem Command="{Binding ExcelExportListOfForms2}" 
-                          Header="Список форм 2"/>
+                          Header="Список исполнителей"
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
+                <MenuItem Header="Список форм">
+                    <MenuItem Command="{Binding ExcelExportListOfForms1, Mode=OneWay}"
+                              Header="Список форм 1"/>
+                    <MenuItem Command="{Binding ExcelExportListOfForms2, Mode=OneWay}"
+                              Header="Список форм 2"/>
+                    <MenuItem Command="{Binding ExcelExportListOfForms4, Mode=OneWay}"
+                              Header="Список форм 4"/>
+                    <MenuItem Command="{Binding ExcelExportListOfForms5, Mode=OneWay}"
+                              Header="Список форм 5"
+                              IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
+                    <Separator/>
+                    <MenuItem Command="{Binding ExcelExportListOfFormsAll, Mode=OneWay}"
+                              Header="Все списки форм"/>
+                </MenuItem>
                 <Separator/>
-                <MenuItem Command="{Binding ExcelExportAll}"
+                <MenuItem Command="{Binding ExcelExportAll, Mode=OneWay}"
                           CommandParameter="AllReps"
-                          Header="Все формы" />
-                <MenuItem Header="Формы 1">
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                          Header="Все формы"
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
+                <MenuItem Header="Формы 1"
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="1.1"
                               Header="Форма 1.1"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="1.2"
                               Header="Форма 1.2"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="1.3"
                               Header="Форма 1.3"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="1.4"
                               Header="Форма 1.4"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="1.5"
                               Header="Форма 1.5"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="1.6"
                               Header="Форма 1.6"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="1.7"
                               Header="Форма 1.7"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="1.8"
                               Header="Форма 1.8"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="1.9"
                               Header="Форма 1.9"/>
                 </MenuItem>
-                <MenuItem Header="Формы 2">
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                <MenuItem Header="Формы 2"
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="2.1"
                               Header="Форма 2.1"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="2.2"
                               Header="Форма 2.2"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="2.3"
                               Header="Форма 2.3"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="2.4"
                               Header="Форма 2.4"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="2.5"
                               Header="Форма 2.5"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="2.6"
                               Header="Форма 2.6"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="2.7"
                               Header="Форма 2.7"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="2.8"
                               Header="Форма 2.8"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="2.9"
                               Header="Форма 2.9"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="2.10"
                               Header="Форма 2.10"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="2.11"
                               Header="Форма 2.11"/>
-                    <MenuItem Command="{Binding ExcelExportForms}"
+                    <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="2.12"
                               Header="Форма 2.12"/>
                 </MenuItem>
-                <MenuItem Header="Выбранная организация">
-                    <MenuItem Command="{Binding ExcelExportAll}"
+                <MenuItem Header="Выбранная организация"
+                          IsEnabled="{Binding IsExcelSelectedOrganizationMenuEnabled, Mode=OneWay}">
+                    <MenuItem Command="{Binding ExcelExportAll, Mode=OneWay}"
                               CommandParameter="SelectedOrg"
-                              Header="Все формы"/>
+                              Header="Все формы"
+                              IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
                     <MenuItem Header="Формы 1">
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org1.1"
                                   Header="Форма 1.1"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org1.2"
                                   Header="Форма 1.2"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org1.3"
                                   Header="Форма 1.3"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org1.4"
                                   Header="Форма 1.4"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org1.5"
                                   Header="Форма 1.5"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org1.6"
                                   Header="Форма 1.6"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org1.7"
                                   Header="Форма 1.7"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org1.8"
                                   Header="Форма 1.8"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org1.9"
                                   Header="Форма 1.9"/>
                     </MenuItem>
                     <MenuItem Header="Формы 2">
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org2.1"
                                   Header="Форма 2.1"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org2.2"
                                   Header="Форма 2.2"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org2.3"
                                   Header="Форма 2.3"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org2.4"
                                   Header="Форма 2.4"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org2.5"
                                   Header="Форма 2.5"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org2.6"
                                   Header="Форма 2.6"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org2.7"
                                   Header="Форма 2.7"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org2.8"
                                   Header="Форма 2.8"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org2.9"
                                   Header="Форма 2.9"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org2.10"
                                   Header="Форма 2.10"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org2.11"
                                   Header="Форма 2.11"/>
-                        <MenuItem Command="{Binding ExcelExportForms}"
+                        <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org2.12"
                                   Header="Форма 2.12"/>
                     </MenuItem>
                     <MenuItem Header="СНК на дату">
-                        <MenuItem Command="{Binding  ExcelExportSnk}"
+                        <MenuItem Command="{Binding  ExcelExportSnk, Mode=OneWay}"
                                   CommandParameter="1.1"
                                   Header="Форма 1.1"/>
-                        <MenuItem Command="{Binding  ExcelExportSnk}"
+                        <MenuItem Command="{Binding  ExcelExportSnk, Mode=OneWay}"
                                   CommandParameter="1.3"
                                   Header="Форма 1.3"/>
                     </MenuItem>
                     <MenuItem Header="Проверка инвентаризации">
-                        <MenuItem Command="{Binding  ExcelExportCheckInventories}"
+                        <MenuItem Command="{Binding  ExcelExportCheckInventories, Mode=OneWay}"
                                   CommandParameter="1.1"
                                   Header="Форма 1.1"/>
-                        <MenuItem Command="{Binding  ExcelExportCheckInventories}"
+                        <MenuItem Command="{Binding  ExcelExportCheckInventories, Mode=OneWay}"
                                   CommandParameter="1.3"
                                   Header="Форма 1.3"/>
                     </MenuItem>
+                    <MenuItem Header="Непарные операции 41 (формы 1.1–1.6)"
+                              Command="{Binding ExcelExportCheckPairingOfCode41, Mode=OneWay}"
+                              CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+                    <MenuItem Header="Проверка операций приёма-передачи"
+                              Command="{Binding ExcelExportCheckTransferReceive, Mode=OneWay}"
+                              CommandParameter="{Binding SelectedReports, Mode=OneWay}"
+                              IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
+                    <MenuItem Header="Сверка отчётов с БД"
+                              Command="{Binding ExcelExportCompareFormPrint, Mode=OneWay}"
+                              CommandParameter="{Binding SelectedReports, Mode=OneWay}"
+                              IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Command="{Binding ExcelExportIntersections}"
+                <MenuItem Command="{Binding ExcelExportIntersections, Mode=OneWay}"
                           Header="Разрывы и пересечения"/>
                 <MenuItem Header="Паспорта">
-                    <MenuItem Command="{Binding ExcelExportRepWithoutPas}"
+                    <MenuItem Command="{Binding ExcelExportRepWithoutPas, Mode=OneWay}"
                               Header="Отчеты без паспортов"/>
-                    <MenuItem Command="{Binding ExcelExportPasWithoutRep}"
+                    <MenuItem Command="{Binding ExcelExportPasWithoutRep, Mode=OneWay}"
                               Header="Паспорта без отчетов"/>
-                    <MenuItem Command="{Binding ChangePasFolder}"
+                    <MenuItem Command="{Binding ChangePasFolder, Mode=OneWay}"
                               Header="Изменить расположение паспортов по умолчанию"/>
                 </MenuItem>
-                <MenuItem Command="{Binding  ExcelExportCheckLastInventoryDate}"
+                <MenuItem Command="{Binding  ExcelExportCheckLastInventoryDate, Mode=OneWay}"
                           Header="Проверка последней инвентаризации"/>
-                <MenuItem Header="Проблемные источники по региону">
-                    <MenuItem Command="{Binding  ExcelExportLostAndExtraUnitsByRegion}"
+                <MenuItem Command="{Binding ExcelExportCheckPairingOfCode41, Mode=OneWay}"
+                          CommandParameter="All"
+                          Header="Непарные операции 41 (вся БД)"/>
+                <MenuItem Command="{Binding ExcelExportCheckTransferReceive, Mode=OneWay}"
+                          CommandParameter="All"
+                          Header="Проверка операций приёма-передачи (вся БД)"
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
+                <MenuItem Command="{Binding ExcelExportCompareFormPrint, Mode=OneWay}"
+                          CommandParameter="All"
+                          Header="Сверка отчётов с БД"
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
+                <MenuItem Header="Проблемные источники по региону"
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
+                    <MenuItem Command="{Binding  ExcelExportLostAndExtraUnitsByRegion, Mode=OneWay}"
                               CommandParameter="1.1"
                               Header="Форма 1.1"/>
-                    <MenuItem Command="{Binding  ExcelExportLostAndExtraUnitsByRegion}"
+                    <MenuItem Command="{Binding  ExcelExportLostAndExtraUnitsByRegion, Mode=OneWay}"
                               CommandParameter="1.3"
                               Header="Форма 1.3"/>
                 </MenuItem>
+				<Separator/>
+				<MenuItem Command="{Binding  CalculateVolumesRaoProcessingByPeriod, Mode=OneWay}"
+                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"
+			              Header="Собрать сведения о переработке РАО"/>
                 <!--
                 <MenuItem Command="{Binding MaxGraphsLength, Mode=OneTime}"
                           Header="Максимальная длинна граф"/>
@@ -288,45 +337,72 @@
 
             <MenuItem Name="ServiceMenu"
                       Header="Сервис">
-                <MenuItem Command="{Binding OpenCalculator}"
+                <MenuItem Command="{Binding OpenCalculator, Mode=OneWay}"
                           CommandParameter="activity"
                           Header="Пересчёт активности"/>
-                <MenuItem Command="{Binding OpenCalculator}" 
+                <MenuItem Command="{Binding OpenCalculator, Mode=OneWay}" 
                           CommandParameter="category" 
                           Header="Расчёт категории"/>
                 <Separator/>
-                <MenuItem Command="{Binding OpenFile}"
+                <MenuItem Command="{Binding OpenFile, Mode=OneWay}"
                           CommandParameter="manual"
                           Header="Руководство пользователя"/>
 				<Separator/>
-			    <MenuItem Command="{Binding OpenFolder}"
+			    <MenuItem Command="{Binding OpenFolder, Mode=OneWay}"
                           CommandParameter="rao"
                           Header="Папка RAO"/>
-                <MenuItem Command="{Binding OpenFolder}"
+                <MenuItem Command="{Binding OpenFolder, Mode=OneWay}"
                           CommandParameter="app"
                           Header="Папка с программой"/>
-                <MenuItem Command="{Binding OpenFile}" 
+                <MenuItem Command="{Binding OpenFile, Mode=OneWay}" 
                           CommandParameter="radsDictionary" 
                           Header="Справочник радионуклидов"/>
-                <MenuItem Command="{Binding OpenFolder}"
+                <MenuItem Command="{Binding OpenFolder, Mode=OneWay}"
                           CommandParameter="excel"
                           Header="Шаблоны форм"/>
                 <Separator/>
                 <MenuItem Click="OpenContactsButtonClicked"
                           Header="Контакты"/>
-                <MenuItem Command="{Binding OpenFile}"
+                <MenuItem Command="{Binding OpenFile, Mode=OneWay}"
                           CommandParameter="changelog"
                           Header="Список изменений"/>
+                <MenuItem Command="{Binding CheckForUpdates, Mode=OneWay}"
+                          Header="Проверить обновления"/>
+                <MenuItem Command="{Binding RollbackPreviousRelease, Mode=OneWay}"
+                          Header="Откатиться на предыдущую версию"
+                          IsVisible="{Binding CanRollbackPreviousRelease, Mode=OneWay}"/>
                     
             </MenuItem> 
 
+            <MenuItem Header="Дополнительно"
+                      IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
+                <MenuItem Header="Конвертер из Excel в .RAODB"
+                          Command="{Binding ConvertExcelToRaodb, Mode=OneWay}"/>
+                <MenuItem Header="Групповая выгрузка отчётов"
+                          Command="{Binding GroupBulkExportReports, Mode=OneWay}"/>
+            </MenuItem>
+
+			<MenuItem Name="PackagePassports"
+					  Header="Паспорта">
+				<MenuItem Command="{Binding OpenPassportMenu}"
+						  Header="Открыть меню паспортов"/>
+			</MenuItem>
+
+			<MenuItem Name="StoragePoints"
+					  IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"
+					  Header="Пункты хранения">
+				<MenuItem Command="{Binding OpenStoragePointMenu}"
+						  Header="Открыть меню пунктов хранения"/>
+			</MenuItem>
+
         </Menu>
         
-        <Panel x:Name="MainPanel"
+        <Grid x:Name="MainPanel"
                Margin="5,5,5,5"
                HorizontalAlignment="Stretch"
                VerticalAlignment="Stretch">
-            <TabControl SelectedIndex ="{Binding SelectedReportType}" 
+
+            <TabControl SelectedIndex ="{Binding SelectedReportType, Mode=TwoWay}" 
                         SelectionChanged="TabControl_SelectionChanged">
 
                 <!--Пустой элемент для начала отсчета индекса с 1 -->
@@ -336,11 +412,11 @@
 				<TabItem x:Name="Forms1" 
                          Header="Формы 1" 
                          IsSelected="{Binding }">
-					<tabs:Forms1TabControl DataContext="{Binding Forms1TabControlVM}"/>
+					<tabs:Forms1TabControl DataContext="{Binding Forms1TabControlVM, Mode=TwoWay}"/>
 				</TabItem>
 				<TabItem x:Name="Forms2" 
                          Header="Формы 2" >
-					<tabs:Forms2TabControl DataContext="{Binding Forms2TabControlVM}"/>
+					<tabs:Forms2TabControl DataContext="{Binding Forms2TabControlVM, Mode=TwoWay}"/>
 				</TabItem>
 				<TabItem x:Name="Forms3" 
                          Header="Формы 3" 
@@ -348,15 +424,35 @@
 				<TabItem x:Name="Forms4" 
                          Header="Формы 4"
                          IsVisible="True">
-					<tabs:Forms4TabControl DataContext="{Binding Forms4TabControlVM}"/>
+					<tabs:Forms4TabControl DataContext="{Binding Forms4TabControlVM, Mode=TwoWay}"/>
 			    </TabItem>
 				<TabItem x:Name="Forms5" 
                          Header="Формы 5" 
                          IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
-					<tabs:Forms5TabControl DataContext="{Binding Forms5TabControlVM}"/>
+					<tabs:Forms5TabControl DataContext="{Binding Forms5TabControlVM, Mode=TwoWay}"/>
 				</TabItem>
             </TabControl>
-        </Panel>
+
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Margin="0,3,5,0"
+                        Background="White"
+                        IsVisible="{Binding DeveloperModeEverEnabled, Mode=OneWay}">
+
+                <TextBlock Text="Режим разработчика:"
+                           VerticalAlignment="Center"
+                           FontSize="11"
+                           Margin="0,0,3,0"/>
+
+                <ToggleSwitch IsChecked="{Binding AppLaunchedAtNorao, Mode=TwoWay}"
+                              OffContent="Выкл"
+                              OnContent="Вкл"
+                              FontSize="10"
+                              Padding="2,0"/>
+            </StackPanel>
+
+        </Grid>
 
     </DockPanel>
 </Window>

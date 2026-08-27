@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,6 +9,7 @@ using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
 using Spravochniki;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form1;
 
@@ -130,184 +131,8 @@ public partial class Form16 : Form1
         {
             if (value1 is "41") return;
             OperationCode_DB = value1;
-            if (Report is { AutoReplace: true })
-            {
-                AutoReplaceByOpCode(value1);
-            }
         }
     }
-
-    #region AutoReplaceByOpCode
-    
-    private void AutoReplaceByOpCode(string opCode)
-    {
-        const string dash = "-";
-        var masterOkpo = Report?.Reports?.Master_DB?.OkpoRep.Value ?? string.Empty;
-        switch (opCode)
-        {
-            #region 10, 18, 43, 45, 48, 51, 57, 63, 64, 68, 71, 72, 74 ,75, 76, 97, 98
-
-            case "10" or "18" or "43" or "45" or "48" or "51" or "57" or "63" or "64" or "68" or "71" or "72" or "74" or "75" or "76" or "97" or "98":
-            {
-                #region ProviderOrRecieverOKPO (18)
-
-                if (!string.IsNullOrWhiteSpace(masterOkpo)
-                    && ProviderOrRecieverOKPO_DB != masterOkpo)
-                {
-                    ProviderOrRecieverOKPO.Value = masterOkpo;
-                }
-
-                #endregion
-
-                #region TransporterOKPO (19)
-
-                if (TransporterOKPO_DB != dash)
-                {
-                    TransporterOKPO.Value = dash;
-                }
-
-                #endregion
-
-                #region RefineOrSortRAOCode (22)
-
-                if (RefineOrSortRAOCode_DB != dash)
-                {
-                    RefineOrSortRAOCode.Value = dash;
-                }
-
-                #endregion
-
-                break;
-            }
-
-            #endregion
-
-            #region 11, 12, 13, 14, 16, 41, 42, 73
-
-            case "11" or "12" or "13" or "14" or "16" or "41" or "42" or "73":
-            {
-                #region StatusRAO (5)
-
-                if (!string.IsNullOrWhiteSpace(masterOkpo)
-                    && StatusRAO_DB != masterOkpo)
-                {
-                    StatusRAO.Value = masterOkpo;
-                }
-
-                #endregion
-
-                #region ProviderOrRecieverOKPO (18)
-
-                if (!string.IsNullOrWhiteSpace(masterOkpo)
-                    && ProviderOrRecieverOKPO_DB != masterOkpo)
-                {
-                    ProviderOrRecieverOKPO.Value = masterOkpo;
-                }
-
-                #endregion
-
-                #region TransporterOKPO (19)
-
-                if (TransporterOKPO_DB != dash)
-                {
-                    TransporterOKPO.Value = dash;
-                }
-
-                #endregion
-
-                #region RefineOrSortRAOCode (22)
-
-                if (RefineOrSortRAOCode_DB != dash)
-                {
-                    RefineOrSortRAOCode.Value = dash;
-                }
-
-                #endregion
-
-                break;
-            }
-
-            #endregion
-
-            #region 21, 23, 24, 25, 26, 27, 28, 29, 31, 33, 34, 35, 36, 37, 38, 39, 84, 88
-
-            case "21" or "23" or "24" or "25" or "26" or "27" or "28" or "29" or "31" or "33" or "34" or "35" or "36" or "37" or "38" or "39" or "84" or "88":
-            {
-                #region RefineOrSortRAOCode (22)
-
-                if (RefineOrSortRAOCode_DB != dash)
-                {
-                    RefineOrSortRAOCode.Value = dash;
-                }
-
-                #endregion
-
-                break;
-            }
-
-            #endregion
-
-            #region 22, 32
-
-            case "22" or "32":
-            {
-                #region ProviderOrRecieverOKPO (18)
-
-                const string providerOrRecieverOkpoValue = "Минобороны";
-                if (ProviderOrRecieverOKPO_DB != providerOrRecieverOkpoValue)
-                {
-                    ProviderOrRecieverOKPO.Value = providerOrRecieverOkpoValue;
-                }
-
-                #endregion
-
-                #region RefineOrSortRAOCode (22)
-
-                if (RefineOrSortRAOCode_DB != dash)
-                {
-                    RefineOrSortRAOCode.Value = dash;
-                }
-
-                #endregion
-
-                break;
-            }
-
-            #endregion
-
-            #region 44, 49, 55, 59, 99
-
-            case "44" or "49" or "55" or "56" or "59" or "99":
-            {
-                #region ProviderOrRecieverOKPO (18)
-
-                if (!string.IsNullOrWhiteSpace(masterOkpo)
-                    && ProviderOrRecieverOKPO_DB != masterOkpo)
-                {
-                    ProviderOrRecieverOKPO.Value = masterOkpo;
-                }
-
-                #endregion
-
-                #region TransporterOKPO (19)
-
-                if (TransporterOKPO_DB != dash)
-                {
-                    TransporterOKPO.Value = dash;
-                }
-
-                #endregion
-
-                break;
-            }
-
-            #endregion
-
-            default: return;
-        }
-    }
-
-    #endregion
 
     #endregion
 
@@ -572,7 +397,7 @@ public partial class Form16 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        QuantityOZIII_DB = tmp;
+        QuantityOZIII_DB = IntegerString_ValueChanged(tmp);
     }
 
     private static bool QuantityOZIII_Validation(RamAccess<string> value)//Ready
@@ -2087,4 +1912,37 @@ public partial class Form16 : Form1
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form16 formToCompare) return false;
+
+        return FormTextEquality.Equals(OperationCode_DB, formToCompare.OperationCode_DB)
+               && FormDateEquality.Equals(OperationDate_DB, formToCompare.OperationDate_DB)
+               && FormTextEquality.Equals(CodeRAO_DB, formToCompare.CodeRAO_DB)
+               && FormTextEquality.Equals(StatusRAO_DB, formToCompare.StatusRAO_DB)
+               && FormExponentialEquality.Equals(Volume_DB, formToCompare.Volume_DB)
+               && FormExponentialEquality.Equals(Mass_DB, formToCompare.Mass_DB)
+               && FormTextEquality.Equals(QuantityOZIII_DB, formToCompare.QuantityOZIII_DB)
+               && FormRadionuclidsEquality.Equals(MainRadionuclids_DB, formToCompare.MainRadionuclids_DB)
+               && FormExponentialEquality.Equals(TritiumActivity_DB, formToCompare.TritiumActivity_DB)
+               && FormExponentialEquality.Equals(BetaGammaActivity_DB, formToCompare.BetaGammaActivity_DB)
+               && FormExponentialEquality.Equals(AlphaActivity_DB, formToCompare.AlphaActivity_DB)
+               && FormExponentialEquality.Equals(TransuraniumActivity_DB, formToCompare.TransuraniumActivity_DB)
+               && FormDateEquality.Equals(ActivityMeasurementDate_DB, formToCompare.ActivityMeasurementDate_DB)
+               && DocumentVid_DB == formToCompare.DocumentVid_DB
+               && FormTextEquality.Equals(DocumentNumber_DB, formToCompare.DocumentNumber_DB)
+               && FormDateEquality.Equals(DocumentDate_DB, formToCompare.DocumentDate_DB)
+               && FormTextEquality.Equals(ProviderOrRecieverOKPO_DB, formToCompare.ProviderOrRecieverOKPO_DB)
+               && FormTextEquality.Equals(TransporterOKPO_DB, formToCompare.TransporterOKPO_DB)
+               && FormTextEquality.Equals(StoragePlaceName_DB, formToCompare.StoragePlaceName_DB)
+               && FormTextEquality.Equals(StoragePlaceCode_DB, formToCompare.StoragePlaceCode_DB)
+               && FormTextEquality.Equals(RefineOrSortRAOCode_DB, formToCompare.RefineOrSortRAOCode_DB)
+               && FormTextEquality.Equals(PackName_DB, formToCompare.PackName_DB)
+               && FormTextEquality.Equals(PackType_DB, formToCompare.PackType_DB)
+               && FormTextEquality.Equals(PackNumber_DB, formToCompare.PackNumber_DB)
+               && FormTextEquality.Equals(Subsidy_DB, formToCompare.Subsidy_DB)
+               && FormTextEquality.Equals(FcpNumber_DB, formToCompare.FcpNumber_DB)
+               && FormTextEquality.Equals(ContractNumber_DB, formToCompare.ContractNumber_DB);
+    }
 }

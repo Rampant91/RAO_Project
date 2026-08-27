@@ -145,7 +145,8 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
                             ContentMessage = "Функция проверки данных форм находится в процессе реализации.",
                             MinWidth = 400,
                             MinHeight = 150,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(window ?? Desktop.MainWindow));
 
@@ -172,7 +173,8 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
                     ContentMessage = "В ходе выполнения проверки формы возникла непредвиденная ошибка.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(window ?? Desktop.MainWindow));
 
@@ -194,7 +196,8 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
                     ContentMessage = "По результатам проверки формы, ошибок не выявлено.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(window ?? Desktop.MainWindow));
 
@@ -202,9 +205,9 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
         }
         else
         {
-            if (Desktop.Windows.Any(x => x.Name == "FormCheckerWindow"))
+            if (Desktop.Windows.FirstOrDefault(x => x.Name == "FormCheckerWindow") is { } checkerWindow)
             {
-                Desktop.Windows.First(x => x.Name == "FormCheckerWindow").Close();
+                await Dispatcher.UIThread.InvokeAsync(checkerWindow.Close);
             }
             await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(changeOrCreateViewModel, result));
         }

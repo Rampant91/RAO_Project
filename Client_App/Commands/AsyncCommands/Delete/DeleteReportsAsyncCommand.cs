@@ -2,9 +2,9 @@
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
+using Client_App.Services;
 using Client_App.ViewModels;
 using Client_App.Views;
-using Client_App.Logging;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
@@ -24,8 +24,39 @@ namespace Client_App.Commands.AsyncCommands.Delete;
 /// </summary>
 public class DeleteReportsAsyncCommand : BaseAsyncCommand
 {
+    private readonly MainWindowVM _mainWindowVM;
+
+    public DeleteReportsAsyncCommand(MainWindowVM mainWindowVM)
+    {
+        _mainWindowVM = mainWindowVM;
+
+        mainWindowVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(MainWindowVM.SelectedReports))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+
+    public override bool CanExecute(object? parameter) => _mainWindowVM.SelectedReports is not null;
+
     public override async Task AsyncExecute(object? parameter)
     {
+        Reports reps;
+        if (parameter is IEnumerable enumerable)
+            reps = enumerable!.Cast<Reports>().First();
+        else if (parameter is Reports reports)
+            reps = reports;
+        else if (_mainWindowVM.SelectedReports is not null)
+            reps = _mainWindowVM.SelectedReports;
+        else return;
+
+        if (await ReportExportLock.TryBlockOrganizationAccessAsync(reps.Id))
+        {
+            return;
+        }
+
         #region MessageDeleteReports
 
         var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -40,7 +71,8 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
                 ContentHeader = "Уведомление",
                 ContentMessage = "Вы действительно хотите удалить организацию?",
                 MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(Desktop.MainWindow));
 
@@ -48,17 +80,8 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
         if (answer is not "Да") return;
 
-        
-
         try
         {
-            Reports reps;
-            if (parameter is IEnumerable enumerable)
-                reps = enumerable!.Cast<Reports>().First();
-            else if (parameter is Reports reports)
-                reps = reports;
-            else return;
-
             var masterRep = reps.Master_DB;
 
             var db = StaticConfiguration.DBModel;
@@ -74,7 +97,6 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
             db.ReportCollectionDbSet.Remove(masterRep);
             
-
             db.ReportsCollectionDbSet.Remove(reps);
             await db.SaveChangesAsync();
 
@@ -84,6 +106,8 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
             var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
             mainWindowVM.UpdateReportsCollection();
             mainWindowVM.UpdateOrgsPageInfo();
+            mainWindowVM.UpdateTotalReportCount();
+            mainWindowVM.UpdateTotalReportsCount();
         }
         catch (Exception ex)
         {
@@ -96,7 +120,7 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
     
     }
 
-    public static async Task ProcessDataBaseFillEmpty(DataContext dbm)
+    private static async Task ProcessDataBaseFillEmpty(DataContext dbm)
     {
         if (!dbm.DBObservableDbSet.Any()) dbm.DBObservableDbSet.Add(new DBObservable());
         foreach (var item in dbm.DBObservableDbSet)
@@ -104,6 +128,7 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
             foreach (var key in item.Reports_Collection)
             {
                 var it = (Reports)key;
+                if (it.Master_DB is null) continue;
                 if (it.Master_DB.FormNum_DB == "") continue;
                 if (it.Master_DB.Rows10.Count == 0)
                 {

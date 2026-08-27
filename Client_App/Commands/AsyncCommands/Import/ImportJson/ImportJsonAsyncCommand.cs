@@ -34,12 +34,16 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
         string[] extensions = ["json", "JSON"];
         var answer = await GetSelectedFilesFromDialog("JSON", extensions);
         if (answer is null) return;
-        var countReadFiles = answer.Length;
+        ClearImportSummaryReports();
+        var countReadFiles = 0;
         var countNewReps = 0;
+        var importSummaryShown = false;
+        try
+        {
+        countReadFiles = answer.Length;
+        countNewReps = 0;
         SkipNewOrg = false;
         SkipInter = false;
-        SkipLess = false;
-        SkipNew = false;
         SkipReplace = false;
         HasMultipleReport = false;
         AtLeastOneImportDone = false;
@@ -429,6 +433,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                 #endregion
                             }
                         }
+
                         if (an is "Добавить" or "Да для всех")
                         {
                             ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
@@ -471,6 +476,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                                     Year = ImpRepYear
                                 };
                                 ServiceExtension.LoggerManager.Import(LoggerImportDTO);
+                                RecordImportedReport(impReps);
                                 IsFirstLogLine = false;
                                 CurrentLogLine++;
                             }
@@ -535,60 +541,27 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
 
             return;
         }
-
-        #region Suffix
-
-        var suffix1 = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
-            ? "а"
-            : "ов";
-        var suffix2 = countNewReps.ToString().EndsWith('1') && !countNewReps.ToString().EndsWith("11")
-            ? "ая"
-            : countNewReps.ToString().EndsWith('2') && !countNewReps.ToString().EndsWith("12")
-              || countNewReps.ToString().EndsWith('3') && !countNewReps.ToString().EndsWith("13")
-              || countNewReps.ToString().EndsWith('4') && !countNewReps.ToString().EndsWith("14")
-                ? "ые"
-                : "ых";
-        var suffix3 = countNewReps.ToString().EndsWith('1') && !countNewReps.ToString().EndsWith("11")
-            ? "я"
-            : countNewReps.ToString().EndsWith('2') && !countNewReps.ToString().EndsWith("12")
-              || countNewReps.ToString().EndsWith('3') && !countNewReps.ToString().EndsWith("13")
-              || countNewReps.ToString().EndsWith('4') && !countNewReps.ToString().EndsWith("14")
-                ? "и"
-                : "й";
-
-        #endregion
-
-        if (AtLeastOneImportDone)
-        {
-            #region MessageImportDone
-
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = ButtonEnum.Ok,
-                    ContentTitle = "Импорт из .json",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = $"Импорт {countReadFiles} из {answer.Length} файл{suffix1} .json успешно завершен." +
-                    $"{Environment.NewLine}Импортировано {countNewReps} нов{suffix2} организаци{suffix3}",
-                    MinWidth = 400,
-                    MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
-
-            #endregion
         }
-        else
+        finally
+        {
+            importSummaryShown = await ShowImportSummaryMessageIfAnyAsync();
+        }
+
+        if (!AtLeastOneImportDone && !importSummaryShown)
         {
             #region MessageImportCancel
 
+            var suffix = answer.Length.ToString().EndsWith('1') && !answer.Length.ToString().EndsWith("11")
+                ? "а"
+                : "ов";
+
             await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Импорт из .json",
                     ContentHeader = "Уведомление",
-                    ContentMessage = $"Импорт из {answer.Length} файл{suffix1} .json был отменен.",
+                    ContentMessage = $"Импорт из {answer.Length} файл{suffix} .json был отменен.",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner

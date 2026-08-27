@@ -50,7 +50,8 @@ public class CheckForChangesAndSaveCommand(BaseFormVM formVM) : BaseAsyncCommand
                 ContentHeader = "Уведомление",
                 ContentMessage = $"Сохранить форму {formNum}?",
                 MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(window ?? desktop.MainWindow));
 

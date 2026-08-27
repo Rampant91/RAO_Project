@@ -1,6 +1,12 @@
-﻿using Models.Collections;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Models.Collections;
+using Models.DBRealization;
+using Models.Forms;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -10,6 +16,18 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// </summary>
 public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 {
+    private protected const int Form1SheetRowSplitThreshold = 500_000;
+
+    /// <summary>Временно выключено для выпуска; код разбиения сохранён.</summary>
+    private protected const bool Form1SheetSplitEnabled = false;
+
+    /// <summary>Конец периода ≤ этой даты → бакет _22-24.</summary>
+    private protected static readonly DateOnly Form1SplitCutoffInclusive = new(2024, 12, 31);
+
+    private protected enum Form1DateSplitMode { None, Period22_24, Period25_27 }
+
+    private protected Form1DateSplitMode CurrentForm1DateSplit = Form1DateSplitMode.None;
+
     private protected Reports CurrentReports;
 
     private protected int CurrentRow;
@@ -17,6 +35,287 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private protected int CurrentPrimRow;
 
     private protected bool IsSelectedOrg;
+
+    private protected static bool IsForm1Number(string formNum) =>
+        formNum.StartsWith("1.", StringComparison.Ordinal);
+
+    private protected static string Form1SplitFileSuffix(Form1DateSplitMode mode) => mode switch
+    {
+        Form1DateSplitMode.Period22_24 => "_22-24",
+        Form1DateSplitMode.Period25_27 => "_25-27",
+        _ => ""
+    };
+
+    private protected static string Form1SplitSheetSuffix(Form1DateSplitMode mode) => mode switch
+    {
+        Form1DateSplitMode.Period22_24 => "_22-24",
+        Form1DateSplitMode.Period25_27 => "_25-27",
+        _ => ""
+    };
+
+    /// <summary>
+    /// Фильтр отчёта по дате окончания периода при разбиении Form 1.
+    /// Пустая/неразбираемая дата → бакет _22-24.
+    /// </summary>
+    private protected bool PassesForm1EndPeriodSplit(string? endPeriod)
+    {
+        if (CurrentForm1DateSplit == Form1DateSplitMode.None) return true;
+        if (!DateOnly.TryParse(endPeriod, out var d))
+            return CurrentForm1DateSplit == Form1DateSplitMode.Period22_24;
+        return CurrentForm1DateSplit == Form1DateSplitMode.Period22_24
+            ? d <= Form1SplitCutoffInclusive
+            : d > Form1SplitCutoffInclusive;
+    }
+
+    /// <summary>
+    /// Подсчёт строк формы 1.x в области выбранной организации или всей БД.
+    /// </summary>
+    private protected static Task<int> CountForm1RowsAsync(
+        DBModel db, string formNum, int? selectedReportsId, CancellationToken ct) =>
+        CountFormRowsAsync(db, formNum, selectedReportsId, ct);
+
+    /// <summary>
+    /// Подсчёт строк формы 1.1–1.9 / 2.1–2.12 в области выбранной организации или всей БД.
+    /// </summary>
+    private protected static async Task<int> CountFormRowsAsync(
+        DBModel db, string formNum, int? selectedReportsId, CancellationToken ct)
+    {
+        return formNum switch
+        {
+            "1.1" => await CountScopedFormRowsAsync(db.form_11, selectedReportsId, ct),
+            "1.2" => await CountScopedFormRowsAsync(db.form_12, selectedReportsId, ct),
+            "1.3" => await CountScopedFormRowsAsync(db.form_13, selectedReportsId, ct),
+            "1.4" => await CountScopedFormRowsAsync(db.form_14, selectedReportsId, ct),
+            "1.5" => await CountScopedFormRowsAsync(db.form_15, selectedReportsId, ct),
+            "1.6" => await CountScopedFormRowsAsync(db.form_16, selectedReportsId, ct),
+            "1.7" => await CountScopedFormRowsAsync(db.form_17, selectedReportsId, ct),
+            "1.8" => await CountScopedFormRowsAsync(db.form_18, selectedReportsId, ct),
+            "1.9" => await CountScopedFormRowsAsync(db.form_19, selectedReportsId, ct),
+            "2.1" => await CountScopedFormRowsAsync(db.form_21, selectedReportsId, ct),
+            "2.2" => await CountScopedFormRowsAsync(db.form_22, selectedReportsId, ct),
+            "2.3" => await CountScopedFormRowsAsync(db.form_23, selectedReportsId, ct),
+            "2.4" => await CountScopedFormRowsAsync(db.form_24, selectedReportsId, ct),
+            "2.5" => await CountScopedFormRowsAsync(db.form_25, selectedReportsId, ct),
+            "2.6" => await CountScopedFormRowsAsync(db.form_26, selectedReportsId, ct),
+            "2.7" => await CountScopedFormRowsAsync(db.form_27, selectedReportsId, ct),
+            "2.8" => await CountScopedFormRowsAsync(db.form_28, selectedReportsId, ct),
+            "2.9" => await CountScopedFormRowsAsync(db.form_29, selectedReportsId, ct),
+            "2.10" => await CountScopedFormRowsAsync(db.form_210, selectedReportsId, ct),
+            "2.11" => await CountScopedFormRowsAsync(db.form_211, selectedReportsId, ct),
+            "2.12" => await CountScopedFormRowsAsync(db.form_212, selectedReportsId, ct),
+            _ => 0
+        };
+    }
+
+    private static async Task<int> CountScopedFormRowsAsync<T>(
+        IQueryable<T> query, int? selectedReportsId, CancellationToken ct)
+        where T : Form
+    {
+        query = query.AsNoTracking();
+        if (selectedReportsId is null)
+        {
+            return await query.CountAsync(
+                x => x.Report != null
+                     && x.Report.Reports != null
+                     && x.Report.Reports.DBObservable != null, ct);
+        }
+
+        return await query.CountAsync(
+            x => x.Report != null
+                 && x.Report.Reports != null
+                 && x.Report.Reports.Id == selectedReportsId, ct);
+    }
+
+    /// <summary>
+    /// Загружает отчёт с Notes и все строки нужной формы (formNum) одним запросом.
+    /// </summary>
+    private protected static async Task<Report> GetReportWithRowsForFormAsync(
+        int repId,
+        string formNum,
+        DBModel db,
+        CancellationToken ct)
+    {
+        var loaded = await GetReportsWithRowsForFormBatchAsync([repId], formNum, db, ct);
+        if (loaded.Count == 0)
+        {
+            throw new InvalidOperationException($"Отчёт Id={repId} не найден при загрузке формы {formNum}.");
+        }
+
+        return loaded[0];
+    }
+
+    /// <summary>
+    /// Загружает отчёты (с Notes) и одним запросом все строки formNum для ReportId IN ids.
+    /// Порядок результата совпадает с reportIds; отсутствующие id пропускаются.
+    /// </summary>
+    private protected static async Task<List<Report>> GetReportsWithRowsForFormBatchAsync(
+        IReadOnlyList<int> reportIds,
+        string formNum,
+        DBModel db,
+        CancellationToken ct)
+    {
+        if (reportIds.Count == 0)
+        {
+            return [];
+        }
+
+        var reports = await db.ReportCollectionDbSet
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Include(r => r.Notes.OrderBy(n => n.Order))
+            .Where(r => reportIds.Contains(r.Id))
+            .ToListAsync(ct);
+        var byId = reports.ToDictionary(r => r.Id);
+
+        switch (formNum)
+        {
+            case "1.1":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_11, reportIds, BuildRowTargets(byId, r => r.Rows11), ct);
+                break;
+            case "1.2":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_12, reportIds, BuildRowTargets(byId, r => r.Rows12), ct);
+                break;
+            case "1.3":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_13, reportIds, BuildRowTargets(byId, r => r.Rows13), ct);
+                break;
+            case "1.4":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_14, reportIds, BuildRowTargets(byId, r => r.Rows14), ct);
+                break;
+            case "1.5":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_15, reportIds, BuildRowTargets(byId, r => r.Rows15), ct);
+                break;
+            case "1.6":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_16, reportIds, BuildRowTargets(byId, r => r.Rows16), ct);
+                break;
+            case "1.7":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_17, reportIds, BuildRowTargets(byId, r => r.Rows17), ct);
+                break;
+            case "1.8":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_18, reportIds, BuildRowTargets(byId, r => r.Rows18), ct);
+                break;
+            case "1.9":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_19, reportIds, BuildRowTargets(byId, r => r.Rows19), ct);
+                break;
+            case "2.1":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_21, reportIds, BuildRowTargets(byId, r => r.Rows21), ct);
+                break;
+            case "2.2":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_22, reportIds, BuildRowTargets(byId, r => r.Rows22), ct);
+                break;
+            case "2.3":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_23, reportIds, BuildRowTargets(byId, r => r.Rows23), ct);
+                break;
+            case "2.4":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_24, reportIds, BuildRowTargets(byId, r => r.Rows24), ct);
+                break;
+            case "2.5":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_25, reportIds, BuildRowTargets(byId, r => r.Rows25), ct);
+                break;
+            case "2.6":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_26, reportIds, BuildRowTargets(byId, r => r.Rows26), ct);
+                break;
+            case "2.7":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_27, reportIds, BuildRowTargets(byId, r => r.Rows27), ct);
+                break;
+            case "2.8":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_28, reportIds, BuildRowTargets(byId, r => r.Rows28), ct);
+                break;
+            case "2.9":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_29, reportIds, BuildRowTargets(byId, r => r.Rows29), ct);
+                break;
+            case "2.10":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_210, reportIds, BuildRowTargets(byId, r => r.Rows210), ct);
+                break;
+            case "2.11":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_211, reportIds, BuildRowTargets(byId, r => r.Rows211), ct);
+                break;
+            case "2.12":
+                await LoadFormRowsForReportIdsAsync(
+                    db.form_212, reportIds, BuildRowTargets(byId, r => r.Rows212), ct);
+                break;
+        }
+
+        return reportIds.Where(byId.ContainsKey).Select(id => byId[id]).ToList();
+    }
+
+    private static Dictionary<int, ICollection<T>> BuildRowTargets<T>(
+        Dictionary<int, Report> byId,
+        Func<Report, ICollection<T>> rowsSelector)
+        where T : Form
+    {
+        var targets = new Dictionary<int, ICollection<T>>(byId.Count);
+        foreach (var (id, report) in byId)
+        {
+            targets[id] = rowsSelector(report);
+        }
+
+        return targets;
+    }
+
+    private static async Task LoadFormRowsForReportIdsAsync<T>(
+        IQueryable<T> source,
+        IReadOnlyList<int> reportIds,
+        Dictionary<int, ICollection<T>> targetsByReportId,
+        CancellationToken ct)
+        where T : Form
+    {
+        var rows = await source.AsNoTracking()
+            .Where(f => f.ReportId != null && reportIds.Contains(f.ReportId.Value))
+            .OrderBy(f => f.ReportId)
+            .ThenBy(f => f.NumberInOrder_DB)
+            .ToListAsync(ct);
+
+        foreach (var group in rows.GroupBy(f => f.ReportId!.Value))
+        {
+            if (!targetsByReportId.TryGetValue(group.Key, out var target))
+            {
+                continue;
+            }
+
+            if (target is ObservableCollectionWithItemPropertyChanged<T> obs)
+            {
+                obs.AddRangeNoChange(group);
+            }
+            else
+            {
+                foreach (var row in group)
+                {
+                    target.Add(row);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Maps loaded/total into [progressStart, progressEnd).
+    /// </summary>
+    private protected static int MapLoadProgress(int loaded, int total, int progressStart, int progressEnd)
+    {
+        if (total <= 0) return Math.Min(progressStart, progressEnd - 1);
+        var span = progressEnd - progressStart;
+        var value = progressStart + (int)((double)loaded / total * span);
+        return Math.Clamp(value, progressStart, progressEnd - 1);
+    }
 
     #region FillExportForms
 
@@ -106,7 +405,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm11Data()
     {
         var repList = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null)
+            .Where(x => x.FormNum_DB.Equals("1.1") && x.Rows11 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -115,6 +414,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             var forms = rep.Rows11
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
+            if (forms.Count == 0)
+                continue;
             foreach (var repForm in forms)
             {
                 #region Binding
@@ -188,7 +489,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm12Data()
     {
         var repList = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.2") && x.Rows12 != null)
+            .Where(x => x.FormNum_DB.Equals("1.2") && x.Rows12 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -197,6 +498,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             var forms = rep.Rows12
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
+            if (forms.Count == 0)
+                continue;
             foreach (var repForm in forms)
             {
                 #region Binding
@@ -268,7 +571,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm13Data()
     {
         var repList = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.3") && x.Rows13 != null)
+            .Where(x => x.FormNum_DB.Equals("1.3") && x.Rows13 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -277,6 +580,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             var forms = rep.Rows13
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
+            if (forms.Count == 0)
+                continue;
             foreach (var repForm in forms)
             {
                 #region Binding
@@ -349,7 +654,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm14Data()
     {
         var repList = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.4") && x.Rows14 != null)
+            .Where(x => x.FormNum_DB.Equals("1.4") && x.Rows14 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -358,6 +663,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             var repSort = rep.Rows14
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
+            if (repSort.Count == 0)
+                continue;
             foreach (var repForm in repSort)
             {
                 #region Binding
@@ -431,7 +738,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm15Data()
     {
         var repList = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.5") && x.Rows15 != null)
+            .Where(x => x.FormNum_DB.Equals("1.5") && x.Rows15 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -440,6 +747,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             var forms = rep.Rows15
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
+            if (forms.Count == 0)
+                continue;
             foreach (var repForm in forms)
             {
                 #region Binding
@@ -517,7 +826,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm16Data()
     {
         var repList = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.6") && x.Rows16 != null)
+            .Where(x => x.FormNum_DB.Equals("1.6") && x.Rows16 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -526,6 +835,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             var forms = rep.Rows16
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
+            if (forms.Count == 0)
+                continue;
             foreach (var repForm in forms)
             {
                 #region Binding
@@ -606,7 +917,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm17Data()
     {
         var repList = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.7") && x.Rows17 != null)
+            .Where(x => x.FormNum_DB.Equals("1.7") && x.Rows17 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -615,6 +926,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             var forms = rep.Rows17
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
+            if (forms.Count == 0)
+                continue;
             foreach (var repForm in forms)
             {
                 #region Binding
@@ -700,7 +1013,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm18Data()
     {
         var form = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.8") && x.Rows18 != null)
+            .Where(x => x.FormNum_DB.Equals("1.8") && x.Rows18 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -709,6 +1022,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             var forms = rep.Rows18
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
+            if (forms.Count == 0)
+                continue;
             foreach (var repForm in forms)
             {
                 #region Binding
@@ -790,7 +1105,7 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
     private void ExportForm19Data()
     {
         var repList = CurrentReports.Report_Collection
-            .Where(x => x.FormNum_DB.Equals("1.9") && x.Rows19 != null)
+            .Where(x => x.FormNum_DB.Equals("1.9") && x.Rows19 != null && PassesForm1EndPeriodSplit(x.EndPeriod_DB))
             .OrderBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
             .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
             .ToList();
@@ -799,6 +1114,8 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
             var forms = rep.Rows19
                 .OrderBy(x => x.NumberInOrder_DB)
                 .ToList();
+            if (forms.Count == 0)
+                continue;
             foreach (var repForm in forms)
             {
                 #region Binding

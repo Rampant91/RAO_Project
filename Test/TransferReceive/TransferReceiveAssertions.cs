@@ -1,0 +1,149 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.Testing;
+using Xunit;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
+
+namespace Test.TransferReceive;
+
+internal static class TransferReceiveAssertions
+{
+    public static void EqualIds(IReadOnlyList<int> expected, IReadOnlyList<int> actual, string context)
+    {
+        var expectedOrdered = expected.OrderBy(id => id).ToList();
+        var actualOrdered = actual.OrderBy(id => id).ToList();
+        Assert.True(
+            expectedOrdered.SequenceEqual(actualOrdered),
+            $"{context}: expected [{string.Join(", ", expectedOrdered)}], actual [{string.Join(", ", actualOrdered)}]");
+    }
+
+    public static void EqualScenario(TransferReceiveTestCase testCase, TransferReceiveScenarioResult actual) =>
+        EqualIds(testCase.ExpectedUnpairedIds, actual.UnpairedIds, $"{testCase.Name}: unpaired");
+
+    public static void EqualClosestMatches(TransferReceiveTestCase testCase, TransferReceiveClosestMatchResult actual)
+    {
+        AssertPartialFieldMap(testCase.Name, testCase.ExpectedClosest, actual.Closest);
+        AssertPartialLevelMap(testCase.Name, testCase.ExpectedClosestLevels, actual.Levels);
+        if (testCase.ExpectedClosestCandidateIds is not null)
+        {
+            foreach (var (id, expectedCandidateId) in testCase.ExpectedClosestCandidateIds)
+            {
+                Assert.True(
+                    actual.CandidateIds.TryGetValue(id, out var actualCandidateId),
+                    $"{testCase.Name}: Id={id} — нет closest-кандидата");
+                Assert.Equal(expectedCandidateId, actualCandidateId);
+            }
+        }
+
+        if (testCase.ExpectedConfidenceMinPercent is not null)
+        {
+            foreach (var (id, minPercent) in testCase.ExpectedConfidenceMinPercent)
+            {
+                Assert.True(
+                    actual.ConfidencePercent.TryGetValue(id, out var actualPercent),
+                    $"{testCase.Name}: Id={id} — нет ConfidencePercent");
+                Assert.True(
+                    actualPercent >= minPercent,
+                    $"{testCase.Name}: Id={id} ConfidencePercent={actualPercent} < min {minPercent}");
+            }
+        }
+    }
+
+
+    public static void AssertCaseIsInternallyConsistent(TransferReceiveTestCase testCase)
+    {
+        var knownIds = testCase.OurOps.Select(row => row.Id).ToHashSet();
+        foreach (var id in testCase.ExpectedUnpairedIds)
+        {
+            Assert.True(
+                knownIds.Contains(id),
+                $"{testCase.Name}: ExpectedUnpaired Id={id} отсутствует в OurOps");
+        }
+
+        Assert.Equal(
+            testCase.OurOps.Select(row => row.Id).Distinct().Count(),
+            testCase.OurOps.Count);
+
+        Assert.Equal(
+            testCase.CounterpartOps.Select(row => row.Id).Distinct().Count(),
+            testCase.CounterpartOps.Count);
+
+        if (testCase.ExpectedClosest is null)
+        {
+            return;
+        }
+
+        foreach (var id in testCase.ExpectedClosest.Keys)
+        {
+            Assert.True(
+                testCase.ExpectedUnpairedIds.Contains(id),
+                $"{testCase.Name}: ExpectedClosest Id={id} должен быть среди ExpectedUnpairedIds");
+        }
+    }
+
+    private static void AssertPartialFieldMap(
+        string caseName,
+        IReadOnlyDictionary<int, IReadOnlyDictionary<TransferReceiveField, bool>>? expected,
+        IReadOnlyDictionary<int, IReadOnlyDictionary<TransferReceiveField, bool>> actual)
+    {
+        if (expected is null)
+        {
+            return;
+        }
+
+        if (expected.Count == 0)
+        {
+            Assert.True(
+                actual.Count == 0,
+                $"{caseName}: ожидалась пустая closest-карта, actual Ids=[{string.Join(", ", actual.Keys)}]");
+            return;
+        }
+
+        foreach (var (id, expectedFields) in expected)
+        {
+            Assert.True(
+                actual.TryGetValue(id, out var actualFields),
+                $"{caseName}: Id={id} — нет closest-match карты");
+
+            foreach (var (field, expectedMatch) in expectedFields)
+            {
+                Assert.True(
+                    actualFields.TryGetValue(field, out var actualMatch),
+                    $"{caseName}: Id={id} — нет поля {field}");
+                Assert.True(
+                    actualMatch == expectedMatch,
+                    $"{caseName}: Id={id} поле {field}: expected={expectedMatch}, actual={actualMatch}");
+            }
+        }
+    }
+
+    private static void AssertPartialLevelMap(
+        string caseName,
+        IReadOnlyDictionary<int, IReadOnlyDictionary<TransferReceiveField, FieldMatchLevel>>? expected,
+        IReadOnlyDictionary<int, IReadOnlyDictionary<TransferReceiveField, FieldMatchLevel>> actual)
+    {
+        if (expected is null)
+        {
+            return;
+        }
+
+        foreach (var (id, expectedFields) in expected)
+        {
+            Assert.True(
+                actual.TryGetValue(id, out var actualFields),
+                $"{caseName}: Id={id} — нет closest-level карты");
+
+            foreach (var (field, expectedLevel) in expectedFields)
+            {
+                Assert.True(
+                    actualFields.TryGetValue(field, out var actualLevel),
+                    $"{caseName}: Id={id} — нет поля {field}");
+                Assert.True(
+                    actualLevel == expectedLevel,
+                    $"{caseName}: Id={id} поле {field}: expected={expectedLevel}, actual={actualLevel}");
+            }
+        }
+    }
+}

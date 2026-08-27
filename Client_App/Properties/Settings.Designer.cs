@@ -12,7 +12,7 @@ namespace Client_App.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.14.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "18.5.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -97,18 +97,6 @@ namespace Client_App.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool IsFirstAppRun {
-            get {
-                return ((bool)(this["IsFirstAppRun"]));
-            }
-            set {
-                this["IsFirstAppRun"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool AutoReplaceIsEnable {
             get {
                 return ((bool)(this["AutoReplaceIsEnable"]));
@@ -120,24 +108,25 @@ namespace Client_App.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SkippedVersion {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsFirstAppRun {
             get {
-                return ((string)(this["SkippedVersion"]));
+                return ((bool)(this["IsFirstAppRun"]));
             }
             set {
-                this["SkippedVersion"] = value;
+                this["IsFirstAppRun"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.DateTime LastUpdateCheck {
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string NetworkUpdateRootPath {
             get {
-                return ((global::System.DateTime)(this["LastUpdateCheck"]));
+                return ((string)(this["NetworkUpdateRootPath"]));
             }
             set {
-                this["LastUpdateCheck"] = value;
+                this["NetworkUpdateRootPath"] = value;
             }
         }
     }

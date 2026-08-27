@@ -47,7 +47,8 @@ public class NewAddFormAsyncCommand : BaseAsyncCommand
                             + $"{Environment.NewLine}что в списке организаций имеется выбранная организация (подсвечивается голубым цветом).",
                         MinWidth = 400,
                         MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
                 #endregion
@@ -69,57 +70,57 @@ public class NewAddFormAsyncCommand : BaseAsyncCommand
                     }
                     case "1.2":
                     {
-                        var form11Window = new Form_12(new Form_12VM(selectedReports));
-                        await form11Window.ShowDialog(mainWindow);
+                        var form12Window = new Form_12(new Form_12VM(selectedReports));
+                        await form12Window.ShowDialog(mainWindow);
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                     case "1.3":
                     {
-                        var form11Window = new Form_13(new Form_13VM(selectedReports));
-                        await form11Window.ShowDialog(mainWindow);
+                        var form13Window = new Form_13(new Form_13VM(selectedReports));
+                        await form13Window.ShowDialog(mainWindow);
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                     case "1.4":
                     {
-                        var form11Window = new Form_14(new Form_14VM(selectedReports));
-                        await form11Window.ShowDialog(mainWindow);
+                        var form14Window = new Form_14(new Form_14VM(selectedReports));
+                        await form14Window.ShowDialog(mainWindow);
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                     case "1.5":
                     {
-                        var form11Window = new Form_15(new Form_15VM(selectedReports));
-                        await form11Window.ShowDialog(mainWindow);
+                        var form15Window = new Form_15(new Form_15VM(selectedReports));
+                        await form15Window.ShowDialog(mainWindow);
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                     case "1.6":
                     {
-                        var form11Window = new Form_16(new Form_16VM(selectedReports));
-                        await form11Window.ShowDialog(mainWindow);
+                        var form16Window = new Form_16(new Form_16VM(selectedReports));
+                        await form16Window.ShowDialog(mainWindow);
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                     case "1.7":
                     {
-                        var form11Window = new Form_17(new Form_17VM(selectedReports));
-                        await form11Window.ShowDialog(mainWindow);
+                        var form17Window = new Form_17(new Form_17VM(selectedReports));
+                        await form17Window.ShowDialog(mainWindow);
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                     case "1.8":
                     {
-                        var form11Window = new Form_18(new Form_18VM(selectedReports));
-                        await form11Window.ShowDialog(mainWindow);
+                        var form18Window = new Form_18(new Form_18VM(selectedReports));
+                        await form18Window.ShowDialog(mainWindow);
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                     }
                     case "1.9":
                     {
-                        var form11Window = new Form_19(new Form_19VM(selectedReports));
-                        await form11Window.ShowDialog(mainWindow);
+                        var form19Window = new Form_19(new Form_19VM(selectedReports));
+                        await form19Window.ShowDialog(mainWindow);
                         await selectedReports.Report_Collection.QuickSortAsync();
                         break;
                         }

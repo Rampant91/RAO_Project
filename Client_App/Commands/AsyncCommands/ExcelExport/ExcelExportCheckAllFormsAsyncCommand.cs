@@ -28,7 +28,23 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// </summary>
 public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
 {
-    public override bool CanExecute(object? parameter) => true;
+    private readonly MainWindowVM _mainWindowVM;
+
+    public ExcelExportCheckAllFormsAsyncCommand(MainWindowVM mainWindowVM)
+    {
+        _mainWindowVM = mainWindowVM;
+
+        // Подписываемся на изменение SelectedReports для обновления CanExecute
+        mainWindowVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(MainWindowVM.SelectedReports))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+
+    public override bool CanExecute(object? parameter) => _mainWindowVM.SelectedReports is not null;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -52,59 +68,56 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
         progressBarVM.SetProgressBar(10, "Создание временной БД",
             "Проверка отчётов на ошибки", "Выгрузка в .xlsx");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-
-        progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-
-        progressBarVM.SetProgressBar(13, "Заполнение заголовков");
-        await FillExcelHeaders(excelPackage);
-
-        progressBarVM.SetProgressBar(15, "Загрузка отчётов");
-        var reps = await GetReportsWithRows(tmpDbPath, par, progressBarVM, cts);
-
-        progressBarVM.SetProgressBar(45, "Проверка отчётов");
-        var errorsList = await CheckReportCollection(reps, progressBarVM);
-
-        progressBarVM.SetProgressBar(55, "Заполнение строчек отчёта");
-        var countCheckedRep = await FillExcel(errorsList, progressBarVM);
-
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-
-        progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
         {
-            File.Delete(tmpDbPath);
+            progressBarVM.SetProgressBar(12, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(fullPath);
+
+            progressBarVM.SetProgressBar(13, "Заполнение заголовков");
+            await FillExcelHeaders(excelPackage);
+
+            progressBarVM.SetProgressBar(15, "Загрузка отчётов");
+            var reps = await GetReportsWithRows(tmpDbPath, par, progressBarVM, cts);
+
+            progressBarVM.SetProgressBar(45, "Проверка отчётов");
+            var errorsList = await CheckReportCollection(reps, progressBarVM);
+
+            progressBarVM.SetProgressBar(55, "Заполнение строчек отчёта");
+            var countCheckedRep = await FillExcel(errorsList, progressBarVM);
+
+            progressBarVM.SetProgressBar(95, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+
+            #region MessageCheckComplete
+
+            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Проверка форм",
+                    ContentHeader = "Уведомление",
+                    ContentMessage =
+                        $"Проверка форм организации {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value} завершена." +
+                        $"{Environment.NewLine}Проверено {countCheckedRep} из {reps.Report_Collection.Count} отчётов.",
+                    MinWidth = 400,
+                    MinHeight = 170,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
+                })
+                .Show(progressBar ?? Desktop.MainWindow)
+            );
+
+            #endregion
+
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            await progressBar.CloseAsync();
         }
-        catch
+        finally
         {
-            // ignored
+            TryDeleteTempDataBase(tmpDbPath);
         }
-
-        #region MessageCheckComplete
-
-        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-            {
-                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                CanResize = true,
-                ContentTitle = "Проверка форм",
-                ContentHeader = "Уведомление",
-                ContentMessage =
-                    $"Проверка форм организации {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value} завершена." +
-                    $"{Environment.NewLine}Проверено {countCheckedRep} из {reps.Report_Collection.Count} отчётов.",
-                MinWidth = 400,
-                MinHeight = 170,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .Show(progressBar ?? Desktop.MainWindow)
-        );
-
-        #endregion
-
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-        await progressBar.CloseAsync();
     }
     
     #region CheckReportCollection
@@ -172,7 +185,8 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
                             $"возникла непредвиденная ошибка.",
                         MinWidth = 400,
                         MinHeight = 170,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .Show(Desktop.MainWindow));
 

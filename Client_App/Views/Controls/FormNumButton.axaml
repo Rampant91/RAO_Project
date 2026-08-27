@@ -1,0 +1,29 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
+             x:Class="Client_App.Views.Controls.FormNumButton"
+             x:Name="FormNumButtonControl">
+
+    <UserControl.Resources>
+        <converter:StringEqualsToColorConverter x:Key="StringEqualsToColor"/>
+        <converter:CheckReportsAnyMatchingFormNumConverter x:Key="CheckReportsAnyMatchingFormNum"/>
+    </UserControl.Resources>
+
+    <Button Width="35" Height="40" Margin="0,0,2,0"
+            Content="{Binding FormNum, ElementName=FormNumButtonControl}"
+            Command="{Binding MainWindowVM.SetWhiteList}"
+            CommandParameter="{Binding FormNum, ElementName=FormNumButtonControl}">
+        <Button.IsEnabled>
+            <MultiBinding Converter="{StaticResource CheckReportsAnyMatchingFormNum}">
+                <Binding Path="SelectedReports"/>
+                <Binding Path="FormNum" ElementName="FormNumButtonControl"/>
+            </MultiBinding>
+        </Button.IsEnabled>
+        <Button.Background>
+            <MultiBinding Converter="{StaticResource StringEqualsToColor}">
+                <Binding Path="FormNumWhiteList"/>
+                <Binding Path="FormNum" ElementName="FormNumButtonControl"/>
+            </MultiBinding>
+        </Button.Background>
+    </Button>
+</UserControl>

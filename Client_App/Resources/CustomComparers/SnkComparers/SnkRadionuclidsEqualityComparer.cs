@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Models.Comparers.FormContent;
 
 namespace Client_App.Resources.CustomComparers.SnkComparers;
 
@@ -12,56 +13,31 @@ public partial class SnkRadionuclidsEqualityComparer : IEqualityComparer<string>
 
         if (x is null || y is null) return false;
 
-        var xSet = x.Split([',', ';'])
-            .Select(xRad => SnkRegex()
-                .Replace(xRad, "")
-                .ToLower()
-                .Replace('а', 'a')
-                .Replace('б', 'b')
-                .Replace('в', 'b')
-                .Replace('г', 'r')
-                .Replace('е', 'e')
-                .Replace('ё', 'e')
-                .Replace('з', '3')
-                .Replace('к', 'k')
-                .Replace('м', 'm')
-                .Replace('н', 'h')
-                .Replace('о', 'o')
-                .Replace('0', 'o')
-                .Replace('р', 'p')
-                .Replace('с', 'c')
-                .Replace('т', 't')
-                .Replace('у', 'y')
-                .Replace('х', 'x'))
-            .ToHashSet();
-
-        var ySet = y.Split([',', ';'])
-            .Select(xRad => SnkRegex()
-                .Replace(xRad, "")
-                .ToLower()
-                .Replace('а', 'a')
-                .Replace('б', 'b')
-                .Replace('в', 'b')
-                .Replace('г', 'r')
-                .Replace('е', 'e')
-                .Replace('ё', 'e')
-                .Replace('з', '3')
-                .Replace('к', 'k')
-                .Replace('м', 'm')
-                .Replace('н', 'h')
-                .Replace('о', 'o')
-                .Replace('0', 'o')
-                .Replace('р', 'p')
-                .Replace('с', 'c')
-                .Replace('т', 't')
-                .Replace('у', 'y')
-                .Replace('х', 'x'))
-            .ToHashSet();
-
-        return xSet.SetEquals(ySet);
+        return ParseToNormalizedSet(x).SetEquals(ParseToNormalizedSet(y));
     }
 
-    public int GetHashCode(string obj) => obj.GetHashCode();
+    public int GetHashCode(string obj)
+    {
+        var canonicalString = string.Join("|", ParseToNormalizedSet(obj).OrderBy(x => x));
+        return canonicalString.GetHashCode();
+    }
+
+    private static HashSet<string> ParseToNormalizedSet(string value)
+    {
+        return value.Split([',', ';'])
+            .Select(NormalizeRadionuclide)
+            .Where(rad => !string.IsNullOrWhiteSpace(rad))
+            .ToHashSet();
+    }
+
+    private static string NormalizeRadionuclide(string value)
+    {
+        return SnkRegex()
+            .Replace(value, "")
+            .ToLower() is var cleaned
+            ? LookalikeCharMapper.ReplaceRuEnLookalikes(cleaned, includeExtendedSnkSet: true)
+            : string.Empty;
+    }
 
     [GeneratedRegex(@"[\\/:*?""<>|.,_\-;:\s+]")]
     public static partial Regex SnkRegex();

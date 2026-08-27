@@ -4,12 +4,13 @@ using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Properties;
 using Client_App.Resources.CustomComparers;
+using Client_App.Services.Updates;
 using Client_App.ViewModels;
+using Client_App.Views.Messages;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Enums;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
@@ -138,6 +139,9 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         ReportsStorage.LocalReports.PropertyChanged += Local_ReportsChanged;
 
         mainWindowViewModel.OnStartProgressBar = 100;
+
+        //new CountRowsInAllReportByRegionAndYearCommand().AsyncExecute(null);
+
     }
 
     #region Initialization
@@ -151,11 +155,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     {
         try
         {
-            SystemDirectory = Settings.Default.SystemFolderDefaultPath is "default"
-                ? OperatingSystem.IsWindows()
-                    ? Path.GetPathRoot(Environment.GetFolderPath(Environment.SpecialFolder.System))!
-                    : SystemDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)
-                : Settings.Default.SystemFolderDefaultPath;
+            SystemDirectory = GetSystemDirectoryPath();
         }
         catch (Exception ex)
         {
@@ -195,8 +195,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
         }
 
-        var fl = Directory.GetFiles(TmpDirectory, ".");
-        foreach (var file in fl)
+        foreach (var file in Directory.GetFiles(TmpDirectory, "*.*", SearchOption.AllDirectories))
         {
             try
             {
@@ -231,33 +230,60 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
     #region ProcessDataBaseBackup
 
+    /// <summary>Отсрочка первого напоминания о резервной копии (дни).</summary>
+    private const int FirstBackupRemindDays = 7;
+
+    /// <summary>Интервал повторных напоминаний о резервной копии (дни).</summary>
+    private const int RegularBackupRemindDays = 30;
+
     /// <summary>
-    /// Создание резервной копии БД раз в месяц.
+    /// Создание резервной копии БД: первый раз — через неделю после установки/сброса настроек, далее — раз в месяц.
     /// </summary>
     private static async Task ProcessDataBaseBackup()
     {
         //Settings.Default.LastDbBackupDate = DateTime.MinValue;    //Сброс даты для тестирования
+        //Settings.Default.IsFirstAppRun = true;
         //Settings.Default.Save();
 
-        if (Settings.Default.IsFirstAppRun)
+        if (Settings.Default.AppStartupParameters != string.Empty)
+        {
+            return;
+        }
+
+        var lastBackupDate = Settings.Default.LastDbBackupDate;
+        var isUnsetBackupDate = lastBackupDate == default || lastBackupDate == DateTime.MinValue;
+
+        // Первый запуск или нет даты бэкапа: стартуем отсчёт до первого напоминания (через неделю).
+        if (isUnsetBackupDate)
         {
             Settings.Default.LastDbBackupDate = DateTime.Now;
-            Settings.Default.IsFirstAppRun = false;
+            Settings.Default.IsFirstAppRun = true;
             Settings.Default.Save();
             return;
         }
 
-        if ((DateTime.Now - Settings.Default.LastDbBackupDate).TotalDays < 30
-            || Settings.Default.AppStartupParameters != string.Empty)
+        // IsFirstAppRun: ещё не показывали диалог — ждём неделю; после первого раза — месяц.
+        var remindAfterDays = Settings.Default.IsFirstAppRun
+            ? FirstBackupRemindDays
+            : RegularBackupRemindDays;
+
+        if ((DateTime.Now - lastBackupDate).TotalDays < remindAfterDays)
         {
             return;
         }
 
         #region MessageInputCategoryNums
 
-        var lastBackupTime = Settings.Default.LastDbBackupDate == DateTime.MinValue
+        var isFirstPrompt = Settings.Default.IsFirstAppRun;
+        var lastBackupTime = isFirstPrompt
             ? string.Empty
-            : $" ({Settings.Default.LastDbBackupDate})";
+            : $" ({lastBackupDate})";
+        var contentMessage = isFirstPrompt
+            ? $"Рекомендуется создать резервную копию базы данных." +
+              $"{Environment.NewLine}Хотите выполнить резервное копирование?"
+            : $"Последняя резервная копия базы данных создавалась более месяца назад{lastBackupTime}." +
+              $"{Environment.NewLine}Хотите выполнить резервное копирование?";
+
         var res = Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxInputParams
             {
@@ -269,12 +295,12 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 ],
                 CanResize = true,
                 ContentTitle = "Резервное копирование",
-                ContentMessage = $"Последняя резервная копия базы данных создавалась более месяца назад{lastBackupTime}." +
-                                 $"{Environment.NewLine}Хотите выполнить резервное копирование?",
+                ContentMessage = contentMessage,
                 MinWidth = 450,
                 MinHeight = 150,
                 SizeToContent = SizeToContent.Width,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(Desktop.Windows[0])).GetAwaiter().GetResult();
 
@@ -301,8 +327,6 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                               $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
                     ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
                 }
-                Settings.Default.LastDbBackupDate = DateTime.Now;
-                Settings.Default.Save();
                 break;
             }
             case "Выбрать папку и сохранить":
@@ -329,11 +353,14 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                         ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
                     }
                 }
-                Settings.Default.LastDbBackupDate = DateTime.Now;
-                Settings.Default.Save();
                 break;
             }
         }
+
+        // После первого показа — дальше раз в месяц (в т.ч. при «Не сохранять»).
+        Settings.Default.LastDbBackupDate = DateTime.Now;
+        Settings.Default.IsFirstAppRun = false;
+        Settings.Default.Save();
     }
 
     #endregion
@@ -434,12 +461,51 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
     #endregion
 
+    /// <summary>
+    /// Для отдела — текстовое имя выкладки (1.3.0.11_test5 / 1.3.0.11), иначе AssemblyVersion.
+    /// </summary>
+    private static string GetVersionLabelForWindowTitle()
+    {
+        var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version?.ToString() ?? string.Empty;
+        if (!Settings.Default.AppLaunchedInNorao)
+        {
+            return assemblyVersion;
+        }
+
+        try
+        {
+            var state = new LocalUpdateStateStore().Load();
+            var installed = NetworkUpdateLabels.FormatInstalled(state);
+            if (NetworkUpdateLabels.IsTrackedInstallLabel(installed))
+            {
+                return installed;
+            }
+
+            if (NetworkUpdatePaths.TryParseReleaseFromAppDirectory(null, out var major, out var releaseId))
+            {
+                var fromPath = NetworkUpdateLabels.FormatVersion(major, releaseId);
+                if (!string.IsNullOrWhiteSpace(fromPath))
+                {
+                    return fromPath;
+                }
+            }
+        }
+        catch
+        {
+            // ignore — в шапке останется номер из сборки
+        }
+
+        return assemblyVersion;
+    }
+
+    private static string BuildMainWindowTitle(string dbFileName) =>
+        $"МПЗФ ver.{GetVersionLabelForWindowTitle()} Текущая база данных - {dbFileName}";
+
     #region ProcessDataBaseCreate
 
     /// <summary>
-    /// Создание файла БД, либо чтение имеющегося
+    /// Создание файла БД, либо чтение имеющегося.
     /// </summary>
-    /// <returns></returns>
     private async Task ProcessDataBaseCreate()
     {
         var i = 0;
@@ -447,16 +513,37 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         DBModel dbm;
         DirectoryInfo dirInfo = new(RaoDirectory);
         FileInfo dbFileInfo = null;
-        foreach (var fileInfo in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)
-                     .Where(x => x.Name.ToLower().EndsWith(".raodb"))
-                     .OrderByDescending(x => x.LastWriteTime))
+        var raodbFiles = GetRaodbFiles(dirInfo).OrderByDescending(x => x.LastWriteTime).ToList();
+
+        IEnumerable<FileInfo> filesToTry;
+        if (raodbFiles.Count > 1)
+        {
+            var selectedFile = await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                var window = new MultipleRaodbFilesMessageWindow(raodbFiles);
+                return window.ShowDialog<FileInfo?>(Desktop.MainWindow);
+            });
+
+            if (selectedFile is null)
+            {
+                Environment.Exit(0);
+                throw new InvalidOperationException("Запуск программы отменён пользователем.");
+            }
+
+            filesToTry = [selectedFile];
+        }
+        else
+        {
+            filesToTry = raodbFiles;
+        }
+
+        foreach (var fileInfo in filesToTry)
         {
             try
             {
                 dbFileInfo = fileInfo;
                 DbFileName = Path.GetFileNameWithoutExtension(fileInfo.Name);
-                mainWindowViewModel.Current_Db =
-                    $"МПЗФ ver.{Assembly.GetExecutingAssembly().GetName().Version} Текущая база данных - {DbFileName}";
+                mainWindowViewModel.Current_Db = BuildMainWindowTitle(DbFileName);
                 StaticConfiguration.DBPath = fileInfo.FullName;
                 StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
                 dbm = StaticConfiguration.DBModel;
@@ -469,7 +556,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
                 #endregion
 
-                await dbm.Database.MigrateAsync();
+                await dbm.MigrateDatabaseAsync();
 
                 return;
             }
@@ -491,8 +578,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             }
         }
         DbFileName = $"Local_{i}";
-        mainWindowViewModel.Current_Db = $"МПЗФ ver.{Assembly.GetExecutingAssembly().GetName().Version} " +
-                                         $"Текущая база данных - {DbFileName}";
+        mainWindowViewModel.Current_Db = BuildMainWindowTitle(DbFileName);
         StaticConfiguration.DBPath = Path.Combine(RaoDirectory, $"{DbFileName}.RAODB");
         StaticConfiguration.DBModel = new DBModel(StaticConfiguration.DBPath);
         dbm = StaticConfiguration.DBModel;
@@ -502,9 +588,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             {
                 var lastModifiedFile = true;
                 var actualReserveFileFullPath = string.Empty;
-                foreach (var fileInfo in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)
-                             .Where(x => x.Name.ToLower().EndsWith(".raodb"))
-                             .OrderByDescending(x => x.LastWriteTime))
+                foreach (var fileInfo in GetRaodbFiles(dirInfo).OrderByDescending(x => x.LastWriteTime))
                 {
                     if (!File.Exists(fileInfo.FullName)) continue;
                     var reserveFileFullPath = Path.Combine(ReserveDirectory, Path.GetFileNameWithoutExtension(fileInfo.Name) + $"_{DateTime.Now.Ticks}.RAODB");
@@ -517,7 +601,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     File.Delete(fileInfo.FullName);
                 }
                 
-                await dbm.Database.MigrateAsync();
+                await dbm.MigrateDatabaseAsync();
 
                 #region MessageFailedToReadFile
 
@@ -525,19 +609,20 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Ошибка при чтении файла .RAODB",
-                        ContentHeader = "Ошибка",
+                        ContentTitle = "Ошибка",
+                        ContentHeader = "Ошибка при чтении файла .RAODB",
                         ContentMessage = $"Возникла ошибка при чтении файла базы данных (БД)" +
                                          $"{Environment.NewLine}{dbFileInfo.FullName}." +
                                          $"{Environment.NewLine}Файл БД был перемещён по пути " +
                                          $"{Environment.NewLine}{actualReserveFileFullPath}." +
                                          $"{Environment.NewLine}Программа запущена с новым пустым файлом БД" +
                                          $"{Environment.NewLine}{StaticConfiguration.DBPath}." +
-                                         $"{Environment.NewLine}Для восстановления данных воспользуйтель функцией \"Импорт -> из RAODB\"," +
+                                         $"{Environment.NewLine}Для восстановления данных воспользуйтесь функцией \"Импорт -> из RAODB\"," +
                                          $"{Environment.NewLine}указав путь к резервному файлу.",
 
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult(); 
 
@@ -551,12 +636,13 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Импорт из .raodb",
-                        ContentHeader = "Ошибка",
+                        ContentTitle = "Ошибка",
+                        ContentHeader = "Ошибка при создании файла .RAODB",
                         ContentMessage = $"Не удалось создать файл базы данных." +
                                          $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
 
@@ -578,12 +664,13 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Импорт из .raodb",
-                        ContentHeader = "Ошибка",
+                        ContentTitle = "Ошибка",
+                        ContentHeader = "Ошибка при создании файла .RAODB",
                         ContentMessage = $"Не удалось создать файл базы данных." +
                                          $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                         MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
 
@@ -599,7 +686,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
         try
         {
-            await dbm.Database.MigrateAsync();
+            await dbm.MigrateDatabaseAsync();
         }
         catch (FirebirdSql.Data.FirebirdClient.FbException fbEx)
         {
@@ -609,12 +696,13 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
-                    ContentTitle = "Импорт из .raodb",
-                    ContentHeader = "Ошибка",
+                    ContentTitle = "Ошибка",
+                    ContentHeader = "Ошибка при создании файла .RAODB",
                     ContentMessage = $"Не удалось создать файл базы данных." +
                                      $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
 
@@ -637,12 +725,13 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
-                    ContentTitle = "Импорт из .raodb",
-                    ContentHeader = "Ошибка",
+                    ContentTitle = "Ошибка",
+                    ContentHeader = "Ошибка при создании файла .RAODB",
                     ContentMessage = $"Не удалось создать файл базы данных." +
                                      $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
 
@@ -673,8 +762,11 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             foreach (var key in item.Reports_Collection)
             {
                 var it = (Reports)key;
+                if (it.Master_DB is null) continue;
                 if (it.Master_DB.FormNum_DB == "") continue;
-                if (it.Master_DB.Rows10.Count == 0)
+
+                if (it.Master_DB.FormNum_DB == "1.0"
+                    && it.Master_DB.Rows10.Count == 0)
                 {
                     var ty1 = (Form10)FormCreator.Create("1.0");
                     ty1.NumberInOrder_DB = 1;
@@ -684,7 +776,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     it.Master_DB.Rows10.Add(ty2);
                 }
 
-                if (it.Master_DB.Rows20.Count == 0)
+                if (it.Master_DB.FormNum_DB == "2.0"
+                    && it.Master_DB.Rows20.Count == 0)
                 {
                     var ty1 = (Form20)FormCreator.Create("2.0");
                     ty1.NumberInOrder_DB = 1;
@@ -693,13 +786,15 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     it.Master_DB.Rows20.Add(ty1);
                     it.Master_DB.Rows20.Add(ty2);
                 }
-                if (it.Master_DB.Rows40.Count == 0)
+                if (it.Master_DB.FormNum_DB == "4.0"
+                    && it.Master_DB.Rows40.Count == 0)
                 {
                     var ty = (Form40)FormCreator.Create("4.0");
                     ty.NumberInOrder_DB = 1;
                     it.Master_DB.Rows40.Add(ty);
                 }
-                if (it.Master_DB.Rows50.Count == 0)
+                if (it.Master_DB.FormNum_DB == "5.0"
+                    && it.Master_DB.Rows50.Count == 0)
                 {
                     var ty = (Form50)FormCreator.Create("5.0");
                     ty.NumberInOrder_DB = 1;

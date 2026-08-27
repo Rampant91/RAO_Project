@@ -93,7 +93,9 @@ public class Reports : IKey, IDataGridColumn
     public void CleanIds()
     {
         Id = 0;
-        Master.CleanIds();
+        Master_DBId = null;
+        DBObservableId = null;
+        Master_DB?.CleanIds();
         foreach (Report item in Report_Collection)
         {
             item.CleanIds();

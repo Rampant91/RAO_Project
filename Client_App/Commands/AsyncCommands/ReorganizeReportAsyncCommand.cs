@@ -56,7 +56,8 @@ public class ReorganizeReportAsyncCommand : BaseAsyncCommand
                         ContentMessage = "После реорганизации поля территориального обособленного подразделения очистятся",
                         MinWidth = 300,
                         MinHeight = 125,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     }).Show());
 
                 switch (answer)
@@ -118,7 +119,8 @@ public class ReorganizeReportAsyncCommand : BaseAsyncCommand
                         ContentMessage = "После реорганизации поля территориального обособленного подразделения очистятся",
                         MinWidth = 300,
                         MinHeight = 125,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     }).Show());
 
                 switch (answer)

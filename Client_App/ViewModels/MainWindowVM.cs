@@ -1,4 +1,4 @@
-﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.CheckForm;
@@ -23,6 +23,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using ExcelExportCheckPairingOfCode41AsyncCommand = Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
+using ExcelExportCheckTransferReceiveAsyncCommand = Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
+using ExcelExportCompareFormPrintAsyncCommand = Client_App.Commands.AsyncCommands.ExcelExport.FormPrintCompare.ExcelExportCompareFormPrintAsyncCommand;
 
 namespace Client_App.ViewModels;
 
@@ -31,6 +34,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     #region SelectedReportType
 
     private byte _selectedReportType = 1;
+    private object _selectedTabContent;
 
     public byte SelectedReportType
     {
@@ -41,6 +45,8 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             {
                 _selectedReportType = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(SelectedReports));
+                OnPropertyChanged(nameof(IsExcelSelectedOrganizationMenuEnabled));
                 UpdateReportsCollection();
                 UpdateOrgsPageInfo();
                 UpdateFormsPageInfo();
@@ -52,13 +58,37 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     #endregion
 
     #region LaunchedAtNORAO
-    
-#pragma warning disable CA1822
 
-    // ReSharper disable once MemberCanBeMadeStatic.Global
-    public bool AppLaunchedAtNorao => Settings.Default.AppLaunchedInNorao;
+    private bool _appLaunchedAtNorao;
+    public bool AppLaunchedAtNorao
+    {
+        get => _appLaunchedAtNorao;
+        set
+        {
+            if (SetProperty(ref _appLaunchedAtNorao, value))
+            {
+                // Сохраняем в настройки при изменении
+                Settings.Default.AppLaunchedInNorao = value;
+                Settings.Default.Save();
 
-#pragma warning restore CA1822
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(CanRollbackPreviousRelease));
+            }
+        }
+    }
+
+    private bool _developerModeEverEnabled;
+    public bool DeveloperModeEverEnabled
+    {
+        get => _developerModeEverEnabled;
+        private set => SetProperty(ref _developerModeEverEnabled, value);
+    }
+
+    /// <summary>
+    /// Доступен откат на previous (только режим отдела и есть бэкап).
+    /// </summary>
+    public bool CanRollbackPreviousRelease =>
+        AppLaunchedAtNorao && _updateService.CanRollback();
 
     #endregion
 
@@ -142,10 +172,12 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 case 1:
                     Forms1TabControlVM.SelectedReports = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsExcelSelectedOrganizationMenuEnabled));
                     break;
                 case 2:
                     Forms2TabControlVM.SelectedReports = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(IsExcelSelectedOrganizationMenuEnabled));
                     break;
                 case 4:
                     Forms4TabControlVM.SelectedReports = value;
@@ -158,6 +190,14 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
             }
         }
     }
+
+    /// <summary>
+    /// Пункт меню «Аналитика → Выбранная организация»: доступен на вкладках «Формы 1» / «Формы 2»
+    /// при выбранной строке в списке организаций.
+    /// </summary>
+    public bool IsExcelSelectedOrganizationMenuEnabled =>
+        (SelectedReportType == 1 || SelectedReportType == 2) && SelectedReports is not null;
+
     #endregion
 
     #region UpdateReportsCollection
@@ -252,7 +292,6 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     }
     #endregion
 
-    #region TotalReportCount
     public void UpdateTotalReportCount()
     {
         switch (SelectedReportType)
@@ -273,7 +312,27 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
                 break;
         }
     }
-    #endregion
+
+    public void UpdateTotalReportsCount()
+    {
+        switch (SelectedReportType)
+        {
+            case 1:
+                Forms1TabControlVM.UpdateTotalReportsCount();
+                break;
+            case 2:
+                Forms2TabControlVM.UpdateTotalReportsCount();
+                break;
+            case 4:
+                Forms4TabControlVM.UpdateTotalReportsCount();
+                break;
+            case 5:
+                Forms5TabControlVM.UpdateTotalReportsCount();
+                break;
+            default:
+                break;
+        }
+    }
 
     #region OnStartProgressBar
 
@@ -296,18 +355,14 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
 
     private readonly UpdateService _updateService;
 
-    public ICommand AddForm { get; set; }                           //  Создать и открыть новое окно формы для выбранной организации (1.0, 2.0)
-    public ICommand NewAddForm { get; set; }                        //  Создать и открыть новое окно формы для выбранной организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
+    public ICommand ChangeForm { get; set; }                        //  Редактировать выбранный отчёт (для старых форм 2.х)
     public ICommand AddReports { get; set; }                        //  Создать и открыть новое окно формы организации (1.0, 2.0, 4.0)
-    public ICommand ChangeForm { get; set; }                        //  Открыть окно редактирования выбранной формы (1.0, 2.0)
-    public ICommand NewChangeForm { get; set; }                     //  Открыть окно редактирования выбранной формы (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
     public ICommand ChangePasFolder { get; set; }                   //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
-    public ICommand ChangeReports { get; set; }                     //  Изменить Формы организации (1.0 и 2.0)
-    public ICommand NewChangeReports { get; set; }                  //  Изменить Формы организации (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
+    public ICommand ConvertExcelToRaodb { get; set; }               //  Дополнительно -> Конвертер из Excel в .RAODB
     public ICommand ExcelExportCheckAllForms { get; set; }          //  Проверить все формы у организации
-    public ICommand CheckFormFromMain { get; set; }                 //  Проверить форму
-    public ICommand DeleteForm { get; set; }                        //  Удалить выбранную форму у выбранной организации (1.0, 2.0)
-    public ICommand NewDeleteForm { get; set; }                     //  Удалить выбранную форму у выбранной организации  (4.0) (После перерисовки интерфейса будет использоваться и для 1.0, 2.0)
+    public ICommand ExcelExportCheckPairingOfCode41 { get; set; }   //  Непарные операции 41 (org / вся БД, формы 1.1–1.6)
+    public ICommand ExcelExportCheckTransferReceive { get; set; }   //  Проверка операций приёма-передачи (org / вся БД, формы 1.1–1.5)
+    public ICommand ExcelExportCompareFormPrint { get; set; }       //  Сравнение отчётов (режим разработчика)
     public ICommand DeleteReports { get; set; }                     //  Удалить выбранную организацию (1.0, 2.0, 4.0)
 
     /// <summary>
@@ -321,24 +376,10 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ExcelExportExecutors => new ExcelExportExecutorsAsyncCommand();
 
     /// <summary>
-    /// Экспорт формы в файл .RAODB
-    /// </summary>
-    public ICommand ExportForm => new ExportFormAsyncCommand();
-
-    /// <summary>
     /// Excel -> Проверка последней инвентаризации.
     /// </summary>
     public ICommand ExcelExportCheckLastInventoryDate => new ExcelExportCheckLastInventoryDateAsyncCommand();
 
-    /// <summary>
-    /// Выбранная форма -> Выгрузка Excel -> Для анализа
-    /// </summary>
-    public ICommand ExcelExportFormAnalysis => new ExcelExportFormAnalysisAsyncCommand();
-
-    /// <summary>
-    /// Выбранная форма -> Выгрузка Excel -> Для печати
-    /// </summary>
-    public ICommand ExcelExportFormPrint => new ExcelExportFormPrintAsyncCommand();
 
     /// <summary>
     /// Excel -> Формы 1.x, 2.x и Excel -> Выбранная организация -> Формы 1.x, 2.x
@@ -359,6 +400,21 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     /// Excel -> Список форм 2
     /// </summary>
     public ICommand ExcelExportListOfForms2 => new ExcelExportListOfForms2AsyncCommand();
+
+    /// <summary>
+    /// Excel -> Список форм 4
+    /// </summary>
+    public ICommand ExcelExportListOfForms4 => new ExcelExportListOfForms4AsyncCommand();
+
+    /// <summary>
+    /// Excel -> Список форм 5
+    /// </summary>
+    public ICommand ExcelExportListOfForms5 => new ExcelExportListOfForms5AsyncCommand();
+
+    /// <summary>
+    /// Excel -> Списки форм 1, 2, 4 и 5 в одном файле
+    /// </summary>
+    public ICommand ExcelExportListOfFormsAll => new ExcelExportListOfFormsAllAsyncCommand();
 
     /// <summary>
     /// Excel -> Список организаций
@@ -401,36 +457,59 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand ExportAllReport => new ExportAllReportAsyncCommand();
 
     /// <summary>
+    /// Групповая выгрузка отчётов форм 1.1–1.9 по списку организаций из .xlsx
+    /// </summary>
+    public ICommand GroupBulkExportReports => new GroupBulkExportReportsAsyncCommand();
+
+    /// <summary>
+    /// Выгрузка всех отчётов указанной формы (1.1-1.9, 2.1-2.12) или всех форм группы (all-1, all-2)
+    /// организации в отдельные .xlsx файлы
+    /// </summary>
+    public ICommand ExcelExportAllFormsByFormNumber => new ExcelExportAllFormsByFormNumberAsyncCommand(this);
+
+    /// <summary>
     /// Экспорт всех организаций организации в один файл .RAODB
     /// </summary>
     public ICommand ExportAllReportsOneFile => new ExportAllReportsOneFileAsyncCommand();
 
     /// <summary>
+    /// Экспорт всех организаций организации в один файл .RAODB
+    /// </summary>
+    public ICommand ExportAllReportsFromSubjectRFOneFile => new ExportAllReportsFromSubjectRFOneFileAsyncCommand();
+
+
+    /// <summary>
     /// Экспорт организации в файл .RAODB
     /// </summary>
-    public ICommand ExportReports => new ExportReportsAsyncCommand();
+    public ICommand ExportReports => new ExportReportsAsyncCommand(this);
 
     /// <summary>
     /// Экспорт организации в файл .RAODB с указанием диапазона дат выгружаемых форм
     /// </summary>
-    public ICommand ExportReportsWithDateRange => new ExportReportsWithDateRangeAsyncCommand();
+    public ICommand ExportReportsWithDateRange => new ExportReportsWithDateRangeAsyncCommand(this);
 
     /// <summary>
     /// Импорт отчёта из Excel.
     /// </summary>
-    public ICommand ImportExcel { get; set; }
+    public ICommand ImportExcel { get; set; }                               //  Импорт -> Из Excel
     public ICommand ImportJson { get; set; }                                //  Импорт -> Из Json
     public ICommand ImportRaodb { get; set; }                               //  Импорт -> Из RAODB
     public ICommand MaxGraphsLength { get; set; }                           //  Excel -> Максимальное число символов в каждой колонке
     public ICommand OpenCalculator { get; set; }                            //  Открыть калькулятор пересчёта активности
+    public ICommand CheckForUpdates { get; set; }                           //  Сервис -> Проверить обновления
+    public ICommand RollbackPreviousRelease { get; set; }                   //  Сервис -> Откат (отдел)
     public ICommand OpenFile { get; set; }                                  //  Открыть файл
     public ICommand OpenFolder { get; set; }                                //  Открыть папку
     public ICommand SaveReports { get; set; }                               //  Сохраняет текущую базу, используется только для сохранения комментария формы
                                                                             //public ICommand UnaccountedRad { get; set; }                    
                                                                             //  Радионуклиды, отсутствующие в справочнике
 
-    public ICommand GoToFormNum { get; set; }
-    
+    public ICommand OpenPassportMenu { get; set; }
+    public ICommand OpenStoragePointMenu { get; set; }
+    public ICommand SetWhiteList { get; set; }
+
+    public ICommand CalculateVolumesRaoProcessingByPeriod { get; set; }
+
     #endregion
 
     #region Constructor
@@ -438,42 +517,62 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public MainWindowVM()
     {
         _updateService = new UpdateService();
-        
-        AddForm = new AddFormAsyncCommand();
-        NewAddForm = new NewAddFormAsyncCommand();
+        CheckForUpdates = new CheckForUpdatesAsyncCommand(_updateService, () => AppLaunchedAtNorao);
+        RollbackPreviousRelease = new RollbackPreviousReleaseAsyncCommand(_updateService);
+
         AddReports = new AddReportsAsyncCommand();
         ChangeForm = new ChangeFormAsyncCommand();
-        NewChangeForm = new NewChangeFormAsyncCommand();
         ChangePasFolder = new ChangePasFolderAsyncCommand();
-        ChangeReports = new ChangeReportsAsyncCommand();
-        NewChangeReports = new NewChangeReportsAsyncCommand();
-        CheckFormFromMain = new CheckFormFromMainAsyncCommand();
-        NewDeleteForm = new NewDeleteFormAsyncCommand();
-        DeleteForm = new DeleteReportAsyncCommand();
-        DeleteReports = new DeleteReportsAsyncCommand();
-        ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand();
-        ImportExcel = new ImportExcelAsyncCommand(this);
+        ConvertExcelToRaodb = new ConvertExcelToRaodbAsyncCommand();
+        DeleteReports = new DeleteReportsAsyncCommand(this);
+        ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand(this);
+        ExcelExportCheckPairingOfCode41 = new ExcelExportCheckPairingOfCode41AsyncCommand(this);
+        ExcelExportCheckTransferReceive = new ExcelExportCheckTransferReceiveAsyncCommand(this);
+        ExcelExportCompareFormPrint = new ExcelExportCompareFormPrintAsyncCommand(this);
+        ImportExcel = new ImportExcelAsyncCommand();
         ImportJson = new ImportJsonAsyncCommand();
-        ImportRaodb = new ImportRaodbAsyncCommand(this);
+        ImportRaodb = new ImportRaodbAsyncCommand();
         MaxGraphsLength = new MaxGraphsLengthAsyncCommand();
         SaveReports = new SaveReportsAsyncCommand();
         OpenCalculator = new OpenCalculatorAsyncCommand();
         OpenFile = new OpenFileAsyncCommand();
         OpenFolder = new OpenFolderAsyncCommand();
-        GoToFormNum = new GoToFormNumAsyncCommand(this);
+        OpenPassportMenu = new OpenPassportMenuWindowAsyncCommand();
+        OpenStoragePointMenu = new OpenStoragePointMenuWindowAsyncCommand();
+        SetWhiteList = new SetWhiteListNumAsyncCommand(this);
+        CalculateVolumesRaoProcessingByPeriod = new CalculateVolumesRaoProcessingByPeriodAsyncCommand();
 
         Forms1TabControlVM = new Forms1TabControlVM(this);
         Forms2TabControlVM = new Forms2TabControlVM(this);
         Forms4TabControlVM = new Forms4TabControlVM(this);
         Forms5TabControlVM = new Forms5TabControlVM(this);
 
-        UpdateReportsCollection();
-        
-        // Блокируем конструктор до завершения проверки обновлений
+        Forms1TabControlVM.PropertyChanged += OnForms1Or2TabSelectedReportsChanged;
+        Forms2TabControlVM.PropertyChanged += OnForms1Or2TabSelectedReportsChanged;
+
+        //UpdateReportsCollection();
+
+        _appLaunchedAtNorao = Settings.Default.AppLaunchedInNorao;
+        _developerModeEverEnabled = _appLaunchedAtNorao;
+
+        OnPropertyChanged(nameof(AppLaunchedAtNorao));
+        OnPropertyChanged(nameof(DeveloperModeEverEnabled));
+        OnPropertyChanged(nameof(CanRollbackPreviousRelease));
+
+        // Блокируем конструктор до завершения проверки (сайт или сетевая шара для отдела)
         _updateService.CheckAndNotifyAsync(AppLaunchedAtNorao).Wait();
     }
 
     #endregion
+
+    private void OnForms1Or2TabSelectedReportsChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName != nameof(FormsTabControlBaseVM.SelectedReports))
+            return;
+
+        OnPropertyChanged(nameof(SelectedReports));
+        OnPropertyChanged(nameof(IsExcelSelectedOrganizationMenuEnabled));
+    }
 
     #region Interactions
 

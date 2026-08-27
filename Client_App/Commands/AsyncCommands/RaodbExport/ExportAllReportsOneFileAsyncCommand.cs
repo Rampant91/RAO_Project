@@ -41,8 +41,9 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
 
         #endregion
 
-        var dbReadOnlyPath = CreateTempDataBase();
-
+        var dbReadOnlyPath = await CreateTempDataBase(progressBar, cts);
+        try
+        {
         #region Progress = 7
 
         loadStatus = "Загрузка данных организаций";
@@ -166,7 +167,7 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
                 #endregion
 
                 await using var db = new DBModel(newDbPath);
-                await db.Database.MigrateAsync(cancellationToken: cts.Token);
+                await db.MigrateDatabaseAsync(cts.Token);
 
                 await db.ReportsCollectionDbSet.AddAsync(repsFull, cts.Token);
                 if (!db.DBObservableDbSet.Any())
@@ -234,6 +235,11 @@ public partial class ExportAllReportsOneFileAsyncCommand : ExportRaodbBaseAsyncC
             }
         }
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+        }
+        finally
+        {
+            TryDeleteTempDataBase(dbReadOnlyPath);
+        }
     }
 
     #region RestoreReportsOrders

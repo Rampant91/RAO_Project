@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
@@ -9,6 +9,7 @@ using Models.Collections;
 using Models.Forms.DataAccess;
 using Models.Interfaces;
 using OfficeOpenXml;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form2;
 
@@ -921,7 +922,7 @@ public partial class Form21 : Form2, IBaseColor
     {
         if (args.PropertyName == "Value")
         {
-            QuantityIn_DB = ((RamAccess<string>)value).Value?.Trim();
+            QuantityIn_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value)?.Trim();
         }
     }
 
@@ -1390,7 +1391,7 @@ public partial class Form21 : Form2, IBaseColor
     {
         if (args.PropertyName == "Value")
         {
-            QuantityOZIIIout_DB = ((RamAccess<string>)value).Value;
+            QuantityOZIIIout_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -2140,4 +2141,31 @@ public partial class Form21 : Form2, IBaseColor
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form21 formToCompare) return false;
+
+        return FormTextEquality.Equals(RefineMachineName_DB, formToCompare.RefineMachineName_DB)
+               && FormExponentialEquality.Equals(MachinePower_DB, formToCompare.MachinePower_DB)
+               && FormExponentialEquality.Equals(NumberOfHoursPerYear_DB, formToCompare.NumberOfHoursPerYear_DB)
+               && FormTextEquality.Equals(CodeRAOIn_DB, formToCompare.CodeRAOIn_DB)
+               && FormTextEquality.Equals(StatusRAOIn_DB, formToCompare.StatusRAOIn_DB)
+               && FormExponentialEquality.Equals(VolumeIn_DB, formToCompare.VolumeIn_DB)
+               && FormExponentialEquality.Equals(MassIn_DB, formToCompare.MassIn_DB)
+               && FormTextEquality.Equals(QuantityIn_DB, formToCompare.QuantityIn_DB)
+               && FormExponentialEquality.Equals(TritiumActivityIn_DB, formToCompare.TritiumActivityIn_DB)
+               && FormExponentialEquality.Equals(BetaGammaActivityIn_DB, formToCompare.BetaGammaActivityIn_DB)
+               && FormExponentialEquality.Equals(AlphaActivityIn_DB, formToCompare.AlphaActivityIn_DB)
+               && FormExponentialEquality.Equals(TransuraniumActivityIn_DB, formToCompare.TransuraniumActivityIn_DB)
+               && FormTextEquality.Equals(CodeRAOout_DB, formToCompare.CodeRAOout_DB)
+               && FormTextEquality.Equals(StatusRAOout_DB, formToCompare.StatusRAOout_DB)
+               && FormExponentialEquality.Equals(VolumeOut_DB, formToCompare.VolumeOut_DB)
+               && FormExponentialEquality.Equals(MassOut_DB, formToCompare.MassOut_DB)
+               && FormTextEquality.Equals(QuantityOZIIIout_DB, formToCompare.QuantityOZIIIout_DB)
+               && FormExponentialEquality.Equals(TritiumActivityOut_DB, formToCompare.TritiumActivityOut_DB)
+               && FormExponentialEquality.Equals(BetaGammaActivityOut_DB, formToCompare.BetaGammaActivityOut_DB)
+               && FormExponentialEquality.Equals(AlphaActivityOut_DB, formToCompare.AlphaActivityOut_DB)
+               && FormExponentialEquality.Equals(TransuraniumActivityOut_DB, formToCompare.TransuraniumActivityOut_DB);
+    }
 }

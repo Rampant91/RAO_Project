@@ -60,47 +60,44 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         progressBarVM.SetProgressBar(9, "Создание временной БД", 
             $"Выгрузка движения источника{Environment.NewLine}" + $"{pasNum}_{factoryNum}", ExportType);
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        progressBarVM.SetProgressBar(11, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-
-        progressBarVM.SetProgressBar(13, "Заполнение заголовков");
-        await FillExcelHeaders(excelPackage);
-
-        progressBarVM.SetProgressBar(15, "Загрузка паспортов форм 1.1");
-        var pasUniqList11 = await GetPasUniqData(db, "1.1", cts);
-
-        progressBarVM.SetProgressBar(40, "Загрузка форм 1.1");
-        var filteredForm11 = (await GetFilteredForm(db, pasUniqList11, "1.1", pasNum!, factoryNum!, cts)).Cast<Form11>();
-
-        progressBarVM.SetProgressBar(50, "Заполнение строчек форм 1.1");
-        await FillExcel_11(filteredForm11, excelPackage);
-
-        progressBarVM.SetProgressBar(55, "Загрузка паспортов форм 1.5");
-        var pasUniqList15 = await GetPasUniqData(db, "1.5", cts);
-
-        progressBarVM.SetProgressBar(80, "Загрузка форм 1.5");
-        var filteredForm15 = (await GetFilteredForm(db, pasUniqList15, "1.5", pasNum!, factoryNum!, cts)).Cast<Form15>();
-
-        progressBarVM.SetProgressBar(90, "Заполнение строчек форм 1.5");
-        await FillExcel_15(filteredForm15, excelPackage);
-
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-
-        progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
         {
-            File.Delete(tmpDbPath);
-        }
-        catch
-        {
-            // ignored
-        }
+            await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-        await progressBar.CloseAsync();
+            progressBarVM.SetProgressBar(11, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(fullPath);
+
+            progressBarVM.SetProgressBar(13, "Заполнение заголовков");
+            await FillExcelHeaders(excelPackage);
+
+            progressBarVM.SetProgressBar(15, "Загрузка паспортов форм 1.1");
+            var pasUniqList11 = await GetPasUniqData(db, "1.1", cts);
+
+            progressBarVM.SetProgressBar(40, "Загрузка форм 1.1");
+            var filteredForm11 = (await GetFilteredForm(db, pasUniqList11, "1.1", pasNum!, factoryNum!, cts)).Cast<Form11>();
+
+            progressBarVM.SetProgressBar(50, "Заполнение строчек форм 1.1");
+            await FillExcel_11(filteredForm11, excelPackage);
+
+            progressBarVM.SetProgressBar(55, "Загрузка паспортов форм 1.5");
+            var pasUniqList15 = await GetPasUniqData(db, "1.5", cts);
+
+            progressBarVM.SetProgressBar(80, "Загрузка форм 1.5");
+            var filteredForm15 = (await GetFilteredForm(db, pasUniqList15, "1.5", pasNum!, factoryNum!, cts)).Cast<Form15>();
+
+            progressBarVM.SetProgressBar(90, "Заполнение строчек форм 1.5");
+            await FillExcel_15(filteredForm15, excelPackage);
+
+            progressBarVM.SetProgressBar(95, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            await progressBar.CloseAsync();
+        }
+        finally
+        {
+            TryDeleteTempDataBase(tmpDbPath);
+        }
     }
 
     #region CheckPasParam
@@ -130,7 +127,8 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
                                      $"{Environment.NewLine}- номер источника.",
                     MinHeight = 100,
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(progressBar ?? Desktop.MainWindow));
 
@@ -150,6 +148,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
     /// Заполняет строчки в .xlsx файле.
     /// </summary>
     /// <param name="filteredForm11">Отфильтрованный список форм отчётности 1.1.</param>
+    /// <param name="excelPackage">Пакет Excel.</param>
     private Task FillExcel_11(IEnumerable<Form11> filteredForm11, ExcelPackage excelPackage)
     {
         var dto11List = new List<Form11ExtendedDTO>();
@@ -199,100 +198,53 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
 
         #endregion
 
-        var lastRow = 1;
         Worksheet = excelPackage.Workbook.Worksheets.First(x => x.Name is "Операции по форме 1.1");
+        
+        var row = 2;
         foreach (var dto in dto11List
-                     .OrderBy(x => DateOnly.TryParse(x.OperationDate, out var opDate) ? opDate : DateOnly.MaxValue)
-                     .ThenBy(x => x.RegNoRep))
+                     .OrderByDescending(x => DateOnly.TryParse(x.OperationDate, out var opDate) 
+                         ? opDate 
+                         : DateOnly.MinValue)
+                     .ThenBy(x => x.RegNoRep)
+                     .ThenBy(x => x.NumberInOrder))
         {
-            if (lastRow == 1)
-            {
-                #region BindingCells
+            #region BindingCells
 
-                Worksheet.Cells[2, 1].Value = dto.RegNoRep;
-                Worksheet.Cells[2, 2].Value = dto.ShortJurLico;
-                Worksheet.Cells[2, 3].Value = dto.OkpoRep;
-                Worksheet.Cells[2, 4].Value = dto.FormNum;
-                Worksheet.Cells[2, 5].Value = ConvertToExcelDate(dto.StartPeriod, Worksheet, 2, 5);
-                Worksheet.Cells[2, 6].Value = ConvertToExcelDate(dto.EndPeriod, Worksheet, 2, 6);
-                Worksheet.Cells[2, 7].Value = dto.CorrectionNumber;
-                Worksheet.Cells[2, 8].Value = dto.RowCount;
-                Worksheet.Cells[2, 9].Value = dto.NumberInOrder;
-                Worksheet.Cells[2, 10].Value = ConvertToExcelString(dto.OperationCode);
-                Worksheet.Cells[2, 11].Value = ConvertToExcelDate(dto.OperationDate, Worksheet, 2, 11);
-                Worksheet.Cells[2, 12].Value = ConvertToExcelString(dto.PassportNumber);
-                Worksheet.Cells[2, 13].Value = ConvertToExcelString(dto.Type);
-                Worksheet.Cells[2, 14].Value = ConvertToExcelString(dto.Radionuclids);
-                Worksheet.Cells[2, 15].Value = ConvertToExcelString(dto.FactoryNumber);
-                Worksheet.Cells[2, 16].Value = dto.Quantity is null ? "-" : dto.Quantity;
-                Worksheet.Cells[2, 17].Value = ConvertToExcelDouble(dto.Activity);
-                Worksheet.Cells[2, 18].Value = ConvertToExcelString(dto.CreatorOKPO);
-                Worksheet.Cells[2, 19].Value = ConvertToExcelDate(dto.CreationDate, Worksheet, 2, 19);
-                Worksheet.Cells[2, 20].Value = dto.Category is null ? "-" : dto.Category;
-                Worksheet.Cells[2, 21].Value = dto.SignedServicePeriod is null ? "-" : dto.SignedServicePeriod;
-                Worksheet.Cells[2, 22].Value = dto.PropertyCode is null ? "-" : dto.PropertyCode;
-                Worksheet.Cells[2, 23].Value = ConvertToExcelString(dto.Owner);
-                Worksheet.Cells[2, 24].Value = dto.DocumentVid is null ? "-" : dto.DocumentVid;
-                Worksheet.Cells[2, 25].Value = ConvertToExcelString(dto.DocumentNumber);
-                Worksheet.Cells[2, 26].Value = ConvertToExcelDate(dto.DocumentDate, Worksheet, 2, 26);
-                Worksheet.Cells[2, 27].Value = ConvertToExcelString(dto.ProviderOrRecieverOKPO);
-                Worksheet.Cells[2, 28].Value = ConvertToExcelString(dto.TransporterOKPO);
-                Worksheet.Cells[2, 29].Value = ConvertToExcelString(dto.PackName);
-                Worksheet.Cells[2, 30].Value = ConvertToExcelString(dto.PackType);
-                Worksheet.Cells[2, 31].Value = ConvertToExcelString(dto.PackNumber);
+            Worksheet.Cells[row, 1].Value = dto.RegNoRep;
+            Worksheet.Cells[row, 2].Value = dto.ShortJurLico;
+            Worksheet.Cells[row, 3].Value = dto.OkpoRep;
+            Worksheet.Cells[row, 4].Value = dto.FormNum;
+            Worksheet.Cells[row, 5].Value = ConvertToExcelDate(dto.StartPeriod, Worksheet, row, 5);
+            Worksheet.Cells[row, 6].Value = ConvertToExcelDate(dto.EndPeriod, Worksheet, row, 6);
+            Worksheet.Cells[row, 7].Value = dto.CorrectionNumber;
+            Worksheet.Cells[row, 8].Value = dto.RowCount;
+            Worksheet.Cells[row, 9].Value = dto.NumberInOrder;
+            Worksheet.Cells[row, 10].Value = ConvertToExcelString(dto.OperationCode);
+            Worksheet.Cells[row, 11].Value = ConvertToExcelDate(dto.OperationDate, Worksheet, row, 11);
+            Worksheet.Cells[row, 12].Value = ConvertToExcelString(dto.PassportNumber);
+            Worksheet.Cells[row, 13].Value = ConvertToExcelString(dto.Type);
+            Worksheet.Cells[row, 14].Value = ConvertToExcelString(dto.Radionuclids);
+            Worksheet.Cells[row, 15].Value = ConvertToExcelString(dto.FactoryNumber);
+            Worksheet.Cells[row, 16].Value = dto.Quantity is null ? "-" : dto.Quantity;
+            Worksheet.Cells[row, 17].Value = ConvertToExcelDouble(dto.Activity);
+            Worksheet.Cells[row, 18].Value = ConvertToExcelString(dto.CreatorOKPO);
+            Worksheet.Cells[row, 19].Value = ConvertToExcelDate(dto.CreationDate, Worksheet, row, 19);
+            Worksheet.Cells[row, 20].Value = dto.Category is null ? "-" : dto.Category;
+            Worksheet.Cells[row, 21].Value = dto.SignedServicePeriod is null ? "-" : dto.SignedServicePeriod;
+            Worksheet.Cells[row, 22].Value = dto.PropertyCode is null ? "-" : dto.PropertyCode;
+            Worksheet.Cells[row, 23].Value = ConvertToExcelString(dto.Owner);
+            Worksheet.Cells[row, 24].Value = dto.DocumentVid is null ? "-" : dto.DocumentVid;
+            Worksheet.Cells[row, 25].Value = ConvertToExcelString(dto.DocumentNumber);
+            Worksheet.Cells[row, 26].Value = ConvertToExcelDate(dto.DocumentDate, Worksheet, row, 26);
+            Worksheet.Cells[row, 27].Value = ConvertToExcelString(dto.ProviderOrRecieverOKPO);
+            Worksheet.Cells[row, 28].Value = ConvertToExcelString(dto.TransporterOKPO);
+            Worksheet.Cells[row, 29].Value = ConvertToExcelString(dto.PackName);
+            Worksheet.Cells[row, 30].Value = ConvertToExcelString(dto.PackType);
+            Worksheet.Cells[row, 31].Value = ConvertToExcelString(dto.PackNumber);
 
-                #endregion
+            #endregion
 
-                lastRow++;
-                continue;
-            }
-            for (var currentRow = 2; currentRow <= lastRow + 1; currentRow++)
-            {
-                var opDateStr = Worksheet.Cells[currentRow, 11].Value?.ToString();
-                if (new CustomStringDateComparer(StringComparer.CurrentCulture)
-                        .Compare(dto.OperationDate, opDateStr) >= 0) continue;
-
-                Worksheet.InsertRow(currentRow, 1);
-
-                #region BindingCells
-
-                Worksheet.Cells[currentRow, 1].Value = dto.RegNoRep;
-                Worksheet.Cells[currentRow, 2].Value = dto.ShortJurLico;
-                Worksheet.Cells[currentRow, 3].Value = dto.OkpoRep;
-                Worksheet.Cells[currentRow, 4].Value = dto.FormNum;
-                Worksheet.Cells[currentRow, 5].Value = ConvertToExcelDate(dto.StartPeriod, Worksheet, currentRow, 5);
-                Worksheet.Cells[currentRow, 6].Value = ConvertToExcelDate(dto.EndPeriod, Worksheet, currentRow, 6);
-                Worksheet.Cells[currentRow, 7].Value = dto.CorrectionNumber;
-                Worksheet.Cells[currentRow, 8].Value = dto.RowCount;
-                Worksheet.Cells[currentRow, 9].Value = dto.NumberInOrder;
-                Worksheet.Cells[currentRow, 10].Value = ConvertToExcelString(dto.OperationCode);
-                Worksheet.Cells[currentRow, 11].Value = ConvertToExcelDate(dto.OperationDate, Worksheet, currentRow, 11);
-                Worksheet.Cells[currentRow, 12].Value = ConvertToExcelString(dto.PassportNumber);
-                Worksheet.Cells[currentRow, 13].Value = ConvertToExcelString(dto.Type);
-                Worksheet.Cells[currentRow, 14].Value = ConvertToExcelString(dto.Radionuclids);
-                Worksheet.Cells[currentRow, 15].Value = ConvertToExcelString(dto.FactoryNumber);
-                Worksheet.Cells[currentRow, 16].Value = dto.Quantity is null ? "-" : dto.Quantity;
-                Worksheet.Cells[currentRow, 17].Value = ConvertToExcelDouble(dto.Activity);
-                Worksheet.Cells[currentRow, 18].Value = ConvertToExcelString(dto.CreatorOKPO);
-                Worksheet.Cells[currentRow, 19].Value = ConvertToExcelDate(dto.CreationDate, Worksheet, currentRow, 19);
-                Worksheet.Cells[currentRow, 20].Value = dto.Category is null ? "-" : dto.Category;
-                Worksheet.Cells[currentRow, 21].Value = dto.SignedServicePeriod is null ? "-" : dto.SignedServicePeriod;
-                Worksheet.Cells[currentRow, 22].Value = dto.PropertyCode is null ? "-" : dto.PropertyCode;
-                Worksheet.Cells[currentRow, 23].Value = ConvertToExcelString(dto.Owner);
-                Worksheet.Cells[currentRow, 24].Value = dto.DocumentVid is null ? "-" : dto.DocumentVid;
-                Worksheet.Cells[currentRow, 25].Value = ConvertToExcelString(dto.DocumentNumber);
-                Worksheet.Cells[currentRow, 26].Value = ConvertToExcelDate(dto.DocumentDate, Worksheet, currentRow, 26);
-                Worksheet.Cells[currentRow, 27].Value = ConvertToExcelString(dto.ProviderOrRecieverOKPO);
-                Worksheet.Cells[currentRow, 28].Value = ConvertToExcelString(dto.TransporterOKPO);
-                Worksheet.Cells[currentRow, 29].Value = ConvertToExcelString(dto.PackName);
-                Worksheet.Cells[currentRow, 30].Value = ConvertToExcelString(dto.PackType);
-                Worksheet.Cells[currentRow, 31].Value = ConvertToExcelString(dto.PackNumber);
-
-                #endregion
-
-                lastRow++;
-                break;
-            }
+            row++;
         }
 
         if (OperatingSystem.IsWindows()) // Под Astra Linux эта команда крашит программу без GDI дров
@@ -316,6 +268,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
     /// Заполняет строчки в .xlsx файле.
     /// </summary>
     /// <param name="filteredForm15">Отфильтрованный список форм отчётности 1.5.</param>
+    /// <param name="excelPackage">Пакет Excel.</param>
     private Task FillExcel_15(IEnumerable<Form15> filteredForm15, ExcelPackage excelPackage)
     {
         var dto15List = new List<Form15ExtendedDTO>();
@@ -367,104 +320,55 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
 
         #endregion
 
-        var lastRow = 1;
         Worksheet = excelPackage.Workbook.Worksheets.First(x => x.Name is "Операции по форме 1.5");
+        var row = 2;
+
         foreach (var dto in dto15List
-                     .OrderBy(x => DateOnly.TryParse(x.OperationDate, out var opDate) ? opDate : DateOnly.MaxValue)
-                     .ThenBy(x => x.RegNoRep))
+                     .OrderByDescending(x => DateOnly.TryParse(x.OperationDate, out var opDate) 
+                         ? opDate 
+                         : DateOnly.MinValue)
+                     .ThenBy(x => x.RegNoRep)
+                     .ThenBy(x => x.NumberInOrder))
         {
-            if (lastRow == 1)
-            {
-                #region BindingCells
+            #region BindingCells
 
-                Worksheet.Cells[2, 1].Value = dto.RegNoRep;
-                Worksheet.Cells[2, 2].Value = dto.ShortJurLico;
-                Worksheet.Cells[2, 3].Value = dto.OkpoRep;
-                Worksheet.Cells[2, 4].Value = dto.FormNum;
-                Worksheet.Cells[2, 5].Value = ConvertToExcelDate(dto.StartPeriod, Worksheet, 2, 5);
-                Worksheet.Cells[2, 6].Value = ConvertToExcelDate(dto.EndPeriod, Worksheet, 2, 6);
-                Worksheet.Cells[2, 7].Value = dto.CorrectionNumber;
-                Worksheet.Cells[2, 8].Value = dto.RowCount;
-                Worksheet.Cells[2, 9].Value = dto.NumberInOrder;
-                Worksheet.Cells[2, 10].Value = ConvertToExcelString(dto.OperationCode);
-                Worksheet.Cells[2, 11].Value = ConvertToExcelDate(dto.OperationDate, Worksheet, 2, 11);
-                Worksheet.Cells[2, 12].Value = ConvertToExcelString(dto.PassportNumber);
-                Worksheet.Cells[2, 13].Value = ConvertToExcelString(dto.Type);
-                Worksheet.Cells[2, 14].Value = ConvertToExcelString(dto.Radionuclids);
-                Worksheet.Cells[2, 15].Value = ConvertToExcelString(dto.FactoryNumber);
-                Worksheet.Cells[2, 16].Value = dto.Quantity is null ? "-" : dto.Quantity;
-                Worksheet.Cells[2, 17].Value = ConvertToExcelDouble(dto.Activity);
-                Worksheet.Cells[2, 18].Value = ConvertToExcelDate(dto.CreationDate, Worksheet, 2, 18);
-                Worksheet.Cells[2, 19].Value = ConvertToExcelString(dto.StatusRAO);
-                Worksheet.Cells[2, 20].Value = dto.DocumentVid is null ? "-" : dto.DocumentVid;
-                Worksheet.Cells[2, 21].Value = ConvertToExcelString(dto.DocumentNumber);
-                Worksheet.Cells[2, 22].Value = ConvertToExcelDate(dto.DocumentDate, Worksheet, 2, 22);
-                Worksheet.Cells[2, 23].Value = ConvertToExcelString(dto.ProviderOrRecieverOKPO);
-                Worksheet.Cells[2, 24].Value = ConvertToExcelString(dto.TransporterOKPO);
-                Worksheet.Cells[2, 25].Value = ConvertToExcelString(dto.PackName);
-                Worksheet.Cells[2, 26].Value = ConvertToExcelString(dto.PackType);
-                Worksheet.Cells[2, 27].Value = ConvertToExcelString(dto.PackNumber);
-                Worksheet.Cells[2, 28].Value = ConvertToExcelString(dto.StoragePlaceName);
-                Worksheet.Cells[2, 29].Value = ConvertToExcelString(dto.StoragePlaceCode);
-                Worksheet.Cells[2, 30].Value = ConvertToExcelString(dto.RefineOrSortRAOCode);
-                Worksheet.Cells[2, 31].Value = ConvertToExcelString(dto.Subsidy);
-                Worksheet.Cells[2, 32].Value = ConvertToExcelString(dto.FcpNumber);
-                Worksheet.Cells[2, 33].Value = ConvertToExcelString(dto.ContractNumber);
+            Worksheet.Cells[row, 1].Value = dto.RegNoRep;
+            Worksheet.Cells[row, 2].Value = dto.ShortJurLico;
+            Worksheet.Cells[row, 3].Value = dto.OkpoRep;
+            Worksheet.Cells[row, 4].Value = dto.FormNum;
+            Worksheet.Cells[row, 5].Value = ConvertToExcelDate(dto.StartPeriod, Worksheet, row, 5);
+            Worksheet.Cells[row, 6].Value = ConvertToExcelDate(dto.EndPeriod, Worksheet, row, 6);
+            Worksheet.Cells[row, 7].Value = dto.CorrectionNumber;
+            Worksheet.Cells[row, 8].Value = dto.RowCount;
+            Worksheet.Cells[row, 9].Value = dto.NumberInOrder;
+            Worksheet.Cells[row, 10].Value = ConvertToExcelString(dto.OperationCode);
+            Worksheet.Cells[row, 11].Value = ConvertToExcelDate(dto.OperationDate, Worksheet, row, 11);
+            Worksheet.Cells[row, 12].Value = ConvertToExcelString(dto.PassportNumber);
+            Worksheet.Cells[row, 13].Value = ConvertToExcelString(dto.Type);
+            Worksheet.Cells[row, 14].Value = ConvertToExcelString(dto.Radionuclids);
+            Worksheet.Cells[row, 15].Value = ConvertToExcelString(dto.FactoryNumber);
+            Worksheet.Cells[row, 16].Value = dto.Quantity is null ? "-" : dto.Quantity;
+            Worksheet.Cells[row, 17].Value = ConvertToExcelDouble(dto.Activity);
+            Worksheet.Cells[row, 18].Value = ConvertToExcelDate(dto.CreationDate, Worksheet, row, 18);
+            Worksheet.Cells[row, 19].Value = ConvertToExcelString(dto.StatusRAO);
+            Worksheet.Cells[row, 20].Value = dto.DocumentVid is null ? "-" : dto.DocumentVid;
+            Worksheet.Cells[row, 21].Value = ConvertToExcelString(dto.DocumentNumber);
+            Worksheet.Cells[row, 22].Value = ConvertToExcelDate(dto.DocumentDate, Worksheet, row, 22);
+            Worksheet.Cells[row, 23].Value = ConvertToExcelString(dto.ProviderOrRecieverOKPO);
+            Worksheet.Cells[row, 24].Value = ConvertToExcelString(dto.TransporterOKPO);
+            Worksheet.Cells[row, 25].Value = ConvertToExcelString(dto.PackName);
+            Worksheet.Cells[row, 26].Value = ConvertToExcelString(dto.PackType);
+            Worksheet.Cells[row, 27].Value = ConvertToExcelString(dto.PackNumber);
+            Worksheet.Cells[row, 28].Value = ConvertToExcelString(dto.StoragePlaceName);
+            Worksheet.Cells[row, 29].Value = ConvertToExcelString(dto.StoragePlaceCode);
+            Worksheet.Cells[row, 30].Value = ConvertToExcelString(dto.RefineOrSortRAOCode);
+            Worksheet.Cells[row, 31].Value = ConvertToExcelString(dto.Subsidy);
+            Worksheet.Cells[row, 32].Value = ConvertToExcelString(dto.FcpNumber);
+            Worksheet.Cells[row, 33].Value = ConvertToExcelString(dto.ContractNumber);
 
-                #endregion
+            #endregion
 
-                lastRow++;
-                continue;
-            }
-            for (var currentRow = 2; currentRow <= lastRow + 1; currentRow++)
-            {
-                var opDateStr = Worksheet.Cells[currentRow, 11].Value?.ToString();
-                if (new CustomStringDateComparer(StringComparer.CurrentCulture)
-                        .Compare(dto.OperationDate, opDateStr) >= 0) continue;
-
-                Worksheet.InsertRow(currentRow, 1);
-
-                #region BindingCells
-
-                Worksheet.Cells[currentRow, 1].Value = dto.RegNoRep;
-                Worksheet.Cells[currentRow, 2].Value = dto.ShortJurLico;
-                Worksheet.Cells[currentRow, 3].Value = dto.OkpoRep;
-                Worksheet.Cells[currentRow, 4].Value = dto.FormNum;
-                Worksheet.Cells[currentRow, 5].Value = ConvertToExcelDate(dto.StartPeriod, Worksheet, currentRow, 5);
-                Worksheet.Cells[currentRow, 6].Value = ConvertToExcelDate(dto.EndPeriod, Worksheet, currentRow, 6);
-                Worksheet.Cells[currentRow, 7].Value = dto.CorrectionNumber;
-                Worksheet.Cells[currentRow, 8].Value = dto.RowCount;
-                Worksheet.Cells[currentRow, 9].Value = dto.NumberInOrder;
-                Worksheet.Cells[currentRow, 10].Value = ConvertToExcelString(dto.OperationCode);
-                Worksheet.Cells[currentRow, 11].Value = ConvertToExcelDate(dto.OperationDate, Worksheet, currentRow, 11);
-                Worksheet.Cells[currentRow, 12].Value = ConvertToExcelString(dto.PassportNumber);
-                Worksheet.Cells[currentRow, 13].Value = ConvertToExcelString(dto.Type);
-                Worksheet.Cells[currentRow, 14].Value = ConvertToExcelString(dto.Radionuclids);
-                Worksheet.Cells[currentRow, 15].Value = ConvertToExcelString(dto.FactoryNumber);
-                Worksheet.Cells[currentRow, 16].Value = dto.Quantity is null ? "-" : dto.Quantity;
-                Worksheet.Cells[currentRow, 17].Value = ConvertToExcelDouble(dto.Activity);
-                Worksheet.Cells[currentRow, 18].Value = ConvertToExcelDate(dto.CreationDate, Worksheet, currentRow, 18);
-                Worksheet.Cells[currentRow, 19].Value = ConvertToExcelString(dto.StatusRAO);
-                Worksheet.Cells[currentRow, 20].Value = dto.DocumentVid is null ? "-" : dto.DocumentVid;
-                Worksheet.Cells[currentRow, 21].Value = ConvertToExcelString(dto.DocumentNumber);
-                Worksheet.Cells[currentRow, 22].Value = ConvertToExcelDate(dto.DocumentDate, Worksheet, currentRow, 22);
-                Worksheet.Cells[currentRow, 23].Value = ConvertToExcelString(dto.ProviderOrRecieverOKPO);
-                Worksheet.Cells[currentRow, 24].Value = ConvertToExcelString(dto.TransporterOKPO);
-                Worksheet.Cells[currentRow, 25].Value = ConvertToExcelString(dto.PackName);
-                Worksheet.Cells[currentRow, 26].Value = ConvertToExcelString(dto.PackType);
-                Worksheet.Cells[currentRow, 27].Value = ConvertToExcelString(dto.PackNumber);
-                Worksheet.Cells[currentRow, 28].Value = ConvertToExcelString(dto.StoragePlaceName);
-                Worksheet.Cells[currentRow, 29].Value = ConvertToExcelString(dto.StoragePlaceCode);
-                Worksheet.Cells[currentRow, 30].Value = ConvertToExcelString(dto.RefineOrSortRAOCode);
-                Worksheet.Cells[currentRow, 31].Value = ConvertToExcelString(dto.Subsidy);
-                Worksheet.Cells[currentRow, 32].Value = ConvertToExcelString(dto.FcpNumber);
-                Worksheet.Cells[currentRow, 33].Value = ConvertToExcelString(dto.ContractNumber);
-
-                #endregion
-
-                lastRow++;
-                break;
-            }
+            row++;
         }
 
         if (OperatingSystem.IsWindows()) // Под Astra Linux эта команда крашит программу без GDI дров
@@ -525,6 +429,8 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         Worksheet.Cells[1, 30].Value = "тип";
         Worksheet.Cells[1, 31].Value = "номер";
 
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
+
         #endregion
 
         #region 1.5
@@ -566,6 +472,8 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         Worksheet.Cells[1, 33].Value = "Номер договора";
 
         #endregion
+
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
 
         return Task.CompletedTask;
     }

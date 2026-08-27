@@ -1,0 +1,96 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:vm="using:Client_App.ViewModels.StoragePoints"
+	    xmlns:models="clr-namespace:Models.StoragePoints;assembly=Models"
+		xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+		xmlns:behaviors="using:Avalonia.Xaml.Interactions.Core"
+		xmlns:local="using:Client_App.Behaviors"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="Client_App.StoragePointsMenuWindow"
+        x:DataType="vm:StoragePointsMenuWindowVM"
+		x:Name="StoragePointMenu"
+        Title="StoragePointsMenuWindow">
+
+
+	<Design.DataContext>
+		<vm:StoragePointsMenuWindowVM/>
+	</Design.DataContext>
+
+	<Grid ColumnDefinitions="*"
+		RowDefinitions="Auto, *">
+		<Menu Grid.Row="0"
+			x:Name="SubMenuBorder"
+			BorderBrush="#FF959595"
+			BorderThickness="1"
+			Background="WhiteSmoke"
+			Height="25"
+			DockPanel.Dock="Top">
+
+			<Menu.Styles>
+				<Style Selector="Separator">
+					<Setter Property="Background" Value="LightGray"/>
+					<Setter Property="Margin" Value="0,5"/>
+					<Setter Property="Height" Value="3"/>
+				</Style>
+				<Style Selector="MenuItem">
+					<Setter Property="Background" Value="WhiteSmoke"/>
+					<Setter Property="FontSize" Value="14"/>
+				</Style>
+			</Menu.Styles>
+
+
+		</Menu>
+
+
+		<DataGrid
+			Grid.Row="1" 
+			Items="{Binding StoragePoints}"
+			SelectionMode="Single"
+			MaxWidth="900"
+			SelectedItem="{Binding SelectedStoragePoint}"
+			RowHeight="25"
+			GridLinesVisibility="All"
+			AlternatingRowBackground="White"
+			RowBackground="White"
+			CanUserSortColumns="False">
+			
+			<interactivity:Interaction.Behaviors>
+				<local:DataGridDoubleClickOpenFormBehavior />
+			</interactivity:Interaction.Behaviors>
+
+			<DataGrid.ContextMenu>
+				<ContextMenu>
+					<MenuItem Command="{Binding AddStoragePoint}"
+							  Header="Добавить пункт хранения"/>
+					<MenuItem Command="{Binding ChangeStoragePoint}"
+							  CommandParameter="{Binding SelectedStoragePoint.Id}"
+							  Header="Редактировать пункт хранения"/>
+					<MenuItem Command="{Binding DeleteStoragePoint}"
+							  CommandParameter="{Binding SelectedStoragePoint}"
+							  Header="Удалить пункт хранения"/>
+				</ContextMenu>
+			</DataGrid.ContextMenu>
+
+			<DataGrid.Columns>
+				<DataGridTextColumn
+					x:DataType="models:StoragePoint"
+					Width="*"
+					IsReadOnly="True"
+					Binding="{Binding SgukName}">
+					<DataGridTextColumn.HeaderTemplate>
+						<DataTemplate>
+							<Border Classes="headerTemplate">
+								<Grid ColumnDefinitions="*,Auto" Margin="3">
+									<TextBlock Grid.Column="0" Text="Наименование пункта хранения"/>
+									<!--<Button Grid.Column="1"/>-->
+								</Grid>
+							</Border>
+						</DataTemplate>
+					</DataGridTextColumn.HeaderTemplate>
+				</DataGridTextColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</Window>

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using Avalonia.Threading;
+﻿using Avalonia.Threading;
+using Client_App.Services;
+using Client_App.ViewModels;
+using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views.ProgressBar;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
@@ -16,6 +11,13 @@ using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.Interfaces;
 using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using static Client_App.Resources.StaticStringMethods;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
@@ -25,7 +27,22 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport;
 /// </summary>
 public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
 {
-    public override bool CanExecute(object? parameter) => true;
+    private readonly FormsTabControlBaseVM _formsTabControlVM;
+
+    public ExcelExportFormAnalysisAsyncCommand(FormsTabControlBaseVM formsTabControlVM)
+    {
+        _formsTabControlVM = formsTabControlVM;
+
+        formsTabControlVM.PropertyChanged += (sender, e) =>
+        {
+            if (e.PropertyName == nameof(FormsTabControlBaseVM.SelectedReport))
+            {
+                OnCanExecuteChanged();
+            }
+        };
+    }
+
+    public override bool CanExecute(object? parameter) => _formsTabControlVM.SelectedReport is not null;
 
     public override async Task AsyncExecute(object? parameter)
     {
@@ -49,45 +66,49 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
 
-        progressBarVM.SetProgressBar(5, "Определение имени файла", "Выгрузка отчёта для анализа", ExportType);
-        var fileName = await GetFileName(repParam, progressBar, cts);
+        var organizationId = ReportExportLock.ResolveOrganizationId(repParam!, _formsTabControlVM.SelectedReports);
+        if (organizationId <= 0)
+        {
+            await progressBar.CloseAsync();
+            return;
+        }
 
-        progressBarVM.SetProgressBar(7, "Запрос пути сохранения");
-        var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+        using var exportLock = ReportExportLock.Acquire(repId, organizationId);
 
-        progressBarVM.SetProgressBar(10, "Создание временной БД");
-        var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-
-        progressBarVM.SetProgressBar(15, "Загрузка отчёта");
-        var rep = await GetReportWithRows(repId, tmpDbPath, cts);
-
-        progressBarVM.SetProgressBar(40, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-
-        progressBarVM.SetProgressBar(50, "Создание страниц и заполнение заголовков");
-        var startColumn =  await CreateWorksheetsAndFillHeaders(excelPackage, rep.FormNum_DB);
-
-        progressBarVM.SetProgressBar(60, "Выгрузка строчек форм");
-        await ExcelExportRows(rep, startColumn);
-
-        progressBarVM.SetProgressBar(80, "Выгрузка строчек примечаний");
-        await ExcelExportNotes(rep, startColumn);
-
-        progressBarVM.SetProgressBar(90, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-
-        progressBarVM.SetProgressBar(95, "Очистка временных данных");
         try
         {
-            File.Delete(tmpDbPath);
+            progressBarVM.SetProgressBar(5, "Определение имени файла", "Выгрузка отчёта для анализа", ExportType);
+            var fileName = await GetFileName(repParam, progressBar, cts);
+
+            progressBarVM.SetProgressBar(7, "Запрос пути сохранения");
+            var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+            progressBarVM.SetProgressBar(15, "Загрузка отчёта");
+            var rep = await GetReportWithRows(repId, cts);
+
+            progressBarVM.SetProgressBar(40, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(fullPath);
+
+            progressBarVM.SetProgressBar(50, "Создание страниц и заполнение заголовков");
+            var startColumn =  await CreateWorksheetsAndFillHeaders(excelPackage, rep.FormNum_DB);
+
+            progressBarVM.SetProgressBar(60, "Выгрузка строчек форм");
+            await ExcelExportRows(rep, startColumn);
+
+            progressBarVM.SetProgressBar(80, "Выгрузка строчек примечаний");
+            await ExcelExportNotes(rep, startColumn);
+
+            progressBarVM.SetProgressBar(90, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            await progressBar.CloseAsync();
         }
         catch
         {
-            // ignored
+            try { await progressBar.CloseAsync(); } catch { /* ignored */ }
+            throw;
         }
-
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-        await progressBar.CloseAsync();
     }
 
     #region CreateWorksheetsAndFillHeaders
@@ -196,6 +217,7 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
             WorksheetPrim.Cells.AutoFitColumns();
         }
         Worksheet.View.FreezePanes(2, 1);
+        Worksheet.Cells[Worksheet.Dimension.Address].AutoFilter = true;
         WorksheetPrim.View.FreezePanes(2, 1);
 
         return Task.FromResult(masterHeaderLength);
@@ -419,15 +441,14 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
     #region GetReportWithRows
 
     /// <summary>
-    /// Получение отчёта вместе со строчками из БД.
+    /// Получение отчёта вместе со строчками из основной БД (снимок AsNoTracking в память).
     /// </summary>
     /// <param name="repId">Id отчёта.</param>
-    /// <param name="dbPath">Полный путь к временной БД.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Отчёт вместе со строчками.</returns>
-    private static async Task<Report> GetReportWithRows(int repId, string dbPath, CancellationTokenSource cts)
+    private static async Task<Report> GetReportWithRows(int repId, CancellationTokenSource cts)
     {
-        await using var db = new DBModel(dbPath);
+        await using var db = new DBModel(StaticConfiguration.DBPath);
         return await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()

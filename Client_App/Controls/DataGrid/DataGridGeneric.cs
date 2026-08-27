@@ -2008,6 +2008,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
                             ((TextBox)textBox).AcceptsReturn = true;
                         }
+
                     }
                 }
 

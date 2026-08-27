@@ -5,8 +5,6 @@ namespace Client_App.Resources.CustomConverters;
 
 public class BoolInverterConverter : IValueConverter
 {
-    #region IValueConverter Members
-
     public object? Convert(object? value, Type targetType, object? parameter, System.Globalization.CultureInfo culture)
     {
         if (value is bool b)
@@ -24,6 +22,4 @@ public class BoolInverterConverter : IValueConverter
         }
         return value;
     }
-
-    #endregion
 }

@@ -33,11 +33,11 @@ namespace Models.Forms.Form5
 
         #region OperationCode (2)
 
+        [MaxLength(2)]
+        [Column(TypeName = "varchar(2)")]
         public string OperationCode_DB { get; set; } = "";
 
 
-        [MaxLength(2)]
-        [Column(TypeName = "varchar(2)")]
         [NotMapped]
         public RamAccess<string> OperationCode
         {
@@ -86,6 +86,8 @@ namespace Models.Forms.Form5
 
         #region TypeORI (3)
 
+        [MaxLength(64)]
+        [Column(TypeName = "varchar(64)")]
         public string TypeORI_DB { get; set; } = "";
 
 
@@ -679,5 +681,22 @@ namespace Models.Forms.Form5
         }
 
         #endregion
+
+        public override bool IsContentEqual(Form otherForm)
+        {
+            if (otherForm is not Form53 formToCompare) return false;
+
+            return NumberInOrder_DB == formToCompare.NumberInOrder_DB
+                   && OperationCode_DB == formToCompare.OperationCode_DB
+                   && TypeORI_DB == formToCompare.TypeORI_DB
+                   && VarietyORI_DB == formToCompare.VarietyORI_DB
+                   && AggregateState_DB == formToCompare.AggregateState_DB
+                   && ProviderOrRecieverOKPO_DB == formToCompare.ProviderOrRecieverOKPO_DB
+                   && Radionuclids_DB == formToCompare.Radionuclids_DB
+                   && Activity_DB == formToCompare.Activity_DB
+                   && Mass_DB == formToCompare.Mass_DB
+                   && Volume_DB == formToCompare.Volume_DB
+                   && Quantity_DB == formToCompare.Quantity_DB;
+        }
     }
 }

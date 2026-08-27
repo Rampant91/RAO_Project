@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Client_App.ViewModels;
 using Models.Collections;
 using Avalonia.Threading;
+using Client_App.Resources.CustomComparers;
 
 namespace Client_App.Commands.AsyncCommands;
 

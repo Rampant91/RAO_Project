@@ -2,21 +2,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" 
+             d:DesignWidth="800" 
+             d:DesignHeight="450"
 			 xmlns:controls="clr-namespace:Client_App.Views.Controls"
 	         xmlns:models="clr-namespace:Models.Collections;assembly=Models"
 			 xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
 			 xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 			 xmlns:local="using:Client_App.Behaviors"
+			 xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
 			 xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
 			 xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
 			 x:DataType="vm:Forms2TabControlVM"
              x:Class="Client_App.Views.MainWindowTabs.Forms2TabControl">
 
 	<UserControl.Resources>
-        <customConverters:BoolInverterConverter x:Key="BoolInverterConverter"/>
+		<customConverters:NullToTooltipConverter x:Key="NullToTooltipConverter"/>
+        <customConverters:NotNullToBoolConverter x:Key="NotNullToBoolConverter"/>
+        <customConverters:AppLaunchedAndSelectedReportsVisibleConverter x:Key="AppLaunchedAndSelectedReportsVisibleConverter"/>
+        <customConverters:ExcelExportByFormCommandParameterConverter x:Key="ExcelExportByFormCommandParameterConverter"/>
         <converter:IfNullShowAnotherValue x:Key="IfNullShowAnotherValue"/>
-		<converter:StringEqualsToColorConverter x:Key="StringEqualsToColor" />
 	</UserControl.Resources>
 
     <Design.DataContext>
@@ -28,16 +33,21 @@
               ColumnDefinitions="5*,3*" >
 			<Grid Grid.Row ="0" 
                   Grid.Column="0" 
-                  RowDefinitions="Auto,*,Auto">
-				<TextBox Text="{Binding SearchText}" 
-                         Grid.Row="0" 
+                  RowDefinitions="Auto,Auto,*,Auto">
+				<TextBlock Grid.Row="0"
+						   Margin="5,5,5,0"
+						   FontWeight="SemiBold"
+						   Text="Список организаций:"
+						   TextWrapping="Wrap" />
+				<TextBox Grid.Row="1" 
                          Margin="5" 
-                         Watermark ="Поиск..." />
+                         Watermark ="Поиск..."
+                         Text="{Binding SearchText, Mode=OneWayToSource}"/>
 				<DataGrid x:Name="ReportsDataGrid"
-                          Grid.Row="1" Margin="5"
-                          Items="{Binding ReportsCollection}"
+                          Grid.Row="2" Margin="5"
+                          Items="{Binding ReportsCollection, Mode=TwoWay}"
                           SelectionMode="Single"
-                          SelectedItem="{Binding SelectedReports}"
+                          SelectedItem="{Binding SelectedReports, Mode=OneWayToSource}"
                           RowHeight="25"
                           GridLinesVisibility="All"
                           AlternatingRowBackground="White"
@@ -45,38 +55,245 @@
                           CanUserSortColumns="False">
 
 					<interactivity:Interaction.Behaviors>
-						<local:DataGridDoubleClickOpenFormBehavior />
+						<dgBehaviors:DataGridDoubleClickOpenFormBehavior />
+                        <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
 					</interactivity:Interaction.Behaviors>
 
 					<DataGrid.ContextMenu>
 						<ContextMenu>
-							<MenuItem Header="Добавить организацию"
-									  Command="{Binding MainWindowVM.AddReports}"/>
+
+                            <ContextMenu.Styles>
+                                <Style Selector="MenuItem">
+                                    <Setter Property="Background" Value="WhiteSmoke"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="FontSize" Value="14"/>
+                                </Style>
+                            </ContextMenu.Styles>
+
+                            <MenuItem Header="Добавить организацию"
+                                      Command="{Binding MainWindowVM.AddReports, Mode=OneWay}"/>
 							<MenuItem Header="Редактировать отчёт по форме 2.0 организации"
-									  Command="{Binding MainWindowVM.NewChangeReports}"/>
-                            <MenuItem Header="Импортировать отчёт в организацию">
+									  Command="{Binding NewChangeReports, Mode=OneWay}"
+                                      CommandParameter="{Binding SelectedReport}"
+                                      IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"/>
+                            <MenuItem Header="Импортировать отчёт в организацию"
+                                      IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}">
                                 <MenuItem Header="Из RAODB"
-                                          Click="ImportRaodb_Click"/>
+                                          Command="{Binding ImportRaodb, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
                                 <MenuItem Header="Из Excel"
-                                          Click="ImportExcel_Click"/>
+                                          Command="{Binding ImportExcel, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
                             </MenuItem>
-							<MenuItem Header="Удалить организацию"
-									  Command="{Binding MainWindowVM.DeleteReports}"
-									  CommandParameter="{Binding SelectedReports}"/>
-							<MenuItem Header="Выгрузить организацию"
-									  Command="{Binding MainWindowVM.ExportReports}"
-									  CommandParameter="{Binding SelectedReports}"/>
-							<MenuItem Header="Выгрузить организацию с указанием диапазона дат"
-									  Command="{Binding MainWindowVM.ExportReportsWithDateRange}"
-									  CommandParameter="{Binding SelectedReports}"/>
-							<MenuItem Header="Выгрузить все организации в один файл"
-									  Command="{Binding MainWindowVM.ExportAllReportsOneFile}"/>
-							<MenuItem Header="Выгрузить все организации в отдельные файлы"
-									  Command="{Binding MainWindowVM.ExportAllReports}"
-									  CommandParameter="{Binding SelectedReports}"/>
-							<MenuItem Header="Проверить все формы организации"
-									  Command="{Binding MainWindowVM.ExcelExportCheckAllForms}"
-									  CommandParameter="{Binding SelectedReports}"/>
+                            <MenuItem Header="Выгрузить организацию"
+                                      IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}">
+                                <MenuItem Header="Все отчёты в один .RAODB файл"
+                                          Command="{Binding MainWindowVM.ExportReports, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+                                <MenuItem Header="Отчёты за указанный диапазон дат в один .RAODB файл"
+                                          Command="{Binding MainWindowVM.ExportReportsWithDateRange, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+                            </MenuItem>
+                            <MenuItem Header="Выгрузить все организации">
+                                <MenuItem.IsVisible>
+                                    <MultiBinding Converter="{StaticResource AppLaunchedAndSelectedReportsVisibleConverter}">
+                                        <Binding Path="MainWindowVM.AppLaunchedAtNorao" Mode="OneWay"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.IsVisible>
+                                <MenuItem Header="В один .RAODB файл"
+                                          Command="{Binding MainWindowVM.ExportAllReportsOneFile, Mode=OneWay}"/>
+                                <MenuItem Header="Из субъекта РФ в один .RAODB файл"
+                                          Command="{Binding MainWindowVM.ExportAllReportsFromSubjectRFOneFile, Mode=OneWay}"/>
+                                <MenuItem Header="В отдельные .RAODB файлы"
+                                          Command="{Binding MainWindowVM.ExportAllReports, Mode=OneWay}"/>
+                            </MenuItem>
+                            <MenuItem Header="Выгрузить все отчеты в отдельные .RAODB файлы"
+                                      Command="{Binding MainWindowVM.ExportAllReport, Mode=OneWay}"
+                                      CommandParameter="{Binding SelectedReports}"
+                                      IsVisible="{Binding MainWindowVM.AppLaunchedAtNorao, Mode=OneWay}"/>
+                            <MenuItem Header="Выгрузить отчеты организации в отдельные .xlsx файлы">
+                            <MenuItem.IsVisible>
+                                <MultiBinding Converter="{StaticResource AppLaunchedAndSelectedReportsVisibleConverter}">
+                                    <Binding Path="MainWindowVM.AppLaunchedAtNorao" Mode="OneWay"/>
+                                    <Binding Path="SelectedReports" Mode="OneWay"/>
+                                </MultiBinding>
+                            </MenuItem.IsVisible>
+                            <MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+                                      Header="Все формы 2">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="all-2"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+                            <Separator/>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  Header="Форма 2.1">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.1"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  Header="Форма 2.2">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.2"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  Header="Форма 2.3">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.3"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  Header="Форма 2.4">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.4"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  Header="Форма 2.5">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.5"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  Header="Форма 2.6">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.6"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  Header="Форма 2.7">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.7"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  Header="Форма 2.8">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.8"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  Header="Форма 2.9">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.9"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  Header="Форма 2.10">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.10"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  Header="Форма 2.11">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.11"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+							<MenuItem Command="{Binding MainWindowVM.ExcelExportAllFormsByFormNumber, Mode=OneWay}"
+									  Header="Форма 2.12">
+                                <MenuItem.CommandParameter>
+                                    <MultiBinding Converter="{StaticResource ExcelExportByFormCommandParameterConverter}">
+                                        <Binding Source="2.12"/>
+                                        <Binding Path="SelectedReports" Mode="OneWay"/>
+                                    </MultiBinding>
+                                </MenuItem.CommandParameter>
+                            </MenuItem>
+						</MenuItem>
+						<MenuItem Header="Аналитика"
+                                  IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}">
+                            <MenuItem Command="{Binding MainWindowVM.ExcelExportAll, Mode=OneWay}"
+                                      CommandParameter="SelectedOrg"
+                                      Header="Все формы"/>
+                            <MenuItem Header="Сверка отчётов с БД"
+                                      Command="{Binding MainWindowVM.ExcelExportCompareFormPrint, Mode=OneWay}"
+                                      CommandParameter="{Binding SelectedReports, Mode=OneWay}"
+                                      IsVisible="{Binding MainWindowVM.AppLaunchedAtNorao, Mode=OneWay}"/>
+                            <MenuItem Header="Формы 2">
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.1"
+                                          Header="Форма 2.1"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.2"
+                                          Header="Форма 2.2"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.3"
+                                          Header="Форма 2.3"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.4"
+                                          Header="Форма 2.4"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.5"
+                                          Header="Форма 2.5"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.6"
+                                          Header="Форма 2.6"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.7"
+                                          Header="Форма 2.7"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.8"
+                                          Header="Форма 2.8"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.9"
+                                          Header="Форма 2.9"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.10"
+                                          Header="Форма 2.10"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.11"
+                                          Header="Форма 2.11"/>
+                                <MenuItem Command="{Binding MainWindowVM.ExcelExportForms, Mode=OneWay}"
+                                          CommandParameter="Org2.12"
+                                          Header="Форма 2.12"/>
+                            </MenuItem>
+                        </MenuItem>
+						<MenuItem Header="Проверить все отчёты организации"
+								  Command="{Binding MainWindowVM.ExcelExportCheckAllForms, Mode=OneWay}"
+                                  IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"
+								  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+						<MenuItem Header="Удалить организацию"
+                                  Command="{Binding MainWindowVM.DeleteReports, Mode=OneWay}"
+                                  IsVisible="{Binding SelectedReports, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"
+                                  CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>
 
@@ -144,10 +361,10 @@
 
 					</DataGrid.Columns>
 				</DataGrid>
-				<Border Grid.Row="2" Classes="pageControlContainer">
+				<Border Grid.Row="3" Classes="pageControlContainer">
 					<Grid RowDefinitions="Auto,Auto"
                           ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
-						<TextBlock Text="Текущая страница"
+						<TextBlock Text="Текущая страница:"
                                    Grid.Row="0" 
                                    Grid.Column="0" 
                                    Margin="5"
@@ -157,7 +374,7 @@
                                                    Grid.Column="1" 
                                                    Margin="5"
                                                    Minimum="1"/>
-						<TextBlock Text ="Кол-во страниц:"
+						<TextBlock Text="Кол-во страниц:"
                                    Grid.Row="0" 
                                    Grid.Column="2" 
                                    Margin="5"
@@ -167,7 +384,7 @@
                                    Grid.Column="3" 
                                    Margin="5"
                                    VerticalAlignment="Center"/>
-						<TextBlock Text="Кол-во строчек на странице" 
+						<TextBlock Text="Кол-во орг. на странице" 
                                    Grid.Row="1" 
                                    Grid.Column="0" 
                                    Margin="5"
@@ -177,7 +394,7 @@
                                                    Grid.Column="1" 
                                                    Margin="5"
                                                    Minimum="1"/>
-						<TextBlock Text="Всего орг.:" 
+						<TextBlock Text="Всего организаций:" 
                                    Grid.Row="1" 
                                    Grid.Column="2" 
                                    Margin="5"
@@ -187,7 +404,7 @@
                                    Grid.Column="3" 
                                    Margin="5"
                                    VerticalAlignment="Center"/>
-						<TextBlock Text="Кол-во отчетов:"
+						<TextBlock Text="Всего отчетов:"
                                    Grid.Row="1" 
                                    Grid.Column="4" 
                                    Margin="5"
@@ -202,100 +419,288 @@
 			</Grid>
 			<ScrollViewer Grid.Row ="0" 
                           Grid.Column="1" 
-                          Margin="5">
+                          Margin="5"
+                          HorizontalScrollBarVisibility="Disabled"
+                          VerticalScrollBarVisibility="Auto"
+                          ToolTip.Tip="{Binding SelectedReports, Converter={StaticResource NullToTooltipConverter}, ConverterParameter='Для создания отчёта выберите организацию из списка организаций. Если организации в списке отсутствуют, сначала добавьте свою организацию в список.'}">
 				<StackPanel>
-					<Button Margin="0,0,0,5" 
-							Command="{Binding MainWindowVM.AddForm}"
+					<StackPanel.Styles>
+						<Style Selector="Button">
+							<Setter Property="HorizontalAlignment" Value="Stretch"/>
+							<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+							<Setter Property="Padding" Value="6,3"/>
+							<Setter Property="Margin" Value="0,0,0,2.5"/>
+						</Style>
+					</StackPanel.Styles>
+					<TextBlock Margin="0,0,0,4"
+							   FontWeight="SemiBold"
+                               FontSize="12"
+							   Text="Создать отчёт по форме:"
+							   TextWrapping="Wrap"/>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.1"
-							Content="Форма 2.1: Сортировка, переработка и кондиционирование РАО на установках"/>
-					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.1: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Сортировка, переработка и кондиционирование РАО на установках" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.2"
-							Content="Форма 2.2: Наличие РАО в пунктах хранения, местах сбора и/или временного хранения"/>
-					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.2: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Наличие РАО в пунктах хранения, местах сбора и/или временного хранения" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.3"
-							Content="Форма 2.3: Разрешение на размещение РАО в пунктах хранения, местах сбора и/или временного хранения"/>
-					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.3: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Разрешение на размещение РАО в пунктах хранения, местах сбора и/или временного хранения" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.4"
-							Content="Форма 2.4: Постановка на учет и снятие с учета РВ, содержащихся в отработавшем ядерном топливе"/>
-					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.4: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Постановка на учет и снятие с учета РВ, содержащихся в отработавшем ядерном топливе" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.5"
-							Content="Форма 2.5: Наличие РВ, содержащихся в ядерном топливе, в пунктах хранения"/>
-					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.5: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Наличие РВ, содержащихся в ядерном топливе, в пунктах хранения" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.6"
-							Content="Форма 2.6: Контроль загрязнения подземных вод РВ"/>
-					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.6: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Контроль загрязнения подземных вод РВ" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.7"
-							Content="Форма 2.7: Поступление радионуклидов в атмосферный воздух"/>
-					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.7: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Поступление радионуклидов в атмосферный воздух" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.8"
-							Content="Форма 2.8: Отведение сточных вод, содержащих радионуклиды"/>
-					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.8: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Отведение сточных вод, содержащих радионуклиды" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.9"
-							Content="Форма 2.9: Активность радионуклидов, отведенных со сточными водами"/>
-					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.9: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Активность радионуклидов, отведенных со сточными водами" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.10"
-							Content="Форма 2.10: Территории, загрязненные радионуклидами"/>
-					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.10: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Территории, загрязненные радионуклидами" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.11"
-							Content="Форма 2.11: Радионуклидный состав загрязненных участков территорий"/>
-					<Button Margin="0,0,0,5"
-							Command="{Binding MainWindowVM.AddForm}"
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.11: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Радионуклидный состав загрязненных участков территорий" />
+                        </Grid>
+					</Button>
+					<Button Command="{Binding OldAddReport, Mode=OneWay}"
 							CommandParameter="2.12"
-							Content="Форма 2.12: Суммарные сведения о РВ не в составе ЗРИ"/>
+                            IsEnabled="{Binding SelectedReports, 
+                                Converter={StaticResource NotNullToBoolConverter}, 
+                                Mode=OneWay}">
+                        <Grid ColumnDefinitions="Auto,*">
+                            <TextBlock Grid.Column="0"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Top"
+                                       Text="2.12: " />
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Top"
+                                       TextAlignment="Left"
+                                       TextWrapping="Wrap"
+                                       Text="Суммарные сведения о РВ не в составе ЗРИ" />
+                        </Grid>
+					</Button>
 				</StackPanel>
 			</ScrollViewer>
+
 			<Grid Grid.Row ="1" 
                   Grid.Column="0" 
                   Grid.ColumnSpan="2" 
-                  RowDefinitions="*,Auto" >
-				<DataGrid Grid.Row="0" 
+                  RowDefinitions="Auto,*,Auto" >
+				<TextBlock Grid.Row="0"
+						   Margin="5,5,5,0"
+						   FontWeight="SemiBold"
+						   Text="Список отчётов:"
+						   TextWrapping="Wrap" />
+				<DataGrid x:Name="ReportDataGrid"
+                          Grid.Row="1" 
                           Margin="5"
-						  Items="{Binding ReportCollection}"
-						  SelectedItem="{Binding SelectedReport}"
-						  RowHeight="25"
-						  GridLinesVisibility="All"
-						  AlternatingRowBackground="White"
-						  RowBackground="White"
-						  CanUserSortColumns="False">
+                          Items="{Binding ReportCollection}"
+                          SelectionMode="Single"
+                          SelectedItem="{Binding SelectedReport}"
+                          RowHeight="25"
+                          GridLinesVisibility="All"
+                          AlternatingRowBackground="White"
+                          RowBackground="White"
+                          CanUserSortColumns="False">
 					
 					<interactivity:Interaction.Behaviors>
-						<local:DataGridDoubleClickOpenFormBehavior />
+						<dgBehaviors:DataGridDoubleClickOpenFormBehavior />
+                        <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
 					</interactivity:Interaction.Behaviors>
 					
 					<DataGrid.ContextMenu>
-						<ContextMenu>
-							<MenuItem Header="Редактировать отчёт"
-									  Command="{Binding MainWindowVM.ChangeForm}"
-									  CommandParameter="{Binding SelectedReport}"/>
-							<MenuItem Header="Удалить отчёт"
-									  Command="{Binding MainWindowVM.NewDeleteForm}"
-									  CommandParameter="{Binding SelectedReport}"/>
-                            <MenuItem Header="Выгрузить отчёт в Excel">
+                        <ContextMenu>
+                            <MenuItem Header="Редактировать отчёт"
+                                      Command="{Binding NewChangeReport, Mode=OneWay}"
+                                      CommandParameter="{Binding SelectedReport}"
+                                      IsVisible="{Binding SelectedReport, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"/>
+                            <MenuItem Header="Выгрузить отчёт в Excel"
+                                      IsVisible="{Binding SelectedReport, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}">
                                 <MenuItem Header="для печати"
-                                          Click="ExportExcelPrint_Click"/>
+                                          Command="{Binding ExcelExportFormPrint, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReport}"/>
                                 <MenuItem Header="для анализа"
-                                          Click="ExportExcelAnalysis_Click"/>
+                                          Command="{Binding ExcelExportFormAnalysis, Mode=OneWay}"
+                                          CommandParameter="{Binding SelectedReport}"/>
                             </MenuItem>
-							<MenuItem Header="Выгрузить отчёт в RAODB"
-									  Command="{Binding MainWindowVM.ExportForm}"
-									  CommandParameter="{Binding SelectedReport}"/>
-							<MenuItem Header="Проверить отчёт"
-									  Command="{Binding MainWindowVM.CheckFormFromMain}"
-									  CommandParameter="{Binding SelectedReport}"/>
-							<MenuItem Header="Сохранить комментарий"
-									  Command="{Binding MainWindowVM.SaveReports}"
-									  CommandParameter="{Binding SelectedReport}"/>
-						</ContextMenu>
+                            <MenuItem Header="Выгрузить отчёт в .RAODB"
+                                      Command="{Binding ExportReport, Mode=OneWay}"
+                                      CommandParameter="{Binding SelectedReport}"
+                                      IsVisible="{Binding SelectedReport, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"/>
+                            <MenuItem Header="Проверить отчёт"
+                                      Command="{Binding CheckReportFromMain, Mode=OneWay}"
+                                      CommandParameter="{Binding SelectedReport}"
+                                      IsVisible="{Binding SelectedReport, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"/>
+                            <MenuItem Header="Сохранить комментарий"
+                                      Command="{Binding MainWindowVM.SaveReports}"
+                                      CommandParameter="{Binding SelectedReport}"/>
+                            <MenuItem Header="Удалить отчёт"
+                                      Command="{Binding DeleteReport}"
+                                      CommandParameter="{Binding SelectedReport}"
+                                      IsVisible="{Binding SelectedReport, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"/>
+                        </ContextMenu>
 					</DataGrid.ContextMenu>
 
 					<DataGrid.Columns>
@@ -376,7 +781,7 @@
 						</DataGridTextColumn>
 					</DataGrid.Columns>
 				</DataGrid>
-				<Border Grid.Row="1" Classes="pageControlContainer">
+				<Border Grid.Row="2" Classes="pageControlContainer">
 					<Grid RowDefinitions="Auto,Auto"
                           ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 						<TextBlock Text="Текущая страница"
@@ -388,7 +793,7 @@
                                                    Grid.Column="1" 
                                                    Margin="5"
                                                    Minimum="1"/>
-						<TextBlock Text ="Кол-во страниц:"
+						<TextBlock Text ="Всего страниц:"
                                    Grid.Row="0" 
                                    Grid.Column="2" 
                                    Margin="5"/>
@@ -396,7 +801,7 @@
                                    Grid.Row="0" 
                                    Grid.Column="3" 
                                    Margin="5"/>
-						<TextBlock Text="Кол-во строчек на странице"
+						<TextBlock Text="Отчётов на странице:"
                                    Grid.Row="1" 
                                    Grid.Column="0" 
                                    Margin="5"/>
@@ -405,7 +810,7 @@
                                                    Grid.Column="1" 
                                                    Margin="5"
                                                    Minimum="1"/>
-						<TextBlock Text="Кол-во отчетов:"
+						<TextBlock Text="Всего отчетов:"
                                    Grid.Row="1" 
                                    Grid.Column="2" 
                                    Margin="5"/>
@@ -413,7 +818,7 @@
                                    Grid.Row="1" 
                                    Grid.Column="3" 
                                    Margin="5"/>
-						<TextBlock Text="Кол-во строчек:"
+						<TextBlock Text="Строчек в отчёте:"
                                    Grid.Row="1" 
                                    Grid.Column="4" 
                                    Margin="5"/>
@@ -424,117 +829,26 @@
 						<StackPanel Grid.Row="0" 
                                     Grid.RowSpan="2"
 									Grid.Column="6"
-									Margin="5,0,0,0"
-									Orientation="Horizontal">
-							<Button Content="2.1" 
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
-                                    CommandParameter="2.1"
-									Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=2.1}" />
-							<Button Content="2.2" 
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
-                                    CommandParameter="2.2"
-                                    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=2.2}" />
-							<Button Content="2.3" 
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
-                                    CommandParameter="2.3"
-                                    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=2.3}" />
-							<Button Content="2.4" 
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
-                                    CommandParameter="2.4"
-                                    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=2.4}" />
-							<Button Content="2.5" 
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
-                                    CommandParameter="2.5"
-                                    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=2.5}" />
-							<Button Content="2.6"
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
-                                    CommandParameter="2.6"
-                                    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=2.6}" />
-							<Button Content="2.7" 
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
-                                    CommandParameter="2.7"
-                                    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=2.7}" />
-							<Button Content="2.8" 
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
-                                    CommandParameter="2.8"
-                                    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=2.8}" />
-							<Button Content="2.9" 
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
-                                    CommandParameter="2.9"
-                                    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=2.9}" />
-							<Button Content="2.10"
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
-                                    CommandParameter="2.10"
-									Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=2.10}" />
-							<Button Content="2.11" 
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
-                                    CommandParameter="2.11"
-									Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=2.11}" />
-							<Button Content="2.12" 
-                                    Width="35" 
-                                    Height="40" 
-                                    Margin="0,0,2,0"
-									Command="{Binding MainWindowVM.GoToFormNum}" 
-                                    CommandParameter="2.12"
-                                    Background="{Binding FormNumWhiteList, 
-										Converter={StaticResource StringEqualsToColor}, 
-										ConverterParameter=2.12}" />
+									Margin="5,0,0,0">
+							<TextBlock Margin="0,0,0,4"
+									   Text="Фильтр по номеру формы:"
+									   TextWrapping="Wrap" />
+							<StackPanel Orientation="Horizontal">
 
+                            <controls:FormNumButton FormNum="2.1"/>
+                            <controls:FormNumButton FormNum="2.2"/>
+                            <controls:FormNumButton FormNum="2.3"/>
+                            <controls:FormNumButton FormNum="2.4"/>
+                            <controls:FormNumButton FormNum="2.5"/>
+                            <controls:FormNumButton FormNum="2.6"/>
+                            <controls:FormNumButton FormNum="2.7"/>
+                            <controls:FormNumButton FormNum="2.8"/>
+                            <controls:FormNumButton FormNum="2.9"/>
+                            <controls:FormNumButton FormNum="2.10"/>
+                            <controls:FormNumButton FormNum="2.11"/>
+                            <controls:FormNumButton FormNum="2.12"/>
+
+							</StackPanel>
 						</StackPanel>
 					</Grid>
 				</Border>

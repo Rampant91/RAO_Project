@@ -2,10 +2,13 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Avalonia.Controls;
+using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
+using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
-using Models.DBRealization;
+using MessageBox.Avalonia.DTO;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
@@ -38,25 +41,104 @@ public abstract class ExportRaodbBaseAsyncCommand : BaseAsyncCommand
         IsExecute = false;
     }
 
+    #region CancelCommandAndCloseProgressBarWindow
+
+    /// <summary>
+    /// Отмена исполняемой команды и закрытие окна прогрессбара.
+    /// </summary>
+    /// <param name="cts">Токен.</param>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    private protected static async Task CancelCommandAndCloseProgressBarWindow(
+        CancellationTokenSource cts,
+        AnyTaskProgressBar? progressBar = null)
+    {
+        await cts.CancelAsync();
+        if (progressBar is not null) await progressBar.CloseAsync();
+        cts.Token.ThrowIfCancellationRequested();
+    }
+
+    #endregion
+
     /// <summary>
     /// Создание временной копии БД в папке temp
     /// </summary>
+    /// <param name="progressBar">Окно прогрессбара.</param>
+    /// <param name="cts">Токен.</param>
     /// <returns>Путь к временной БД</returns>
-    private protected static string CreateTempDataBase()
+    private protected static async Task<string> CreateTempDataBase(
+        AnyTaskProgressBar? progressBar,
+        CancellationTokenSource cts)
     {
-        var dbReadOnlyPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
+        var index = 0;
+        var tmpDbPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + ".RAODB");
+        while (File.Exists(tmpDbPath))
+        {
+            tmpDbPath = Path.Combine(BaseVM.TmpDirectory, BaseVM.DbFileName + $"_{++index}.RAODB");
+        }
+
         try
         {
-            if (!StaticConfiguration.IsFileLocked(dbReadOnlyPath))
+            File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), tmpDbPath);
+        }
+        catch (Exception ex)
+        {
+            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в .RAODB",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "При создании файла временной БД возникла ошибка." +
+                                     $"{Environment.NewLine}Операция выгрузки принудительно завершена.",
+                    MinHeight = 150,
+                    MinWidth = 250,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                })
+                .ShowDialog(progressBar ?? Desktop.MainWindow));
+
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+        }
+
+        return tmpDbPath;
+    }
+
+    /// <summary>
+    /// Безвозвратно удаляет временную копию основной БД после завершения работы с ней.
+    /// Повторяет попытку при кратковременной блокировке файла Firebird.
+    /// </summary>
+    /// <param name="tmpDbPath">Путь к временной копии (или null/пусто — no-op).</param>
+    private protected static void TryDeleteTempDataBase(string? tmpDbPath)
+    {
+        if (string.IsNullOrEmpty(tmpDbPath))
+        {
+            return;
+        }
+
+        for (var attempt = 0; attempt < 5; attempt++)
+        {
+            try
             {
-                File.Delete(dbReadOnlyPath);
-                File.Copy(Path.Combine(BaseVM.RaoDirectory, BaseVM.DbFileName + ".RAODB"), dbReadOnlyPath);
+                if (File.Exists(tmpDbPath))
+                {
+                    File.Delete(tmpDbPath);
+                }
+
+                return;
+            }
+            catch
+            {
+                if (attempt == 4)
+                {
+                    return;
+                }
+
+                Thread.Sleep(100);
             }
         }
-        catch
-        {
-            return dbReadOnlyPath;
-        }
-        return dbReadOnlyPath;
     }
 }

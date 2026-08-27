@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Models.CheckForm;
 using Models.Collections;
 using Models.Forms.Form1;
 using Note = Models.Forms.Note;
+using Models.Helpers;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -563,7 +564,7 @@ public abstract class CheckF15 : CheckBase
     private static List<CheckError> Check_006(List<Form15> forms, Report rep, int line)
     {
         List<CheckError> result = new();
-        string[] nonApplicableOperationCodes = { "01" };
+        string[] nonApplicableOperationCodes = { "01", "10" };
         var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var opDateStr = ReplaceNullAndTrim(forms[line].OperationDate_DB);
         var stPerStr = ReplaceNullAndTrim(rep.StartPeriod_DB);
@@ -744,7 +745,7 @@ public abstract class CheckF15 : CheckBase
     {
         List<CheckError> result = new();
         var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
-        if (rads is not ("" or "-")) return result;
+        if (!DashStringHelper.IsNullOrEmptyOrDash(rads)) return result;
         var radsSet = rads
             .ToLower()
             .Replace(',', ';')
@@ -797,7 +798,7 @@ public abstract class CheckF15 : CheckBase
         List<CheckError> result = new();
         var factoryNum = ReplaceNullAndTrim(forms[line].FactoryNumber_DB);
 
-        if (factoryNum is "-") return result;
+        if (DashStringHelper.IsDash(factoryNum)) return result;
         var quantity = forms[line].Quantity_DB ?? 0;
 
         if (string.IsNullOrWhiteSpace(factoryNum))
@@ -943,7 +944,7 @@ public abstract class CheckF15 : CheckBase
         List<CheckError> result = new();
         var operationDate = ReplaceNullAndTrim(forms[line].OperationDate_DB);
         var creationDate = ReplaceNullAndTrim(forms[line].CreationDate_DB);
-        if (!DateOnly.TryParse(creationDate, out var creationDateReal) && creationDate != "-")
+        if (!DateOnly.TryParse(creationDate, out var creationDateReal) && !DashStringHelper.IsDash(creationDate))
         {
             result.Add(new CheckError
             {
@@ -1261,7 +1262,7 @@ public abstract class CheckF15 : CheckBase
     {
         List<CheckError> result = new();
         var docDate = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
-        if (docDate is "" or "-")
+        if (DashStringHelper.IsNullOrEmptyOrDash(docDate))
         {
             result.Add(new CheckError
             {
@@ -1562,7 +1563,7 @@ public abstract class CheckF15 : CheckBase
         var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         if (!applicableOperationCodes.Contains(opCode)) return result;
         var transporterOkpo = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
-        var valid = transporterOkpo is "-";
+        var valid = DashStringHelper.IsDash(transporterOkpo);
         if (!valid)
         {
             result.Add(new CheckError
@@ -1608,7 +1609,7 @@ public abstract class CheckF15 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика.",
-                IsCritical = !(dashesOperationCodes.Contains(opCode) && transporterOkpo is "-")
+                IsCritical = !(dashesOperationCodes.Contains(opCode) && DashStringHelper.IsDash(transporterOkpo))
             });
         }
         return result;
@@ -1637,7 +1638,7 @@ public abstract class CheckF15 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек.",
-                IsCritical = transporterOkpo is not "-"
+                IsCritical = !DashStringHelper.IsDash(transporterOkpo)
             });
         }
         return result;
@@ -1654,7 +1655,7 @@ public abstract class CheckF15 : CheckBase
         var packName = ReplaceNullAndTrim(forms[line].PackName_DB);
         var packType = ReplaceNullAndTrim(forms[line].PackType_DB);
         var packNum = ReplaceNullAndTrim(forms[line].PackNumber_DB);
-        if (packName.ToLower() is "без упаковки" && packType is not "-")
+        if (packName.ToLower() is "без упаковки" && !DashStringHelper.IsDash(packType))
         {
             result.Add(new CheckError
             {
@@ -1665,7 +1666,7 @@ public abstract class CheckF15 : CheckBase
                 Message = "В случае, если упаковка отсутствует, в графе \"Тип прибора\" должен быть указан \"-\" без кавычек."
             });
         }
-        if (packName.ToLower() is "без упаковки" && packNum is not "-")
+        if (packName.ToLower() is "без упаковки" && !DashStringHelper.IsDash(packNum))
         {
             result.Add(new CheckError
             {
@@ -1677,7 +1678,7 @@ public abstract class CheckF15 : CheckBase
                           "в графе \"Заводской номер прибора\" должен быть указан \"-\" без кавычек."
             });
         }
-        var valid = packName is not ("" or "-");
+        var valid = !DashStringHelper.IsNullOrEmptyOrDash(packName);
         if (!valid)
         {
             result.Add(new CheckError
@@ -1821,7 +1822,7 @@ public abstract class CheckF15 : CheckBase
                     or "32" or "35" or "36" or "37" or "38" or "39" or "43" or "51" or "52" or "63" or "64" 
                     or "71" or "72" or "73" or "74" or "75" or "76" or "84" or "88" or "97" or "98" or "99":
                 {
-                    valid = sortCode == "-";
+                    valid = DashStringHelper.IsDash(sortCode);
                     if (!valid)
                     {
                         result.Add(new CheckError
@@ -1854,7 +1855,7 @@ public abstract class CheckF15 : CheckBase
                 }
                 case "45" or "57":
                 {
-                    if (sortCode is not ("-" or "74"))
+                    if (!DashStringHelper.IsOneOf(sortCode, "-", "74"))
                     {
                         result.Add(new CheckError
                         {
@@ -1870,7 +1871,7 @@ public abstract class CheckF15 : CheckBase
                 }
                 case "49" or "59":
                 {
-                    if (sortCode is not ("-" or "52" or "72" or "74"))
+                    if (!DashStringHelper.IsOneOf(sortCode, "-", "52", "72", "74"))
                     {
                         result.Add(new CheckError
                         {
@@ -1914,7 +1915,7 @@ public abstract class CheckF15 : CheckBase
     {
         List<CheckError> result = new();
         var subsidy = ConvertStringToExponential(forms[line].Subsidy_DB);
-        var valid = subsidy is "-" or "" 
+        var valid = DashStringHelper.IsNullOrEmptyOrDash(subsidy) 
                     || (TryParseDoubleExtended(subsidy, out var subsidyNum) 
                         && subsidyNum is >= 0 and <= 100);
         if (!valid)
@@ -1940,7 +1941,7 @@ public abstract class CheckF15 : CheckBase
     {
         List<CheckError> result = new();
         var fcpNum = ConvertStringToExponential(forms[line].FcpNumber_DB);
-        var valid = fcpNum is "-" or "" || TryParseDoubleExtended(fcpNum, out _);
+        var valid = DashStringHelper.IsNullOrEmptyOrDash(fcpNum) || TryParseDoubleExtended(fcpNum, out _);
         if (!valid)
         {
             result.Add(new CheckError

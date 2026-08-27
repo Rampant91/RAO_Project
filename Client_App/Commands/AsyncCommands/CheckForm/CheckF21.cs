@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -16,6 +16,7 @@ using Models.Collections;
 using Models.DBRealization;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using Models.Helpers;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -84,7 +85,8 @@ public class CheckF21 : CheckBase
                                      $"{Environment.NewLine}или операция проверки формы будет отменена.",
                     MinWidth = 400,
                     MinHeight = 200,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(desktop.MainWindow));
 
@@ -147,7 +149,8 @@ public class CheckF21 : CheckBase
                     ContentMessage = $"Не удалось проверить форму, поскольку в выбранном файле БД отсутствуют записи для организации {form20RegNo}_{form20Okpo}.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -202,7 +205,7 @@ public class CheckF21 : CheckBase
                     foreach (var key1 in report.Rows17)
                     {
                         var form = (Form17)key1;
-                        if (form.OperationCode_DB != "-" && !string.IsNullOrWhiteSpace(form.OperationCode_DB)) formHeader17 = form;
+                        if (!DashStringHelper.IsNullOrWhiteSpaceOrDash(form.OperationCode_DB)) formHeader17 = form;
                         form21New = FormConvert(form, formHeader17, rep.Year_DB);
                         if (form21New != null)
                         {
@@ -218,7 +221,7 @@ public class CheckF21 : CheckBase
                     foreach (var key1 in report.Rows18)
                     {
                         var form = (Form18)key1;
-                        if (form.OperationCode_DB != "-" && !string.IsNullOrWhiteSpace(form.OperationCode_DB)) formHeader18 = form;
+                        if (!DashStringHelper.IsNullOrWhiteSpaceOrDash(form.OperationCode_DB)) formHeader18 = form;
                         form21New = FormConvert(form, formHeader18, rep.Year_DB);
                         if (form21New != null)
                         {
@@ -301,7 +304,7 @@ public class CheckF21 : CheckBase
         {
             var form = (Form21)key1;
             if (form.MachineCode_DB != null) machineCodeHeader = form.MachineCode_DB;
-            if (form.CodeRAOIn_DB != "-" && !string.IsNullOrWhiteSpace(form.CodeRAOIn_DB))
+            if (!DashStringHelper.IsNullOrWhiteSpaceOrDash(form.CodeRAOIn_DB))
             {
                 var key = (MachineCode_Header: machineCodeHeader, form.CodeRAOIn_DB, form.StatusRAOIn_DB);
                 if (!forms21RealInDict.TryGetValue(key, out var value))
@@ -324,7 +327,7 @@ public class CheckF21 : CheckBase
                     });
                 }
             }
-            if (form.CodeRAOout_DB != "-" && !string.IsNullOrWhiteSpace(form.CodeRAOout_DB))
+            if (!DashStringHelper.IsNullOrWhiteSpaceOrDash(form.CodeRAOout_DB))
             {
                 var key = (MachineCode_Header: machineCodeHeader, form.CodeRAOout_DB, form.StatusRAOout_DB);
                 if (!forms21RealOutDict.TryGetValue(key, out var value))
@@ -733,8 +736,7 @@ public class CheckF21 : CheckBase
     private static Form21? FormConvert(Form15 form, string year)
     {
         if (form.RefineOrSortRAOCode_DB.Length == 0
-            || form.RefineOrSortRAOCode_DB == "-"
-            || string.IsNullOrWhiteSpace(form.RefineOrSortRAOCode_DB)                           //refine code doesn't exist
+            || DashStringHelper.IsNullOrWhiteSpaceOrDash(form.RefineOrSortRAOCode_DB)                           //refine code doesn't exist
             || form.RefineOrSortRAOCode_DB[0] == '7'                                            //7x refine codes are ignored
             || form.OperationCode_DB is "49" or "59" && form.RefineOrSortRAOCode_DB != "52")    //registration with code other than 52 is ignored
         {
@@ -794,8 +796,7 @@ public class CheckF21 : CheckBase
     private static Form21? FormConvert(Form16 form, string year)
     {
         if (form.RefineOrSortRAOCode_DB.Length == 0
-            || form.RefineOrSortRAOCode_DB == "-"
-            || string.IsNullOrWhiteSpace(form.RefineOrSortRAOCode_DB)                           //refine code doesn't exist
+            || DashStringHelper.IsNullOrWhiteSpaceOrDash(form.RefineOrSortRAOCode_DB)                           //refine code doesn't exist
             || form.RefineOrSortRAOCode_DB[0] == '7'                                            //7x refine codes are ignored
             || form.OperationCode_DB is "49" or "59" && form.RefineOrSortRAOCode_DB != "52")    //registration with code other than 52 is ignored
         {
@@ -856,11 +857,9 @@ public class CheckF21 : CheckBase
     {
         var formTrue = formHeader ?? form;
         if (formTrue.RefineOrSortRAOCode_DB.Length == 0
-            || formTrue.RefineOrSortRAOCode_DB == "-"
-            || string.IsNullOrWhiteSpace(formTrue.RefineOrSortRAOCode_DB) //refine code doesn't exist
+            || DashStringHelper.IsNullOrWhiteSpaceOrDash(formTrue.RefineOrSortRAOCode_DB) //refine code doesn't exist
             || formTrue.RefineOrSortRAOCode_DB[0] == '7' //7x refine codes are ignored
-            || form.CodeRAO_DB == "-"
-            || string.IsNullOrWhiteSpace(form.CodeRAO_DB))
+            || DashStringHelper.IsNullOrWhiteSpaceOrDash(form.CodeRAO_DB))
         {
             return null;
         }
@@ -917,11 +916,9 @@ public class CheckF21 : CheckBase
     {
         var formTrue = formHeader ?? form;
         if (formTrue.RefineOrSortRAOCode_DB.Length == 0
-            || formTrue.RefineOrSortRAOCode_DB == "-"
-            || string.IsNullOrWhiteSpace(formTrue.RefineOrSortRAOCode_DB)   //refine code doesn't exist
+            || DashStringHelper.IsNullOrWhiteSpaceOrDash(formTrue.RefineOrSortRAOCode_DB)   //refine code doesn't exist
             || formTrue.RefineOrSortRAOCode_DB[0] == '7'                    //7x refine codes are ignored
-            || form.CodeRAO_DB == "-"
-            || string.IsNullOrWhiteSpace(form.CodeRAO_DB))
+            || DashStringHelper.IsNullOrWhiteSpaceOrDash(form.CodeRAO_DB))
         {
             return null;
         }
@@ -1115,10 +1112,10 @@ public class CheckF21 : CheckBase
     {
         if (receiver == formGenericPlug || giver == formGenericPlug) return formGenericPlug;
         var res = receiver;
-        var receiverReal = receiver == "-" || string.IsNullOrWhiteSpace(receiver) || receiver == form15Plug
+        var receiverReal = DashStringHelper.IsNullOrWhiteSpaceOrDash(receiver) || receiver == form15Plug
             ? "0"
             : receiver;
-        var giverReal = giver == "-" || string.IsNullOrWhiteSpace(giver) || giver == form15Plug
+        var giverReal = DashStringHelper.IsNullOrWhiteSpaceOrDash(giver) || giver == form15Plug
             ? "0"
             : giver;
         if (decimal.TryParse(receiverReal, out var receiverDecimal)
@@ -1227,9 +1224,9 @@ public class CheckF21 : CheckBase
         }
         TryParseDoubleExtended(form1Val, out var val1);
         TryParseDoubleExtended(form2Val, out var val2);
-        if (!((form1Val == "-" && form2Val == "-")
-              || (val1 < 0.001 && form2Val == "-")
-              || (form1Val == "-" && val2 < 0.001)
+        if (!((DashStringHelper.IsDash(form1Val) && DashStringHelper.IsDash(form2Val))
+              || (val1 < 0.001 && DashStringHelper.IsDash(form2Val))
+              || (DashStringHelper.IsDash(form1Val) && val2 < 0.001)
               || val1 >= val2 * (1.0 - valB)
               && val2 >= val1 * (1.0 - valB)))
         {
@@ -1246,8 +1243,8 @@ public class CheckF21 : CheckBase
         const double valB = 0.1;
         List<(int, string, string, string)> res = [];
         if ((form1.CodeRAOIn_DB == form2.CodeRAOIn_DB || (form15PlugLeftover && (form1.CodeRAOIn_DB == form15Plug || form2.CodeRAOIn_DB == form15Plug)))
-            && form1.CodeRAOIn_DB != "-"
-            && form1.CodeRAOout_DB == "-" || form1.CodeRAOout_DB == form15Plug
+            && !DashStringHelper.IsDash(form1.CodeRAOIn_DB)
+            && DashStringHelper.IsDash(form1.CodeRAOout_DB) || form1.CodeRAOout_DB == form15Plug
             && !string.IsNullOrWhiteSpace(form1.CodeRAOIn_DB))
         {
             if (form1.StatusRAOIn_DB == form2.StatusRAOIn_DB
@@ -1266,8 +1263,8 @@ public class CheckF21 : CheckBase
             return res;
         }
         if ((form1.CodeRAOout_DB == form2.CodeRAOout_DB || (form15PlugLeftover && (form1.CodeRAOout_DB == form15Plug || form2.CodeRAOout_DB == form15Plug)))
-            && form1.CodeRAOout_DB != "-"
-            && form1.CodeRAOIn_DB == "-" || form1.CodeRAOIn_DB == form15Plug
+            && !DashStringHelper.IsDash(form1.CodeRAOout_DB)
+            && DashStringHelper.IsDash(form1.CodeRAOIn_DB) || form1.CodeRAOIn_DB == form15Plug
             && !string.IsNullOrWhiteSpace(form1.CodeRAOout_DB))
         {
             if (form1.StatusRAOout_DB == form2.StatusRAOout_DB

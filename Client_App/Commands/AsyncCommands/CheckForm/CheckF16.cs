@@ -1,4 +1,4 @@
-﻿using Models.CheckForm;
+using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using Models.Helpers;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -16,6 +17,7 @@ public abstract class CheckF16 : CheckBase
 
     private static readonly string[] OperationCodeValid =
     [
+        "01",    
         "10","11","12","13","14","16","18",
         "21","22","25","26","27","28","29",
         "31","32","35","36","37","38","39",
@@ -23,7 +25,7 @@ public abstract class CheckF16 : CheckBase
         "51","52","56","57","59",
         "63","64","68",
         "71","72","73","74","75","76",
-        "97", "98","99"
+        "97","98","99"
     ];
 
     private static readonly Dictionary<string, string> GraphsList = new()
@@ -484,8 +486,8 @@ public abstract class CheckF16 : CheckBase
         var comparator = new CustomNullStringWithTrimComparer();
         rColumn = codeRao1MatterState switch
         {
-            "1" => "A_Liquid",
-            "2" => "A_Solid",
+            "1" => "MZUA_Liquid",
+            "2" => "MZUA_Solid",
             _ => rColumn
         };
         var valid = true;
@@ -611,7 +613,7 @@ public abstract class CheckF16 : CheckBase
         var applicableOperationCodes = new[] { "49", "59" };
         var graph22ValidValues = new[] { "-", "52", "72", "74" };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = graph22ValidValues.Contains(refineOrSortRaoCode);
+        var valid = DashStringHelper.IsOneOf(refineOrSortRaoCode, graph22ValidValues);
         if (!valid)
         {
             result.Add(new CheckError
@@ -975,6 +977,7 @@ public abstract class CheckF16 : CheckBase
 
         #region symbol 2
 
+        var expiredZriCodes = new[] { "81", "82", "85", "86", "87", "88", "89" };
         if (!codeRao2Valid)
         {
             result.Add(new CheckError
@@ -983,8 +986,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                Message = 
-                          "Недопустимое значение 2-го символа кода РАО."
+                Message = "Недопустимое значение 2-го символа кода РАО."
             });
         }
         else
@@ -992,8 +994,8 @@ public abstract class CheckF16 : CheckBase
             switch (codeRao2RaoCategory)
             {
                 case "4":
-                    var validTypeCode = new [] { "81", "82", "85", "86", "87", "88", "89" };
-                    if (!validTypeCode.Contains(codeRao910TypeCode))
+                {
+                    if (!expiredZriCodes.Contains(codeRao910TypeCode))
                     {
                         result.Add(new CheckError
                         {
@@ -1001,12 +1003,26 @@ public abstract class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                            Message = 
-                                      "Значение 2-го символа кода РАО 4 используется только для отработавших ЗРИ."
+                            Message = "Значение 2-го символа кода РАО 4 используется только для отработавших ЗРИ."
                         });
                     }
                     break;
+                }
                 case "9":
+                {
+                    if (expiredZriCodes.Contains(codeRao910TypeCode))
+                    {
+                        result.Add(new CheckError
+                        {
+                            FormNum = "form_16",
+                            Row = forms[line].NumberInOrder_DB.ToString(),
+                            Column = "CodeRAO_DB",
+                            Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
+                            Message = "Для отработавших ЗРИ (коды типа РАО 81,82,85-89), " +
+                                      "категория РАО (2-ой символ кода РАО) должна быть равна 4."
+                        });
+                        break;
+                    }
                     if (!noteExists)
                     {
                         result.Add(new CheckError
@@ -1015,14 +1031,14 @@ public abstract class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                            Message = 
-                                      "Необходимо дать пояснение для 2-го символа кода РАО."
+                            Message = "Необходимо дать пояснение для 2-го символа кода РАО."
                         });
                     }
                     break;
+                }
                 default:
-                    // 0, 1, 2, 3, 9
-                    if (codeRao2RaoCategory == "0" && codeRao1MatterState == "1")
+                {
+                    if (expiredZriCodes.Contains(codeRao910TypeCode))
                     {
                         result.Add(new CheckError
                         {
@@ -1030,8 +1046,20 @@ public abstract class CheckF16 : CheckBase
                             Row = forms[line].NumberInOrder_DB.ToString(),
                             Column = "CodeRAO_DB",
                             Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                            Message = 
-                                      "Неправильно указана категория РАО."
+                            Message = "Для отработавших ЗРИ (коды типа РАО 81,82,85-89), " +
+                                      "категория РАО (2-ой символ кода РАО) должна быть равна 4."
+                        });
+                    }
+                    // 0, 1, 2, 3, 9
+                    else if (codeRao2RaoCategory == "0" && codeRao1MatterState == "1")
+                    {
+                        result.Add(new CheckError
+                        {
+                            FormNum = "form_16",
+                            Row = forms[line].NumberInOrder_DB.ToString(),
+                            Column = "CodeRAO_DB",
+                            Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
+                            Message = "Неправильно указана категория РАО."
                         });
                     }
                     else
@@ -1136,8 +1164,7 @@ public abstract class CheckF16 : CheckBase
                                 Row = forms[line].NumberInOrder_DB.ToString(),
                                 Column = "CodeRAO_DB",
                                 Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                                Message = 
-                                          "Проверьте категорию РАО и суммарную активность."
+                                Message = "Проверьте категорию РАО и суммарную активность."
                             });
                         }
                         else if (codeMax != -1 && (codeRao2RaoCategory == "9" || codeRao2RaoCategory != codeMax.ToString("D1")))
@@ -1148,12 +1175,12 @@ public abstract class CheckF16 : CheckBase
                                 Row = forms[line].NumberInOrder_DB.ToString(),
                                 Column = "CodeRAO_DB",
                                 Value = $"{codeRao2RaoCategory} (2-ой символ кода РАО)",
-                                Message = 
-                                          $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, категория РАО {codeMax}."
+                                Message = $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, категория РАО {codeMax}."
                             });
                         }
                     }
                     break;
+                }
             }
         }
 
@@ -1169,8 +1196,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = $"{codeRao3NuclidTypes} (3-ий символ кода РАО)",
-                Message = 
-                          "Недопустимое значение 3-го символа кода РАО.",
+                Message = "Недопустимое значение 3-го символа кода РАО.",
                 IsCritical = true
             });
         }
@@ -1186,8 +1212,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = $"{codeRao3NuclidTypes} (3-ий символ кода РАО)",
-                        Message = 
-                                  "При отсутствии радионуклидов в графе 9 3-й символ кода РАО должен быть равен 0.",
+                        Message = "При отсутствии радионуклидов в графе 9 3-й символ кода РАО должен быть равен 0.",
                         IsCritical = true
                     });
                 }
@@ -1206,14 +1231,27 @@ public abstract class CheckF16 : CheckBase
                 var containsT = nuclidsExistT && radsSet
                     .Any(x => R
                         .Any(y => comparator.Compare(y["name"], x) == 0 && comparator.Compare(y["code"], "т") == 0));
+
+
                 var expectedValue = "0";
-                if (!containsT && !containsB && !containsA && containsU) expectedValue = "1";
-                else if (!containsT && !containsB && containsA && !containsU) expectedValue = "2";
-                else if (!containsT && !containsB && containsA && containsU) expectedValue = "3";
-                else if ((containsT || containsB) && !containsA && !containsU) expectedValue = "4";
-                else if (!containsT && containsB && containsA && !containsU) expectedValue = "5";
-                else if (containsT && containsB && containsA && !containsU) expectedValue = "5";
-                else if (containsU) expectedValue = "6";
+
+                if (radsSet.Any(x => comparator.Compare(x, "уран естественный") == 0 
+                                     || comparator.Compare(x, "уран обедненный") == 0))
+                {
+                    if (!containsT && !nuclidsExistB && nuclidsExistA && !containsU) expectedValue = "2";
+                    else if (!containsT && !nuclidsExistB && nuclidsExistA && containsU) expectedValue = "3";
+                    else if (nuclidsExistB && nuclidsExistA && !containsU) expectedValue = "5";
+                }
+                else
+                {
+                    if (!containsT && !containsB && !containsA && containsU) expectedValue = "1";
+                    else if (!containsT && !containsB && containsA && !containsU) expectedValue = "2";
+                    else if (!containsT && !containsB && containsA && containsU) expectedValue = "3";
+                    else if ((containsT || containsB) && !containsA && !containsU) expectedValue = "4";
+                    else if (containsB && containsA && !containsU) expectedValue = "5";
+                    else if (containsU) expectedValue = "6";
+                }
+                
                 if (expectedValue != codeRao3NuclidTypes)
                 {
                     result.Add(new CheckError
@@ -1222,8 +1260,7 @@ public abstract class CheckF16 : CheckBase
                         Row = forms[line].NumberInOrder_DB.ToString(),
                         Column = "CodeRAO_DB",
                         Value = $"{codeRao3NuclidTypes} (3-ий символ кода РАО)",
-                        Message = 
-                                  "Третий символ кода РАО не соответствует сведениям о суммарной активности (графы 10-13) и/или радионуклидам, " +
+                        Message = "Третий символ кода РАО не соответствует сведениям о суммарной активности (графы 10-13) и/или радионуклидам, " +
                                   "указанным в графе 9.",
                         IsCritical = true
                     });
@@ -1341,8 +1378,7 @@ public abstract class CheckF16 : CheckBase
                 Row = forms[line].NumberInOrder_DB.ToString(),
                 Column = "CodeRAO_DB",
                 Value = $"{codeRao5HalfLife} (5-ый символ кода РАО)",
-                Message = 
-                          "Недопустимое значение 5-го символа кода РАО."
+                Message = "Недопустимое значение 5-го символа кода РАО."
             });
         }
         else
@@ -1355,8 +1391,7 @@ public abstract class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = $"{codeRao5HalfLife} (5-ый символ кода РАО)",
-                    Message = 
-                              $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО " +
+                    Message = $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО " +
                               $"(период полураспада) должен быть равен 2."
                 });
             }
@@ -1368,8 +1403,7 @@ public abstract class CheckF16 : CheckBase
                     Row = forms[line].NumberInOrder_DB.ToString(),
                     Column = "CodeRAO_DB",
                     Value = $"{codeRao5HalfLife} (5-ый символ кода РАО)",
-                    Message = 
-                              $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО " +
+                    Message = $"По данным, представленным в строке {forms[line].NumberInOrder_DB}, 5-ый символ кода РАО " +
                               $"(период полураспада) должен быть равен 1."
                 });
             }
@@ -1584,7 +1618,7 @@ public abstract class CheckF16 : CheckBase
                                 }
                             }
                         };
-                        if (!validRecycles[codeRao7RecycleMethod].Contains(forms[line].RefineOrSortRAOCode_DB))
+                        if (!DashStringHelper.IsOneOf(forms[line].RefineOrSortRAOCode_DB, validRecycles[codeRao7RecycleMethod]))
                         {
                             result.Add(new CheckError
                             {
@@ -2123,7 +2157,7 @@ public abstract class CheckF16 : CheckBase
         }
         else if (raoTypes2.Contains(typeRao))
         {
-            if (!quantityOziiiExists && quantityOziii != "-")
+            if (!quantityOziiiExists && !DashStringHelper.IsDash(quantityOziii))
             {
                 result.Add(new CheckError
                 {
@@ -2136,7 +2170,7 @@ public abstract class CheckF16 : CheckBase
                 });
             }
         }
-        else if (quantityOziii != "-" || quantityOziiiExists)
+        else if (!DashStringHelper.IsDash(quantityOziii) || quantityOziiiExists)
         {
             var msg = stateRao is "2" 
                 ? " (справочное сообщение о возможной ошибке)" 
@@ -2183,7 +2217,7 @@ public abstract class CheckF16 : CheckBase
             .Split(';')
             .Select(x => x.Trim())
             .ToHashSet();
-        if (radsSet.Count == 1 && string.Equals(radsSet.First(), "-"))
+        if (radsSet.Count == 1 && DashStringHelper.IsDash(radsSet.First()))
         {
             if (codeRao.Substring(2, 1) != "0")
             {
@@ -2326,7 +2360,7 @@ public abstract class CheckF16 : CheckBase
 
     private static List<CheckError> Check_011(List<Form16> forms, int line)
     {
-        List<CheckError> result = new();
+        List<CheckError> result = [];
         var betaActivity = ConvertStringToExponential(forms[line].BetaGammaActivity_DB);
         var rads = ReplaceNullAndTrim(forms[line].MainRadionuclids_DB);
         var radsSet = rads
@@ -2353,7 +2387,7 @@ public abstract class CheckF16 : CheckBase
                                   "то в графу 11 необходимо заносить прочерк вместо нуля."
                     });
                 }
-                else
+                else if (!radsSet.Any(rad => rad is "уран естественный" or "уран обедненный"))
                 {
                     result.Add(new CheckError
                     {
@@ -2899,7 +2933,7 @@ public abstract class CheckF16 : CheckBase
         };
         if (!applicableOperationCodes.Contains(opCode)) return result;
         var transporterOKPO = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
-        var valid = transporterOKPO is "-";
+        var valid = DashStringHelper.IsDash(transporterOKPO);
         if (!valid)
         {
             result.Add(new CheckError
@@ -2945,7 +2979,7 @@ public abstract class CheckF16 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOKPO,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"прим.\" без кавычек.",
-                IsCritical = !(dashesOperationCodes.Contains(operationCode) && transporterOKPO is "-")
+                IsCritical = !(dashesOperationCodes.Contains(operationCode) && DashStringHelper.IsDash(transporterOKPO))
             });
         }
         else if (transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase) && !noteExists)
@@ -2989,7 +3023,7 @@ public abstract class CheckF16 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOKPO,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек, либо \"прим.\" без кавычек.",
-                IsCritical = transporterOKPO is not "-"
+                IsCritical = !DashStringHelper.IsDash(transporterOKPO)
             });
         }
         else if (transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase) && !noteExists)
@@ -3022,7 +3056,7 @@ public abstract class CheckF16 : CheckBase
         const byte graphNumber = 19;
         var noteExists = CheckNotePresence(notes, line, graphNumber);
         var valid = OkpoRegex.IsMatch(transporterOKPO)
-                    || transporterOKPO.Equals("-", StringComparison.CurrentCultureIgnoreCase)
+                    || DashStringHelper.IsDash(transporterOKPO)
                     || transporterOKPO.Equals("прим.", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {
@@ -3113,7 +3147,7 @@ public abstract class CheckF16 : CheckBase
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var refineOrSortRaoCode = ReplaceNullAndTrim(forms[line].RefineOrSortRAOCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = refineOrSortRaoCode == "-";
+        var valid = DashStringHelper.IsDash(refineOrSortRaoCode);
         if (!valid)
         {
             result.Add(new CheckError
@@ -3178,7 +3212,7 @@ public abstract class CheckF16 : CheckBase
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var refineOrSortRaoCode = ReplaceNullAndTrim(forms[line].RefineOrSortRAOCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = applicableValues.Contains(refineOrSortRaoCode);
+        var valid = DashStringHelper.IsOneOf(refineOrSortRaoCode, applicableValues);
         if (!valid)
         {
             result.Add(new CheckError
@@ -3206,7 +3240,7 @@ public abstract class CheckF16 : CheckBase
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var refineOrSortRaoCode = ReplaceNullAndTrim(forms[line].RefineOrSortRAOCode_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = applicableRefineCodes.Contains(refineOrSortRaoCode);
+        var valid = DashStringHelper.IsOneOf(refineOrSortRaoCode, applicableRefineCodes);
         if (!valid)
         {
             result.Add(new CheckError
@@ -3350,7 +3384,7 @@ public abstract class CheckF16 : CheckBase
         }
         else
         {
-            if (packName.ToLower().Trim() == "без упаковки" && packNum != "-")
+            if (packName.ToLower().Trim() == "без упаковки" && !DashStringHelper.IsDash(packNum))
             {
                 result.Add(new CheckError
                 {
@@ -3373,7 +3407,7 @@ public abstract class CheckF16 : CheckBase
     {
         List<CheckError> result = new();
         var subsidy = ReplaceNullAndTrim(forms[line].Subsidy_DB);
-        if (subsidy is "" or "-") return result;
+        if (DashStringHelper.IsNullOrEmptyOrDash(subsidy)) return result;
         var valid = float.TryParse(subsidy, out var subsidyFloatValue)
                     && subsidyFloatValue is >= 0 and <= 100;
         if (!valid)
@@ -3398,7 +3432,7 @@ public abstract class CheckF16 : CheckBase
     {
         List<CheckError> result = new();
         var fcpNum = ReplaceNullAndTrim(forms[line].FcpNumber_DB);
-        var valid = fcpNum is "" or "-"
+        var valid = DashStringHelper.IsNullOrEmptyOrDash(fcpNum)
                     || TryParseFloatExtended(fcpNum, out _);
         if (!valid)
         {

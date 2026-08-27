@@ -261,7 +261,8 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                 ContentHeader = "Уведомление",
                 ContentMessage = $"Сохранить форму {vm.FormType}?",
                 MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(this));
 
@@ -399,7 +400,8 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                                              $"{rep.StartPeriod_DB}-{rep.EndPeriod_DB}.",
                             MinWidth = 450,
                             MinHeight = 170,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(this));
 
@@ -473,7 +475,8 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                     ContentMessage = $"В форме {vm.FormType} присутствуют пустые строчки." +
                                      $"{Environment.NewLine}Вы хотите их удалить?",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(this));
 
@@ -506,42 +509,6 @@ public partial class Form_15 : BaseWindow<Form_15VM>
     }
 
     #endregion
-
-    #endregion
-
-    #region OperationCode
-
-    private string OperationCodeStartValue { get; set; }
-
-    private void OperationCodeTextBox_OnGotFocus(object? sender, GotFocusEventArgs e)
-    {
-        if (sender is TextBox textBox)
-        {
-            OperationCodeStartValue = textBox.Text;
-        }
-    }
-
-    private void OperationCodeTextBox_OnLostFocus(object? sender, RoutedEventArgs e)
-    {
-        if (sender is TextBox { Text: "41" } textBox && OperationCodeStartValue is not "41")
-        {
-            textBox.Text = string.Empty;
-
-            Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams()
-                {
-                    ButtonDefinitions = ButtonEnum.Ok,
-                    ContentTitle = "Перевод РВ в РАО",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = $"Операцию перевода РВ в РАО необходимо осуществлять посредством кнопки " +
-                                     $"{Environment.NewLine}\"Перевести РВ в РАО\" (правый щелчкок мыши по нужной строчке в форме 1.1).",
-                    MinWidth = 450,
-                    MinHeight = 170,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(this));
-        }
-    }
 
     #endregion
 }

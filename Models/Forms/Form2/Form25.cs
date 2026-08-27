@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -7,6 +7,7 @@ using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form2;
 
@@ -474,7 +475,7 @@ public partial class Form25 : Form2
         FcpNumber_DB = Convert.ToString(worksheet.Cells[row, 5].Value);
         FuelMass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 6].Value);
         CellMass_DB = ConvertFromExcelDouble(worksheet.Cells[row, 7].Value);
-        Quantity_DB = int.TryParse(Convert.ToString(worksheet.Cells[row, 8].Value), out var intValue) ? intValue : null;
+        Quantity_DB = TryParseExcelNullableInt(worksheet.Cells[row, 8].Value);
         AlphaActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 9].Value);
         BetaGammaActivity_DB = ConvertFromExcelDouble(worksheet.Cells[row, 10].Value);
     }
@@ -719,4 +720,19 @@ public partial class Form25 : Form2
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form25 formToCompare) return false;
+
+        return FormTextEquality.Equals(StoragePlaceName_DB, formToCompare.StoragePlaceName_DB)
+               && FormTextEquality.Equals(StoragePlaceCode_DB, formToCompare.StoragePlaceCode_DB)
+               && FormTextEquality.Equals(CodeOYAT_DB, formToCompare.CodeOYAT_DB)
+               && FormTextEquality.Equals(FcpNumber_DB, formToCompare.FcpNumber_DB)
+               && FormExponentialEquality.Equals(FuelMass_DB, formToCompare.FuelMass_DB)
+               && FormExponentialEquality.Equals(CellMass_DB, formToCompare.CellMass_DB)
+               && Quantity_DB == formToCompare.Quantity_DB
+               && FormExponentialEquality.Equals(AlphaActivity_DB, formToCompare.AlphaActivity_DB)
+               && FormExponentialEquality.Equals(BetaGammaActivity_DB, formToCompare.BetaGammaActivity_DB);
+    }
 }

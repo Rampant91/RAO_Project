@@ -2,8 +2,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 			 xmlns:behaviors="using:Client_App.Behaviors"
+			 xmlns:inputBehaviors="using:Client_App.Behaviors.Input"
+			 xmlns:controlBehaviors="using:Client_App.Behaviors.Controls"
              xmlns:local="using:Client_App"
              xmlns:resources="clr-namespace:Client_App.Resources"
+             xmlns:converters="clr-namespace:Client_App.Converters"
+             xmlns:visualConverters="clr-namespace:Client_App.VisualRealization.Converters"
 			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              x:Class="Client_App.App">
 
@@ -13,6 +17,11 @@
 
     <Application.Resources>
         <resources:RatioConverter x:Key="RatioConverter"/>
+        <converters:StringToDateTimeConverter x:Key="StringToDateTimeConverter"/>
+        <visualConverters:ShortNullableToStringConverter x:Key="ShortNullableToStringConverter"/>
+        <visualConverters:ByteNullableToStringConverter x:Key="ByteNullableToStringConverter"/>
+        <visualConverters:ByteNullableOrDashToStringConverter x:Key="ByteNullableOrDashToStringConverter"/>
+        <visualConverters:FrozenOperationHeaderColSpanConverter x:Key="FrozenOperationHeaderColSpanConverter"/>
         <!--
         <ResourceDictionary>
             <DataTemplate DataType="{x:Type vm:CheckFormVM}">
@@ -84,11 +93,23 @@
             <Setter Property="IsVisible" Value="False"/>
         </Style>
 		<Style Selector="CalendarDatePicker.buttonOnly">
-			<Setter Property="behaviors:ScrollBlock.BlockPointerWheel" Value="True"/>
+			<Setter Property="controlBehaviors:ScrollBlock.BlockPointerWheel" Value="True"/>
 		</Style>
 		<Style Selector="Border#Background">
 			<Setter Property="Background" Value="#f0f8ff"/>
         </Style>
+		<Style Selector="TextBox">
+			<Setter Property="inputBehaviors:TextBoxAutoTrim.IsEnabled" Value="True"/>
+		</Style>
+		<Style Selector="Button">
+			<Setter Property="IsTabStop" Value="False"/>
+		</Style>
+
+		<Style Selector="Expander ToggleButton">
+			<Setter Property="IsTabStop" Value="False"/>
+			<Setter Property="Focusable" Value="False"/>
+		</Style>
+		
 		<Style Selector="TextBox">
 			<Setter Property="behaviors:TextBoxAutoTrim.IsEnabled" Value="True"/>
 		</Style>
@@ -136,6 +157,9 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
         </Style>
+        <Style Selector="Grid.tableHeader Border.frozenOperationHeader TextBlock">
+            <Setter Property="TextWrapping" Value="NoWrap"/>
+        </Style>
         <!--Table-->
         <Style Selector="DataGrid.table">
             <Setter Property="CornerRadius" Value="5"/>
@@ -147,8 +171,8 @@
             <Setter Property="GridLinesVisibility" Value="All"/>
             <Setter Property="CanUserSortColumns" Value="False"/>
             <Setter Property="ColumnWidth" Value="125" />
-            <Setter Property="MinColumnWidth" Value="50" />
-            <Setter Property="MaxColumnWidth" Value="250" />
+            <Setter Property="MinColumnWidth" Value="30" />
+            <Setter Property="MaxColumnWidth" Value="500" />
         </Style>
 		
 		<Style Selector="DataGridColumnHeader">
@@ -171,6 +195,7 @@
 		    <Setter Property="Margin" Value="0,0,5,0"/>
 			<Setter Property="TextWrapping" Value="WrapWithOverflow"/>
 		</Style>
+		
 		<Style Selector="Border.headerTemplate Button">
             <Setter Property="CornerRadius" Value="5"/>
 			<Setter Property="Content" Value="˅"/>
@@ -191,6 +216,9 @@
 		    <Setter Property="Background" Value="LightGray"/>
         </Style>
 		<Style Selector="DataGrid TextBox">
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
+		<Style Selector="DataGrid AutoCompleteBox">
 			<Setter Property="Background" Value="Transparent"/>
 		</Style>
 		
@@ -254,5 +282,37 @@
 			<Setter Property="IsHitTestVisible" Value="False"/>
 		</Style>
         <!--Конец стилей для окон редактирования форм-->
+		<!--Другие стили-->
+		<Style Selector="DataGrid DataGridRow DataGridCell TextBlock.readOnly">
+			<Setter Property="Background" Value="#ededed"/>
+			<Setter Property="Foreground" Value="#93140e"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="Padding" Value="0,5,0,0"/>
+			<Setter Property="TextAlignment" Value="Center"/>
+		</Style>
+		<Style Selector="DataGrid DataGridRow:pointerover:not(:selected) DataGridCell TextBlock.readOnly">
+			<Setter Property="Background" Value="#b5b5b5"/>
+			<Setter Property="Foreground" Value="#93140e"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="Padding" Value="0,5,0,0"/>
+			<Setter Property="TextAlignment" Value="Center"/>
+		</Style>
+		<Style Selector="DataGrid DataGridRow:selected DataGridCell TextBlock.readOnly">
+			<Setter Property="Background" Value="#86c4d9"/>
+			<Setter Property="Foreground" Value="#93140e"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="Padding" Value="0,5,0,0"/>
+			<Setter Property="TextAlignment" Value="Center"/>
+		</Style>
+
+		<Style Selector="AutoCompleteBox.hitable">
+			<Setter Property="IsHitTestVisible" Value="True"/>
+		</Style>
+		<Style Selector="AutoCompleteBox.hitable TextBox">
+			<Setter Property="IsHitTestVisible" Value="True"/>
+		</Style>
     </Application.Styles>
 </Application>

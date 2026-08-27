@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.Linq;
 using System;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Models.Collections;
 using Models.Forms;
@@ -9,6 +11,8 @@ using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.Forms.Form4;
 using Models.Forms.Form5;
+using Models.Passports;
+using Models.StoragePoints;
 
 namespace Models.DBRealization;
 
@@ -33,6 +37,19 @@ public class DataContext : DbContext
             Path = path;
         }
     }
+
+    #endregion
+
+    #region Migrate
+
+    /// <summary>
+    /// Предпочтительный способ миграции БД. См. <see cref="DatabaseMigrationHelper"/>.
+    /// </summary>
+    public void MigrateDatabase() => DatabaseMigrationHelper.Migrate(Database);
+
+    /// <inheritdoc cref="MigrateDatabase"/>
+    public Task MigrateDatabaseAsync(CancellationToken cancellationToken = default) =>
+        DatabaseMigrationHelper.MigrateAsync(Database, cancellationToken);
 
     #endregion
 
@@ -81,6 +98,16 @@ public class DataContext : DbContext
     public DbSet<Form57> form_57 { get; set; }
     #endregion
 
+    #region PackagePassport
+    public DbSet<PackagePassport> package_passport { get; set; }
+    public DbSet<CharacteristicPrimaryPackage> characteristic_package { get; set; }
+    public DbSet<Radionuclid> radionuclid { get; set; }
+    #endregion
+
+    #region StoragePoint
+    public DbSet<StoragePoint> storage_point { get; set; }
+    #endregion
+
     #region Load
 
     public void LoadTables()
@@ -123,16 +150,22 @@ public class DataContext : DbContext
         form_56.Load();
         form_57.Load();
 
+        package_passport.Load();
+        characteristic_package.Load();
+        radionuclid.Load();
+
+        storage_point.Load();
+
         ReportCollectionDbSet.Load();
         ReportsCollectionDbSet.Load();
         DBObservableDbSet.Load();
     }
     public async Task LoadTablesAsync()
     {
-        try
-        {
-            await notes.LoadAsync();
+        await TryLoadGroupAsync("notes", () => notes.LoadAsync());
 
+        await TryLoadGroupAsync("form_1.x", async () =>
+        {
             await form_10.LoadAsync();
             await form_11.LoadAsync();
             await form_12.LoadAsync();
@@ -143,18 +176,24 @@ public class DataContext : DbContext
             await form_17.LoadAsync();
             await form_18.LoadAsync();
             await form_19.LoadAsync();
+        });
 
-            await form_20.LoadAsync();
-            try
-            {
-                await form_21.LoadAsync();
-                await form_22.LoadAsync();
-            }
-            catch
-            {
-                form_21.Local.Clear();
-                form_22.Local.Clear();
-            }
+        await TryLoadGroupAsync("form_2.0", () => form_20.LoadAsync());
+
+        // form_21/22 могут не совпадать со схемой (CorrectionNumber и т.п.) —
+        // не должны блокировать загрузку организаций (Report/Reports).
+        await TryLoadGroupAsync("form_21/22", async () =>
+        {
+            await form_21.LoadAsync();
+            await form_22.LoadAsync();
+        }, onFailure: () =>
+        {
+            form_21.Local.Clear();
+            form_22.Local.Clear();
+        });
+
+        await TryLoadGroupAsync("form_2.x", async () =>
+        {
             await form_23.LoadAsync();
             await form_24.LoadAsync();
             await form_25.LoadAsync();
@@ -165,10 +204,16 @@ public class DataContext : DbContext
             await form_210.LoadAsync();
             await form_211.LoadAsync();
             await form_212.LoadAsync();
+        });
 
+        await TryLoadGroupAsync("form_4.x", async () =>
+        {
             await form_40.LoadAsync();
             await form_41.LoadAsync();
+        });
 
+        await TryLoadGroupAsync("form_5.x", async () =>
+        {
             await form_50.LoadAsync();
             await form_51.LoadAsync();
             await form_52.LoadAsync();
@@ -177,14 +222,39 @@ public class DataContext : DbContext
             await form_55.LoadAsync();
             await form_56.LoadAsync();
             await form_57.LoadAsync();
+        });
 
-            await ReportCollectionDbSet.LoadAsync();
-            await ReportsCollectionDbSet.LoadAsync();
-            await DBObservableDbSet.LoadAsync();
-        }
-        catch
+        await TryLoadGroupAsync("passports", async () =>
         {
-            //ignored
+            await package_passport.LoadAsync();
+            await characteristic_package.LoadAsync();
+            await radionuclid.LoadAsync();
+        });
+
+        await TryLoadGroupAsync("storage", () => storage_point.LoadAsync());
+
+        // Организации — отдельно, всегда пытаемся загрузить даже если формы упали.
+        // Master_DB нужен сразу: без Include при сбое части Load формы остаются с Master == null.
+        await TryLoadGroupAsync("Report", () => ReportCollectionDbSet.LoadAsync());
+        await TryLoadGroupAsync("Reports", () => ReportsCollectionDbSet
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows40)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows50)
+            .LoadAsync());
+        await TryLoadGroupAsync("DBObservable", () => DBObservableDbSet.LoadAsync());
+    }
+
+    private static async Task TryLoadGroupAsync(string groupName, Func<Task> load, Action onFailure = null)
+    {
+        try
+        {
+            await load();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"LoadTablesAsync[{groupName}]: {ex.Message}");
+            onFailure?.Invoke();
         }
     }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -10,6 +10,7 @@ using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
 using Spravochniki;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form1;
 
@@ -184,10 +185,6 @@ public partial class Form18 : Form1
         if (OperationCode_DB != value1)
         {
             OperationCode_DB = value1;
-            if (Report is { AutoReplace: true })
-            {
-                AutoReplaceByOpCode(value1);
-            }
         }
     }
 
@@ -214,150 +211,6 @@ public partial class Form18 : Form1
 
         return true;
     }
-
-    #region AutoReplaceByOpCode
-
-    private void AutoReplaceByOpCode(string opCode)
-    {
-        const string dash = "-";
-        var masterOkpo = Report?.Reports?.Master_DB?.OkpoRep.Value ?? string.Empty;
-        switch (opCode)
-        {
-            #region 10, 18, 43, 51, 52, 68, 97, 98
-            
-            case "10" or "18" or "43" or "51" or "52" or "68" or "97" or "98":
-            {
-                #region ProviderOrRecieverOKPO (14)
-
-                if (!string.IsNullOrWhiteSpace(masterOkpo)
-                    && ProviderOrRecieverOKPO_DB != masterOkpo)
-                {
-                    ProviderOrRecieverOKPO.Value = masterOkpo;
-                }
-
-                #endregion
-
-                #region TransporterOKPO (15)
-
-                if (TransporterOKPO_DB != dash)
-                {
-                    TransporterOKPO.Value = dash;
-                }
-
-                #endregion
-
-                #region RefineOrSortRAOCode (26)
-
-                if (RefineOrSortRAOCode_DB != dash)
-                {
-                    RefineOrSortRAOCode.Value = dash;
-                }
-
-                #endregion
-
-                break;
-            }
-
-            #endregion
-
-            #region 11, 13, 16
-            
-            case "11" or "13" or "16":
-            {
-                #region ProviderOrRecieverOKPO (14)
-
-                if (!string.IsNullOrWhiteSpace(masterOkpo)
-                    && ProviderOrRecieverOKPO_DB != masterOkpo)
-                {
-                    ProviderOrRecieverOKPO.Value = masterOkpo;
-                }
-
-                #endregion
-
-                #region TransporterOKPO (15)
-
-                if (TransporterOKPO_DB != dash)
-                {
-                    TransporterOKPO.Value = dash;
-                }
-
-                #endregion
-
-                #region StatusRAO (19)
-
-                if (!string.IsNullOrWhiteSpace(masterOkpo)
-                    && StatusRAO_DB != masterOkpo)
-                {
-                    StatusRAO.Value = masterOkpo;
-                }
-
-                #endregion
-
-                #region RefineOrSortRAOCode (26)
-
-                if (RefineOrSortRAOCode_DB != dash)
-                {
-                    RefineOrSortRAOCode.Value = dash;
-                }
-
-                #endregion
-
-                break;
-            }
-
-            #endregion
-
-            #region 21, 22, 25, 26, 27, 28, 29, 31, 32, 35, 36, 37, 38, 39
-            
-            case "21" or "22" or "25" or "26" or "27" or "28" or "29" or "31" or "32" or "35" or "36" or "37" or "38" or "39":
-            {
-                #region RefineOrSortRAOCode (26)
-
-                if (RefineOrSortRAOCode_DB != dash)
-                {
-                    RefineOrSortRAOCode.Value = dash;
-                }
-
-                #endregion
-
-                break;
-            }
-
-            #endregion
-
-            #region 55
-            
-            case "55":
-            {
-                #region ProviderOrRecieverOKPO (14)
-
-                if (!string.IsNullOrWhiteSpace(masterOkpo)
-                    && ProviderOrRecieverOKPO_DB != masterOkpo)
-                {
-                    ProviderOrRecieverOKPO.Value = masterOkpo;
-                }
-
-                #endregion
-
-                #region TransporterOKPO (15)
-
-                if (TransporterOKPO_DB != dash)
-                {
-                    TransporterOKPO.Value = dash;
-                }
-
-                #endregion
-
-                break;
-            }
-
-            #endregion
-
-            default: return;
-        }
-    }
-
-    #endregion
 
     #endregion
 
@@ -2236,4 +2089,38 @@ public partial class Form18 : Form1
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form18 formToCompare) return false;
+
+        return FormTextEquality.Equals(OperationCode_DB, formToCompare.OperationCode_DB)
+               && FormDateEquality.Equals(OperationDate_DB, formToCompare.OperationDate_DB)
+               && DocumentVid_DB == formToCompare.DocumentVid_DB
+               && FormTextEquality.Equals(DocumentNumber_DB, formToCompare.DocumentNumber_DB)
+               && FormDateEquality.Equals(DocumentDate_DB, formToCompare.DocumentDate_DB)
+               && FormTextEquality.Equals(IndividualNumberZHRO_DB, formToCompare.IndividualNumberZHRO_DB)
+               && FormTextEquality.Equals(PassportNumber_DB, formToCompare.PassportNumber_DB)
+               && FormExponentialEquality.Equals(Volume6_DB, formToCompare.Volume6_DB)
+               && FormExponentialEquality.Equals(Mass7_DB, formToCompare.Mass7_DB)
+               && FormExponentialEquality.Equals(SaltConcentration_DB, formToCompare.SaltConcentration_DB)
+               && FormRadionuclidsEquality.Equals(Radionuclids_DB, formToCompare.Radionuclids_DB)
+               && FormExponentialEquality.Equals(SpecificActivity_DB, formToCompare.SpecificActivity_DB)
+               && FormTextEquality.Equals(ProviderOrRecieverOKPO_DB, formToCompare.ProviderOrRecieverOKPO_DB)
+               && FormTextEquality.Equals(TransporterOKPO_DB, formToCompare.TransporterOKPO_DB)
+               && FormTextEquality.Equals(StoragePlaceName_DB, formToCompare.StoragePlaceName_DB)
+               && FormTextEquality.Equals(StoragePlaceCode_DB, formToCompare.StoragePlaceCode_DB)
+               && FormTextEquality.Equals(CodeRAO_DB, formToCompare.CodeRAO_DB)
+               && FormTextEquality.Equals(StatusRAO_DB, formToCompare.StatusRAO_DB)
+               && FormExponentialEquality.Equals(Volume20_DB, formToCompare.Volume20_DB)
+               && FormExponentialEquality.Equals(Mass21_DB, formToCompare.Mass21_DB)
+               && FormExponentialEquality.Equals(TritiumActivity_DB, formToCompare.TritiumActivity_DB)
+               && FormExponentialEquality.Equals(BetaGammaActivity_DB, formToCompare.BetaGammaActivity_DB)
+               && FormExponentialEquality.Equals(AlphaActivity_DB, formToCompare.AlphaActivity_DB)
+               && FormExponentialEquality.Equals(TransuraniumActivity_DB, formToCompare.TransuraniumActivity_DB)
+               && FormTextEquality.Equals(RefineOrSortRAOCode_DB, formToCompare.RefineOrSortRAOCode_DB)
+               && FormTextEquality.Equals(Subsidy_DB, formToCompare.Subsidy_DB)
+               && FormTextEquality.Equals(FcpNumber_DB, formToCompare.FcpNumber_DB)
+               && FormTextEquality.Equals(ContractNumber_DB, formToCompare.ContractNumber_DB);
+    }
 }

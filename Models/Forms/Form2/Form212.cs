@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -7,6 +7,7 @@ using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
 using Spravochniki;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form2;
 
@@ -467,4 +468,15 @@ public class Form212 : Form2
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form212 formToCompare) return false;
+
+        return OperationCode_DB == formToCompare.OperationCode_DB
+               && ObjectTypeCode_DB == formToCompare.ObjectTypeCode_DB
+               && FormRadionuclidsEquality.Equals(Radionuclids_DB, formToCompare.Radionuclids_DB)
+               && FormExponentialEquality.Equals(Activity_DB, formToCompare.Activity_DB)
+               && FormTextEquality.Equals(ProviderOrRecieverOKPO_DB, formToCompare.ProviderOrRecieverOKPO_DB);
+    }
 }

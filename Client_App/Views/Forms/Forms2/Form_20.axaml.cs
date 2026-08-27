@@ -110,7 +110,8 @@ public partial class Form_20 : BaseWindow<Form_20VM>
                     MaxWidth = 600,
                     MinHeight = 150,
                     MaxHeight = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(window ?? Desktop.MainWindow));
 
@@ -133,7 +134,8 @@ public partial class Form_20 : BaseWindow<Form_20VM>
                 ContentHeader = "Уведомление",
                 ContentMessage = $"Сохранить форму {vm.FormType}?",
                 MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(desktop.MainWindow));
 

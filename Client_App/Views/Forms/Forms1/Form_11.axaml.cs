@@ -29,14 +29,15 @@ namespace Client_App.Views.Forms.Forms1;
 public partial class Form_11 : BaseWindow<Form_11VM>
 {
     private readonly Form_11VM _vm = null!;
+    public Form_11VM? VM => DataContext as Form_11VM;
 
     private bool _isCloseConfirmed;
     protected override bool IsFullScreenWindow => true;
 
-    private bool _isCtrlPressed = false;
-    private bool _cKeyPressed = false;
-    private bool _vKeyPressed = false;
-    private bool _aKeyPressed = false;
+    private bool _isCtrlPressed;
+    private bool _cKeyPressed;
+    private bool _vKeyPressed;
+    private bool _aKeyPressed;
 
     public Form_11()
     {
@@ -320,7 +321,8 @@ public partial class Form_11 : BaseWindow<Form_11VM>
                 ContentHeader = "Уведомление",
                 ContentMessage = $"Сохранить форму {vm.FormType}?",
                 MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(this));
 
@@ -458,7 +460,8 @@ public partial class Form_11 : BaseWindow<Form_11VM>
                                              $"{rep.StartPeriod_DB}-{rep.EndPeriod_DB}.",
                             MinWidth = 450,
                             MinHeight = 170,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                            Topmost = true,
                         })
                         .ShowDialog(this));
 
@@ -530,7 +533,8 @@ public partial class Form_11 : BaseWindow<Form_11VM>
                     ContentMessage = $"В форме {vm.FormType} присутствуют пустые строчки." +
                                      $"{Environment.NewLine}Вы хотите их удалить?",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(this));
 

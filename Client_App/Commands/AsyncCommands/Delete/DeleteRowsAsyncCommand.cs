@@ -42,7 +42,8 @@ public class DeleteRowsAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : 
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Вы действительно хотите удалить строчк{suffix}?",
                     MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow));
 
@@ -76,7 +77,8 @@ public class DeleteRowsAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : 
         //        ContentHeader = "Уведомление",
         //        ContentMessage = $"Вы действительно хотите удалить строчк{suffix}?",
         //        MinWidth = 400,
-        //        WindowStartupLocation = WindowStartupLocation.CenterOwner
+        //        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+        //        Topmost = true,
         //    })
         //    .ShowDialog(Desktop.MainWindow);
 

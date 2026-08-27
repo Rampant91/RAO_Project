@@ -182,7 +182,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     ContentMessage = ex.Message,
                     MinWidth = 300,
                     MinHeight = 125,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(owner));
                 throw ex;
@@ -235,7 +236,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         ContentMessage = ex.Message,
                         MinWidth = 300,
                         MinHeight = 125,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(owner));
                     throw ex;
@@ -291,7 +293,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                                 ContentMessage = ex.Message,
                                 MinWidth = 300,
                                 MinHeight = 125,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                Topmost = true,
                             })
                             .ShowDialog(owner));
                             throw ex;
@@ -327,7 +330,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                                 ContentMessage = ex.Message,
                                 MinWidth = 300,
                                 MinHeight = 125,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                Topmost = true,
                             })
                             .ShowDialog(owner));
                             throw ex;
@@ -352,7 +356,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         ContentMessage = ex.Message,
                         MinWidth = 300,
                         MinHeight = 125,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
                     })
                     .ShowDialog(owner));
                     throw ex;

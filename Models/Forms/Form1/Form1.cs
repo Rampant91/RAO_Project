@@ -51,7 +51,7 @@ public abstract partial class Form1 : Form
         {
             if (!OperationCode_Hidden_Priv)
             {
-                if (Dictionary.TryGetValue(nameof(OperationCode), out RamAccess value))
+                if (Dictionary.TryGetValue(nameof(OperationCode), out var value))
                 {
                     ((RamAccess<string>)value).Value = OperationCode_DB;
                     return (RamAccess<string>)value;
@@ -169,7 +169,7 @@ public abstract partial class Form1 : Form
         {
             if (!DocumentVid_Hidden_Priv)
             {
-                if (Dictionary.TryGetValue(nameof(DocumentVid), out RamAccess value))
+                if (Dictionary.TryGetValue(nameof(DocumentVid), out var value))
                 {
                     ((RamAccess<byte?>)value).Value = DocumentVid_DB;
                     return (RamAccess<byte?>)value;
@@ -235,7 +235,7 @@ public abstract partial class Form1 : Form
         {
             if (!DocumentNumber_Hidden_Priv)
             {
-                if (Dictionary.TryGetValue(nameof(DocumentNumber), out RamAccess value))
+                if (Dictionary.TryGetValue(nameof(DocumentNumber), out var value))
                 {
                     ((RamAccess<string>)value).Value = DocumentNumber_DB;
                     return (RamAccess<string>)value;
@@ -294,7 +294,7 @@ public abstract partial class Form1 : Form
         {
             if (!DocumentDate_Hidden_Priv)
             {
-                if (Dictionary.TryGetValue(nameof(DocumentDate), out RamAccess value))
+                if (Dictionary.TryGetValue(nameof(DocumentDate), out var value))
                 {
                     ((RamAccess<string>)value).Value = DocumentDate_DB;
                     return (RamAccess<string>)value;

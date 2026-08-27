@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Models.Comparers.FormContent;
 using OfficeOpenXml;
 
 namespace Client_App.Resources;
@@ -23,39 +24,8 @@ public static partial class StaticStringMethods
             return nameDb == null && namePas == null;
         }
 
-        nameDb = RestrictedSymbolsRegex().Replace(nameDb, string.Empty)
-            .Replace('а', 'a')
-            .Replace('б', 'b')
-            .Replace('в', 'b')
-            .Replace('г', 'r')
-            .Replace('е', 'e')
-            .Replace('ё', 'e')
-            .Replace('к', 'k')
-            .Replace('м', 'm')
-            .Replace('о', '0')
-            .Replace('о', '0')
-            .Replace('р', 'p')
-            .Replace('с', 'c')
-            .Replace('т', 't')
-            .Replace('у', 'y')
-            .Replace('х', 'x');
-
-        namePas = RestrictedSymbolsRegex().Replace(namePas, string.Empty)
-            .Replace('а', 'a')
-            .Replace('б', 'b')
-            .Replace('в', 'b')
-            .Replace('г', 'r')
-            .Replace('е', 'e')
-            .Replace('ё', 'e')
-            .Replace('к', 'k')
-            .Replace('м', 'm')
-            .Replace('о', '0')
-            .Replace('о', '0')
-            .Replace('р', 'p')
-            .Replace('с', 'c')
-            .Replace('т', 't')
-            .Replace('у', 'y')
-            .Replace('х', 'x');
+        nameDb = LookalikeCharMapper.ReplaceRuEnLookalikes(RestrictedSymbolsRegex().Replace(nameDb, string.Empty));
+        namePas = LookalikeCharMapper.ReplaceRuEnLookalikes(RestrictedSymbolsRegex().Replace(namePas, string.Empty));
 
         return nameDb.Equals(namePas, StringComparison.OrdinalIgnoreCase);
     }
@@ -107,7 +77,7 @@ public static partial class StaticStringMethods
 
     #region ConvertToExcel
     
-    public static object ConvertToExcelDate(string value, ExcelWorksheet worksheet, int row, int column)
+    public static object ConvertToExcelDate(string? value, ExcelWorksheet worksheet, int row, int column)
     {
         if (DateOnly.TryParse(value, out var dateOnly))
         {
@@ -120,7 +90,7 @@ public static partial class StaticStringMethods
                 : value;
     }
 
-    public static object ConvertToExcelDouble(string value)
+    public static object ConvertToExcelDouble(string? value)
     {
         return value is null or "" or "-"
             ? "-"
@@ -129,7 +99,7 @@ public static partial class StaticStringMethods
                 : value;
     }
 
-    public static object ConvertToExcelInt(string value)
+    public static object ConvertToExcelInt(string? value)
     {
         return value is null or "" or "-"
             ? "-"
@@ -138,7 +108,7 @@ public static partial class StaticStringMethods
                 : value;
     }
 
-    public static object ConvertToExcelShort(string value)
+    public static object ConvertToExcelShort(string? value)
     {
         return value is null or "" or "-"
             ? "-"
@@ -147,7 +117,7 @@ public static partial class StaticStringMethods
                 : value;
     }
 
-    public static object ConvertToExcelString(string value)
+    public static object ConvertToExcelString(string? value)
     {
         return value is null or "" or "-"
             ? "-"
@@ -156,8 +126,8 @@ public static partial class StaticStringMethods
 
     private static string ReplaceE(string numberE)
     {
-        return numberE.Replace("е", "E").Replace("Е", "E").Replace("e", "E")
-            .Replace("(", "").Replace(")", "").Replace(".", ",");
+        return numberE.Replace('е', 'E').Replace('Е', 'E').Replace('e', 'E')
+            .Replace("(", "").Replace(")", "").Replace('.', ',');
     }
 
     #endregion

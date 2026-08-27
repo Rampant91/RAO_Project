@@ -16,8 +16,9 @@ using System.Threading.Tasks;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms4;
-using Models.DBRealization;
 using Client_App.ViewModels.Forms.Forms5;
+using Client_App.Views.Forms.Forms4;
+using Client_App.Views.Forms.Forms5;
 
 namespace Client_App.Commands.AsyncCommands.Add;
 
@@ -54,7 +55,8 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                     ContentMessage = "Ваша организация является юридическим лицом или территориальным обособленным подразделением?",
                     MinWidth = 300,
                     MinHeight = 125,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(mainWindow));
 

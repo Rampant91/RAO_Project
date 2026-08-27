@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -7,6 +7,7 @@ using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form2;
 
@@ -454,7 +455,7 @@ public partial class Form23 : Form2
     {
         if (args.PropertyName == "Value")
         {
-            QuantityOZIII_DB = ((RamAccess<string>)value).Value;
+            QuantityOZIII_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -1049,4 +1050,22 @@ public partial class Form23 : Form2
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form23 formToCompare) return false;
+
+        return FormTextEquality.Equals(StoragePlaceName_DB, formToCompare.StoragePlaceName_DB)
+               && FormTextEquality.Equals(StoragePlaceCode_DB, formToCompare.StoragePlaceCode_DB)
+               && FormExponentialEquality.Equals(ProjectVolume_DB, formToCompare.ProjectVolume_DB)
+               && FormTextEquality.Equals(CodeRAO_DB, formToCompare.CodeRAO_DB)
+               && FormExponentialEquality.Equals(Volume_DB, formToCompare.Volume_DB)
+               && FormExponentialEquality.Equals(Mass_DB, formToCompare.Mass_DB)
+               && FormTextEquality.Equals(QuantityOZIII_DB, formToCompare.QuantityOZIII_DB)
+               && FormExponentialEquality.Equals(SummaryActivity_DB, formToCompare.SummaryActivity_DB)
+               && FormTextEquality.Equals(DocumentNumber_DB, formToCompare.DocumentNumber_DB)
+               && FormDateEquality.Equals(DocumentDate_DB, formToCompare.DocumentDate_DB)
+               && FormDateEquality.Equals(ExpirationDate_DB, formToCompare.ExpirationDate_DB)
+               && FormTextEquality.Equals(DocumentName_DB, formToCompare.DocumentName_DB);
+    }
 }

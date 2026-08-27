@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Models.Helpers;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -154,11 +155,11 @@ public class CheckF29 : CheckBase
         List<string> Names28 = new();
         foreach (Form29 row29 in Rows29Cur)
         {
-            if (string.IsNullOrWhiteSpace(row29.WasteSourceName_DB) || row29.WasteSourceName_DB.Trim() == "-") continue;
+            if (DashStringHelper.IsNullOrWhiteSpaceOrDash(row29.WasteSourceName_DB)) continue;
             bool found = false;
             foreach (Form28 row28 in Rows28Cur)
             {
-                if (string.IsNullOrWhiteSpace(row28.WasteSourceName_DB) || row28.WasteSourceName_DB.Trim() == "-") continue;
+                if (DashStringHelper.IsNullOrWhiteSpaceOrDash(row28.WasteSourceName_DB)) continue;
                 if (row29.WasteSourceName_DB.Trim().Equals(row28.WasteSourceName_DB.Trim(), StringComparison.InvariantCultureIgnoreCase))
                 {
                     found = true;
@@ -296,7 +297,8 @@ public class CheckF29 : CheckBase
                 ContentHeader = "Уведомление",
                 ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
                 MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
             })
             .ShowDialog(Desktop.MainWindow));
 
@@ -355,7 +357,8 @@ public class CheckF29 : CheckBase
                                         $"{Environment.NewLine}и используется другим процессом.",
                                     MinWidth = 400,
                                     MinHeight = 150,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                    Topmost = true,
                                 })
                                 .ShowDialog(Desktop.MainWindow));
 

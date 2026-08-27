@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -7,6 +7,7 @@ using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form2;
 
@@ -755,4 +756,20 @@ public partial class Form210 : Form2
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form210 formToCompare) return false;
+
+        return FormTextEquality.Equals(IndicatorName_DB, formToCompare.IndicatorName_DB)
+               && FormTextEquality.Equals(PlotName_DB, formToCompare.PlotName_DB)
+               && FormTextEquality.Equals(PlotKadastrNumber_DB, formToCompare.PlotKadastrNumber_DB)
+               && FormTextEquality.Equals(PlotCode_DB, formToCompare.PlotCode_DB)
+               && FormExponentialEquality.Equals(InfectedArea_DB, formToCompare.InfectedArea_DB)
+               && FormExponentialEquality.Equals(AvgGammaRaysDosePower_DB, formToCompare.AvgGammaRaysDosePower_DB)
+               && FormExponentialEquality.Equals(MaxGammaRaysDosePower_DB, formToCompare.MaxGammaRaysDosePower_DB)
+               && FormExponentialEquality.Equals(WasteDensityAlpha_DB, formToCompare.WasteDensityAlpha_DB)
+               && FormExponentialEquality.Equals(WasteDensityBeta_DB, formToCompare.WasteDensityBeta_DB)
+               && FormTextEquality.Equals(FcpNumber_DB, formToCompare.FcpNumber_DB);
+    }
 }

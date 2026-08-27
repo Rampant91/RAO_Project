@@ -1,13 +1,110 @@
-using Client_App.ViewModels.Controls;
+﻿using Client_App.ViewModels.Controls;
+using CommunityToolkit.Mvvm.Input;
 using Models.Collections;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
+using Client_App.ViewModels.Forms.Forms1.Items;
+using Client_App.ViewModels.Forms.Forms1.Providers;
 
 namespace Client_App.ViewModels.Forms.Forms1;
 
 public class Form_19VM : BaseFormVM
 {
     public override string FormType => "1.9";
+
+    #region OpCodes
+    
+    public ObservableCollection<OperationCodeItem> OperationCodes => 
+        new(OperationCodesProvider.AllOperationCodes
+            .Where(x => ValidOperationCodes.Contains(x.Code)));
+    
+    public ICollection<string> ValidOperationCodes => OperationCodesProvider.GetValidCodesForForm19();
+
+    public string OperationCodePattern => "^1?$|^10$";
+
+    #endregion
+
+    #region DocVids
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<DocumentVidItem> DocumentVids =>
+        new(DocumentVidProvider.AllDocumentVids
+            .Where(x => ValidDocumentVids.Contains(x.Code.ToString())));
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string?> ValidDocumentVids => DocumentVidProvider.GetValidCodesForForms19();
+
+    public string DocumentVidPattern => "^1?$";
+
+    #endregion
+
+    #region CodeTypeAccObjects
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ObservableCollection<CodeTypeAccObjectItem> CodeTypeAccObjects =>
+        new(CodeTypeAccObjectProvider.AllCodeTypeAccObjects
+            .Where(x => ValidCodeTypeAccObjects.Contains(x.Code.ToString())));
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public ICollection<string> ValidCodeTypeAccObjects => CodeTypeAccObjectProvider.GetValidCodes();
+
+    public string CodeTypeAccObjectsPattern => @"^\d{0,2}$";
+
+    #endregion
+
+    #region FrozenColumnCount
+
+    private int _frozenColumnCount = 0;
+
+    public int FrozenColumnCount
+    {
+        get => _frozenColumnCount;
+        set
+        {
+            var clamped = Math.Clamp(value, 0, 3);
+            if (_frozenColumnCount == clamped) return;
+            _frozenColumnCount = clamped;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(IsFrozenHeaderVisible));
+            OnPropertyChanged(nameof(IsZeroFrozenMode));
+            OnPropertyChanged(nameof(IsFrozenCol1Visible));
+            OnPropertyChanged(nameof(IsFrozenCol1OnlyVisible));
+            OnPropertyChanged(nameof(IsFrozenCol2Visible));
+            OnPropertyChanged(nameof(CanDecreaseFrozen));
+            OnPropertyChanged(nameof(CanIncreaseFrozen));
+            OnPropertyChanged(nameof(IsScrollableGroupHeaderFull));
+        }
+    }
+
+    public bool IsZeroFrozenMode => FrozenColumnCount == 0;
+    public bool IsFrozenHeaderVisible => FrozenColumnCount > 0;
+    public bool IsFrozenCol1Visible => FrozenColumnCount >= 2;
+    public bool IsFrozenCol1OnlyVisible => FrozenColumnCount == 2;
+    public bool IsFrozenCol2Visible => FrozenColumnCount >= 3;
+    public bool IsScrollableGroupHeaderFull => FrozenColumnCount < 2;
+    public bool CanDecreaseFrozen => FrozenColumnCount > 0;
+    public bool CanIncreaseFrozen => FrozenColumnCount < 3;
+
+    private ICommand? _decreaseFrozenCommand;
+    public ICommand DecreaseFrozenColumnCountCommand =>
+        _decreaseFrozenCommand ??= new RelayCommand(() => FrozenColumnCount--);
+
+    private ICommand? _increaseFrozenCommand;
+    public ICommand IncreaseFrozenColumnCountCommand =>
+        _increaseFrozenCommand ??= new RelayCommand(() => FrozenColumnCount++);
+
+    #endregion
 
     #region Constructors
 
@@ -32,39 +129,11 @@ public class Form_19VM : BaseFormVM
             Reports = reps
         };
 
-        base.InitializeUserControls();
+        InitializeUserControls();
         Reports = reps;
 
         SelectReportPopupVM = new SelectReportPopupVM(this);
     }
 
     #endregion
-
-    //public ObservableCollection<Form19> Form19List => new(FormList.Cast<Form19>());
-
-    //public ObservableCollection<Form19> SelectedForms19 => new(SelectedForms.Cast<Form19>());
-
-    //public Form19 SelectedForm19
-    //{
-    //    get => SelectedForm as Form19;
-    //    set
-    //    {
-    //        SelectedForm = value;
-    //        UpdateFormList();
-    //    }
-    //}
-
-    /*
-    #region UpdateFormList
-    public new async void UpdateFormList()
-    {
-        base.UpdateFormList();
-        
-        //OnPropertyChanged(nameof(Form19List));
-        //OnPropertyChanged(nameof(SelectedForms19));
-        //OnPropertyChanged(nameof(SelectedForm19));
-    }
-
-    #endregion
-    */
 }

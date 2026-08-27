@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -8,6 +8,7 @@ using Models.Collections;
 using Models.Forms.DataAccess;
 using Models.Interfaces;
 using OfficeOpenXml;
+using Models.Comparers.FormContent;
 
 namespace Models.Forms.Form2;
 
@@ -725,7 +726,7 @@ public partial class Form22 : Form2, IBaseColor
 
     #region PackQuantity (6)
 
-    public string PackQuantity_DB { get; set; }
+    public string PackQuantity_DB { get; set; } = "";
 
     [NotMapped]
     [FormProperty(true, "УКТ, упаковка ли иная учетная единица", "количество, шт", "6")]
@@ -755,7 +756,7 @@ public partial class Form22 : Form2, IBaseColor
     {
         if (args.PropertyName == "Value")
         {
-            PackQuantity_DB = ((RamAccess<string>)value).Value;
+            PackQuantity_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -1202,7 +1203,7 @@ public partial class Form22 : Form2, IBaseColor
 
     #region QuantityOZIII (13)
 
-    public string QuantityOZIII_DB { get; set; }
+    public string QuantityOZIII_DB { get; set; } = "";
 
     [NotMapped]
     [FormProperty(true, "null-13", "Количество ОЗИИИ, шт", "13")]
@@ -1232,7 +1233,7 @@ public partial class Form22 : Form2, IBaseColor
     {
         if (args.PropertyName == "Value")
         {
-            QuantityOZIII_DB = ((RamAccess<string>)value).Value;
+            QuantityOZIII_DB = IntegerString_ValueChanged(((RamAccess<string>)value).Value);
         }
     }
 
@@ -2155,4 +2156,29 @@ public partial class Form22 : Form2, IBaseColor
     }
 
     #endregion
+
+    public override bool IsContentEqual(Form otherForm)
+    {
+        if (otherForm is not Form22 formToCompare) return false;
+
+        return FormTextEquality.Equals(StoragePlaceName_DB, formToCompare.StoragePlaceName_DB)
+               && FormTextEquality.Equals(StoragePlaceCode_DB, formToCompare.StoragePlaceCode_DB)
+               && FormTextEquality.Equals(PackName_DB, formToCompare.PackName_DB)
+               && FormTextEquality.Equals(PackType_DB, formToCompare.PackType_DB)
+               && FormTextEquality.Equals(PackQuantity_DB, formToCompare.PackQuantity_DB)
+               && FormTextEquality.Equals(CodeRAO_DB, formToCompare.CodeRAO_DB)
+               && FormTextEquality.Equals(StatusRAO_DB, formToCompare.StatusRAO_DB)
+               && FormExponentialEquality.Equals(VolumeOutOfPack_DB, formToCompare.VolumeOutOfPack_DB)
+               && FormExponentialEquality.Equals(VolumeInPack_DB, formToCompare.VolumeInPack_DB)
+               && FormExponentialEquality.Equals(MassOutOfPack_DB, formToCompare.MassOutOfPack_DB)
+               && FormExponentialEquality.Equals(MassInPack_DB, formToCompare.MassInPack_DB)
+               && FormTextEquality.Equals(QuantityOZIII_DB, formToCompare.QuantityOZIII_DB)
+               && FormExponentialEquality.Equals(TritiumActivity_DB, formToCompare.TritiumActivity_DB)
+               && FormExponentialEquality.Equals(BetaGammaActivity_DB, formToCompare.BetaGammaActivity_DB)
+               && FormExponentialEquality.Equals(AlphaActivity_DB, formToCompare.AlphaActivity_DB)
+               && FormExponentialEquality.Equals(TransuraniumActivity_DB, formToCompare.TransuraniumActivity_DB)
+               && FormRadionuclidsEquality.Equals(MainRadionuclids_DB, formToCompare.MainRadionuclids_DB)
+               && FormTextEquality.Equals(Subsidy_DB, formToCompare.Subsidy_DB)
+               && FormTextEquality.Equals(FcpNumber_DB, formToCompare.FcpNumber_DB);
+    }
 }

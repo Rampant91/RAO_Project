@@ -1,56 +1,1047 @@
-﻿using Models.DBRealization;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using Microsoft.EntityFrameworkCore;
-using Models.Collections;
 using Avalonia.Threading;
+using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
+using Microsoft.EntityFrameworkCore;
+using Models.DBRealization;
+using Models.Forms;
+using Models.Forms.Form1;
+using Models.Forms.Form2;
+using Models.Forms.Form4;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 
 namespace Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 
-public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCommand
+public abstract partial class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCommand
 {
+    /// <summary>
+    /// Firebird ограничивает список значений в IN (...) ~1500 элементами.
+    /// </summary>
+    private const int FirebirdInClauseBatchSize = 1000;
+
+    private const double MaxTextColumnWidth = 35;
+    private const double RegNoColumnWidth = 14;
+    private const double OkpoColumnWidth = 12;
+    private const double FormNumColumnWidth = 8;
+    private const double DateColumnWidth = 13;
+    private const double YearColumnWidth = 8;
+    private const double CorrectionColumnWidth = 15;
+    private const double RowCountColumnWidth = 14;
+
+    /// <summary>
+    /// Высота строки заголовков для списка форм 1 (в пунктах).
+    /// </summary>
+    private protected const double HeaderRowHeightForm1 = 55;
+
+    /// <summary>
+    /// Высота строки заголовков для списка форм 2 (в пунктах).
+    /// </summary>
+    private protected const double HeaderRowHeightForm2 = 45;
+
+    /// <summary>
+    /// Высота строки заголовков для списка форм 4 (в пунктах).
+    /// </summary>
+    private protected const double HeaderRowHeightForm4 = 45;
+
+    private const double CodeSubjectRfColumnWidth = 14;
+    private const double FormNumberColumnWidth = 10;
+    private const double ShortNameRiacColumnWidth = 45;
+    private const double ShortNameViacColumnWidth = 45;
+
+    /// <summary>
+    /// Суффикс переноса строки в заголовке узкой колонки — стрелка AutoFilter остаётся на пустой строке.
+    /// </summary>
+    private protected const string HeaderFilterLineBreak = "\n";
+
+    /// <summary>
+    /// Цвет фона чередующихся строк данных.
+    /// </summary>
+    private protected static readonly Color AlternatingRowFill = Color.FromArgb(221, 235, 247); // #DDEBF7
+
+    private protected static readonly string[] Form1ChildFormNumbers =
+        ["1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9"];
+
+    private protected static readonly string[] Form2ChildFormNumbers =
+    [
+        "2.1", "2.2", "2.3", "2.4", "2.5", "2.6", "2.7", "2.8", "2.9", "2.10", "2.11", "2.12"
+    ];
+
+    private protected static readonly string[] Form4ChildFormNumbers = ["4.1"];
+
+    private protected static readonly string[] Form5ChildFormNumbers =
+        ["5.1", "5.2", "5.3", "5.4", "5.5", "5.6", "5.7"];
+
+    /// <summary>
+    /// Интервал обновления прогрессбара при записи строк в Excel (в строках).
+    /// </summary>
+    private protected const int ProgressUpdateRowInterval = 50;
+
+    /// <summary>
+    /// Прогрессбар в начале загрузки данных из БД.
+    /// </summary>
+    private protected const int ProgressDbLoadStart = 20;
+
+    /// <summary>
+    /// Прогрессбар после загрузки титульных данных организаций.
+    /// </summary>
+    private protected const int ProgressTitlesLoaded = 21;
+
+    /// <summary>
+    /// Прогрессбар после загрузки списка организаций и дочерних отчётов.
+    /// </summary>
+    private protected const int ProgressReportsListEnd = 22;
+
+    /// <summary>
+    /// Прогрессбар в начале подсчёта строк форм в БД.
+    /// </summary>
+    private protected const int ProgressRowCountsStart = 23;
+
+    /// <summary>
+    /// Прогрессбар после подсчёта строк форм 1 в БД.
+    /// </summary>
+    private protected const int ProgressRowCountsEndForm1 = 74;
+
+    /// <summary>
+    /// Прогрессбар после подсчёта строк форм 2 в БД.
+    /// </summary>
+    private protected const int ProgressRowCountsEndForm2 = 83;
+
+    /// <summary>
+    /// Прогрессбар после подсчёта строк форм 4 в БД.
+    /// </summary>
+    private protected const int ProgressRowCountsEndForm4 = 74;
+
+    /// <summary>
+    /// Прогрессбар после подсчёта строк форм 5 в БД.
+    /// </summary>
+    private protected const int ProgressRowCountsEndForm5 = 80;
+
+    /// <summary>
+    /// Высота строки заголовков для списка форм 5 (в пунктах).
+    /// </summary>
+    private protected const double HeaderRowHeightForm5 = 45;
+
+    /// <summary>
+    /// Прогрессбар после записи данных в Excel.
+    /// </summary>
+    private protected const int ProgressExcelFillEnd = 92;
+
+    /// <summary>
+    /// Прогрессбар перед сохранением файла.
+    /// </summary>
+    private protected const int ProgressSaveStart = 95;
+
+    /// <summary>
+    /// Прогрессбар перед очисткой временных данных.
+    /// </summary>
+    private protected const int ProgressCleanup = 98;
+
+    #region ExportData
+
+    /// <summary>
+    /// Организация с полями титула и дочерними отчётами для выгрузки списка форм.
+    /// </summary>
+    private protected sealed class FormListOrgExportData(
+        string regNo,
+        string okpo,
+        string shortJurLico,
+        IReadOnlyList<FormReportListInfo> reports)
+    {
+        public string RegNo { get; } = regNo;
+        public string Okpo { get; } = okpo;
+        public string ShortJurLico { get; } = shortJurLico;
+        public IReadOnlyList<FormReportListInfo> Reports { get; } = reports;
+    }
+
+    private protected sealed record FormListExportPreparedData(
+        List<FormListOrgExportData> Orgs,
+        Dictionary<string, List<int>> ReportIdsByForm);
+
+    private protected readonly record struct FormReportListInfo(
+        int OrgId,
+        int ReportId,
+        string FormNum_DB,
+        string? StartPeriod_DB,
+        string? EndPeriod_DB,
+        string? Year_DB,
+        byte CorrectionNumber_DB);
+
+    private readonly record struct TitleRowInfo(
+        int MasterReportId,
+        int NumberInOrder,
+        string? RegNo_DB,
+        string? Okpo_DB,
+        string? ShortJurLico_DB);
+
+    private readonly record struct Form40TitleRowInfo(
+        int MasterReportId,
+        string? CodeSubjectRF_DB,
+        string? ShortNameRiac_DB,
+        string? NameRiac_DB);
+
+    private readonly record struct Form50TitleRowInfo(
+        int MasterReportId,
+        string? ShortName_DB,
+        string? Name_DB);
+
+    #endregion
+
+    #region Progress
+
+    /// <summary>
+    /// Подсчитывает количество строк, которое будет записано в Excel.
+    /// </summary>
+    private protected static int CountExportRows(IEnumerable<FormListOrgExportData> orgs) =>
+        orgs.Sum(o => o.Reports.Count);
+
+    /// <summary>
+    /// Обновляет прогрессбар при загрузке счётчиков строк по номеру формы.
+    /// </summary>
+    private protected static void SetRowCountsProgress(
+        AnyTaskProgressBarVM progressBarVM,
+        int formIndex,
+        int formCount,
+        int progressStart,
+        int progressEnd,
+        string formNum)
+    {
+        if (formCount <= 0 || progressEnd <= progressStart)
+        {
+            progressBarVM.SetProgressBar(progressStart, $"Загрузка списка форм {formNum}");
+            return;
+        }
+
+        var percent = progressStart
+                      + (int)Math.Floor((progressEnd - progressStart) * formIndex / (double)formCount);
+        progressBarVM.SetProgressBar(percent, $"Загрузка списка форм {formNum}");
+    }
+
+    #endregion
+
     #region GetReportsList
 
     /// <summary>
-    /// Получение списка организаций.
+    /// Получение списка организаций с титульными полями и дочерними отчётами.
     /// </summary>
-    /// <param name="db">Модель БД.</param>
-    /// <param name="formNum">Номер головной формы организации.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Список организаций.</returns>
-    private protected static async Task<List<Reports>> GetReportsList(DBModel db, string formNum, CancellationTokenSource cts)
+    private protected static async Task<List<FormListOrgExportData>> GetReportsList(
+        DBModel db,
+        string masterFormNum,
+        AnyTaskProgressBarVM progressBarVM,
+        CancellationTokenSource cts,
+        int progressLoadStart,
+        int progressLoadEnd)
     {
-        return formNum switch
+        var token = cts.Token;
+        var childFormNumbers = masterFormNum switch
         {
-            "1.0" => await db.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(reps => reps.DBObservable)
-                .Include(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(reps => reps.Report_Collection)
-                .Where(reps => reps.DBObservable != null && reps.Master_DB.FormNum_DB == formNum)
-                .ToListAsync(cts.Token),
-
-            "2.0" => await db.ReportsCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(reps => reps.DBObservable)
-                .Include(reps => reps.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(reps => reps.Report_Collection)
-                .Where(reps => reps.DBObservable != null && reps.Master_DB.FormNum_DB == formNum)
-                .ToListAsync(cts.Token),
-
-            _ => throw new ArgumentOutOfRangeException(nameof(formNum), formNum, null)
+            "1.0" => Form1ChildFormNumbers,
+            "2.0" => Form2ChildFormNumbers,
+            "4.0" => Form4ChildFormNumbers,
+            "5.0" => Form5ChildFormNumbers,
+            _ => throw new ArgumentOutOfRangeException(nameof(masterFormNum), masterFormNum, null)
         };
+
+        var loadRange = Math.Max(1, progressLoadEnd - progressLoadStart);
+        var progressTitlesLoaded = progressLoadStart + loadRange / 3;
+
+        progressBarVM.SetProgressBar(progressLoadStart, "Загрузка списка организаций");
+
+        var orgRows = await db.ReportsCollectionDbSet
+            .AsNoTracking()
+            .Where(reps => reps.DBObservableId != null && reps.Master_DB.FormNum_DB == masterFormNum)
+            .Select(reps => new { reps.Id, MasterReportId = reps.Master_DBId })
+            .Where(x => x.MasterReportId != null)
+            .ToListAsync(token);
+
+        if (orgRows.Count == 0)
+            return [];
+
+        var masterReportIds = orgRows
+            .Select(x => x.MasterReportId!.Value)
+            .Distinct()
+            .ToList();
+
+        progressBarVM.SetProgressBar(progressTitlesLoaded, "Загрузка титульных данных");
+
+        Dictionary<int, List<TitleRowInfo>>? titleByMasterId = null;
+        Dictionary<int, Form40TitleRowInfo>? titleByMasterIdForm40 = null;
+        Dictionary<int, Form50TitleRowInfo>? titleByMasterIdForm50 = null;
+
+        switch (masterFormNum)
+        {
+            case "1.0":
+                titleByMasterId = await LoadTitleRowsForm10Async(db, masterReportIds, token);
+                break;
+            case "2.0":
+                titleByMasterId = await LoadTitleRowsForm20Async(db, masterReportIds, token);
+                break;
+            case "4.0":
+                titleByMasterIdForm40 = await LoadTitleRowsForm40Async(db, masterReportIds, token);
+                break;
+            case "5.0":
+                titleByMasterIdForm50 = await LoadTitleRowsForm50Async(db, masterReportIds, token);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(masterFormNum), masterFormNum, null);
+        }
+
+        var orgIds = orgRows.Select(o => o.Id).ToHashSet();
+        var reportsByOrgId = await LoadFormReportsForList(
+            db, orgIds, childFormNumbers, progressBarVM, token, progressTitlesLoaded, progressLoadEnd);
+
+        var result = new List<FormListOrgExportData>(orgRows.Count);
+        foreach (var org in orgRows)
+        {
+            var (regNo, okpo, shortJurLico) = masterFormNum switch
+            {
+                "1.0" => BuildTitleFields(
+                    titleByMasterId!.GetValueOrDefault(org.MasterReportId!.Value),
+                    ResolveTitleForm10,
+                    ResolveShortJurLicoForm10),
+                "2.0" => BuildTitleFields(
+                    titleByMasterId!.GetValueOrDefault(org.MasterReportId!.Value),
+                    ResolveTitleForm20,
+                    ResolveShortJurLicoForm20),
+                "4.0" => ResolveTitleForm40(
+                    titleByMasterIdForm40!.GetValueOrDefault(org.MasterReportId!.Value)),
+                "5.0" => ResolveTitleForm50(
+                    titleByMasterIdForm50!.GetValueOrDefault(org.MasterReportId!.Value)),
+                _ => (string.Empty, string.Empty, string.Empty)
+            };
+
+            reportsByOrgId.TryGetValue(org.Id, out var reports);
+            result.Add(new FormListOrgExportData(
+                regNo,
+                okpo,
+                shortJurLico,
+                reports ?? []));
+        }
+
+        progressBarVM.SetProgressBar(progressLoadEnd, "Список организаций загружен");
+        return result;
     }
+
+    private static async Task<Dictionary<int, List<TitleRowInfo>>> LoadTitleRowsForm10Async(
+        DBModel db,
+        List<int> masterReportIds,
+        CancellationToken token)
+    {
+        var result = new Dictionary<int, List<TitleRowInfo>>(masterReportIds.Count);
+        if (masterReportIds.Count == 0)
+            return result;
+
+        var batchCount = (masterReportIds.Count + FirebirdInClauseBatchSize - 1) / FirebirdInClauseBatchSize;
+        for (var batchIndex = 0; batchIndex < batchCount; batchIndex++)
+        {
+            var batch = masterReportIds
+                .Skip(batchIndex * FirebirdInClauseBatchSize)
+                .Take(FirebirdInClauseBatchSize)
+                .ToList();
+
+            var rows = await db.form_10
+                .AsNoTracking()
+                .Where(f => f.ReportId != null && batch.Contains(f.ReportId.Value))
+                .Select(f => new TitleRowInfo(
+                    f.ReportId!.Value,
+                    f.NumberInOrder_DB,
+                    f.RegNo_DB,
+                    f.Okpo_DB,
+                    f.ShortJurLico_DB))
+                .ToListAsync(token);
+
+            AppendTitleRows(result, rows);
+        }
+
+        return result;
+    }
+
+    private static async Task<Dictionary<int, Form40TitleRowInfo>> LoadTitleRowsForm40Async(
+        DBModel db,
+        List<int> masterReportIds,
+        CancellationToken token)
+    {
+        var result = new Dictionary<int, Form40TitleRowInfo>(masterReportIds.Count);
+        if (masterReportIds.Count == 0)
+            return result;
+
+        var batchCount = (masterReportIds.Count + FirebirdInClauseBatchSize - 1) / FirebirdInClauseBatchSize;
+        for (var batchIndex = 0; batchIndex < batchCount; batchIndex++)
+        {
+            var batch = masterReportIds
+                .Skip(batchIndex * FirebirdInClauseBatchSize)
+                .Take(FirebirdInClauseBatchSize)
+                .ToList();
+
+            var rows = await db.form_40
+                .AsNoTracking()
+                .Where(f => f.ReportId != null && batch.Contains(f.ReportId.Value))
+                .Select(f => new Form40TitleRowInfo(
+                    f.ReportId!.Value,
+                    f.CodeSubjectRF_DB,
+                    f.ShortNameRiac_DB,
+                    f.NameRiac_DB))
+                .ToListAsync(token);
+
+            foreach (var row in rows)
+                result[row.MasterReportId] = row;
+        }
+
+        return result;
+    }
+
+    private static async Task<Dictionary<int, Form50TitleRowInfo>> LoadTitleRowsForm50Async(
+        DBModel db,
+        List<int> masterReportIds,
+        CancellationToken token)
+    {
+        var result = new Dictionary<int, Form50TitleRowInfo>(masterReportIds.Count);
+        if (masterReportIds.Count == 0)
+            return result;
+
+        var batchCount = (masterReportIds.Count + FirebirdInClauseBatchSize - 1) / FirebirdInClauseBatchSize;
+        for (var batchIndex = 0; batchIndex < batchCount; batchIndex++)
+        {
+            var batch = masterReportIds
+                .Skip(batchIndex * FirebirdInClauseBatchSize)
+                .Take(FirebirdInClauseBatchSize)
+                .ToList();
+
+            var rows = await db.form_50
+                .AsNoTracking()
+                .Where(f => f.ReportId != null && batch.Contains(f.ReportId.Value))
+                .Select(f => new Form50TitleRowInfo(
+                    f.ReportId!.Value,
+                    f.ShortName_DB,
+                    f.Name_DB))
+                .ToListAsync(token);
+
+            foreach (var row in rows)
+                result[row.MasterReportId] = row;
+        }
+
+        return result;
+    }
+
+    private static async Task<Dictionary<int, List<TitleRowInfo>>> LoadTitleRowsForm20Async(
+        DBModel db,
+        List<int> masterReportIds,
+        CancellationToken token)
+    {
+        var result = new Dictionary<int, List<TitleRowInfo>>(masterReportIds.Count);
+        if (masterReportIds.Count == 0)
+            return result;
+
+        var batchCount = (masterReportIds.Count + FirebirdInClauseBatchSize - 1) / FirebirdInClauseBatchSize;
+        for (var batchIndex = 0; batchIndex < batchCount; batchIndex++)
+        {
+            var batch = masterReportIds
+                .Skip(batchIndex * FirebirdInClauseBatchSize)
+                .Take(FirebirdInClauseBatchSize)
+                .ToList();
+
+            var rows = await db.form_20
+                .AsNoTracking()
+                .Where(f => f.ReportId != null && batch.Contains(f.ReportId.Value))
+                .Select(f => new TitleRowInfo(
+                    f.ReportId!.Value,
+                    f.NumberInOrder_DB,
+                    f.RegNo_DB,
+                    f.Okpo_DB,
+                    f.ShortJurLico_DB))
+                .ToListAsync(token);
+
+            AppendTitleRows(result, rows);
+        }
+
+        return result;
+    }
+
+    private static void AppendTitleRows(Dictionary<int, List<TitleRowInfo>> result, List<TitleRowInfo> rows)
+    {
+        foreach (var row in rows)
+        {
+            if (!result.TryGetValue(row.MasterReportId, out var list))
+            {
+                list = [];
+                result[row.MasterReportId] = list;
+            }
+
+            list.Add(row);
+        }
+    }
+
+    /// <summary>
+    /// Загружает только поля дочерних отчётов, необходимые для выгрузки списка форм.
+    /// </summary>
+    private static async Task<Dictionary<int, List<FormReportListInfo>>> LoadFormReportsForList(
+        DBModel db,
+        HashSet<int> orgIds,
+        string[] childFormNumbers,
+        AnyTaskProgressBarVM progressBarVM,
+        CancellationToken token,
+        int progressReportsLoadStart,
+        int progressReportsLoadEnd)
+    {
+        if (orgIds.Count == 0)
+            return [];
+
+        var orgIdList = orgIds.ToList();
+        var batchCount = (orgIdList.Count + FirebirdInClauseBatchSize - 1) / FirebirdInClauseBatchSize;
+        var result = new Dictionary<int, List<FormReportListInfo>>(orgIds.Count);
+        var reportsLoadRange = Math.Max(1, progressReportsLoadEnd - progressReportsLoadStart);
+
+        for (var batchIndex = 0; batchIndex < batchCount; batchIndex++)
+        {
+            var batch = orgIdList
+                .Skip(batchIndex * FirebirdInClauseBatchSize)
+                .Take(FirebirdInClauseBatchSize)
+                .ToList();
+
+            var status = batchCount == 1
+                ? "Загрузка списка отчётов"
+                : $"Загрузка списка отчётов (пакет {batchIndex + 1}/{batchCount})";
+            var percent = progressReportsLoadStart
+                            + (batchCount == 1
+                                ? reportsLoadRange
+                                : (int)Math.Floor(reportsLoadRange * (batchIndex + 1) / (double)batchCount));
+            progressBarVM.SetProgressBar(Math.Min(progressReportsLoadEnd, percent), status);
+
+            var rows = await db.ReportCollectionDbSet
+                .AsNoTracking()
+                .Where(r => r.Reports != null && batch.Contains(r.Reports.Id))
+                .Where(r => childFormNumbers.Contains(r.FormNum_DB))
+                .Select(r => new FormReportListInfo(
+                    r.Reports!.Id,
+                    r.Id,
+                    r.FormNum_DB,
+                    r.StartPeriod_DB,
+                    r.EndPeriod_DB,
+                    r.Year_DB,
+                    r.CorrectionNumber_DB))
+                .ToListAsync(token);
+
+            foreach (var row in rows)
+            {
+                if (!result.TryGetValue(row.OrgId, out var list))
+                {
+                    list = [];
+                    result[row.OrgId] = list;
+                }
+
+                list.Add(row);
+            }
+        }
+
+        return result;
+    }
+
+    #endregion
+
+    #region PrepareExport
+
+    private protected static FormListExportPreparedData PrepareForm1Export(
+        List<FormListOrgExportData> orgs,
+        DateOnly startDate,
+        DateOnly endDate)
+    {
+        var reportIdsByForm = Form1ChildFormNumbers.ToDictionary(f => f, _ => new List<int>());
+        var preparedOrgs = new List<FormListOrgExportData>(orgs.Count);
+
+        foreach (var org in orgs)
+        {
+            var filtered = new List<FormReportListInfo>();
+            foreach (var rep in org.Reports)
+            {
+                if (!IsForm1ReportInDateRange(rep, startDate, endDate))
+                    continue;
+
+                filtered.Add(rep);
+                reportIdsByForm[rep.FormNum_DB].Add(rep.ReportId);
+            }
+
+            preparedOrgs.Add(new FormListOrgExportData(org.RegNo, org.Okpo, org.ShortJurLico, filtered));
+        }
+
+        return new FormListExportPreparedData(preparedOrgs, reportIdsByForm);
+    }
+
+    private protected static FormListExportPreparedData PrepareForm4Export(
+        List<FormListOrgExportData> orgs,
+        int minYear,
+        int maxYear)
+    {
+        var reportIdsByForm = Form4ChildFormNumbers.ToDictionary(f => f, _ => new List<int>());
+        var preparedOrgs = new List<FormListOrgExportData>(orgs.Count);
+
+        foreach (var org in orgs)
+        {
+            var filtered = new List<FormReportListInfo>();
+            foreach (var rep in org.Reports)
+            {
+                if (!IsForm2ReportInYearRange(rep, minYear, maxYear))
+                    continue;
+
+                filtered.Add(rep);
+                reportIdsByForm[rep.FormNum_DB].Add(rep.ReportId);
+            }
+
+            preparedOrgs.Add(new FormListOrgExportData(org.RegNo, org.Okpo, org.ShortJurLico, filtered));
+        }
+
+        return new FormListExportPreparedData(preparedOrgs, reportIdsByForm);
+    }
+
+    private protected static FormListExportPreparedData PrepareForm5Export(
+        List<FormListOrgExportData> orgs,
+        int minYear,
+        int maxYear)
+    {
+        var reportIdsByForm = Form5ChildFormNumbers.ToDictionary(f => f, _ => new List<int>());
+        var preparedOrgs = new List<FormListOrgExportData>(orgs.Count);
+
+        foreach (var org in orgs)
+        {
+            var filtered = new List<FormReportListInfo>();
+            foreach (var rep in org.Reports)
+            {
+                if (!IsForm2ReportInYearRange(rep, minYear, maxYear))
+                    continue;
+
+                filtered.Add(rep);
+                reportIdsByForm[rep.FormNum_DB].Add(rep.ReportId);
+            }
+
+            preparedOrgs.Add(new FormListOrgExportData(org.RegNo, org.Okpo, org.ShortJurLico, filtered));
+        }
+
+        return new FormListExportPreparedData(preparedOrgs, reportIdsByForm);
+    }
+
+    private protected static FormListExportPreparedData PrepareForm2Export(
+        List<FormListOrgExportData> orgs,
+        int minYear,
+        int maxYear)
+    {
+        var reportIdsByForm = Form2ChildFormNumbers.ToDictionary(f => f, _ => new List<int>());
+        var preparedOrgs = new List<FormListOrgExportData>(orgs.Count);
+
+        foreach (var org in orgs)
+        {
+            var filtered = new List<FormReportListInfo>();
+            foreach (var rep in org.Reports)
+            {
+                if (!IsForm2ReportInYearRange(rep, minYear, maxYear))
+                    continue;
+
+                filtered.Add(rep);
+                reportIdsByForm[rep.FormNum_DB].Add(rep.ReportId);
+            }
+
+            preparedOrgs.Add(new FormListOrgExportData(org.RegNo, org.Okpo, org.ShortJurLico, filtered));
+        }
+
+        return new FormListExportPreparedData(preparedOrgs, reportIdsByForm);
+    }
+
+    private protected static bool IsForm1ReportInDateRange(FormReportListInfo rep, DateOnly startDate, DateOnly endDate)
+    {
+        if (startDate == DateOnly.MinValue && endDate == DateOnly.MaxValue)
+            return true;
+        if (!DateOnly.TryParse(rep.EndPeriod_DB, out var repEndDateTime))
+            return false;
+        return repEndDateTime >= startDate && repEndDateTime <= endDate;
+    }
+
+    private protected static bool IsForm2ReportInYearRange(FormReportListInfo rep, int minYear, int maxYear)
+    {
+        if (minYear == 0 && maxYear == 9999)
+            return true;
+        if (rep.Year_DB?.Length != 4 || !int.TryParse(rep.Year_DB, out var currentRepsYear))
+            return false;
+        return currentRepsYear >= minYear && currentRepsYear <= maxYear;
+    }
+
+    private protected static List<FormReportListInfo> OrderForm1Reports(IReadOnlyList<FormReportListInfo> reports) =>
+        reports
+            .OrderBy(x => x.FormNum_DB)
+            .ThenByDescending(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDateOnly) ? stDateOnly : DateOnly.MaxValue)
+            .ThenByDescending(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDateOnly) ? endDateOnly : DateOnly.MaxValue)
+            .ThenByDescending(x => x.CorrectionNumber_DB)
+            .ToList();
+
+    private protected static List<FormReportListInfo> OrderForm2Reports(IReadOnlyList<FormReportListInfo> reports) =>
+        reports
+            .OrderBy(x => byte.TryParse(x.FormNum_DB[2..], out var formNum) ? formNum : byte.MaxValue)
+            .ThenByDescending(x => int.TryParse(x.Year_DB, out var year) ? year : int.MinValue)
+            .ThenByDescending(x => x.CorrectionNumber_DB)
+            .ToList();
+
+    private protected static List<FormReportListInfo> OrderForm4Reports(IReadOnlyList<FormReportListInfo> reports) =>
+        reports
+            .OrderBy(x => x.FormNum_DB)
+            .ThenByDescending(x => int.TryParse(x.Year_DB, out var year) ? year : int.MinValue)
+            .ThenByDescending(x => x.CorrectionNumber_DB)
+            .ToList();
+
+    private protected static List<FormReportListInfo> OrderForm5Reports(IReadOnlyList<FormReportListInfo> reports) =>
+        reports
+            .OrderBy(x => int.TryParse(x.FormNum_DB.Split('.')[1], out var formNum) ? formNum : int.MaxValue)
+            .ThenByDescending(x => int.TryParse(x.Year_DB, out var year) ? year : int.MinValue)
+            .ThenByDescending(x => x.CorrectionNumber_DB)
+            .ToList();
+
+    #endregion
+
+    #region TitleFields
+
+    private static (string RegNo, string Okpo, string ShortJurLico) BuildTitleFields(
+        List<TitleRowInfo>? rows,
+        Func<List<TitleRowInfo>?, (string RegNo, string Okpo, string ShortJurLico)> resolveRegOkpo,
+        Func<List<TitleRowInfo>?, string> resolveShortJurLico)
+    {
+        var (regNo, okpo, _) = resolveRegOkpo(rows);
+        return (regNo, okpo, resolveShortJurLico(rows));
+    }
+
+    private static (string RegNo, string Okpo, string ShortJurLico) ResolveTitleForm10(List<TitleRowInfo>? rows) =>
+        ResolveRegOkpo(rows, GetForm10RowRegNo, GetForm10RowOkpo);
+
+    private static (string RegNo, string Okpo, string ShortJurLico) ResolveTitleForm20(List<TitleRowInfo>? rows) =>
+        ResolveRegOkpo(rows, GetForm20RowRegNo, GetForm20RowOkpo);
+
+    private static string ResolveShortJurLicoForm10(List<TitleRowInfo>? rows) =>
+        ResolveShortJurLico(rows, GetForm10ShortJurLico);
+
+    private static string ResolveShortJurLicoForm20(List<TitleRowInfo>? rows) =>
+        ResolveShortJurLico(rows, GetForm20ShortJurLico);
+
+    private static (string RegNo, string Okpo, string ShortJurLico) ResolveRegOkpo(
+        List<TitleRowInfo>? rows,
+        Func<TitleRowInfo, string> getRegNo,
+        Func<TitleRowInfo, string> getOkpo)
+    {
+        if (rows is null || rows.Count == 0)
+            return (string.Empty, string.Empty, string.Empty);
+
+        var ordered = rows.OrderBy(r => r.NumberInOrder).ToList();
+        var hasBranch = ordered.Count > 1;
+        var hasHead = ordered.Count > 0;
+
+        if (hasBranch)
+        {
+            var branch = ordered[1];
+            if ((getRegNo(branch) != "" || branch.Okpo_DB == "-") && getOkpo(branch) != "")
+                return (getRegNo(branch), getOkpo(branch), string.Empty);
+        }
+
+        return hasHead
+            ? (getRegNo(ordered[0]), getOkpo(ordered[0]), string.Empty)
+            : (string.Empty, string.Empty, string.Empty);
+    }
+
+    private static string ResolveShortJurLico(
+        List<TitleRowInfo>? rows,
+        Func<TitleRowInfo, string> getShortJurLico)
+    {
+        if (rows is null || rows.Count == 0)
+            return string.Empty;
+
+        var ordered = rows.OrderBy(r => r.NumberInOrder).ToList();
+
+        if (ordered.Count > 1 && ordered[1].Okpo_DB is not ("" or "-"))
+            return getShortJurLico(ordered[1]);
+
+        return ordered.Count > 0 ? getShortJurLico(ordered[0]) : string.Empty;
+    }
+
+    private static string GetForm10RowOkpo(TitleRowInfo row) =>
+        string.IsNullOrWhiteSpace(row.Okpo_DB) ? string.Empty : row.Okpo_DB.Trim();
+
+    private static string GetForm10RowRegNo(TitleRowInfo row) =>
+        string.IsNullOrWhiteSpace(row.RegNo_DB) ? string.Empty : row.RegNo_DB.Trim();
+
+    private static string GetForm10ShortJurLico(TitleRowInfo row) =>
+        string.IsNullOrWhiteSpace(row.ShortJurLico_DB) ? string.Empty : row.ShortJurLico_DB.Trim();
+
+    private static string GetForm20RowOkpo(TitleRowInfo row) => GetForm10RowOkpo(row);
+    private static string GetForm20RowRegNo(TitleRowInfo row) => GetForm10RowRegNo(row);
+    private static string GetForm20ShortJurLico(TitleRowInfo row) => GetForm10ShortJurLico(row);
+
+    private static (string CodeSubjectRf, string _, string ShortNameRiac) ResolveTitleForm40(Form40TitleRowInfo row)
+    {
+        if (row.MasterReportId == 0)
+            return (string.Empty, string.Empty, string.Empty);
+
+        var codeSubjectRf = string.IsNullOrWhiteSpace(row.CodeSubjectRF_DB)
+            ? string.Empty
+            : row.CodeSubjectRF_DB.Trim();
+
+        var shortNameRiac = !string.IsNullOrWhiteSpace(row.ShortNameRiac_DB)
+            ? row.ShortNameRiac_DB.Trim()
+            : string.IsNullOrWhiteSpace(row.NameRiac_DB)
+                ? string.Empty
+                : row.NameRiac_DB.Trim();
+
+        return (codeSubjectRf, string.Empty, shortNameRiac);
+    }
+
+    private static (string RegNo, string Okpo, string ShortNameViac) ResolveTitleForm50(Form50TitleRowInfo row)
+    {
+        if (row.MasterReportId == 0)
+            return (string.Empty, string.Empty, string.Empty);
+
+        var shortNameViac = !string.IsNullOrWhiteSpace(row.ShortName_DB)
+            ? row.ShortName_DB.Trim()
+            : string.IsNullOrWhiteSpace(row.Name_DB)
+                ? string.Empty
+                : row.Name_DB.Trim();
+
+        return (string.Empty, string.Empty, shortNameViac);
+    }
+
+    #endregion
+
+    #region RowCounts
+
+    /// <summary>
+    /// Подсчёт строк формы 1 по пакетам reportId через таблицу form_XX (без загрузки сущностей Report).
+    /// </summary>
+    private protected static async Task AppendForm1RowCountsAsync<TForm>(
+        DbSet<TForm> formDbSet,
+        IReadOnlyList<int> reportIds,
+        Dictionary<int, (int RowCount, int Code10Count)> result,
+        CancellationToken token) where TForm : Form1
+    {
+        if (reportIds.Count == 0)
+            return;
+
+        var batchCount = (reportIds.Count + FirebirdInClauseBatchSize - 1) / FirebirdInClauseBatchSize;
+        for (var batchIndex = 0; batchIndex < batchCount; batchIndex++)
+        {
+            var batch = reportIds
+                .Skip(batchIndex * FirebirdInClauseBatchSize)
+                .Take(FirebirdInClauseBatchSize)
+                .ToList();
+
+            var rows = await formDbSet
+                .AsNoTracking()
+                .Where(f => f.ReportId != null && batch.Contains(f.ReportId.Value))
+                .GroupBy(f => f.ReportId!.Value)
+                .Select(g => new
+                {
+                    ReportId = g.Key,
+                    Total = g.Count(),
+                    Code10 = g.Count(f => f.OperationCode_DB == "10")
+                })
+                .ToListAsync(token);
+
+            foreach (var row in rows)
+                result[row.ReportId] = (row.Total, row.Code10);
+        }
+    }
+
+    /// <summary>
+    /// Подсчёт строк формы по пакетам reportId через таблицу form_XX.
+    /// </summary>
+    private protected static async Task AppendFormRowCountsAsync<TForm>(
+        DbSet<TForm> formDbSet,
+        IReadOnlyList<int> reportIds,
+        Dictionary<int, int> result,
+        CancellationToken token) where TForm : Form
+    {
+        if (reportIds.Count == 0)
+            return;
+
+        var batchCount = (reportIds.Count + FirebirdInClauseBatchSize - 1) / FirebirdInClauseBatchSize;
+        for (var batchIndex = 0; batchIndex < batchCount; batchIndex++)
+        {
+            var batch = reportIds
+                .Skip(batchIndex * FirebirdInClauseBatchSize)
+                .Take(FirebirdInClauseBatchSize)
+                .ToList();
+
+            var rows = await formDbSet
+                .AsNoTracking()
+                .Where(f => f.ReportId != null && batch.Contains(f.ReportId.Value))
+                .GroupBy(f => f.ReportId!.Value)
+                .Select(g => new { ReportId = g.Key, Total = g.Count() })
+                .ToListAsync(token);
+
+            foreach (var row in rows)
+                result[row.ReportId] = row.Total;
+        }
+    }
+
+    /// <summary>
+    /// Подсчёт строк формы 2 по пакетам reportId через таблицу form_XX.
+    /// </summary>
+    private protected static Task AppendForm2RowCountsAsync<TForm>(
+        DbSet<TForm> formDbSet,
+        IReadOnlyList<int> reportIds,
+        Dictionary<int, int> result,
+        CancellationToken token) where TForm : Form2 =>
+        AppendFormRowCountsAsync(formDbSet, reportIds, result, token);
+
+    #endregion
+
+    #region ExcelColumnWidths
+
+    /// <summary>
+    /// Чередует белый и светло-голубой фон строк данных.
+    /// </summary>
+    private protected static void ApplyAlternatingRowColors(ExcelWorksheet worksheet, int firstRow, int lastRow)
+    {
+        if (lastRow < firstRow || worksheet.Dimension is null)
+            return;
+
+        var lastColumn = worksheet.Dimension.End.Column;
+
+        for (var row = firstRow; row <= lastRow; row++)
+        {
+            if ((row - firstRow) % 2 != 0)
+            {
+                worksheet.Cells[row, 1, row, lastColumn].Style.Fill.SetBackground(
+                    AlternatingRowFill,
+                    ExcelFillStyle.Solid);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Подбирает ширину колонок и оформляет строку заголовков.
+    /// </summary>
+    private protected static void ApplyFormListExcelStyle(ExcelWorksheet worksheet, double headerRowHeight)
+    {
+        ApplyExcelHeaderRowStyle(
+            worksheet,
+            worksheet.Dimension.End.Column,
+            headerRowHeight: headerRowHeight);
+        // Ширины — после автофильтра: иначе Excel/EPPlus может сузить колонки по данным.
+        ApplyFormListColumnWidths(worksheet);
+    }
+
+    /// <summary>
+    /// Фиксированные ширины колонок списка форм 4 (по индексу, без привязки к тексту заголовка).
+    /// </summary>
+    private protected static void ApplyForm4ListColumnWidths(ExcelWorksheet worksheet)
+    {
+        worksheet.Column(1).Width = CodeSubjectRfColumnWidth;
+        worksheet.Column(2).Width = ShortNameRiacColumnWidth;
+        worksheet.Column(2).Style.WrapText = true;
+        worksheet.Column(3).Width = FormNumberColumnWidth;
+        worksheet.Column(4).Width = YearColumnWidth;
+        worksheet.Column(5).Width = CorrectionColumnWidth;
+        worksheet.Column(6).Width = RowCountColumnWidth;
+    }
+
+    /// <summary>
+    /// Фиксированные ширины колонок списка форм 5 (по индексу).
+    /// </summary>
+    private protected static void ApplyForm5ListColumnWidths(ExcelWorksheet worksheet)
+    {
+        worksheet.Column(1).Width = ShortNameViacColumnWidth;
+        worksheet.Column(1).Style.WrapText = true;
+        worksheet.Column(2).Width = FormNumberColumnWidth;
+        worksheet.Column(3).Width = YearColumnWidth;
+        worksheet.Column(4).Width = CorrectionColumnWidth;
+        worksheet.Column(5).Width = RowCountColumnWidth;
+    }
+
+    /// <summary>
+    /// Фиксированные ширины колонок без AutoFit по данным (как в выгрузках организаций/исполнителей).
+    /// </summary>
+    private protected static void ApplyFormListColumnWidths(ExcelWorksheet worksheet)
+    {
+        for (var col = 1; col <= worksheet.Dimension.End.Column; col++)
+        {
+            var header = NormalizeHeaderText(worksheet.Cells[1, col].Value?.ToString());
+            var column = worksheet.Column(col);
+
+            if (TryGetFormListFixedColumnWidth(header, out var fixedWidth))
+            {
+                column.Width = fixedWidth;
+                if (IsFormListTextColumn(header))
+                    column.Style.WrapText = true;
+                continue;
+            }
+
+            if (IsFormListTextColumn(header))
+            {
+                column.Width = MaxTextColumnWidth;
+                column.Style.WrapText = true;
+            }
+        }
+    }
+
+    private static string NormalizeHeaderText(string? header) =>
+        header?.TrimEnd('\n', '\r') ?? string.Empty;
+
+    private static bool TryGetFormListFixedColumnWidth(string header, out double width)
+    {
+        switch (header)
+        {
+            case "Рег. №":
+                width = RegNoColumnWidth;
+                return true;
+            case "ОКПО":
+                width = OkpoColumnWidth;
+                return true;
+            case "Форма":
+                width = FormNumColumnWidth;
+                return true;
+            case "Дата начала периода":
+            case "Дата конца периода":
+                width = DateColumnWidth;
+                return true;
+            case "Отчетный год":
+                width = YearColumnWidth;
+                return true;
+            case "Номер корректировки":
+                width = CorrectionColumnWidth;
+                return true;
+            case "Количество строк":
+                width = RowCountColumnWidth;
+                return true;
+            case "Сокращенное наименование":
+            case "Инвентаризация":
+                width = MaxTextColumnWidth;
+                return true;
+            case "Код субъекта РФ":
+                width = CodeSubjectRfColumnWidth;
+                return true;
+            case "Номер формы":
+                width = FormNumberColumnWidth;
+                return true;
+            case "Год":
+                width = YearColumnWidth;
+                return true;
+            default:
+                if (header.StartsWith("Сокращенное наименование", StringComparison.Ordinal))
+                {
+                    width = header.Contains("ВИАЦ", StringComparison.Ordinal)
+                        ? ShortNameViacColumnWidth
+                        : header.Contains("РИАЦ", StringComparison.Ordinal)
+                            ? ShortNameRiacColumnWidth
+                            : MaxTextColumnWidth;
+                    return true;
+                }
+
+                width = 0;
+                return false;
+        }
+    }
+
+    private static bool IsFormListTextColumn(string header) =>
+        header is "Сокращенное наименование" or "Инвентаризация"
+        || header.StartsWith("Сокращенное наименование", StringComparison.Ordinal);
 
     #endregion
 
@@ -59,19 +1050,11 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
     /// <summary>
     /// Подсчёт количества организаций. При количестве равном 0, выводится сообщение, операция завершается.
     /// </summary>
-    /// <param name="db">Модель БД.</param>
-    /// <param name="formNum">Номер формы.</param>
-    /// <param name="progressBar">Окно прогрессбара.</param>
-    /// <param name="cts">Токен.</param>
     private protected static async Task ReportsCountCheck(DBModel db, string formNum, AnyTaskProgressBar? progressBar, CancellationTokenSource cts)
     {
         var countReports = await db.ReportsCollectionDbSet
             .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(x => x.DBObservable)
-            .Include(x => x.Master_DB)
-            .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == formNum)
+            .Where(x => x.DBObservableId != null && x.Master_DB.FormNum_DB == formNum)
             .CountAsync(cts.Token);
 
         if (countReports == 0)
@@ -90,7 +1073,8 @@ public abstract class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCom
                         $"{Environment.NewLine}поскольку в текущей базе отсутствует отчетность по формам {formNum[0]}.",
                     MinWidth = 400,
                     MinHeight = 150,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
                 })
                 .ShowDialog(progressBar ?? Desktop.MainWindow));
 

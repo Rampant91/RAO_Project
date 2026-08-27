@@ -44,7 +44,9 @@ public partial class ExportAllReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #endregion
 
-        var dbReadOnlyPath = CreateTempDataBase();
+        var dbReadOnlyPath = await CreateTempDataBase(progressBar, cts);
+        try
+        {
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
         var countReport = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
@@ -205,7 +207,7 @@ public partial class ExportAllReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
                     fullPathTmp = InsertIndexInFilePath(fullPathTmp);
                     var db = new DBModel(fullPathTmp);
-                    await db.Database.MigrateAsync(cancellationToken: parallelCts);
+                    await db.MigrateDatabaseAsync(parallelCts);
                     await db.ReportCollectionDbSet.AddAsync(repFull, parallelCts);
                     if (!db.DBObservableDbSet.Any())
                     {
@@ -303,6 +305,11 @@ public partial class ExportAllReportAsyncCommand : ExportRaodbBaseAsyncCommand
             }
         }
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+        }
+        finally
+        {
+            TryDeleteTempDataBase(dbReadOnlyPath);
+        }
     }
 
     #region InsertIndexInFilePath

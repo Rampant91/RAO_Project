@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Models.CheckForm;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
+using Models.Helpers;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -21,6 +22,7 @@ public abstract class CheckF14 : CheckBase
         errorList.AddRange(Check_002(rep));
         errorList.AddRange(Check_003(formsList, rep));
         errorList.AddRange(Check_004(formsList));
+        errorList.AddRange(Check_066(formsList));
         foreach (var key in rep.Rows14)
         {
             var form = (Form14)key;
@@ -589,7 +591,7 @@ public abstract class CheckF14 : CheckBase
     {
         List<CheckError> result = new();
         var opDate = ReplaceNullAndTrim(forms[line].OperationDate_DB);
-        if (opDate is "" or "-")
+        if (DashStringHelper.IsNullOrEmptyOrDash(opDate))
         {
             result.Add(new CheckError
             {
@@ -894,7 +896,7 @@ public abstract class CheckF14 : CheckBase
     {
         List<CheckError> result = new();
         var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
-        if (rads is "" or "-") return result;
+        if (DashStringHelper.IsNullOrEmptyOrDash(rads)) return result;
         var radsSet = rads
             .ToLower()
             .Replace(',', ';')
@@ -999,7 +1001,7 @@ public abstract class CheckF14 : CheckBase
     {
         List<CheckError> result = new();
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
-        if (activity is "" or "-") return result;
+        if (DashStringHelper.IsNullOrEmptyOrDash(activity)) return result;
         if (!TryParseDoubleExtended(activity, out var activityReal) || activity.Contains('-'))
         {
             result.Add(new CheckError
@@ -1051,60 +1053,94 @@ public abstract class CheckF14 : CheckBase
     //Сверка МЗА для одного радионуклида
     private static List<CheckError> Check_034(List<Form14> forms, int line)
     {
-        List<CheckError> result = new();
-        var rad = ReplaceNullAndTrim(forms[line].Radionuclids_DB).ToLower();
-        var activity = ConvertStringToExponential(forms[line].Activity_DB);
-        var mass = ConvertStringToExponential(forms[line].Mass_DB);
+        var result = new List<CheckError>();
+        var form = forms[line];
+        var rad = ReplaceNullAndTrim(form.Radionuclids_DB).ToLower();
+        var activity = ConvertStringToExponential(form.Activity_DB);
+        var massOrVolume = form.AggregateState_DB switch
+        {
+            1 or 2 => ConvertStringToExponential(form.Mass_DB),
+            3 => ConvertStringToExponential(form.Volume_DB),
+            _ => null
+        };
 
-        if (R.All(x => x["name"] != rad)
-            || !TryParseDoubleExtended(activity, out var activityDoubleValue)
-            || !TryParseDoubleExtended(mass, out var massDoubleValue)
-            || activityDoubleValue <= 0
-            || massDoubleValue <= 0
-            ) return result;
+        if (massOrVolume is null) return result;
+
+        var mzuaColumn = form.AggregateState_DB switch
+        {
+            1 => "MZUA_Liquid",
+            2 => "MZUA_Solid",
+            3 => "MZOA_Gas",
+            _ => null
+        };
+
+        if (mzuaColumn is null || R.All(x => x["name"] != rad)) return result;
 
         var mza = R.First(x => x["name"] == rad)["MZA"];
-        var mzua = R.First(x => x["name"] == rad)["MZUA"];
-        if (!TryParseDoubleExtended(mza, out var mzaDoubleValue)
-            || !TryParseDoubleExtended(mzua, out var mzuaDoubleValue)) return result;
+        var mzua = R.First(x => x["name"] == rad)[mzuaColumn];
 
-        if (activityDoubleValue < mzaDoubleValue
-            && activityDoubleValue / massDoubleValue < mzuaDoubleValue)
+        if (!TryParseDoubleExtended(mza, out var mzaVal)
+            || !TryParseDoubleExtended(mzua, out var mzuaVal)
+            || !TryParseDoubleExtended(activity, out var actVal) || actVal <= 0
+            || !TryParseDoubleExtended(massOrVolume, out var mvVal) || mvVal <= 0)
         {
-            result.Add(new CheckError
-            {
-                FormNum = "form_14",
-                Row = (line + 1).ToString(),
-                Column = "Activity_DB",
-                Value = activity,
-                Message = "Активность ниже МЗА, удельная активность ниже МЗУА - ОРИ не является объектом учёта СГУК РВ и РАО."
-            });
             return result;
         }
-        if (activityDoubleValue < mzaDoubleValue)
+
+        var specificActivity = actVal / mvVal;
+        var isBelowMza = actVal < mzaVal;
+        var isBelowMzua = specificActivity < mzuaVal;
+
+        switch (isBelowMza)
         {
-            result.Add(new CheckError
+            case true when isBelowMzua:
             {
-                FormNum = "form_14",
-                Row = (line + 1).ToString(),
-                Column = "Activity_DB",
-                Value = activity,
-                Message = "Активность ниже МЗА - ОРИ не является объектом учёта СГУК РВ и РАО."
-            });
-            return result;
-        }
-        if (activityDoubleValue / massDoubleValue < mzuaDoubleValue)
-        {
-            result.Add(new CheckError
+                result.Add(new CheckError
+                {
+                    FormNum = "form_14",
+                    Row = (line + 1).ToString(),
+                    Column = "Activity_DB",
+                    Value = activity,
+                    Message = "Активность ниже МЗА, удельная активность ниже МЗУА - " +
+                              "ОРИ не является объектом учёта СГУК РВ и РАО."
+                });
+
+                break;
+            }
+            case true:
             {
-                FormNum = "form_14",
-                Row = (line + 1).ToString(),
-                Column = "Activity_DB",
-                Value = activity,
-                Message = "Удельная активность ниже МЗУА - ОРИ не является объектом учёта СГУК РВ и РАО."
-            });
-            return result;
+                result.Add(new CheckError
+                {
+                    FormNum = "form_14",
+                    Row = (line + 1).ToString(),
+                    Column = "Activity_DB",
+                    Value = activity,
+                    Message = "Активность ниже МЗА - ОРИ не является объектом учёта СГУК РВ и РАО."
+                });
+
+                break;
+            }
+            default:
+            {
+                if (isBelowMzua)
+                {
+                    var mzoaOrMzua = form.AggregateState_DB == 3 ? "МЗОА" : "МЗУА";
+
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_14",
+                        Row = (line + 1).ToString(),
+                        Column = "Activity_DB",
+                        Value = activity,
+                        Message = $"Удельная активность ниже {mzoaOrMzua} - " +
+                                  $"ОРИ не является объектом учёта СГУК РВ и РАО."
+                    });
+                }
+
+                break;
+            }
         }
+
         return result;
     }
 
@@ -1115,16 +1151,26 @@ public abstract class CheckF14 : CheckBase
     //Сверка МЗА для нескольких радионуклидов
     private static List<CheckError> Check_035(List<Form14> forms, int line)
     {
-        List<CheckError> result = new();
+        var result = new List<CheckError>();
+        var form = forms[line];
         var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
-        var mass = ConvertStringToExponential(forms[line].Mass_DB);
+        var aggregateState = forms[line].AggregateState_DB;
+
+        var massOrVolume = aggregateState switch
+        {
+            1 or 2 => ConvertStringToExponential(form.Mass_DB),
+            3 => ConvertStringToExponential(form.Volume_DB),
+            _ => null
+        };
+
         var radsSet = rads
             .ToLower()
             .Replace(',', ';')
             .Split(';')
             .Select(x => x.Trim())
             .ToHashSet();
+
         var isEqRads = EquilibriumRadionuclids.Any(x =>
         {
             x = x.Replace(" ", "");
@@ -1136,8 +1182,8 @@ public abstract class CheckF14 : CheckBase
 
         if (radsSet.Count == 1
             || isEqRads
-            || !TryParseDoubleExtended(activity, out var activityDoubleValue)
-            || activityDoubleValue <= 0
+            || !TryParseDoubleExtended(activity, out var activityValue) || activityValue <= 0
+            || !TryParseDoubleExtended(massOrVolume, out var massOrVolumeValue) || massOrVolumeValue <= 0
             || !radsSet
                 .All(rad => R
                     .Any(phEntry => phEntry["name"] == rad))) return result;
@@ -1145,75 +1191,94 @@ public abstract class CheckF14 : CheckBase
         var minimumMza = double.MaxValue;
         var minimumMzua = double.MaxValue;
         var anyMza = false;
+        var mzuaColumn = aggregateState switch
+        {
+            1 => "MZUA_Liquid",
+            2 => "MZUA_Solid",
+            3 => "MZOA_Gas",
+            _ => null
+        };
+
+        if (mzuaColumn is null) return result;
+
         foreach (var rad in radsSet)
         {
+            if (R.All(x => x["name"] != rad)) continue;
+
             var mza = R.First(x => x["name"] == rad)["MZA"];
-            var mzua = R.First(x => x["name"] == rad)["MZUA"];
-            if (!TryParseDoubleExtended(mza, out var mzaDoubleValue) 
-                || !TryParseDoubleExtended(mzua, out var mzuaDoubleValue)) continue;
-            if (mzaDoubleValue < minimumMza)
+            var mzua = R.First(x => x["name"] == rad)[mzuaColumn];
+
+            if (!TryParseDoubleExtended(mza, out var mzaVal)
+                || !TryParseDoubleExtended(mzua, out var mzuaVal))
             {
-                minimumMza = mzaDoubleValue;
+                continue;
             }
-            if (mzuaDoubleValue < minimumMzua)
+
+            if (mzaVal < minimumMza)
             {
-                minimumMzua = mzuaDoubleValue;
+                minimumMza = mzaVal;
+            }
+            if (mzuaVal < minimumMzua)
+            {
+                minimumMzua = mzuaVal;
             }
             anyMza = true;
         }
+
         if (!anyMza) return result;
 
-        if(!TryParseDoubleExtended(mass, out var massDoubleValue) && activityDoubleValue < minimumMza)
-        {
-            result.Add(new CheckError
-            {
-                FormNum = "form_14",
-                Row = (line + 1).ToString(),
-                Column = "Activity_DB",
-                Value = activity,
-                Message = "Активность ниже МЗА - ОРИ не является объектом учёта СГУК РВ и РАО."
-            });
-            return result;
-        }
-        if (massDoubleValue <= 0) return result;
+        var specificActivity = activityValue / massOrVolumeValue;
+        var isBelowMza = activityValue < minimumMza;
+        var isBelowMzua = specificActivity < minimumMzua;
 
-        if (activityDoubleValue < minimumMza
-            && activityDoubleValue / massDoubleValue < minimumMzua)
+        switch (isBelowMza)
         {
-            result.Add(new CheckError
+            case true when isBelowMzua:
             {
-                FormNum = "form_14",
-                Row = (line + 1).ToString(),
-                Column = "Activity_DB",
-                Value = activity,
-                Message = "Активность ниже МЗА, удельная активность ниже МЗУА - ОРИ не является объектом учёта СГУК РВ и РАО."
-            });
-            return result;
-        }
-        if (activityDoubleValue < minimumMza )
-        {
-            result.Add(new CheckError
+                result.Add(new CheckError
+                {
+                    FormNum = "form_14",
+                    Row = (line + 1).ToString(),
+                    Column = "Activity_DB",
+                    Value = activity,
+                    Message = "Активность ниже МЗА, удельная активность ниже МЗУА - " +
+                              "ОРИ не является объектом учёта СГУК РВ и РАО."
+                });
+                break;
+            }
+            case true:
             {
-                FormNum = "form_14",
-                Row = (line + 1).ToString(),
-                Column = "Activity_DB",
-                Value = activity,
-                Message = "Активность ниже МЗА - ОРИ не является объектом учёта СГУК РВ и РАО."
-            });
-            return result;
-        }
-        if (activityDoubleValue / massDoubleValue < minimumMzua)
-        {
-            result.Add(new CheckError
+                result.Add(new CheckError
+                {
+                    FormNum = "form_14",
+                    Row = (line + 1).ToString(),
+                    Column = "Activity_DB",
+                    Value = activity,
+                    Message = "Активность ниже МЗА - ОРИ не является объектом учёта СГУК РВ и РАО."
+                });
+                break;
+            }
+            default:
             {
-                FormNum = "form_14",
-                Row = (line + 1).ToString(),
-                Column = "Activity_DB",
-                Value = activity,
-                Message = "Удельная активность ниже МЗУА - ОРИ не является объектом учёта СГУК РВ и РАО."
-            });
-            return result;
+                if (isBelowMzua)
+                {
+                    var mzoaOrMzua = form.AggregateState_DB == 3 ? "МЗОА" : "МЗУА";
+
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_14",
+                        Row = (line + 1).ToString(),
+                        Column = "Activity_DB",
+                        Value = activity,
+                        Message = $"Удельная активность ниже {mzoaOrMzua} - " +
+                                  $"ОРИ не является объектом учёта СГУК РВ и РАО."
+                    });
+                }
+
+                break;
+            }
         }
+
         return result;
     }
 
@@ -1224,16 +1289,26 @@ public abstract class CheckF14 : CheckBase
     //Сверка МЗА для равновесных радионуклидов
     private static List<CheckError> Check_036(List<Form14> forms, int line)
     {
-        List<CheckError> result = new();
+        var result = new List<CheckError>();
+        var form = forms[line];
         var rads = ReplaceNullAndTrim(forms[line].Radionuclids_DB);
         var activity = ConvertStringToExponential(forms[line].Activity_DB);
-        var mass = ConvertStringToExponential(forms[line].Mass_DB);
+        var aggregateState = forms[line].AggregateState_DB;
+
+        var massOrVolume = form.AggregateState_DB switch
+        {
+            1 or 2 => ConvertStringToExponential(form.Mass_DB),
+            3 => ConvertStringToExponential(form.Volume_DB),
+            _ => null
+        };
+
         var radsSet = rads
             .ToLower()
             .Replace(',', ';')
             .Split(';')
             .Select(x => x.Trim())
             .ToHashSet();
+
         var isEqRads = EquilibriumRadionuclids.Any(x =>
         {
             x = x.Replace(" ", "");
@@ -1245,10 +1320,8 @@ public abstract class CheckF14 : CheckBase
 
         if (radsSet.Count == 1
             || !isEqRads
-            || !TryParseDoubleExtended(activity, out var activityDoubleValue)
-            || !TryParseDoubleExtended(mass, out var massDoubleValue)
-            || activityDoubleValue <= 0
-            || massDoubleValue <= 0
+            || !TryParseDoubleExtended(activity, out var activityValue) || activityValue <= 0
+            || !TryParseDoubleExtended(massOrVolume, out var massOrVolumeValue) || massOrVolumeValue <= 0
             || !radsSet
                 .All(rad => R
                     .Any(phEntry => phEntry["name"] == rad))) return result;
@@ -1264,47 +1337,78 @@ public abstract class CheckF14 : CheckBase
             .Replace(" ", string.Empty)
             .Split(',')[0];
 
-        var mza = R.First(x => x["name"] == baseRad)["MZA"];
-        var mzua = R.First(x => x["name"] == baseRad)["MZUA"];
-        if (!TryParseDoubleExtended(mza, out var mzaDoubleValue)
-            || !TryParseDoubleExtended(mzua, out var mzuaDoubleValue)) return result;
+        
+        var mzuaColumn = aggregateState switch
+        {
+            1 => "MZUA_Liquid",
+            2 => "MZUA_Solid",
+            3 => "MZOA_Gas",
+            _ => null
+        };
 
-        if (activityDoubleValue < mzaDoubleValue
-            && activityDoubleValue / massDoubleValue < mzuaDoubleValue)
+        if (mzuaColumn is null) return result;
+
+        var mza = R.First(x => x["name"] == baseRad)["MZA"];
+        var mzua = R.First(x => x["name"] == baseRad)[mzuaColumn];
+
+        if (!TryParseDoubleExtended(mza, out var mzaValue)
+            || !TryParseDoubleExtended(mzua, out var mzuaValue))
         {
-            result.Add(new CheckError
-            {
-                FormNum = "form_14",
-                Row = (line + 1).ToString(),
-                Column = "Activity_DB",
-                Value = activity,
-                Message = "Активность ниже МЗА, удельная активность ниже МЗУА - ОРИ не является объектом учёта СГУК РВ и РАО."
-            });
             return result;
         }
-        if (activityDoubleValue < mzaDoubleValue)
+
+        var specificActivity = activityValue / massOrVolumeValue;
+        var isBelowMza = activityValue < mzaValue;
+        var isBelowMzua = specificActivity < mzuaValue;
+
+        switch (isBelowMza)
         {
-            result.Add(new CheckError
+            case true when isBelowMzua:
             {
-                FormNum = "form_14",
-                Row = (line + 1).ToString(),
-                Column = "Activity_DB",
-                Value = activity,
-                Message = "Активность ниже МЗА - ОРИ не является объектом учёта СГУК РВ и РАО."
-            });
-            return result;
-        }
-        if (activityDoubleValue / massDoubleValue < mzuaDoubleValue)
-        {
-            result.Add(new CheckError
+                result.Add(new CheckError
+                {
+                    FormNum = "form_14",
+                    Row = (line + 1).ToString(),
+                    Column = "Activity_DB",
+                    Value = activity,
+                    Message = "Активность ниже МЗА, удельная активность ниже МЗУА - " +
+                              "ОРИ не является объектом учёта СГУК РВ и РАО."
+                });
+
+                break;
+            }
+            case true:
             {
-                FormNum = "form_14",
-                Row = (line + 1).ToString(),
-                Column = "Activity_DB",
-                Value = activity,
-                Message = "Удельная активность ниже МЗУА - ОРИ не является объектом учёта СГУК РВ и РАО."
-            });
-            return result;
+                result.Add(new CheckError
+                {
+                    FormNum = "form_14",
+                    Row = (line + 1).ToString(),
+                    Column = "Activity_DB",
+                    Value = activity,
+                    Message = "Активность ниже МЗА - ОРИ не является объектом учёта СГУК РВ и РАО."
+                });
+
+                break;
+            }
+            default:
+            {
+                if (isBelowMzua)
+                {
+                    var mzoaOrMzua = form.AggregateState_DB == 3 ? "МЗОА" : "МЗУА";
+
+                    result.Add(new CheckError
+                    {
+                        FormNum = "form_14",
+                        Row = (line + 1).ToString(),
+                        Column = "Activity_DB",
+                        Value = activity,
+                        Message = $"Удельная активность ниже {mzoaOrMzua} - " +
+                                  $"ОРИ не является объектом учёта СГУК РВ и РАО."
+                    });
+                }
+
+                break;
+            }
         }
         return result;
     }
@@ -1318,7 +1422,7 @@ public abstract class CheckF14 : CheckBase
     {
         List<CheckError> result = new();
         var activityMeasurementDate = ReplaceNullAndTrim(forms[line].ActivityMeasurementDate_DB);
-        if (activityMeasurementDate is "" or "-")
+        if (DashStringHelper.IsNullOrEmptyOrDash(activityMeasurementDate))
         {
             result.Add(new CheckError
             {
@@ -1437,7 +1541,7 @@ public abstract class CheckF14 : CheckBase
     {
         List<CheckError> result = new();
         var mass = ConvertStringToExponential(forms[line].Mass_DB);
-        if (mass is "" or "-")
+        if (DashStringHelper.IsNullOrEmptyOrDash(mass))
         {
             result.Add(new CheckError
             {
@@ -1768,7 +1872,7 @@ public abstract class CheckF14 : CheckBase
     {
         List<CheckError> result = new();
         var docDate = ReplaceNullAndTrim(forms[line].DocumentDate_DB);
-        if (docDate is "" or "-")
+        if (DashStringHelper.IsNullOrEmptyOrDash(docDate))
         {
             result.Add(new CheckError
             {
@@ -2060,7 +2164,7 @@ public abstract class CheckF14 : CheckBase
         var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         if (!applicableOperationCodes.Contains(opCode)) return result;
         var transporterOkpo = ReplaceNullAndTrim(forms[line].TransporterOKPO_DB);
-        var valid = transporterOkpo is "-";
+        var valid = DashStringHelper.IsDash(transporterOkpo);
         if (!valid)
         {
             result.Add(new CheckError
@@ -2111,7 +2215,7 @@ public abstract class CheckF14 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика.",
-                IsCritical = !(dashesOperationCodes.Contains(operationCode) && transporterOkpo is "-")
+                IsCritical = !(dashesOperationCodes.Contains(operationCode) && DashStringHelper.IsDash(transporterOkpo))
             });
         }
         return result;
@@ -2140,7 +2244,7 @@ public abstract class CheckF14 : CheckBase
                 Column = "TransporterOKPO_DB",
                 Value = transporterOkpo,
                 Message = "Необходимо указать код ОКПО организации перевозчика, либо \"Минобороны\" без кавычек.",
-                IsCritical = transporterOkpo is not "-"
+                IsCritical = !DashStringHelper.IsDash(transporterOkpo)
             });
         }
         return result;
@@ -2218,6 +2322,150 @@ public abstract class CheckF14 : CheckBase
         return result;
     }
 
+    #endregion
+
+    #region Check066
+
+    //Напоминалка для некоторых операций необходимо приложить определенные документы
+    private static List<CheckError> Check_066(List<Form14> forms)
+    {
+        List<CheckError> result = new();
+
+
+        #region OperationCode == 66
+        if (forms.Any(row11 => row11.OperationCode_DB == "66"))
+        {
+            var line = forms.First(row11 => row11.OperationCode_DB == "66").NumberInOrder_DB;
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line).ToString(),
+                Column = "OperationCode_DB",
+                Value = "66",
+                Message = "При продлении НСС в отчете необходимо представить сведения о НСС с учетом его продления.\n" +
+                "При использовании операции необходимо к отчету приложить скан-копию документа о продлении НСС."
+            });
+        }
+        #endregion
+
+        #region OperationCode == 68
+        if (forms.Any(row11 => row11.OperationCode_DB == "68"))
+        {
+            var line = forms.First(row11 => row11.OperationCode_DB == "68").NumberInOrder_DB;
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line).ToString(),
+                Column = "OperationCode_DB",
+                Value = "68",
+                Message = "При использовании данной операции необходимо представить, копию документа, отражающего результаты проденных измерений."
+            });
+        }
+        #endregion
+
+        #region OperationCode == 71
+        if (forms.Any(row11 => row11.OperationCode_DB == "71"))
+        {
+            var line = forms.First(row11 => row11.OperationCode_DB == "71").NumberInOrder_DB;
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line).ToString(),
+                Column = "OperationCode_DB",
+                Value = "71",
+                Message = "В этом случае необходимо представить копию документа (например, протокола, акта), " +
+                "характеризующего обстаятельства установления факта утери."
+            });
+        }
+        #endregion
+
+        #region OperationCode == 72
+        if (forms.Any(row11 => row11.OperationCode_DB == "72"))
+        {
+            var line = forms.First(row11 => row11.OperationCode_DB == "72").NumberInOrder_DB;
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line).ToString(),
+                Column = "OperationCode_DB",
+                Value = "72",
+                Message = "В этом случае необходимо представить копию документа (например, протокола, акта), " +
+                "характеризующего обстоятельства установления факта утери контроля над учетной единицей."
+
+            });
+        }
+        #endregion
+
+        #region OperationCode == 73
+        if (forms.Any(row11 => row11.OperationCode_DB == "73"))
+        {
+            var line = forms.First(row11 => row11.OperationCode_DB == "73").NumberInOrder_DB;
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line).ToString(),
+                Column = "OperationCode_DB",
+                Value = "73",
+                Message = "В этом случае необходимо представить копию документа (например, протокола, акта), " +
+                "характеризующего обстоятельства обнаружения учетной единицы."
+
+            });
+        }
+        #endregion
+
+        #region OperationCode == 74
+        if (forms.Any(row11 => row11.OperationCode_DB == "74"))
+        {
+            var line = forms.First(row11 => row11.OperationCode_DB == "74").NumberInOrder_DB;
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line).ToString(),
+                Column = "OperationCode_DB",
+                Value = "74",
+                Message = "В этом случае необходимо представить копию документа, " +
+                "характеризующего обстоятельства обнаружения учетной единицы."
+
+            });
+        }
+        #endregion
+
+        #region OperationCode == 75
+        if (forms.Any(row11 => row11.OperationCode_DB == "75"))
+        {
+            var line = forms.First(row11 => row11.OperationCode_DB == "75").NumberInOrder_DB;
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line).ToString(),
+                Column = "OperationCode_DB",
+                Value = "75",
+                Message = "В этом случае необходимо представить копию документа, " +
+                "характеризующего обстоятельства обнаружения учетной единицы."
+
+            });
+        }
+        #endregion
+
+        #region OperationCode == 76
+        if (forms.Any(row11 => row11.OperationCode_DB == "76"))
+        {
+            var line = forms.First(row11 => row11.OperationCode_DB == "76").NumberInOrder_DB;
+            result.Add(new CheckError
+            {
+                FormNum = "form_11",
+                Row = (line).ToString(),
+                Column = "OperationCode_DB",
+                Value = "76",
+                Message = "В этом случае необходимо представить копию документа, " +
+                "характеризующего обстоятельства изъятия РАО"
+
+            });
+        }
+        #endregion
+
+        return result;
+    }
     #endregion
 
     #endregion

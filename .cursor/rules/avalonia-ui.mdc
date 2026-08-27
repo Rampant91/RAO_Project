@@ -1,0 +1,13 @@
+---
+description: Avalonia 0.10.x — UI-решения только под эту ветку, не под 11+
+globs: "**/*.axaml,**/Views/**/*.cs,**/Behaviors/**/*.cs"
+alwaysApply: false
+---
+
+# Avalonia UI
+
+Проект на **Avalonia 0.10.22** (не 11.x).
+
+- Искать API, примеры и фиксы именно для **0.10.x**
+- Не предлагать API/пакеты/паттерны Avalonia 11+ (breaking changes), если нет явной задачи миграции
+- Ориентироваться на существующие Views/Behaviors в репозитории
