@@ -35,7 +35,10 @@ public class UpdateService
     private string _networkRoot = string.Empty;
 
     /// <summary>
-    /// Автоматическая проверка при запуске (не чаще 1 раза в день).
+    /// Автоматическая проверка при запуске.
+    /// Сетевой канал: каждый старт читает latest.json — новый releaseId показывается сразу.
+    /// Сайт: HTTP не чаще раза в сутки (иначе старт ждёт сеть до 5 с).
+    /// «Напомнить позже» откладывает только уже предложенный релиз/версию ~на сутки.
     /// </summary>
     public async Task CheckAndNotifyAsync(bool isNoraoMode = false)
     {
@@ -47,8 +50,7 @@ public class UpdateService
                 return;
             }
 
-            // Updater можно подтянуть при каждом старте (дёшево, без диалога),
-            // даже если полная проверка обновлений отложена на сутки.
+            // Updater можно подтянуть при каждом старте (дёшево, без диалога).
             if (isNoraoMode)
             {
                 TrySyncUpdaterFromLatestQuietly();
@@ -59,12 +61,9 @@ public class UpdateService
             {
                 return;
             }
-#endif
 
-            if (!ShouldCheckForUpdates())
-            {
-                return;
-            }
+            _prefsStore.ResetCheckThrottleForDebug();
+#endif
 
             if (isNoraoMode)
             {
@@ -72,6 +71,11 @@ public class UpdateService
             }
             else
             {
+                if (!ShouldCheckWebsiteForUpdates())
+                {
+                    return;
+                }
+
                 await CheckAndNotifyWebsiteAsync(isManual: false).ConfigureAwait(false);
             }
         }
@@ -187,7 +191,9 @@ public class UpdateService
       return;
     }
 
-    MarkUpdateCheckCompleted();
+    // Время прошлого предложения — до сдвига суточного HTTP-лимита.
+    var previousPromptAt = _prefsStore.GetLastUpdateCheck();
+    _prefsStore.MarkUpdateCheckCompleted();
 
     var skippedVersion = GetSkippedWebsiteVersion();
     if (skippedVersion != null && updateInfo.Version <= skippedVersion)
@@ -203,6 +209,17 @@ public class UpdateService
     var currentVersion = UpdateChecker.GetCurrentVersion();
     if (updateInfo.Version > currentVersion)
     {
+      if (!isManual
+          && UpdateAutoPromptPolicy.ShouldSuppressAutoPrompt(
+              updateInfo.Version.ToString(),
+              _prefsStore.GetLastNotifiedWebsiteVersion(),
+              previousPromptAt,
+              DateTime.Now))
+      {
+        return;
+      }
+
+      _prefsStore.MarkWebsiteVersionNotified(updateInfo.Version.ToString());
       await ShowUpdateNotificationDialog(updateInfo).ConfigureAwait(false);
     }
     else if (isManual)
@@ -262,8 +279,6 @@ public class UpdateService
       System.Diagnostics.Debug.WriteLine($"Updater sync skipped: {ex.Message}");
     }
 
-    MarkUpdateCheckCompleted();
-
     // Пустой state + локальные файлы уже = latest → зафиксировать версию без диалога
     var localState = _stateStore.LoadAndBootstrapIfMatchesRelease(release, _networkRoot);
 
@@ -289,6 +304,17 @@ public class UpdateService
       return;
     }
 
+    if (!isManual
+        && UpdateAutoPromptPolicy.ShouldSuppressAutoPrompt(
+            release.ReleaseId,
+            _prefsStore.GetLastNotifiedReleaseId(),
+            _prefsStore.GetLastUpdateCheck(),
+            DateTime.Now))
+    {
+      return;
+    }
+
+    _prefsStore.MarkNetworkReleaseNotified(release.ReleaseId);
     await ShowNetworkUpdateDialog(release, localState).ConfigureAwait(false);
   }
 
@@ -320,22 +346,13 @@ public class UpdateService
     await _installer.PrepareAndApplyUpdateAsync(release, _networkRoot).ConfigureAwait(false);
   }
 
-  private bool ShouldCheckForUpdates()
+  /// <summary>
+  /// Сайт: не чаще одного HTTP-запроса в сутки при автопроверке.
+  /// </summary>
+  private bool ShouldCheckWebsiteForUpdates()
   {
-#if DEBUG
-    if (DebugAutoUpdateCheckEnabled)
-    {
-        _prefsStore.ResetCheckThrottleForDebug();
-    }
-#endif
-
     var lastCheck = _prefsStore.GetLastUpdateCheck();
     return (DateTime.Now - lastCheck).TotalDays >= 1;
-  }
-
-  private void MarkUpdateCheckCompleted()
-  {
-    _prefsStore.MarkUpdateCheckCompleted();
   }
 
   /// <summary>
