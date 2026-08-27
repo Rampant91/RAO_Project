@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Client_App.Services.DataAccess;
 
@@ -44,6 +45,19 @@ public static class FirebirdInClause
         var result = new List<TResult>();
         foreach (var batch in Chunk(ids))
             result.AddRange(queryBatch(batch));
+        return result;
+    }
+
+    public static async Task<List<TResult>> QueryAllAsync<TResult>(
+        IReadOnlyList<int> ids, Func<List<int>, Task<List<TResult>>> queryBatch)
+    {
+        if (ids.Count == 0) return [];
+        if (ids.Count <= MaxBatchSize)
+            return await queryBatch(ids as List<int> ?? ids.ToList()).ConfigureAwait(false);
+
+        var result = new List<TResult>();
+        foreach (var batch in Chunk(ids))
+            result.AddRange(await queryBatch(batch).ConfigureAwait(false));
         return result;
     }
 }

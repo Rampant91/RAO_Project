@@ -30,13 +30,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
     public class GeneratePackagePassportAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     {
         Report Report => formVM.Report;
-        List<Form17> Rows17
-        {
-            get
-            {
-                return Report.Rows17.OrderBy(form17 => form17.NumberInOrder_DB).ToList();
-            }
-        }
+        List<Form17> Rows17 = [];
         Window owner => (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
                     .FirstOrDefault(w => w.Name == "1.7");
 
@@ -50,13 +44,22 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 || forms17Collection.Count()<=0
                 || forms17Collection.Any(f => f is not Form17)) return;
 
-            
-
-            await formVM.EnsureAllRowsForMutationAsync();
+            if (Report.Id > 0)
+            {
+                var live = await FormRowsPageLoader.LoadAllLiveRowsAsync(
+                    StaticConfiguration.DBModel, Report.Id, "1.7");
+                Rows17 = live.OfType<Form17>().ToList();
+            }
+            else
+            {
+                Rows17 = Report.Rows17.OrderBy(form17 => form17.NumberInOrder_DB).ToList();
+            }
 
             var codeOperationRegex = new Regex("^\\d{2}$");
 
-            var selectedForm17List = forms17Collection.Cast<Form17>().ToList();
+            var selectedForm17List = forms17Collection.Cast<Form17>()
+                .Select(s => ResolveForm17(s, Rows17))
+                .ToList();
 
 
             var first = selectedForm17List.First();
@@ -372,6 +375,28 @@ namespace Client_App.Commands.AsyncCommands.Generate
             .ShowDialog(owner));
             #endregion
         }
+        private static Form17 ResolveForm17(Form17 selected, List<Form17> all)
+        {
+            if (selected.Id > 0)
+            {
+                foreach (var row in all)
+                {
+                    if (row.Id == selected.Id)
+                        return row;
+                }
+            }
+            else
+            {
+                foreach (var row in all)
+                {
+                    if (ReferenceEquals(row, selected))
+                        return row;
+                }
+            }
+
+            return selected;
+        }
+
         private PackagePassport? FindPassportMatch(Form17 form17)
         {
             return StaticConfiguration.DBModel.package_passport.Where(passport =>

@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data;
@@ -71,7 +71,7 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost, I
         if (Content is not Control existingContent)
             return;
 
-        var overlay = new DataGridLoadingOverlay
+        var overlay = new FormContentLoadingOverlay
         {
             ZIndex = 1000,
             IsVisible = false,

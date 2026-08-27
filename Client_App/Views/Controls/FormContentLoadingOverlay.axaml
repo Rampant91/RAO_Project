@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Client_App.Views.Controls"
+             x:Class="Client_App.Views.Controls.FormContentLoadingOverlay"
+             IsHitTestVisible="True">
+    <!-- Без затемнения окна: грид уже пустой; только карточка по центру. -->
+    <Panel Background="Transparent">
+        <Border HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="White"
+                BorderBrush="#DDDDDD"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="24,18"
+                MinWidth="240">
+            <StackPanel Spacing="12">
+                <controls:IndeterminateMarqueeBar x:Name="Marquee"
+                                                  TrackWidth="220"
+                                                  HorizontalAlignment="Center" />
+                <TextBlock HorizontalAlignment="Center"
+                           FontSize="14"
+                           Foreground="#FF333333"
+                           Text="{Binding ContentLoadingMessage}" />
+            </StackPanel>
+        </Border>
+    </Panel>
+</UserControl>

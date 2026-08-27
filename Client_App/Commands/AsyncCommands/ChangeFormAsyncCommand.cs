@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Client_App.Resources;
 using Client_App.Services;
 using Client_App.Services.DataAccess;

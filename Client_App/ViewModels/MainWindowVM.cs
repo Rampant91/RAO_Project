@@ -72,6 +72,18 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         5 => Forms5TabControlVM,
         _ => null
     };
+
+    /// <summary>
+    /// После SaveReport: обновить счётчик строк выбранного отчёта без полного reload org-списка.
+    /// </summary>
+    public void RefreshAfterFormReportSaved(string formType, int? reportsId, int reportId)
+    {
+        var tabKey = formType?.Length > 0 && char.IsDigit(formType[0])
+            ? (byte)(formType[0] - '0')
+            : SelectedReportType;
+        GetTabVm(tabKey)?.RefreshAfterFormReportSaved(reportsId, reportId);
+    }
+
     public string SelectedReportTypeToString => $"{_selectedReportType}.0";
 
     #endregion

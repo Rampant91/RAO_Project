@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Services.DataAccess;
 using Client_App.ViewModels.Forms;
@@ -7,32 +7,31 @@ using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
-using Models.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Delete;
 
 /// <summary>
-/// Удалить выбранные строчки из формы.
+/// Удалить выбранные строчки из формы (новое окно BaseFormVM, не legacy Form 2).
 /// </summary>
-/// <param name="formVM">ViewModel отчёта.</param>
 public class NewDeleteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
     private Report Storage => formVM.Report;
 
     public override async Task AsyncExecute(object? parameter)
     {
-        if (parameter is not IEnumerable<IKey> enumerable)
+        var candidates = FormRowMutationService.EnumerateForms(parameter);
+        if (candidates.Length == 0)
+            candidates = formVM.SelectedForms?.ToArray() ?? [];
+        if (candidates.Length == 0 && formVM.SelectedForm != null)
+            candidates = [formVM.SelectedForm];
+        if (candidates.Length == 0)
             return;
-
-        var param = enumerable.Cast<Form>().ToArray();
 
         #region MessageDeleteLine
 
-        var suffix = param.Length == 1 ? 'у' : 'и';
+        var suffix = candidates.Length == 1 ? 'у' : 'и';
         var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
             .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
@@ -55,23 +54,26 @@ public class NewDeleteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 
         if (answer is not "Да") return;
 
-        // Сначала полный набор строк: иначе Sort→EnsureAll подтянет удалённые обратно из БД,
-        // а Remove с page-only коллекцией не перенумерует остальные страницы.
-        await formVM.EnsureAllRowsForMutationAsync();
+        var live = Storage.Rows.ToList<Form>();
+        var param = FormRowMutationService.FilterLiveForms(candidates, live);
+        if (param.Count == 0)
+            return;
 
-        var minItem = param.Min(x => x.Order);
         var db = StaticConfiguration.DBModel;
         foreach (var item in param)
         {
-            FormRowsPageLoader.TrackDeletedFormRow(db, Storage, item);
+            if (item.Id > 0)
+                FormRowMutationService.RemoveFormRowById(db, Storage, item.Id);
+            else
+                FormRowMutationService.RemoveFormRowInstance(db, Storage, item);
         }
 
-        if (formVM.DbTotalRows.HasValue)
-            formVM.DbTotalRows = Math.Max(0, formVM.DbTotalRows.Value - param.Length);
+        formVM.NotifyRowMutation();
+        if (formVM.CurrentPage > formVM.TotalPages && formVM.TotalPages > 0)
+            await formVM.RevealLastPageAsync();
+        else
+            await formVM.RefreshVisibleRowsAfterMutationAsync();
 
-        formVM.SortForm.Execute(minItem);
-        formVM.UpdateFormList();
-        formVM.UpdatePageInfo();
-        formVM.IsCanSaveReportEnabled = true;
+        formVM.ClearFormRowSelection();
     }
 }

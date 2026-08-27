@@ -740,6 +740,21 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
         InSelectedReportFormsCount = count;
     }
 
+    /// <summary>
+    /// После сохранения строк отчёта: сбросить кэш отчётов org и обновить счётчик строк,
+    /// без перезагрузки org-грида (InvalidateAll).
+    /// </summary>
+    public void RefreshAfterFormReportSaved(int? orgId, int reportId)
+    {
+        if (orgId is > 0)
+            _cache.InvalidateOrg(orgId.Value);
+
+        if (SelectedReports != null)
+            UpdateReportCollection();
+
+        _ = UpdateInSelectedReportFormsCountAsync();
+    }
+
     public virtual void UpdateReportCollection()
     {
         OnPropertyChanged(nameof(ReportCollection));

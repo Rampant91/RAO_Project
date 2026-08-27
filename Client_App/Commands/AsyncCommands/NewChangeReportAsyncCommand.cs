@@ -1,4 +1,4 @@
-using Client_App.Services;
+﻿using Client_App.Services;
 using Client_App.ViewModels.MainWindowTabs;
 using Models.Collections;
 using System.Threading.Tasks;

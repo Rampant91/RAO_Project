@@ -31,8 +31,6 @@ public class SourceTransmissionAsyncCommand : SourceTransmissionBaseAsyncCommand
     {
         if (parameter is null) return;
 
-        await FormVM.EnsureAllRowsForMutationAsync();
-
         var form = (Form1)parameter;
 
         var formWindow = Desktop.Windows.FirstOrDefault(x => x.Name == form.FormNum_DB);

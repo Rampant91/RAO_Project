@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.Services.DataAccess;
 using Client_App.ViewModels.Forms;
@@ -16,13 +16,11 @@ namespace Client_App.Commands.AsyncCommands.Add;
 /// <summary>
 /// Добавить N строк в форму перед выбранной строкой.
 /// </summary>
-/// <param name="formVM">ViewModel отчёта.</param>
 public class NewAddRowsInAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 {
     private Report Storage => formVM.Report;
     private string FormType => formVM.FormType;
 
-    /// <param name="parameter">В качестве параметра принимает список выбранных форм</param>
     public override async Task AsyncExecute(object? parameter)
     {
         var collection = (IEnumerable<Form>)parameter;
@@ -41,37 +39,26 @@ public class NewAddRowsInAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         var rowCount = await dialog.ShowDialog<int?>(owner);
         if (rowCount is null or <= 0) return;
 
-        foreach (var key in Storage[item.FormNum_DB])
-        {
-            var it = (Form)key;
-            if (it.NumberInOrder_DB > numberCell - 1)
-            {
-                it.NumberInOrder.Value = it.NumberInOrder_DB + (int)rowCount;
-            }
-        }
-        List<Form> lst = [];
+        var insertBeforeId = item.Id > 0 ? item.Id : 0;
+        var insertBeforeForm = item.Id > 0 ? null : item;
+
+        var lst = new List<Form>();
         for (var i = 0; i < rowCount; i++)
         {
             var frm = FormCreator.Create(FormType);
-            frm.NumberInOrder_DB = numberCell;
+            frm.NumberInOrder_DB = 0;
+            frm.InsertBeforeId = insertBeforeId > 0 ? insertBeforeId : null;
+            frm.InsertBeforeForm = insertBeforeForm;
             frm.Report = Storage;
             frm.ReportId = Storage.Id;
             lst.Add(frm);
-            numberCell++;
         }
+
         Storage[Storage.FormNum_DB].AddRange(lst);
         foreach (var frm in lst)
             FormRowsPageLoader.TrackNewFormRow(StaticConfiguration.DBModel, Storage, frm);
 
-        await Storage.SortAsync();
-
-        if (formVM.UseDbPaging)
-        {
-            formVM.DbTotalRows = (formVM.DbTotalRows ?? 0) + rowCount.Value;
-            formVM.IsCanSaveReportEnabled = true;
-        }
-
-        formVM.UpdateFormList();
-        formVM.UpdatePageInfo();
+        formVM.NotifyRowMutation();
+        await formVM.RefreshVisibleRowsAfterMutationAsync();
     }
 }

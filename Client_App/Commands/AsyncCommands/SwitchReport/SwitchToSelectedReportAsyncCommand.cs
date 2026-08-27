@@ -1,4 +1,4 @@
-﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Services;
 using Client_App.ViewModels.Forms;
 using Models.Collections;

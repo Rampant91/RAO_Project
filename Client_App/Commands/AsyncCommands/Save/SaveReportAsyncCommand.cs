@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
@@ -10,11 +10,14 @@ using Client_App.ViewModels.Forms.Forms4;
 using Client_App.Views;
 using MessageBox.Avalonia.DTO;
 using Microsoft.EntityFrameworkCore;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels.Forms.Forms5;
 using System.Threading.Tasks;
 using Models.Collections;
 using System;
 using Models.DBRealization;
+using Models.Forms;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Client_App.Commands.AsyncCommands.Save;
@@ -247,8 +250,13 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
         try
         {
             Storage.ReportChangedDate = DateTime.Now;
-            await db.SaveChangesAsync();
+            if (_formVM != null)
+                await PersistOpenFormReportAsync(db).ConfigureAwait(true);
+            else
+                await db.SaveChangesAsync();
             VM.IsCanSaveReportEnabled = false;
+            if (_formVM != null)
+                await _formVM.OnRowsSavedAsync().ConfigureAwait(true);
         }
         catch (Exception ex)
         {
@@ -261,7 +269,8 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
         {
             var mainWindow = Desktop.MainWindow as MainWindow;
             var mainWindowVM = await Dispatcher.UIThread.InvokeAsync(() => mainWindow?.DataContext as MainWindowVM);
-            mainWindowVM?.Forms1TabControlVM.UpdateReportsCollectionWithoutReCreation();
+            // Не InvalidateAll/org-grid: менялись строки отчёта — обновить счётчик и страницу отчётов.
+            mainWindowVM?.RefreshAfterFormReportSaved(_formType, Storages?.Id, Storage.Id);
         }
         catch (Exception ex)
         {
@@ -290,5 +299,95 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
             master.Rows20[1].OrganUprav.Value = master.Rows20[0].OrganUprav.Value;
             master.Rows20[1].RegNo.Value = master.Rows20[0].RegNo.Value;
         }
+    }
+
+    /// <summary>
+    /// Черновик: номера 1..n на Added, один SaveChanges.
+    /// Существующий 1.x paging: dirty SaveChanges + compact SQL в одной транзакции.
+    /// 4/5 и прочие in-memory: SetOrder 1..n + SaveChanges.
+    /// Легаси ChangeOrCreateVM сюда не заходит.
+    /// </summary>
+    private async Task PersistOpenFormReportAsync(DBModel db)
+    {
+        var paging = FormRowsPageLoader.SupportsDbPaging(_formType) && Storage.Id > 0;
+        if (!paging)
+        {
+            AssignInMemoryNumbersFromOne(db);
+            await db.SaveChangesAsync().ConfigureAwait(true);
+            return;
+        }
+
+        var added = FormRowMutationService.GetAddedForms(db, Storage.Id, _formType);
+        await using var tx = await db.Database.BeginTransactionAsync().ConfigureAwait(true);
+        try
+        {
+            await db.SaveChangesAsync().ConfigureAwait(true);
+            await CompactForm1xNumbersAsync(db, added).ConfigureAwait(true);
+            await tx.CommitAsync().ConfigureAwait(true);
+        }
+        catch
+        {
+            await tx.RollbackAsync().ConfigureAwait(true);
+            throw;
+        }
+    }
+
+    private void AssignInMemoryNumbersFromOne(DBModel db)
+    {
+        var remaining = new List<Form>();
+        var order = 1;
+        foreach (var key in Storage.Rows.GetEnumerable())
+        {
+            if (key is not Form form)
+                continue;
+            if (db.Entry(form).State == EntityState.Deleted)
+                continue;
+            form.SetOrder(order);
+            remaining.Add(form);
+            order++;
+        }
+
+        FormRowMutationService.MarkNumberInOrderChanged(db, remaining);
+    }
+
+    private async Task CompactForm1xNumbersAsync(DBModel db, List<Form> newlySaved)
+    {
+        var current = await FormRowsPageLoader
+            .LoadOrderedIdNumbersAsync(db, Storage.Id, _formType)
+            .ConfigureAwait(true);
+        var orderedIds = FormRowNumberCompact.BuildCompactIdOrder(
+            current.Select(x => x.Id).ToList(), newlySaved);
+
+        var byId = new Dictionary<int, int>(current.Count);
+        foreach (var pair in current)
+            byId[pair.Id] = pair.Number;
+
+        var asOrdered = new List<(int Id, int Number)>(orderedIds.Count);
+        foreach (var id in orderedIds)
+            asOrdered.Add((id, byId.GetValueOrDefault(id)));
+
+        if (!FormRowNumberCompact.NeedsCompact(asOrdered))
+            return;
+
+        var assignments = FormRowNumberCompact.Assignments(orderedIds);
+        Func<int, int, Task>? progress = null;
+        var showOverlay = assignments.Count >= 500;
+        if (showOverlay && _formVM != null)
+        {
+            progress = (done, total) =>
+            {
+                _formVM.ContentLoadingMessage = $"Номера {done} / {total}";
+                return Task.CompletedTask;
+            };
+            await _formVM.WithContentLoadingAsync(async () =>
+            {
+                await FormRowNumberCompact.ApplySqlAsync(
+                    db, _formType, Storage.Id, assignments, progress).ConfigureAwait(true);
+            }, clearVisibleRows: false, message: "Сохранение…").ConfigureAwait(true);
+            return;
+        }
+
+        await FormRowNumberCompact.ApplySqlAsync(
+            db, _formType, Storage.Id, assignments, progress).ConfigureAwait(true);
     }
 }

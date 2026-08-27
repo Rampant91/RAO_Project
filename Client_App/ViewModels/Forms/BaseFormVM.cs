@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Models.Attributes;
 using Models.DBRealization;
+using Microsoft.EntityFrameworkCore;
 
 namespace Client_App.ViewModels.Forms;
 
@@ -287,16 +288,9 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
             if (_rowCount != result)
             {
-                if (ShouldBlockPageChange())
-                {
-                    OnPropertyChanged();
-                    _ = NotifyUnsavedPageChangeAsync();
-                    return;
-                }
-
                 _rowCount = result;
                 OnPropertyChanged();
-                _ = RefreshFormListForPagingAsync();
+                _ = RefreshVisibleRowsAsync();
             }
         }
     }
@@ -316,16 +310,9 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             if (result == _currentPage)
                 return;
 
-            if (ShouldBlockPageChange())
-            {
-                OnPropertyChanged();
-                _ = NotifyUnsavedPageChangeAsync();
-                return;
-            }
-
             _currentPage = result;
             OnPropertyChanged();
-            _ = RefreshFormListForPagingAsync();
+            _ = RefreshVisibleRowsAsync();
         }
     }
 
@@ -335,6 +322,11 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public bool UseDbPaging { get; set; }
 
     public int? DbTotalRows { get; set; }
+
+    /// <summary>
+    /// В памяти полный набор строк (2/4/5 или черновик 1.x). Для paging 1.x не используется.
+    /// </summary>
+    private bool _rowSessionActive;
 
     /// <summary>Индикатор загрузки содержимого окна (смена отчёта, страница строк, догрузка).</summary>
     public bool IsContentLoading
@@ -350,43 +342,52 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     }
 
     private bool _isContentLoading;
-    private bool _contentLoadInProgress;
+    private string _contentLoadingMessage = "Загрузка…";
+    public string ContentLoadingMessage
+    {
+        get => _contentLoadingMessage;
+        set
+        {
+            if (_contentLoadingMessage == value)
+                return;
+            _contentLoadingMessage = value;
+            OnPropertyChanged();
+        }
+    }
+
     private int _contentLoadGeneration;
-    private const int ContentLoadingDelayMs = 150;
 
     /// <summary>
-    /// Показать overlay «Загрузка…» на время <paramref name="work"/> (с задержкой, без мигания).
+    /// Soft-lock формы: сразу очистить видимые строки формы, отдать кадр UI, затем работа.
+    /// Overlay — лёгкая карточка; бегунок крутится на DispatcherTimer.
+    /// Примечания не трогаем — догрузка строк к ним не относится.
     /// </summary>
-    public async Task WithContentLoadingAsync(Func<Task> work)
+    public async Task WithContentLoadingAsync(Func<Task> work, bool clearVisibleRows = true, string? message = null)
     {
         ArgumentNullException.ThrowIfNull(work);
         var generation = Interlocked.Increment(ref _contentLoadGeneration);
-        _contentLoadInProgress = true;
-        ScheduleContentLoadingIndicator(generation);
+        ContentLoadingMessage = string.IsNullOrEmpty(message) ? "Загрузка…" : message;
+        IsContentLoading = true;
+
+        if (clearVisibleRows && _formList.Count > 0)
+            _formList.Clear();
+
         try
         {
+            await Avalonia.Threading.Dispatcher.UIThread
+                .InvokeAsync(static () => { }, Avalonia.Threading.DispatcherPriority.Render)
+                .ConfigureAwait(true);
+
+            if (generation != _contentLoadGeneration)
+                return;
+
             await work().ConfigureAwait(true);
         }
         finally
         {
             if (generation == _contentLoadGeneration)
-            {
-                _contentLoadInProgress = false;
                 IsContentLoading = false;
-            }
         }
-    }
-
-    private void ScheduleContentLoadingIndicator(int generation)
-    {
-        _ = Task.Delay(ContentLoadingDelayMs).ContinueWith(_ =>
-        {
-            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
-            {
-                if (generation == _contentLoadGeneration && _contentLoadInProgress)
-                    IsContentLoading = true;
-            });
-        });
     }
 
     public int TotalPages
@@ -402,7 +403,20 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    public int TotalRows => DbTotalRows ?? Report.Rows.Count;
+    public int TotalRows
+    {
+        get
+        {
+            if (DbTotalRows is int dbCount && Report?.Id > 0)
+            {
+                var delta = FormRowMutationService.GetPendingDelta(
+                    StaticConfiguration.DBModel, Report.Id, FormType);
+                return Math.Max(0, dbCount + delta);
+            }
+
+            return CountLiveInMemoryRows();
+        }
+    }
 
 
     private bool _isAutoReplaceEnabled = true;
@@ -492,17 +506,20 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     /// <summary>
     /// Сменить отчёт в том же окне (↑/↓ / «Выбрать» при той же FormNum).
     /// </summary>
-    public async Task ReloadFromReportAsync(Report loadedReport)
+    /// <param name="dbTotalRowsHint">Count строк 1.x, уже посчитанный в фоне (избежать повторного COUNT на UI).</param>
+    public async Task ReloadFromReportAsync(Report loadedReport, int? dbTotalRowsHint = null)
     {
         Report = loadedReport;
         Reports = loadedReport.Reports;
 
         var formNum = FormType;
         var isPaged = formNum is "1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8" or "1.9";
+        _rowSessionActive = false;
         if (isPaged)
         {
             UseDbPaging = true;
-            DbTotalRows = await FormRowsPageLoader.CountAsync(StaticConfiguration.DBModel, loadedReport.Id, formNum);
+            DbTotalRows = dbTotalRowsHint
+                ?? await FormRowsPageLoader.CountAsync(StaticConfiguration.DBModel, loadedReport.Id, formNum);
             _currentPage = 1;
             OnPropertyChanged(nameof(CurrentPage));
         }
@@ -550,7 +567,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public ICommand AddRows => new NewAddRowsAsyncCommand(this);
     public ICommand AddRowsIn => new NewAddRowsInAsyncCommand(this);
     public ICommand DeleteDataInRows => new NewDeleteDataInRowsAsyncCommand();
-    public ICommand DeleteRows => new NewDeleteRowsAsyncCommand(this);
+    private ICommand? _deleteRows;
+    public ICommand DeleteRows => _deleteRows ??= new NewDeleteRowsAsyncCommand(this);
     public ICommand SortForm => new NewSortFormSyncCommand(this);
     public ICommand SetNumberOrder => new NewSetNumberOrderSyncCommand(this);
     public ICommand SortForms => new NewSortFormSyncCommand(this);
@@ -609,75 +627,242 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
 
     /// <summary>
     /// Обновляет отображение ячеек DataGrid'а.
+    /// Коллекцию не подменяем: новая ObservableCollection рвёт SelectedItems у Avalonia DataGrid,
+    /// второе удаление тогда уходит с пустым/устаревшим параметром.
+    /// № п/п в гриде — виртуальный, NumberInOrder_DB не трогаем.
     /// </summary>
     public void UpdateFormList()
     {
-        if (UseDbPaging)
-        {
-            // В памяти уже только текущая страница
-            FormList = new ObservableCollection<Form>(Report.Rows.ToList<Form>());
-        }
-        else
-        {
-            FormList = new ObservableCollection<Form>(
-                Report.Rows
-                    .ToList<Form>()
-                    .Skip((CurrentPage - 1) * RowCount)
-                    .Take(RowCount));
-        }
+        IEnumerable<Form> page = UseDbPaging
+            ? Report.Rows.ToList<Form>()
+            : Report.Rows
+                .ToList<Form>()
+                .Skip((CurrentPage - 1) * RowCount)
+                .Take(RowCount);
+
+        var list = page.ToList();
+        for (var i = 0; i < list.Count; i++)
+            list[i].SetDisplayOrder(FormRowNumberCompact.DisplayNumber(CurrentPage, RowCount, i));
+
+        _formList.Clear();
+        foreach (var form in list)
+            _formList.Add(form);
+    }
+
+    /// <summary>Сбросить выделение строк после мутации, чтобы команда не повторно удаляла мёртвые Id.</summary>
+    public void ClearFormRowSelection()
+    {
+        SelectedForm = null;
+        if (SelectedForms.Count > 0)
+            SelectedForms.Clear();
     }
 
     /// <summary>
-    /// Перед операциями над всеми строками (проверка/сортировка/№ п/п) догружает полный набор.
+    /// Исторический вход «догрузить все строки». Paging+pending больше не грузит 20k — no-op.
     /// </summary>
-    public async Task EnsureAllRowsForMutationAsync()
+    public Task EnsureAllRowsForMutationAsync() => Task.CompletedTask;
+
+    /// <summary>
+    /// Синхронный no-op: Sort/№ п/п не грузят полный набор (виртуальный npp + compact на Save).
+    /// </summary>
+    public void EnsureAllRowsForMutationBlocking()
     {
-        await WithContentLoadingAsync(async () =>
+    }
+
+    /// <summary>
+    /// Полный набор в UI больше не открываем на мутациях 1.x.
+    /// </summary>
+    public Task EnsureFullRowSessionAsync() => Task.CompletedTask;
+
+    public void EnsureFullRowSessionBlocking()
+    {
+    }
+
+    /// <summary>
+    /// Сквозная нумерация только на экране. В БД номера едут compact'ом на Save.
+    /// </summary>
+    public void RenumberFormRowsFromOne()
+    {
+        UpdateFormList();
+    }
+
+    /// <summary>Следующий № п/п = живой count + 1 (не Max текущей страницы).</summary>
+    public int GetNextNumberInOrder() => TotalRows + 1;
+
+    private int CountLiveInMemoryRows()
+    {
+        var db = StaticConfiguration.DBModel;
+        var count = 0;
+        foreach (var key in Report.Rows)
         {
-            await FormRowsEnsureService.EnsureAllRowsLoadedAsync(Report);
-            UseDbPaging = false;
-            DbTotalRows = null;
-            ClearFormPageCache();
+            if (key is not Form form)
+                continue;
+            if (db.Entry(form).State == EntityState.Deleted)
+                continue;
+            count++;
+        }
+
+        return count;
+    }
+
+    /// <summary>Инвалидация prefetch-кэша после add/delete.</summary>
+    public void NotifyRowMutation()
+    {
+        ClearFormPageCache();
+        IsCanSaveReportEnabled = true;
+    }
+
+    /// <summary>Показать последнюю страницу без обращения к БД (in-memory) или с merge (paging).</summary>
+    public void RevealLastPage()
+    {
+        var last = Math.Max(1, TotalPages);
+        if (_currentPage != last)
+        {
+            _currentPage = last;
+            OnPropertyChanged(nameof(CurrentPage));
+        }
+
+        _ = RefreshVisibleRowsAfterMutationAsync();
+    }
+
+    public async Task RevealLastPageAsync()
+    {
+        var last = Math.Max(1, TotalPages);
+        if (_currentPage != last)
+        {
+            _currentPage = last;
+            OnPropertyChanged(nameof(CurrentPage));
+        }
+
+        await RefreshVisibleRowsAfterMutationAsync().ConfigureAwait(true);
+    }
+
+    /// <summary>
+    /// После add/delete: перечитать текущую страницу с merge, без overlay и без очистки грида.
+    /// </summary>
+    public async Task RefreshVisibleRowsAfterMutationAsync()
+    {
+        if (!UseDbPaging || Report is not { Id: > 0 } report ||
+            !FormRowsPageLoader.SupportsDbPaging(FormType))
+        {
             UpdateFormList();
             UpdatePageInfo();
-        });
+            return;
+        }
+
+        var skip = Math.Max(0, (CurrentPage - 1) * RowCount);
+        var items = await FormRowsPageLoader
+            .LoadMergedVisiblePageAsync(StaticConfiguration.DBModel, report.Id, FormType, skip, RowCount)
+            .ConfigureAwait(true);
+        FormRowsPageLoader.ApplyPageToReport(report, FormType, items);
+        UpdateFormList();
+        UpdatePageInfo();
     }
 
-    private bool ShouldBlockPageChange()
+    /// <summary>
+    /// После успешного Save: recount, paging on, одна страница из БД.
+    /// </summary>
+    public async Task OnRowsSavedAsync()
     {
-        if (!UseDbPaging || Report?.Id <= 0)
-            return false;
-        return FormRowsPageLoader.HasPendingFormRowChanges(
-            StaticConfiguration.DBModel, Report.Id, FormType);
+        ClearFormPageCache();
+        _rowSessionActive = false;
+        if (Report?.Id > 0 && FormRowsPageLoader.SupportsDbPaging(FormType))
+        {
+            UseDbPaging = true;
+            DbTotalRows = await FormRowsPageLoader
+                .CountAsync(StaticConfiguration.DBModel, Report.Id, FormType)
+                .ConfigureAwait(true);
+            var last = Math.Max(1, TotalPages);
+            if (_currentPage > last)
+            {
+                _currentPage = last;
+                OnPropertyChanged(nameof(CurrentPage));
+            }
+
+            var skip = Math.Max(0, (CurrentPage - 1) * RowCount);
+            var items = await FormRowsPageLoader
+                .LoadMergedVisiblePageAsync(StaticConfiguration.DBModel, Report.Id, FormType, skip, RowCount)
+                .ConfigureAwait(true);
+            FormRowsPageLoader.ApplyPageToReport(Report, FormType, items);
+        }
+
+        UpdateFormList();
+        UpdatePageInfo();
     }
 
-    private async Task NotifyUnsavedPageChangeAsync()
+    /// <summary>
+    /// Откат к последнему сохранённому состоянию (закрытие «Нет» / смена отчёта без сохранения).
+    /// Черновик Id==0 — не оставлять отчёт в БД. Существующий / после 41 — Restore + страница.
+    /// </summary>
+    public async Task DiscardUnsavedChangesAsync()
     {
-        try
+        var db = StaticConfiguration.DBModel;
+        var isDraft = Report == null || Report.Id <= 0;
+        db.Restore();
+        _rowSessionActive = false;
+        ClearFormPageCache();
+
+        if (isDraft)
         {
-            await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() =>
-                MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBox.Avalonia.DTO.MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                        ContentTitle = "Несохранённые изменения",
-                        ContentHeader = "Уведомление",
-                        ContentMessage =
-                            "Сначала сохраните или отмените изменения строк," +
-                            $"{Environment.NewLine}прежде чем перелистывать страницу формы.",
-                        MinWidth = 400,
-                        WindowStartupLocation = Avalonia.Controls.WindowStartupLocation.CenterOwner,
-                        Topmost = true,
-                    })
-                    .ShowDialog(
-                        (Avalonia.Application.Current?.ApplicationLifetime as
-                            Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)
-                        ?.MainWindow));
+            UseDbPaging = false;
+            DbTotalRows = null;
+            if (Report != null)
+            {
+                foreach (var key in Report[FormType].GetEnumerable().ToList())
+                {
+                    if (key is Form form)
+                        Report[FormType].Remove(form);
+                }
+
+                foreach (var note in Report.Notes.Where(n => n.Id == 0).ToList())
+                    Report.Notes.Remove(note);
+            }
+
+            UpdateFormList();
+            UpdateNoteList();
+            UpdatePageInfo();
+            IsCanSaveReportEnabled = false;
+            return;
         }
-        catch
+
+        var report = Report;
+        await FormRowsEnsureService.ReloadNotesFromDbAsync(report)
+            .ConfigureAwait(true);
+
+        if (FormRowsPageLoader.SupportsDbPaging(FormType))
         {
-            // UI-уведомление не должно ронять смену свойства
+            UseDbPaging = true;
+            DbTotalRows = await FormRowsPageLoader
+                .CountAsync(db, report.Id, FormType)
+                .ConfigureAwait(true);
+
+            var skip = Math.Max(0, (CurrentPage - 1) * RowCount);
+            var page = await FormRowsPageLoader
+                .LoadMergedVisiblePageAsync(db, report.Id, FormType, skip, RowCount)
+                .ConfigureAwait(true);
+            FormRowsPageLoader.ApplyPageToReport(report, FormType, page);
         }
+        else
+        {
+            UseDbPaging = false;
+            DbTotalRows = null;
+            await FormRowsEnsureService.ForceReplaceRowsAndNotesFromDbAsync(report)
+                .ConfigureAwait(true);
+        }
+
+        foreach (var key in report[FormType].GetEnumerable().ToList())
+        {
+            if (key is Form { Id: 0 } form)
+                report[FormType].Remove(form);
+        }
+
+        foreach (var note in report.Notes.Where(n => n.Id == 0).ToList())
+            report.Notes.Remove(note);
+
+        UpdateFormList();
+        UpdateNoteList();
+        UpdatePageInfo();
+        IsCanSaveReportEnabled = false;
     }
 
     private readonly object _formPageCacheGate = new();
@@ -692,16 +877,33 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         _formPrefetchCts = null;
     }
 
+    private async Task RefreshVisibleRowsAsync()
+    {
+        if (!UseDbPaging)
+        {
+            UpdateFormList();
+            UpdatePageInfo();
+            return;
+        }
+
+        await RefreshFormListForPagingAsync().ConfigureAwait(true);
+    }
+
     private async Task RefreshFormListForPagingAsync()
     {
         await WithContentLoadingAsync(async () =>
         {
             if (UseDbPaging && FormRowsPageLoader.SupportsDbPaging(FormType) && Report?.Id > 0)
             {
+                var pendingMut = FormRowsPageLoader.HasPendingAddOrDelete(
+                    StaticConfiguration.DBModel, Report.Id, FormType);
                 var key = (CurrentPage, RowCount);
-                List<Form>? cached;
-                lock (_formPageCacheGate)
-                    _formPageCache.TryGetValue(key, out cached);
+                List<Form>? cached = null;
+                if (!pendingMut)
+                {
+                    lock (_formPageCacheGate)
+                        _formPageCache.TryGetValue(key, out cached);
+                }
 
                 if (cached != null)
                 {
@@ -710,12 +912,26 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
                 else
                 {
                     var skip = (CurrentPage - 1) * RowCount;
-                    await FormRowsPageLoader.LoadPageIntoReportAsync(
-                        StaticConfiguration.DBModel, Report, FormType, skip, RowCount);
-                    CacheCurrentFormPage();
+                    var take = RowCount;
+                    var reportId = Report.Id;
+                    var formType = FormType;
+                    var pageGen = _contentLoadGeneration;
+                    var uiDb = StaticConfiguration.DBModel;
+
+                    var items = await FormRowsPageLoader
+                        .LoadMergedVisiblePageAsync(uiDb, reportId, formType, skip, take)
+                        .ConfigureAwait(true);
+
+                    if (pageGen != _contentLoadGeneration)
+                        return;
+
+                    FormRowsPageLoader.ApplyPageToReport(Report, FormType, items);
+                    if (!pendingMut)
+                        CacheCurrentFormPage();
                 }
 
-                ScheduleFormPagePrefetch();
+                if (!pendingMut)
+                    ScheduleFormPagePrefetch();
             }
 
             UpdateFormList();
@@ -750,6 +966,8 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     private void ScheduleFormPagePrefetch()
     {
         if (!UseDbPaging || Report?.Id <= 0) return;
+        if (FormRowsPageLoader.HasPendingAddOrDelete(StaticConfiguration.DBModel, Report.Id, FormType))
+            return;
         try { _formPrefetchCts?.Cancel(); } catch { /* ignore */ }
         var cts = new CancellationTokenSource();
         _formPrefetchCts = cts;

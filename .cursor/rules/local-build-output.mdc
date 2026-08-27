@@ -1,0 +1,20 @@
+---
+description: Временная сборка dotnet вне bin/ — одно имя папки, сразу в .gitignore
+alwaysApply: true
+---
+
+# Локальный вывод сборки (не bin/)
+
+Если `bin/Debug` занят запущенным Client_App и нужен `dotnet build` / `dotnet test` с отдельным `-o`:
+
+- Использовать **только** каталог **`_testbuild/`** в корне репозитория.
+- Не создавать `_test_out`, `_agent_build`, `test_out` и другие варианты.
+- Папка уже в `.gitignore`; в коммит не добавлять.
+- После прогона содержимое можно удалить.
+
+Пример:
+
+```powershell
+dotnet build Client_App\Client_App.csproj -o _testbuild
+dotnet test Test\Test.csproj --no-build
+```

@@ -1,17 +1,26 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Client_App.Views.Controls"
              x:Class="Client_App.Views.Controls.DataGridLoadingOverlay"
              IsHitTestVisible="True">
-    <Border Background="#88FFFFFF">
-        <StackPanel VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                    Spacing="8">
-            <ProgressBar Width="160"
-                         Height="4"
-                         IsIndeterminate="True" />
-            <TextBlock HorizontalAlignment="Center"
-                       FontSize="13"
-                       Text="Загрузка…" />
-        </StackPanel>
+    <Border Background="#CCFFFFFF">
+        <Border HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="White"
+                BorderBrush="#DDDDDD"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="20,16"
+                MinWidth="200">
+            <StackPanel Spacing="10">
+                <controls:IndeterminateMarqueeBar x:Name="Marquee"
+                                                  TrackWidth="180"
+                                                  HorizontalAlignment="Center" />
+                <TextBlock HorizontalAlignment="Center"
+                           FontSize="13"
+                           Foreground="#FF333333"
+                           Text="Загрузка…" />
+            </StackPanel>
+        </Border>
     </Border>
 </UserControl>

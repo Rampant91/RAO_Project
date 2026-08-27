@@ -30,16 +30,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
             if (passportCollection == null ||
                 passportCollection.Count <= 0) return;
 
-            int index = 0;
-            if (formVM.UseDbPaging && Report.Id > 0)
-            {
-                index = await FormRowsPageLoader.GetMaxNumberInOrderAsync(
-                    StaticConfiguration.DBModel, Report.Id, "1.7");
-            }
-            else if (Report.Rows17.Count > 0)
-            {
-                index = Report.Rows17.Max(form => form.NumberInOrder_DB);
-            }
+            int index = formVM.GetNextNumberInOrder() - 1;
 
             foreach (var passport in passportCollection)
             {
@@ -50,8 +41,11 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
                 index++;
                 form17.NumberInOrder_DB = index;
+                form17.Report = Report;
+                form17.ReportId = Report.Id;
 
                 Report.Rows17.Add(form17);
+                FormRowsPageLoader.TrackNewFormRow(StaticConfiguration.DBModel, Report, form17);
 
                 form17.PackName_DB = "контейнер";
 
@@ -97,7 +91,10 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
                     radionuclidOnlyForm17.Radionuclids_DB = radionuclidName;
                     radionuclidOnlyForm17.SpecificActivity_DB = characteristic.RadionuclidsList[i].Activity.ToString("e5");
+                    radionuclidOnlyForm17.Report = Report;
+                    radionuclidOnlyForm17.ReportId = Report.Id;
                     Report.Rows17.Add(radionuclidOnlyForm17);
+                    FormRowsPageLoader.TrackNewFormRow(StaticConfiguration.DBModel, Report, radionuclidOnlyForm17);
 
                     index++;
                     radionuclidOnlyForm17.NumberInOrder_DB = index;
@@ -108,8 +105,8 @@ namespace Client_App.Commands.AsyncCommands.Generate
             //{
             //    Report.Rows17[i].NumberInOrder_DB = i + 1;
             //}
-            formVM.UpdateFormList();
-            formVM.UpdatePageInfo();
+            formVM.NotifyRowMutation();
+            await formVM.RevealLastPageAsync();
         }
         private async Task<ObservableCollection<PackagePassport>?> ShowAskReportMessage(Window owner)
         {

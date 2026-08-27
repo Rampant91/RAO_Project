@@ -1,4 +1,4 @@
-﻿using Client_App.Interfaces.Logger;
+using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Resources.CustomComparers;
 using Microsoft.EntityFrameworkCore;

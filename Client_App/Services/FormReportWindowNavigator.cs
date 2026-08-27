@@ -127,7 +127,8 @@ public static class FormReportWindowNavigator
                 if (loaded == null)
                     return;
 
-                await formVm.ReloadFromReportAsync(loaded).ConfigureAwait(true);
+                var totalHint = FormReportWindowOpener.TakeLastLoadedDbTotalRows();
+                await formVm.ReloadFromReportAsync(loaded, totalHint).ConfigureAwait(true);
             }).ConfigureAwait(true);
         }
         finally

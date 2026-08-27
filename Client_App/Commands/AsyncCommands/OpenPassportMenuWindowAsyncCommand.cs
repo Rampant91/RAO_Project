@@ -1,4 +1,4 @@
-﻿using Client_App.ViewModels;
+using Client_App.ViewModels;
 using Client_App.ViewModels.Passports;
 using Client_App.Views;
 using Models.DBRealization;

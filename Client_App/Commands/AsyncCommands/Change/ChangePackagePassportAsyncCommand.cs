@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Passports;
@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Client_App.Views.Passports;
 
 namespace Client_App.Commands.AsyncCommands.Change
 {

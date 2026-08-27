@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
@@ -60,18 +60,16 @@ public class CheckForChangesAndSaveCommand(BaseFormVM formVM) : BaseAsyncCommand
         switch (res)
         {
             case "Да":
-                await dbm.SaveChangesAsync();
                 await new SaveReportAsyncCommand(formVM).AsyncExecute(null);
                 return true;
 
             case "Нет":
-                dbm.Restore();
-                await dbm.SaveChangesAsync();
+                await formVM.DiscardUnsavedChangesAsync();
                 return true;
 
             case "Отмена":
             default:
-                return false; // Отмена
+                return false;
         }
     }
 }

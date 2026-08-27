@@ -9,8 +9,10 @@ using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.DBRealization;
+using Models.Forms;
 using Models.Forms.Form1;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,15 +28,11 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
 
     public override async Task AsyncExecute(object? parameter)
     {
-        await FormVM.EnsureAllRowsForMutationAsync();
-
         var formWindow = Desktop.Windows.FirstOrDefault(x => x.Name == FormVM.FormType);
         var desktop = (IClassicDesktopStyleApplicationLifetime)Avalonia.Application.Current?.ApplicationLifetime!;
         var activeWindow = formWindow ?? desktop.MainWindow;
 
-        var formsWithCode41 = SelectedReport[SelectedReport.FormNum_DB].ToList<Form1>()
-            .Where(x => string.Equals(x.OperationCode_DB.Trim(), "41", StringComparison.Ordinal))
-            .ToList();
+        var formsWithCode41 = await LoadCode41FormsAsync();
         var linesWithCorruptOpDate = formsWithCode41
             .Where(x => !DateOnly.TryParse(x.OperationDate_DB, out _))
             .Select(x => x.NumberInOrder_DB)
@@ -268,5 +266,62 @@ public class SourceTransmissionAllAsyncCommand : SourceTransmissionBaseAsyncComm
             repToOpen.Reports ??= SelectedReports;
             await CloseWindowAndOpenNew(repToOpen).ConfigureAwait(false);
         }
+    }
+
+    private async Task<List<Form1>> LoadCode41FormsAsync()
+    {
+        var db = StaticConfiguration.DBModel;
+        var reportId = SelectedReport.Id;
+        var formNum = SelectedReport.FormNum_DB;
+        FormRowMutationService.CollectPending(db, reportId, formNum,
+            out var added, out var tracked, out var exclude);
+
+        List<(int Id, string Code)> codes;
+        await using (var snap = new DBModel(StaticConfiguration.DBPath))
+        {
+            codes = await FormRowsPageLoader.LoadIdAndOperationCodesAsync(snap, reportId, formNum)
+                .ConfigureAwait(false);
+        }
+
+        var matchIds = new List<int>();
+        foreach (var (id, code) in codes)
+        {
+            if (exclude.Contains(id))
+                continue;
+            if (string.Equals(code.Trim(), "41", StringComparison.Ordinal))
+                matchIds.Add(id);
+        }
+
+        var idsToLoad = matchIds.Where(id => !tracked.ContainsKey(id)).ToList();
+        var loaded = new Dictionary<int, Form>();
+        if (idsToLoad.Count > 0)
+        {
+            await using var snap = new DBModel(StaticConfiguration.DBPath);
+            var forms = await FormRowsPageLoader.LoadByIdsAsync(snap, formNum, idsToLoad)
+                .ConfigureAwait(false);
+            foreach (var form in forms)
+                loaded[form.Id] = form;
+        }
+
+        var result = new List<Form1>();
+        foreach (var id in matchIds)
+        {
+            Form? form = null;
+            if (tracked.TryGetValue(id, out var keep))
+                form = keep;
+            else if (loaded.TryGetValue(id, out var fromDb))
+                form = fromDb;
+            if (form is Form1 f1)
+                result.Add(f1);
+        }
+
+        foreach (var row in added)
+        {
+            if (row is Form1 f1 &&
+                string.Equals(f1.OperationCode_DB?.Trim(), "41", StringComparison.Ordinal))
+                result.Add(f1);
+        }
+
+        return result;
     }
 }

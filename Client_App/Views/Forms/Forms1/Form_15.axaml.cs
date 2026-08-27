@@ -66,7 +66,7 @@ public partial class Form_15 : BaseWindow<Form_15VM>
 
     #region CopyExecutorData_Click
 
-    //Временное узкоспециализированное решение
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     private void CopyExecutorData_Click(object sender, RoutedEventArgs e)
     {
         var command = new NewCopyExecutorDataAsyncCommand((Form_15VM)DataContext);
@@ -195,12 +195,12 @@ public partial class Form_15 : BaseWindow<Form_15VM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
-        args.Cancel = true; // Сразу запрещаем закрытие окна, т.к. из-за асинхроности окно может закрыться в любой момент
+        args.Cancel = true; // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅ.пїЅ. пїЅпїЅ-пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
 
-        _isCloseConfirmed = true; // перед выходом из обработчика события стоит проверка на _isCloseConfirmed,
-                                  // если true, то окно закроется,
-                                  // если false, то не закроется
+        _isCloseConfirmed = true; // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ _isCloseConfirmed,
+                                  // пїЅпїЅпїЅпїЅ true, пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ,
+                                  // пїЅпїЅпїЅпїЅ false, пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (DataContext is not Form_15VM vm) return;
 
         try
@@ -228,7 +228,7 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                 if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
                 desktop.MainWindow.WindowState = OwnerPrevState;
 
-                if (_isCloseConfirmed) //выход из обработчика события
+                if (_isCloseConfirmed) //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 {
                     Closing -= OnStandardClosing;
                     Close();
@@ -253,13 +253,13 @@ public partial class Form_15 : BaseWindow<Form_15VM>
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" },
-                    new ButtonDefinition { Name = "Отмена" }
+                    new ButtonDefinition { Name = "Р”Р°" },
+                    new ButtonDefinition { Name = "РќРµС‚" },
+                    new ButtonDefinition { Name = "РћС‚РјРµРЅР°" }
                 ],
-                ContentTitle = "Сохранение изменений",
-                ContentHeader = "Уведомление",
-                ContentMessage = $"Сохранить форму {vm.FormType}?",
+                ContentTitle = "РЎРѕС…СЂР°РЅРµРЅРёРµ РёР·РјРµРЅРµРЅРёР№",
+                ContentHeader = "РЈРІРµРґРѕРјР»РµРЅРёРµ",
+                ContentMessage = $"РЎРѕС…СЂР°РЅРёС‚СЊ С„РѕСЂРјСѓ {vm.FormType}?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
@@ -271,14 +271,13 @@ public partial class Form_15 : BaseWindow<Form_15VM>
         var dbm = StaticConfiguration.DBModel;
         switch (res)
         {
-            case "Да":
-                {
-                    _isCloseConfirmed = true;
+            case "Р”Р°":
+            {
+                _isCloseConfirmed = true;
 
-                    //Перед тем как сохранить данные пользователю предлагают удалить пустые строчки
-                    try
-                    {
-                        await RemoveEmptyForms(vm);
+                try
+                {
+                    await RemoveEmptyForms(vm);
                     }
                     catch (Exception ex)
                     {
@@ -289,7 +288,6 @@ public partial class Form_15 : BaseWindow<Form_15VM>
 
                     try
                     {
-                        await dbm.SaveChangesAsync();
                         await new SaveReportAsyncCommand(vm).AsyncExecute(null);
                     }
                     catch (Exception ex)
@@ -301,12 +299,10 @@ public partial class Form_15 : BaseWindow<Form_15VM>
 
                     break;
                 }
-            case "Нет":
-                {
-                    _isCloseConfirmed = true;
-                    dbm.Restore();
-                    new NewSortFormSyncCommand(vm).Execute(null);
-                    await dbm.SaveChangesAsync();
+            case "РќРµС‚":
+            {
+                _isCloseConfirmed = true;
+                await vm.DiscardUnsavedChangesAsync();
 
                     var lst = vm.Report[vm.FormType];
 
@@ -347,7 +343,7 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                     }
                     break;
                 }
-            case "Отмена" or null:
+            case "РћС‚РјРµРЅР°" or null:
                 {
                     _isCloseConfirmed = false;
                     return;
@@ -355,7 +351,7 @@ public partial class Form_15 : BaseWindow<Form_15VM>
         }
         desktop.MainWindow.WindowState = OwnerPrevState;
 
-        if (_isCloseConfirmed)      //выход из обработчика события
+        if (_isCloseConfirmed)      //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         {
             Closing -= OnStandardClosing;
             Close();
@@ -365,10 +361,10 @@ public partial class Form_15 : BaseWindow<Form_15VM>
     #region CheckPeriod
 
     /// <summary>
-    /// Проверяет наличие отчёта с пересекающимся периодом.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
-    /// <param name="vm">Модель открытого отчёта.</param>
-    /// <returns>Сообщение о наличии пересечения.</returns>
+    /// <param name="vm">пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.</param>
+    /// <returns>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.</returns>
     private async Task CheckPeriod(Form_15VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
@@ -391,12 +387,12 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                         .GetMessageBoxStandardWindow(new MessageBoxStandardParams()
                         {
                             ButtonDefinitions = ButtonEnum.Ok,
-                            ContentTitle = "Пересечение",
-                            ContentHeader = "Уведомление",
-                            ContentMessage = $"У организации {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value} " +
-                                             $"{Environment.NewLine}присутствует отчёт по форме " +
+                            ContentTitle = "РџРµСЂРµСЃРµС‡РµРЅРёРµ",
+                            ContentHeader = "РЈРІРµРґРѕРјР»РµРЅРёРµ",
+                            ContentMessage = $"РЈ РѕСЂРіР°РЅРёР·Р°С†РёРё {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value} " +
+                                             $"{Environment.NewLine}РїСЂРёСЃСѓС‚СЃС‚РІСѓРµС‚ РѕС‚С‡С‘С‚ РїРѕ С„РѕСЂРјРµ " +
                                              $"{currentReport.FormNum_DB} {currentReport.StartPeriod_DB}-{currentReport.EndPeriod_DB}" +
-                                             $"{Environment.NewLine}пересекающийся с введённым периодом " +
+                                             $"{Environment.NewLine}РїРµСЂРµСЃРµРєР°СЋС‰РёР№СЃСЏ СЃ РІРІРµРґС‘РЅРЅС‹Рј РїРµСЂРёРѕРґРѕРј " +
                                              $"{rep.StartPeriod_DB}-{rep.EndPeriod_DB}.",
                             MinWidth = 450,
                             MinHeight = 170,
@@ -418,10 +414,10 @@ public partial class Form_15 : BaseWindow<Form_15VM>
     #region RemoveEmptyForms
 
     /// <summary>
-    /// Проверяет на пустые строчки и предлагает их удалить.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
-    /// <param name="vm">Модель открытого отчёта.</param>
-    /// <returns>Сообщение с предложением удалить пустые строчки.</returns>
+    /// <param name="vm">пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.</param>
+    /// <returns>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.</returns>
     private async Task RemoveEmptyForms(Form_15VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
@@ -467,13 +463,13 @@ public partial class Form_15 : BaseWindow<Form_15VM>
                 {
                     ButtonDefinitions =
                     [
-                        new ButtonDefinition { Name = "Да" },
-                        new ButtonDefinition { Name = "Нет" }
+                        new ButtonDefinition { Name = "Р”Р°" },
+                        new ButtonDefinition { Name = "РќРµС‚" }
                     ],
-                    ContentTitle = "Сохранение изменений",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = $"В форме {vm.FormType} присутствуют пустые строчки." +
-                                     $"{Environment.NewLine}Вы хотите их удалить?",
+                    ContentTitle = "РЎРѕС…СЂР°РЅРµРЅРёРµ РёР·РјРµРЅРµРЅРёР№",
+                    ContentHeader = "РЈРІРµРґРѕРјР»РµРЅРёРµ",
+                    ContentMessage = $"Р’ С„РѕСЂРјРµ {vm.FormType} РѕР±РЅР°СЂСѓР¶РµРЅС‹ РїСѓСЃС‚С‹Рµ СЃС‚СЂРѕРєРё." +
+                                     $"{Environment.NewLine}Р’С‹ Р¶РµР»Р°РµС‚Рµ РёС… СѓРґР°Р»РёС‚СЊ?",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
@@ -482,7 +478,7 @@ public partial class Form_15 : BaseWindow<Form_15VM>
 
             #endregion
 
-            if (res is "Да")
+            if (res is "Р”Р°")
             {
                 await using var db = new DBModel(StaticConfiguration.DBPath);
                 foreach (var form in formToDeleteList)

@@ -1,4 +1,4 @@
-﻿using Client_App.Resources;
+using Client_App.Resources;
 using Client_App.Services;
 using Client_App.Services.DataAccess;
 using Client_App.ViewModels;

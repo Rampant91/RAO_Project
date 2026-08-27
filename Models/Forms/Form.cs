@@ -85,17 +85,64 @@ public abstract partial class Form : IKey, IDataGridColumn
     #region Order
     
     [NotMapped]
-    public long Order => NumberInOrder_DB;
+    public long Order => NumberInOrderDisplayOverride ?? NumberInOrder_DB;
+
+    /// <summary>
+    /// Куда вставить ещё не сохранённую строку в живом порядке (Id целевой строки).
+    /// 0 / null — в конец. Не пишется в БД.
+    /// </summary>
+    [NotMapped]
+    public int? InsertBeforeId { get; set; }
+
+    /// <summary>
+    /// Вставка перед другой несохранённой строкой (ссылка, не Id).
+    /// </summary>
+    [NotMapped]
+    public Form? InsertBeforeForm { get; set; }
+
+    /// <summary>
+    /// № п/п только для грида, без записи в NumberInOrder_DB / EF Modified.
+    /// </summary>
+    [NotMapped]
+    public int? NumberInOrderDisplayOverride { get; private set; }
 
     public void SetOrder(long index)
     {
+        NumberInOrderDisplayOverride = null;
         if (NumberInOrder_DB != (int)index)
         {
             NumberInOrder_DB = (int)index;
             OnPropertyChanged(nameof(NumberInOrder_DB));
             OnPropertyChanged(nameof(Order));
+            if (Dictionary.TryGetValue(nameof(NumberInOrder), out var ram) && ram is RamAccess<int> access)
+                access.SyncFromStorage(NumberInOrder_DB);
         }
-    } 
+    }
+
+    /// <summary>
+    /// Показать сплошной № п/п в гриде, не меняя NumberInOrder_DB (иначе SaveChanges
+    /// уедет частичными номерами текущей страницы).
+    /// </summary>
+    public void SetDisplayOrder(long index)
+    {
+        var value = (int)index;
+        NumberInOrderDisplayOverride = value;
+        OnPropertyChanged(nameof(Order));
+        OnPropertyChanged(nameof(NumberInOrder));
+        if (Dictionary.TryGetValue(nameof(NumberInOrder), out var ram) && ram is RamAccess<int> access)
+            access.SyncFromStorage(value);
+    }
+
+    public void ClearDisplayOrderOverride()
+    {
+        if (!NumberInOrderDisplayOverride.HasValue)
+            return;
+        NumberInOrderDisplayOverride = null;
+        OnPropertyChanged(nameof(Order));
+        OnPropertyChanged(nameof(NumberInOrder));
+    }
+
+    private int NumberInOrderShown => NumberInOrderDisplayOverride ?? NumberInOrder_DB;
 
     #endregion
 
@@ -111,16 +158,18 @@ public abstract partial class Form : IKey, IDataGridColumn
         {
             if (Dictionary.TryGetValue(nameof(NumberInOrder), out var value))
             {
-                ((RamAccess<int>)value).SyncFromStorage(NumberInOrder_DB);
+                ((RamAccess<int>)value).SyncFromStorage(NumberInOrderShown);
                 return (RamAccess<int>)value;
             }
-            var rm = new RamAccess<int>(NumberInOrder_Validation, NumberInOrder_DB);
+            var rm = new RamAccess<int>(NumberInOrder_Validation, NumberInOrderShown);
             rm.PropertyChanged += NumberInOrderValueChanged;
             Dictionary.Add(nameof(NumberInOrder), rm);
             return (RamAccess<int>)Dictionary[nameof(NumberInOrder)];
         }
         set
         {
+            if (NumberInOrderDisplayOverride.HasValue)
+                return;
             NumberInOrder_DB = value.Value;
             OnPropertyChanged();
         }
@@ -129,6 +178,8 @@ public abstract partial class Form : IKey, IDataGridColumn
     private void NumberInOrderValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
+        if (NumberInOrderDisplayOverride.HasValue)
+            return;
         NumberInOrder_DB = ((RamAccess<int>)value).Value;
     }
 

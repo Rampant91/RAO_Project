@@ -48,6 +48,75 @@ public class LazyLoadHardeningGuardTests
     }
 
     [Fact]
+    public void SyncFormMutations_DoNotLoadFullSetOrDeadlockOverlay()
+    {
+        var sort = ReadClient("Commands", "SyncCommands", "NewSortFormSyncCommand.cs");
+        var setOrder = ReadClient("Commands", "SyncCommands", "NewSetNumberOrderSyncCommand.cs");
+        var baseForm = ReadClient("ViewModels", "Forms", "BaseFormVM.cs");
+
+        Assert.DoesNotContain("EnsureAllRowsForMutationBlocking", sort);
+        Assert.DoesNotContain("EnsureAllRowsForMutationBlocking", setOrder);
+        Assert.DoesNotContain("EnsureAllRowsForMutationAsync().GetAwaiter().GetResult()", sort);
+        Assert.DoesNotContain("EnsureAllRowsForMutationAsync().GetAwaiter().GetResult()", setOrder);
+        Assert.DoesNotContain("LoadFullSetIntoReportAsync", sort);
+        Assert.DoesNotContain("LoadFullSetIntoReportAsync", setOrder);
+        Assert.Contains("RefreshVisibleRowsAsync", baseForm);
+        Assert.Contains("SetDisplayOrder", baseForm);
+    }
+
+    [Fact]
+    public void DeleteAddPaste_DoNotLoadFullSet_KeepFormListInPlace()
+    {
+        var del = ReadClient("Commands", "AsyncCommands", "Delete", "NewDeleteRowsAsyncCommand.cs");
+        var mutation = ReadClient("Services", "DataAccess", "FormRowMutationService.cs");
+        var baseForm = ReadClient("ViewModels", "Forms", "BaseFormVM.cs");
+        var add = ReadClient("Commands", "AsyncCommands", "Add", "NewAddRowAsyncCommand.cs");
+        var insert = ReadClient("Commands", "AsyncCommands", "Add", "NewAddRowsInAsyncCommand.cs");
+        var paste = ReadClient("Commands", "AsyncCommands", "NewPasteRowsAsyncCommand.cs");
+        var src = ReadClient("Commands", "AsyncCommands", "SourceTransmission", "SourceTransmissionAsyncCommand.cs");
+        var srcAll = ReadClient("Commands", "AsyncCommands", "SourceTransmission", "SourceTransmissionAllAsyncCommand.cs");
+        var save = ReadClient("Commands", "AsyncCommands", "Save", "SaveReportAsyncCommand.cs");
+        var changeOrCreate = ReadClient("ViewModels", "ChangeOrCreateVM.cs");
+
+        Assert.DoesNotContain("EnsureAllRowsForMutationAsync", del);
+        Assert.DoesNotContain("LoadFullSetIntoReportAsync", del);
+        Assert.Contains("RemoveFormRowById", del);
+        Assert.Contains("FilterLiveForms", del);
+        Assert.Contains("ClearFormRowSelection", del);
+        Assert.DoesNotContain("RenumberFormRowsFromOne", del);
+        Assert.DoesNotContain("SortForm.Execute", del);
+        Assert.Contains("BuildLiveSlots", mutation);
+        Assert.Contains("MergeSessionRows", mutation);
+        Assert.DoesNotContain("EnsureAllRowsLoadedAsync", baseForm);
+        Assert.Contains("_formList.Clear()", baseForm);
+        Assert.DoesNotContain("FormList = new ObservableCollection<Form>", baseForm);
+        Assert.Contains("DiscardUnsavedChangesAsync", baseForm);
+        Assert.DoesNotContain("EnsureAllRowsForMutationAsync", add);
+        Assert.DoesNotContain("LoadFullSetIntoReportAsync", add);
+        Assert.DoesNotContain("SaveReportAsyncCommand", add);
+        Assert.DoesNotContain("EnsureAllRowsForMutationAsync", insert);
+        Assert.DoesNotContain("LoadFullSetIntoReportAsync", insert);
+        Assert.Contains("InsertBeforeId", insert);
+        Assert.DoesNotContain("EnsureAllRowsForMutationAsync", paste);
+        Assert.DoesNotContain("LoadFullSetIntoReportAsync", src);
+        Assert.DoesNotContain("EnsureAllRowsForMutationAsync", src);
+        Assert.DoesNotContain("EnsureAllRowsForMutationAsync", srcAll);
+        Assert.DoesNotContain("LoadFullSetIntoReportAsync", srcAll);
+        Assert.Contains("CompactForm1xNumbersAsync", save);
+        Assert.Contains("BeginTransactionAsync", save);
+        Assert.DoesNotContain("CompactForm1xNumbersAsync", changeOrCreate);
+        Assert.DoesNotContain("FormRowNumberCompact", changeOrCreate);
+    }
+
+    [Fact]
+    public void SaveReport_RefreshesRowCountWithoutFullOrgReload()
+    {
+        var save = ReadClient("Commands", "AsyncCommands", "Save", "SaveReportAsyncCommand.cs");
+        Assert.Contains("RefreshAfterFormReportSaved", save);
+        Assert.DoesNotContain("UpdateReportsCollectionWithoutReCreation()", save);
+    }
+
+    [Fact]
     public void Forms4And5_UsePersistentWarmCacheCollections()
     {
         var forms4 = ReadClient("ViewModels", "MainWindowTabs", "Forms4TabControlVM.cs");

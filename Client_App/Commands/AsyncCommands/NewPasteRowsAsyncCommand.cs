@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Services.DataAccess;
@@ -133,9 +133,6 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         if (SelectedForm == null) return;
-
-        // Paging держит в Rows только страницу; индекс NumberInOrder-1 иначе врёт.
-        await formVM.EnsureAllRowsForMutationAsync();
 
         var clipboard = Application.Current!.Clipboard;
 
@@ -1106,7 +1103,8 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             }
         }
 
-        //Узкоспециализированное решение для корректного вывода пустых дат
+        formVM.NotifyRowMutation();
         formVM.UpdateFormList();
+        formVM.IsCanSaveReportEnabled = true;
     }
 }

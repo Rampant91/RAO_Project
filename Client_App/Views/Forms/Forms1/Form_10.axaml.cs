@@ -211,7 +211,6 @@ public partial class Form_10 : BaseWindow<Form_10VM>
                 flag = true;
                 try
                 {
-                    await dbm.SaveChangesAsync();
                     await new SaveReportAsyncCommand(vm).AsyncExecute(null);
                 }
                 catch { }

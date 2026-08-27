@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using Models.Forms;
 
 namespace Client_App.Services.DataAccess;
 
@@ -37,12 +39,66 @@ public static class FormRowsEnsureService
             return;
 
         var localCount = GetLocalRowCount(report, formNum);
-        var dbCount = await CountRowsInDbAsync(db, report.Id, formNum, ct);
+        var dbCount = await CountRowsInDbAsync(db, report.Id, formNum, ct).ConfigureAwait(false);
 
         if (dbCount <= localCount && localCount > 0)
             return;
 
-        await ReloadAllRowsAsync(db, report, formNum, ct);
+        await ReloadAllRowsAsync(db, report, formNum, ct).ConfigureAwait(false);
+    }
+
+    public static async Task ReloadNotesFromDbAsync(
+        Report report, CancellationToken ct = default)
+    {
+        if (report == null || report.Id <= 0)
+            return;
+
+        var db = StaticConfiguration.DBModel;
+        List<Note> notes;
+        await using (var snap = new DBModel(StaticConfiguration.DBPath))
+        {
+            notes = await snap.ReportCollectionDbSet.AsNoTracking()
+                .Where(r => r.Id == report.Id)
+                .SelectMany(r => r.Notes)
+                .OrderBy(n => n.Order)
+                .ToListAsync(ct)
+                .ConfigureAwait(false);
+        }
+
+        foreach (var entry in db.ChangeTracker.Entries().ToList())
+        {
+            if (entry.Entity is Note n && n.ReportId == report.Id)
+                entry.State = EntityState.Detached;
+        }
+
+        report.Notes = new ObservableCollectionWithItemPropertyChanged<Note>(notes);
+        foreach (var note in notes)
+        {
+            note.Report = report;
+            note.ReportId = report.Id;
+            if (db.Entry(note).State == EntityState.Detached)
+                db.Attach(note);
+        }
+    }
+
+    /// <summary>
+    /// После Restore(): перечитать строки формы и примечания из БД в tracked Report
+    /// (Deleted после Restore не возвращаются в коллекцию сами).
+    /// Для 1.x paging строки не грузятся целиком — только примечания; страницу грузит вызывающий.
+    /// </summary>
+    public static async Task ForceReplaceRowsAndNotesFromDbAsync(
+        Report report, CancellationToken ct = default)
+    {
+        if (report == null || report.Id <= 0 || string.IsNullOrEmpty(report.FormNum_DB))
+            return;
+
+        var db = StaticConfiguration.DBModel;
+        var formNum = report.FormNum_DB;
+
+        await ReloadNotesFromDbAsync(report, ct).ConfigureAwait(false);
+
+        if (!FormRowsPageLoader.SupportsDbPaging(formNum))
+            await ReloadAllRowsAsync(db, report, formNum, ct).ConfigureAwait(false);
     }
 
     private static int GetLocalRowCount(Report report, string formNum) => formNum switch
@@ -156,7 +212,7 @@ public static class FormRowsEnsureService
             _ => query
         };
 
-        var dbReport = await query.FirstOrDefaultAsync(r => r.Id == report.Id, ct);
+        var dbReport = await query.FirstOrDefaultAsync(r => r.Id == report.Id, ct).ConfigureAwait(false);
         if (dbReport == null) return;
 
         switch (formNum)

@@ -26,6 +26,17 @@ public static class FormReportWindowOpener
 {
     private const int DefaultPageSize = 30;
 
+    /// <summary>Последний Count из фоновой загрузки 1.x для in-place reload.</summary>
+    private static int? _lastLoadedDbTotalRows;
+
+    /// <summary>Забрать Count, посчитанный в фоне при последнем <see cref="LoadReportDataAsync"/> (1.x).</summary>
+    public static int? TakeLastLoadedDbTotalRows()
+    {
+        var value = _lastLoadedDbTotalRows;
+        _lastLoadedDbTotalRows = null;
+        return value;
+    }
+
     /// <summary>
     /// Открыть отчёт поверх owner (обычно MainWindow). Overlay снимается при reveal окна.
     /// </summary>
@@ -128,68 +139,150 @@ public static class FormReportWindowOpener
     }
 
     /// <summary>
-    /// Загрузить tracked-отчёт и первую страницу/строки для in-place смены в том же окне.
+    /// Загрузить отчёт для in-place смены в том же окне.
+    /// Тяжёлое чтение — в фоне (отдельный <see cref="DBModel"/>); apply/attach — на UI-контексте.
     /// </summary>
     public static async Task<Report?> LoadReportDataAsync(Report reportShell)
     {
         var numForm = reportShell.FormNum.Value;
-        var db = StaticConfiguration.DBModel;
+        var reportId = reportShell.Id;
+        var dbPath = StaticConfiguration.DBPath;
+        var uiDb = StaticConfiguration.DBModel;
 
         if (numForm is "1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8" or "1.9")
         {
-            var tracked = await EnsureTrackedReportAsync(reportShell, db);
+            var tracked = await EnsureTrackedReportAsync(reportShell, uiDb).ConfigureAwait(true);
             if (tracked == null)
                 return null;
 
-            var total = await FormRowsPageLoader.CountAsync(db, tracked.Id, numForm);
-            await FormRowsPageLoader.LoadPageIntoReportAsync(db, tracked, numForm, skip: 0, take: DefaultPageSize);
+            var (total, pageItems) = await Task.Run(async () =>
+            {
+                using var db = new DBModel(dbPath);
+                var count = await FormRowsPageLoader.CountAsync(db, reportId, numForm).ConfigureAwait(false);
+                var items = await FormRowsPageLoader
+                    .LoadPageListAsync(db, reportId, numForm, skip: 0, take: DefaultPageSize)
+                    .ConfigureAwait(false);
+                return (count, items);
+            }).ConfigureAwait(true);
+
+            FormRowsPageLoader.ApplyPageToReport(uiDb, tracked, numForm, pageItems);
             tracked.FormNum_DB = numForm;
+            _lastLoadedDbTotalRows = total;
             return tracked;
         }
 
-        var queryWithNotes = db.ReportCollectionDbSet
+        var snapshot = await Task.Run(async () =>
+        {
+            using var db = new DBModel(dbPath);
+            return await LoadFullReportSnapshotAsync(db, reportId, numForm).ConfigureAwait(false);
+        }).ConfigureAwait(true);
+
+        if (snapshot == null)
+            return null;
+
+        _lastLoadedDbTotalRows = null;
+
+        var target = await EnsureTrackedReportAsync(reportShell, uiDb).ConfigureAwait(true)
+                     ?? reportShell;
+
+        DetachExistingFormRows(uiDb, target, numForm);
+        target.Reports ??= snapshot.Reports;
+        CopyRows(numForm, target, snapshot);
+        if (snapshot.Notes != null)
+            target.Notes = snapshot.Notes;
+        AttachFormRows(uiDb, target, numForm);
+        return target;
+    }
+
+    private static async Task<Report?> LoadFullReportSnapshotAsync(DBModel db, int reportId, string numForm)
+    {
+        var withNotes = db.ReportCollectionDbSet
+            .AsNoTracking()
             .AsSplitQuery()
             .Include(r => r.Reports)
             .Include(rep => rep.Notes);
 
-        var queryWithOutNotes = db.ReportCollectionDbSet
+        var withoutNotes = db.ReportCollectionDbSet
+            .AsNoTracking()
             .AsSplitQuery()
             .Include(r => r.Reports);
 
-        Report? dbReport = numForm switch
+        return numForm switch
         {
-            "2.1" => await queryWithNotes.Include(rep => rep.Rows21).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "2.2" => await queryWithNotes.Include(rep => rep.Rows22).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "2.3" => await queryWithNotes.Include(rep => rep.Rows23).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "2.4" => await queryWithNotes.Include(rep => rep.Rows24).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "2.5" => await queryWithNotes.Include(rep => rep.Rows25).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "2.6" => await queryWithNotes.Include(rep => rep.Rows26).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "2.7" => await queryWithNotes.Include(rep => rep.Rows27).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "2.8" => await queryWithNotes.Include(rep => rep.Rows28).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "2.9" => await queryWithNotes.Include(rep => rep.Rows29).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "2.10" => await queryWithNotes.Include(rep => rep.Rows210).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "2.11" => await queryWithNotes.Include(rep => rep.Rows211).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "2.12" => await queryWithNotes.Include(rep => rep.Rows212).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "4.1" => await queryWithOutNotes.Include(rep => rep.Rows41).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "5.1" => await queryWithOutNotes.Include(rep => rep.Rows51).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "5.2" => await queryWithOutNotes.Include(rep => rep.Rows52).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "5.3" => await queryWithOutNotes.Include(rep => rep.Rows53).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "5.4" => await queryWithOutNotes.Include(rep => rep.Rows54).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "5.5" => await queryWithOutNotes.Include(rep => rep.Rows55).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "5.6" => await queryWithOutNotes.Include(rep => rep.Rows56).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
-            "5.7" => await queryWithOutNotes.Include(rep => rep.Rows57).FirstOrDefaultAsync(x => x.Id == reportShell.Id),
+            "2.1" => await withNotes.Include(rep => rep.Rows21).FirstOrDefaultAsync(x => x.Id == reportId),
+            "2.2" => await withNotes.Include(rep => rep.Rows22).FirstOrDefaultAsync(x => x.Id == reportId),
+            "2.3" => await withNotes.Include(rep => rep.Rows23).FirstOrDefaultAsync(x => x.Id == reportId),
+            "2.4" => await withNotes.Include(rep => rep.Rows24).FirstOrDefaultAsync(x => x.Id == reportId),
+            "2.5" => await withNotes.Include(rep => rep.Rows25).FirstOrDefaultAsync(x => x.Id == reportId),
+            "2.6" => await withNotes.Include(rep => rep.Rows26).FirstOrDefaultAsync(x => x.Id == reportId),
+            "2.7" => await withNotes.Include(rep => rep.Rows27).FirstOrDefaultAsync(x => x.Id == reportId),
+            "2.8" => await withNotes.Include(rep => rep.Rows28).FirstOrDefaultAsync(x => x.Id == reportId),
+            "2.9" => await withNotes.Include(rep => rep.Rows29).FirstOrDefaultAsync(x => x.Id == reportId),
+            "2.10" => await withNotes.Include(rep => rep.Rows210).FirstOrDefaultAsync(x => x.Id == reportId),
+            "2.11" => await withNotes.Include(rep => rep.Rows211).FirstOrDefaultAsync(x => x.Id == reportId),
+            "2.12" => await withNotes.Include(rep => rep.Rows212).FirstOrDefaultAsync(x => x.Id == reportId),
+            "4.1" => await withoutNotes.Include(rep => rep.Rows41).FirstOrDefaultAsync(x => x.Id == reportId),
+            "5.1" => await withoutNotes.Include(rep => rep.Rows51).FirstOrDefaultAsync(x => x.Id == reportId),
+            "5.2" => await withoutNotes.Include(rep => rep.Rows52).FirstOrDefaultAsync(x => x.Id == reportId),
+            "5.3" => await withoutNotes.Include(rep => rep.Rows53).FirstOrDefaultAsync(x => x.Id == reportId),
+            "5.4" => await withoutNotes.Include(rep => rep.Rows54).FirstOrDefaultAsync(x => x.Id == reportId),
+            "5.5" => await withoutNotes.Include(rep => rep.Rows55).FirstOrDefaultAsync(x => x.Id == reportId),
+            "5.6" => await withoutNotes.Include(rep => rep.Rows56).FirstOrDefaultAsync(x => x.Id == reportId),
+            "5.7" => await withoutNotes.Include(rep => rep.Rows57).FirstOrDefaultAsync(x => x.Id == reportId),
             _ => null
         };
+    }
 
-        if (dbReport == null)
-            return null;
+    private static System.Collections.Generic.IEnumerable<Models.Forms.Form> EnumerateFormRows(Report report, string numForm) =>
+        numForm switch
+        {
+            "2.1" => report.Rows21.Cast<Models.Forms.Form>(),
+            "2.2" => report.Rows22.Cast<Models.Forms.Form>(),
+            "2.3" => report.Rows23.Cast<Models.Forms.Form>(),
+            "2.4" => report.Rows24.Cast<Models.Forms.Form>(),
+            "2.5" => report.Rows25.Cast<Models.Forms.Form>(),
+            "2.6" => report.Rows26.Cast<Models.Forms.Form>(),
+            "2.7" => report.Rows27.Cast<Models.Forms.Form>(),
+            "2.8" => report.Rows28.Cast<Models.Forms.Form>(),
+            "2.9" => report.Rows29.Cast<Models.Forms.Form>(),
+            "2.10" => report.Rows210.Cast<Models.Forms.Form>(),
+            "2.11" => report.Rows211.Cast<Models.Forms.Form>(),
+            "2.12" => report.Rows212.Cast<Models.Forms.Form>(),
+            "4.1" => report.Rows41.Cast<Models.Forms.Form>(),
+            "5.1" => report.Rows51.Cast<Models.Forms.Form>(),
+            "5.2" => report.Rows52.Cast<Models.Forms.Form>(),
+            "5.3" => report.Rows53.Cast<Models.Forms.Form>(),
+            "5.4" => report.Rows54.Cast<Models.Forms.Form>(),
+            "5.5" => report.Rows55.Cast<Models.Forms.Form>(),
+            "5.6" => report.Rows56.Cast<Models.Forms.Form>(),
+            "5.7" => report.Rows57.Cast<Models.Forms.Form>(),
+            _ => System.Linq.Enumerable.Empty<Models.Forms.Form>()
+        };
 
-        // Подставляем строки в shell, чтобы сохранить ссылку Reports с popup, если уже была.
-        reportShell.Reports ??= dbReport.Reports;
-        CopyRows(numForm, reportShell, dbReport);
-        if (dbReport.Notes != null)
-            reportShell.Notes = dbReport.Notes;
-        return reportShell;
+    private static void DetachExistingFormRows(DBModel db, Report report, string numForm)
+    {
+        foreach (var form in EnumerateFormRows(report, numForm).ToList())
+        {
+            var entry = db.Entry(form);
+            if (entry.State != EntityState.Detached)
+                entry.State = EntityState.Detached;
+        }
+    }
+
+    private static void AttachFormRows(DBModel db, Report report, string numForm)
+    {
+        foreach (var form in EnumerateFormRows(report, numForm))
+        {
+            form.ReportId = report.Id;
+            form.Report = report;
+            var entry = db.Entry(form);
+            if (entry.State != EntityState.Detached)
+                continue;
+            if (form.Id > 0)
+                db.Attach(form);
+            else
+                db.Add(form);
+        }
     }
 
     public static async Task ShowFormDialogAsync(Window window, MainWindow? owner)

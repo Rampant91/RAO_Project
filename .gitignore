@@ -361,7 +361,9 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-# Temporary agent build/test output (alternate -o when bin/ is locked by running app).
-# Single folder for all such runs; contents should be deleted after the run.
+# Локальная сборка/тест вне bin/ (когда Client_App.exe держит bin/ Debug).
+# Одно имя для всех прогонов: _testbuild/. Не плодить _test_out и пр.
+# Содержимое после прогона можно удалять; в git не коммитить.
 _testbuild/
+_test_out/
 _agent_build/
