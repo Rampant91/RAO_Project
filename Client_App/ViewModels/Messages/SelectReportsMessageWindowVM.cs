@@ -65,7 +65,7 @@ public sealed class SelectReportsMessageWindowVM : INotifyPropertyChanged
         }
     }
 
-    public bool IsFormNum10or20 => _formNum is "1.0" or "2.0";
+    public bool IsFormNum10or20or30or30 => _formNum is "1.0" or "2.0" or "3.0";
     public bool IsFormNum40 => _formNum is "4.0";
     public bool IsFormNum50 => _formNum is "5.0";
 
@@ -174,7 +174,7 @@ public sealed class SelectReportsMessageWindowVM : INotifyPropertyChanged
         List<OrganizationInfo>? repsDtoList= null;
         switch (_formNum)
         {
-            case "1.0" or "2.0":
+            case "1.0" or "2.0" or "3.0":
                 repsDtoList = repsList
                 .Select(reps => new OrganizationInfo
                 {
@@ -226,7 +226,7 @@ public sealed class SelectReportsMessageWindowVM : INotifyPropertyChanged
         List<OrganizationInfo>? repsDtoList = null;
         switch (_formNum)
         {
-            case "1.0" or "2.0": 
+            case "1.0" or "2.0" or "3.0": 
                 repsDtoList = repsList
                 .Select(reps => new OrganizationInfo
                 {

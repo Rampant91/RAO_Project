@@ -1,8 +1,11 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands;
+using MessageBox.Avalonia.BaseWindows.Base;
 using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms.Form3;
@@ -27,6 +30,14 @@ namespace Client_App.ViewModels.Forms.Forms3
             get
             {
                 return "3.1";
+            }
+        }
+
+        private Window owner
+        {
+            get
+            {
+                return (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows.FirstOrDefault(w => w.Name == "3.1");
             }
         }
         #region Constructors
@@ -105,10 +116,41 @@ namespace Client_App.ViewModels.Forms.Forms3
                 item.ValidateAll();
             });
             PasteExportedZriOziiiInfo = new NewPasteRowsAsyncCommand(Report.Rows31One.ExportedZriOziiiInfoCollection);
-            DeleteExportedZriOziiiInfo = ReactiveCommand.Create<Form31ExportedZriOziiiInfo>(info =>
+            DeleteExportedZriOziiiInfo = ReactiveCommand.Create<Form31ExportedZriOziiiInfo>( async info =>
             {
+                if (info == null)
+                {
+                    #region infoIsNullMessage
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                        SelectedItemIsNullMessage.ShowDialog(owner));
+                    #endregion
+                    return;
+                }
+
                 info.Form31?.ExportedZriOziiiInfoCollection.Remove(info);
             });
+        }
+        #endregion
+
+        #region Messages
+        IMsBoxWindow<ButtonResult> SelectedItemIsNullMessage
+        {
+            get
+            {
+                var message = MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = ButtonEnum.Ok,
+                    ContentTitle = "Удаление",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "Выберите строку, которую хотите удалить",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
+                });
+                return message;
+            }
         }
         #endregion
     }

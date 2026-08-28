@@ -84,9 +84,6 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
         else return;
         var cts = new CancellationTokenSource();
 
-
-        
-
         #region ProgressBarInitialization
 
         await Dispatcher.UIThread.InvokeAsync(() => ProgressBar = new AnyTaskProgressBar(cts));
@@ -123,6 +120,7 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
             .AsQueryable()
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows30)
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows40)
             .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows50)
             .First(x => x.Id == repId);
@@ -131,7 +129,7 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #region Progress = 15
 
-        if (formNum.Split('.')[0] is "1" or "2")
+        if (formNum.Split('.')[0] is "1" or "2" or "3")
         {
             progressBarVM.ExportName = $"Выгрузка отчёта {reportWithoutRows.Reports.Master_DB.RegNoRep.Value}_" +
                                    $"{reportWithoutRows.Reports.Master_DB.OkpoRep.Value}_" +
@@ -182,6 +180,10 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
             .Include(x => x.Rows210.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows211.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows212.OrderBy(x => x.NumberInOrder_DB))
+            .Include(x => x.Rows31One).ThenInclude(x => x.ExportedZriOziiiInfoCollection)
+            .Include(x => x.Rows32One).ThenInclude(x => x.ExportedZriInfoCollection)
+            .Include(x => x.Rows32One).ThenInclude(x => x.ContainersInfoCollection)
+            .Include(x => x.Rows32One).ThenInclude(x => x.IdentificatorsCollection)
             .Include(x => x.Rows41.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows51.OrderBy(x => x.NumberInOrder_DB))
             .Include(x => x.Rows52.OrderBy(x => x.NumberInOrder_DB))
@@ -263,6 +265,14 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
                 $"_{StaticStringMethods.RemoveForbiddenChars(orgWithExpForm.Master.OkpoRep.Value)}" +
                 $"_{exportReport.FormNum_DB}" +
                 $"_{StaticStringMethods.RemoveForbiddenChars(exportReport.Year_DB)}" +
+                $"_{exportReport.CorrectionNumber_DB}" +
+                $"_{Assembly.GetExecutingAssembly().GetName().Version}",
+
+            "3.0" =>
+                StaticStringMethods.RemoveForbiddenChars(orgWithExpForm.Master.RegNoRep.Value) +
+                $"_{StaticStringMethods.RemoveForbiddenChars(orgWithExpForm.Master.OkpoRep.Value)}" +
+                $"_{exportReport.FormNum_DB}" +
+                $"_{StaticStringMethods.RemoveForbiddenChars(exportReport.StartPeriod_DB)}" +
                 $"_{exportReport.CorrectionNumber_DB}" +
                 $"_{Assembly.GetExecutingAssembly().GetName().Version}",
 

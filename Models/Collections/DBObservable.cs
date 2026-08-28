@@ -86,6 +86,21 @@ public class DBObservable : INotifyPropertyChanged
 
     #endregion
 
+    #region Reports_Collection30
+
+    [NotMapped]
+    public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection30
+    {
+        get
+        {
+            var sm = Reports_Collection_DB.Where(t => t.Master.FormNum.Value == "3.0");
+            var obj = new ObservableCollectionWithItemPropertyChanged<Reports>(sm);
+            return obj;
+        }
+    }
+
+    #endregion
+
     #region Reports_Collection40
 
     [NotMapped]

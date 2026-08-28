@@ -114,6 +114,14 @@ namespace Models.Forms.Form3
         #endregion
         #endregion
 
+        #region IsContentEqual
+        public bool IsContentEqual(Form32Identificator other)
+        {
+            return FormTextEquality.Equals(IdName, other.IdName)
+                && FormTextEquality.Equals(IdValue, other.IdValue);
+        }
+        #endregion
+
         #region Validation
         public void ValidateAll()
         {

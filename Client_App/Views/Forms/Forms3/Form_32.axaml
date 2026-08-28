@@ -15,7 +15,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms3"
         xmlns:items="clr-namespace:Client_App.ViewModels.Forms.Forms3.Items"
-        x:Name="3.2"
+        x:Name="
+		"
         Title="{Binding WindowTitle}"
         MinWidth="800"
         MinHeight="600"
@@ -74,7 +75,7 @@
 						<Grid Grid.Row="0" ColumnDefinitions="*,*,*">
 							<TextBlock Grid.Column="0"
                                        Margin="5,11"
-                                       Text="Дата окончания предыдущего отчетного периода:" />
+                                       Text="Дата уведомления:" />
 							<TextBox Grid.Column="1"
                                      MinWidth="83"
                                      Text="{Binding Report.StartPeriod.Value}"
@@ -84,28 +85,14 @@
                                                 SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}" />
 						</Grid>
 
-						<Grid Grid.Row="1" ColumnDefinitions="*,*,*">
-							<TextBlock Grid.Column="0"
-                                       Margin="5,13"
-                                       Text="Дата окончания настоящего отчетного периода:" />
-							<TextBox Grid.Column="1"
-                                     MinWidth="83"
-                                     Margin="11,3,0,0"
-                                     Text="{Binding Report.EndPeriod.Value}"
-                                     Watermark="дд.мм.гггг" />
-							<CalendarDatePicker Grid.Column="2"
-                                                Classes="buttonOnly"
-                                                SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}" />
-						</Grid>
-
-						<StackPanel Grid.Row="2" Orientation="Horizontal">
+						<StackPanel Grid.Row="1" Orientation="Horizontal">
 							<TextBlock Margin="5,10" Text="Номер корректировки:" />
 							<TextBox Width="75"
                                      Margin="5"
                                      Text="{Binding Path=Report.CorrectionNumber.Value}" />
 						</StackPanel>
 
-						<StackPanel Grid.Row="3" Orientation="Horizontal">
+						<StackPanel Grid.Row="2" Orientation="Horizontal">
 							<Button Margin="5"
                                     Command="{Binding CheckForm}"
                                     Content="Проверить" />
@@ -142,25 +129,6 @@
                                 Command="{Binding SetDefaultColumnWidth}"
                                 CommandParameter="{Binding ElementName=dataGrid}"
                                 Content="Выставить ширину колонок по умолчанию" />
-
-						<StackPanel Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center">
-							<TextBlock Margin="5" VerticalAlignment="Center" Text="Заморозить колонок:" />
-							<Button Margin="2,5"
-                                    Width="26"
-                                    Content="−"
-                                    IsEnabled="{Binding CanDecreaseFrozen}"
-                                    Command="{Binding DecreaseFrozenColumnCountCommand}" />
-							<TextBlock Margin="4,5"
-                                       Width="16"
-                                       VerticalAlignment="Center"
-                                       TextAlignment="Center"
-                                       Text="{Binding FrozenColumnCount}" />
-							<Button Margin="2,5"
-                                    Width="26"
-                                    Content="+"
-                                    IsEnabled="{Binding CanIncreaseFrozen}"
-                                    Command="{Binding IncreaseFrozenColumnCountCommand}" />
-						</StackPanel>
 
 					</Grid>
 				</Border>
@@ -491,7 +459,7 @@
 									  InputGesture="Ctrl+V"/>
 							<MenuItem Header="Удалить сведения о поставляемых ЗРИ"
 									  Command="{Binding DeleteExportedZriInfo}"
-									  CommandParameter="{Binding SelectedInfo}"/>
+									  CommandParameter="{Binding SelectedZriInfo}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>
 					<DataGrid.Columns>
@@ -758,7 +726,7 @@
 									  InputGesture="Ctrl+V"/>
 							<MenuItem Header="Удалить информацию о контейнере, приборе, установке"
 									  Command="{Binding DeleteContainerInfo}"
-									  CommandParameter="{Binding SelectedInfo}"/>
+									  CommandParameter="{Binding SelectedContainerInfo}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>
 					<DataGrid.Columns>
@@ -926,8 +894,8 @@
 									  Header="Вставить"
 									  InputGesture="Ctrl+V"/>
 							<MenuItem Header="Удалить идентификатор"
-									  Command="{Binding DeleteExportedZriOziiiInfo}"
-									  CommandParameter="{Binding DeleteIdentificator}"/>
+									  Command="{Binding DeleteIdentificator}"
+									  CommandParameter="{Binding SelectedIdentificator}"/>
 						</ContextMenu>
 					</DataGrid.ContextMenu>
 					<DataGrid.Columns>

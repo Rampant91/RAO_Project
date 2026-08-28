@@ -103,6 +103,14 @@ namespace Models.Forms.Form3
         #endregion
 
         #endregion
+        #region IsContentEqual
+        public bool IsContentEqual(Form31ExportedZriOziiiInfo other)
+        {
+            return FormTextEquality.Equals(RadionuclidComposition, other.RadionuclidComposition)
+                && Count == other.Count
+                && FormDoubleEquality.Equals(TotalActivity, other.TotalActivity);
+        }
+        #endregion
 
         #region ICopiable
         #region ConvertToTSVstring

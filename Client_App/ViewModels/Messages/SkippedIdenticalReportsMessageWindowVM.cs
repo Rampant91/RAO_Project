@@ -11,6 +11,7 @@ public sealed class SkippedIdenticalReportsMessageWindowVM
     {
         ImportSummaryFormGroup.Form1 => "Импорт отчётов по форме 1.x",
         ImportSummaryFormGroup.Form2 => "Импорт отчётов по форме 2.x",
+        ImportSummaryFormGroup.Form3 => "Импорт отчётов по форме 3.x",
         ImportSummaryFormGroup.Form4 => "Импорт отчётов по форме 4.x",
         ImportSummaryFormGroup.Form5 => "Импорт отчётов по форме 5.x",
         _ => "Импорт отчётов"
@@ -73,6 +74,11 @@ public sealed class SkippedIdenticalReportsMessageWindowVM
                 .ThenBy(r => r.OrgColumn2)
                 .ThenBy(r => r.FormNum)
                 .ThenByDescending(r => ParseYear(r.Year)),
+            ImportSummaryFormGroup.Form3 => reports
+                .OrderBy(r => r.OrgColumn1)
+                .ThenBy(r => r.OrgColumn2)
+                .ThenBy(r => r.FormNum)
+                .ThenByDescending(r => ParsePeriod(r.StartPeriod)),
             ImportSummaryFormGroup.Form4 => reports
                 .OrderBy(r => r.OrgColumn1)
                 .ThenBy(r => r.FormNum)

@@ -1,5 +1,7 @@
 ﻿using Models.Attributes;
+using Models.Comparers.FormContent;
 using Models.Forms.DataAccess;
+using Models.Forms.Form1;
 using Models.Interfaces;
 using OfficeOpenXml;
 using System;
@@ -897,6 +899,25 @@ namespace Models.Forms.Form3
         public ObservableCollection<Form32ContainerInfo> ContainersInfoCollection { get; set; }
         public ObservableCollection<Form32Identificator> IdentificatorsCollection { get; set; }
         #endregion
+        
+        #region CleanIds
+        public void CleanIds()
+        {
+            Id = 0;
+            foreach (var item in ExportedZriInfoCollection)
+            {
+                item.Id = 0;
+            }
+            foreach (var item in ContainersInfoCollection)
+            {
+                item.Id = 0;
+            }
+            foreach (var item in IdentificatorsCollection)
+            {
+                item.Id = 0;
+            }
+        }
+        #endregion
 
         #region ICopiable
         #region ConvertToTSVstring
@@ -930,9 +951,63 @@ namespace Models.Forms.Form3
         {
             throw new NotImplementedException();
         }
-        public override bool IsContentEqual(Form other)
+        public override bool IsContentEqual(Form otherForm)
         {
-            throw new NotImplementedException();
+            if (otherForm is not Form32 formToCompare) return false;
+
+            //Сравниваю количество элементов в коллекциях
+            if (ExportedZriInfoCollection.Count() != formToCompare.ExportedZriInfoCollection.Count()
+                && ContainersInfoCollection.Count() != formToCompare.ContainersInfoCollection.Count()
+                && IdentificatorsCollection.Count() != formToCompare.IdentificatorsCollection.Count())
+                return false;
+
+            //Поштучно сравниваю содержимое коллекции ExportedZriInfoCollection
+            for (int i = 0; i < ExportedZriInfoCollection.Count(); i++)
+            {
+                if (!ExportedZriInfoCollection[i]
+                    .IsContentEqual(formToCompare.ExportedZriInfoCollection[i]))
+                {
+                    return false;
+                }
+            }
+            //Поштучно сравниваю содержимое коллекции ContainersInfoCollection
+            for (int i = 0; i < ContainersInfoCollection.Count(); i++)
+            {
+                if (!ContainersInfoCollection[i]
+                    .IsContentEqual(formToCompare.ContainersInfoCollection[i]))
+                {
+                    return false;
+                }
+            }
+            //Поштучно сравниваю содержимое коллекции IdentificatorsCollection
+            for (int i = 0; i < IdentificatorsCollection.Count(); i++)
+            {
+                if (!IdentificatorsCollection[i]
+                    .IsContentEqual(formToCompare.IdentificatorsCollection[i]))
+                {
+                    return false;
+                }
+            }
+
+            return FormTextEquality.Equals(AgreementIdNum_DB, formToCompare.AgreementIdNum_DB)
+                   && DeliveryDay_DB == formToCompare.DeliveryDay_DB
+                   && FormTextEquality.Equals(RecipientName_DB, formToCompare.RecipientName_DB)
+                   && IsRvProduction_DB== formToCompare.IsRvProduction_DB
+                   && IsRvTransportation_DB == formToCompare.IsRvTransportation_DB
+                   && IsRvExploitation_DB == formToCompare.IsRvExploitation_DB
+                   && IsRvStoring_DB == formToCompare.IsRvStoring_DB
+                   && IsRvRecycling_DB == formToCompare.IsRvRecycling_DB
+                   && IsRaoTransportation_DB == formToCompare.IsRaoTransportation_DB
+                   && IsRaoStoring_DB == formToCompare.IsRaoStoring_DB
+                   && IsRaoRecycling_DB == formToCompare.IsRaoRecycling_DB
+                   && FormTextEquality.Equals(LicenseNumRv_DB, formToCompare.LicenseNumRv_DB)
+                   && FormTextEquality.Equals(LicenseNumRao_DB, formToCompare.LicenseNumRao_DB)
+                   && LicenseExpirationDateRv_DB == formToCompare.LicenseExpirationDateRv_DB
+                   && LicenseExpirationDateRao_DB == formToCompare.LicenseExpirationDateRao_DB
+                   && FormTextEquality.Equals(DeliveryAddress_DB, formToCompare.DeliveryAddress_DB)
+                   && FormTextEquality.Equals(RadionuclidCompositionZri_DB, formToCompare.RadionuclidCompositionZri_DB)
+                   && FormDoubleEquality.Equals(TotalActivity_DB, formToCompare.TotalActivity_DB)
+                   && TotalCount_DB == formToCompare.TotalCount_DB;
         }
         #endregion
     }

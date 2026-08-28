@@ -379,7 +379,42 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                     || comparator.Compare(baseReps.Master.Rows20[1].Inn_DB, impReps.Master.Rows20[1].Inn_DB) != 0
                     || comparator.Compare(baseReps.Master.Rows20[1].Kpp_DB, impReps.Master.Rows20[1].Kpp_DB) != 0
                     || comparator.Compare(baseReps.Master.Rows20[1].Okopf_DB, impReps.Master.Rows20[1].Okopf_DB) != 0
-                    || comparator.Compare(baseReps.Master.Rows20[1].Okfs_DB, impReps.Master.Rows20[1].Okfs_DB) != 0)))
+                    || comparator.Compare(baseReps.Master.Rows20[1].Okfs_DB, impReps.Master.Rows20[1].Okfs_DB) != 0))
+            || (baseReps.Master.FormNum_DB is "3.0"
+                && (comparator.Compare(baseReps.Master.Rows30[0].SubjectRF_DB, impReps.Master.Rows30[0].SubjectRF_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[0].JurLico_DB, impReps.Master.Rows30[0].JurLico_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[0].ShortJurLico_DB, impReps.Master.Rows30[0].ShortJurLico_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[0].JurLicoAddress_DB, impReps.Master.Rows30[0].JurLicoAddress_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[0].JurLicoFactAddress_DB, impReps.Master.Rows30[0].JurLicoFactAddress_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[0].GradeFIO_DB, impReps.Master.Rows30[0].GradeFIO_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[0].Telephone_DB, impReps.Master.Rows30[0].Telephone_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[0].Fax_DB, impReps.Master.Rows30[0].Fax_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[0].Email_DB, impReps.Master.Rows30[0].Email_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[0].Okpo_DB, impReps.Master.Rows30[0].Okpo_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[0].Okved_DB, impReps.Master.Rows30[0].Okved_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[0].Okogu_DB, impReps.Master.Rows30[0].Okogu_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[0].Oktmo_DB, impReps.Master.Rows30[0].Oktmo_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[0].Inn_DB, impReps.Master.Rows30[0].Inn_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[0].Kpp_DB, impReps.Master.Rows30[0].Kpp_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[0].Okopf_DB, impReps.Master.Rows30[0].Okopf_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[0].Okfs_DB, impReps.Master.Rows30[0].Okfs_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].SubjectRF_DB, impReps.Master.Rows30[1].SubjectRF_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].JurLico_DB, impReps.Master.Rows30[1].JurLico_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].ShortJurLico_DB, impReps.Master.Rows30[1].ShortJurLico_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].JurLicoAddress_DB, impReps.Master.Rows30[1].JurLicoAddress_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].JurLicoFactAddress_DB, impReps.Master.Rows30[1].JurLicoFactAddress_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].GradeFIO_DB, impReps.Master.Rows30[1].GradeFIO_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].Telephone_DB, impReps.Master.Rows30[1].Telephone_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].Fax_DB, impReps.Master.Rows30[1].Fax_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].Email_DB, impReps.Master.Rows30[1].Email_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].Okpo_DB, impReps.Master.Rows30[1].Okpo_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].Okved_DB, impReps.Master.Rows30[1].Okved_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].Okogu_DB, impReps.Master.Rows30[1].Okogu_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].Oktmo_DB, impReps.Master.Rows30[1].Oktmo_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].Inn_DB, impReps.Master.Rows30[1].Inn_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].Kpp_DB, impReps.Master.Rows30[1].Kpp_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].Okopf_DB, impReps.Master.Rows30[1].Okopf_DB) != 0
+                    || comparator.Compare(baseReps.Master.Rows30[1].Okfs_DB, impReps.Master.Rows30[1].Okfs_DB) != 0)))
         {
             var newTitleRep = await new CompareReportsTitleFormAsyncCommand(baseReps.Master, impReps.Master, repsWhereTitleFormCheckIsCancel).AsyncExecute(null);
             baseReps.Master = newTitleRep;
@@ -419,6 +454,17 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 reps.Master.Rows20[1].RegNo_DB = reps.Master.Rows20[0].RegNo_DB;
             }
         }
+        if (reps.Master.Rows30.Count >= 2)
+        {
+            if (reps.Master.Rows30[0].RegNo_DB is "" && reps.Master.Rows30[1].RegNo_DB is not "" && reps.Master.Rows30[0].Okpo_DB is not "")
+            {
+                reps.Master.Rows30[0].RegNo_DB = reps.Master.Rows30[1].RegNo_DB;
+            }
+            if (reps.Master.Rows30[1].RegNo_DB is "" && reps.Master.Rows30[0].RegNo_DB is not "" && reps.Master.Rows30[1].Okpo_DB is not "")
+            {
+                reps.Master.Rows30[1].RegNo_DB = reps.Master.Rows30[0].RegNo_DB;
+            }
+        }
     }
 
     #endregion
@@ -436,6 +482,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             .Include(x => x.DBObservable)
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows30)
             .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == formNum)
             .Select(reps => new ReportsDTO(
                 reps.Id,
@@ -485,6 +532,16 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 .Include(x => x.Master_DB)
                 .ThenInclude(x => x.Rows20)
                 .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "2.0")
+                .ToListAsync(),
+
+            "3.0" => await db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(x => x.Master_DB)
+                .ThenInclude(x => x.Rows30)
+                .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "3.0")
                 .ToListAsync(),
 
             "4.0" => await db.ReportsCollectionDbSet
@@ -667,6 +724,73 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     }
 
     #endregion
+
+    #region GetReports31FromLocalEqual
+
+    /// <summary>
+    /// Ищет в БД организацию, с тем же рег.№ и ОКПО, что у импортируемой и возвращает её.
+    /// </summary>
+    /// <param name="reps">Импортируемая организация.</param>
+    /// <returns>Соответствующая организация из БД.</returns>
+    private protected static Reports? GetReports31FromLocalEqual(Reports reps)
+    {
+        try
+        {
+            //if (!item.Report_Collection.Any(x => x.FormNum_DB[0].Equals('3')) || item.Master_DB.FormNum_DB is not "3.0")
+            if (reps.Master_DB.FormNum_DB is not "3.0")
+            {
+                return null;
+            }
+
+            return ReportsStorage.LocalReports.Reports_Collection30
+                       .FirstOrDefault(t =>
+
+                           // обособленные пусты и в базе и в импорте, то сверяем головное
+                           reps.Master.Rows30[0].Okpo_DB == t.Master.Rows30[0].Okpo_DB
+                           && reps.Master.Rows30[0].RegNo_DB == t.Master.Rows30[0].RegNo_DB
+                           && reps.Master.Rows30[1].Okpo_DB == ""
+                           && t.Master.Rows30[1].Okpo_DB == ""
+
+                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || reps.Master.Rows30[0].Okpo_DB == t.Master.Rows30[0].Okpo_DB
+                           && reps.Master.Rows30[0].RegNo_DB == t.Master.Rows30[1].RegNo_DB
+                           && reps.Master.Rows30[1].Okpo_DB == ""
+                           && t.Master.Rows30[1].Okpo_DB == ""
+
+                           // обособленные не пусты, их и сверяем
+                           || reps.Master.Rows30[1].Okpo_DB == t.Master.Rows30[1].Okpo_DB
+                           && reps.Master.Rows30[1].RegNo_DB == t.Master.Rows30[1].RegNo_DB
+                           && reps.Master.Rows30[1].Okpo_DB != ""
+
+                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || reps.Master.Rows30[1].Okpo_DB == t.Master.Rows30[1].Okpo_DB
+                           && reps.Master.Rows30[1].RegNo_DB == t.Master.Rows30[0].RegNo_DB
+                           && reps.Master.Rows30[1].Okpo_DB != ""
+                           && t.Master.Rows30[1].RegNo_DB == "")
+
+                   ?? ReportsStorage.LocalReports.Reports_Collection30
+                        .FirstOrDefault(t =>
+
+                           // юр лицо в базе совпадает с обособленным в импорте
+                           reps.Master.Rows30[1].Okpo_DB != ""
+                           && t.Master.Rows30[1].Okpo_DB == ""
+                           && reps.Master.Rows30[1].Okpo_DB == t.Master.Rows30[0].Okpo_DB
+                           && reps.Master.Rows30[1].RegNo_DB == t.Master.Rows30[0].RegNo_DB
+
+                           // юр лицо в импорте совпадает с обособленным в базе
+                           || reps.Master.Rows30[1].Okpo_DB == ""
+                           && t.Master.Rows30[1].Okpo_DB != ""
+                           && reps.Master.Rows30[0].Okpo_DB == t.Master.Rows30[1].Okpo_DB
+                           && reps.Master.Rows30[0].RegNo_DB == t.Master.Rows30[1].RegNo_DB);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    #endregion
+
 
     #region GetReports41FromLocalEqual
 
@@ -1029,6 +1153,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         {
             [ImportSummaryFormGroup.Form1] = [],
             [ImportSummaryFormGroup.Form2] = [],
+            [ImportSummaryFormGroup.Form3] = [],
             [ImportSummaryFormGroup.Form4] = [],
             [ImportSummaryFormGroup.Form5] = []
         };
@@ -1046,6 +1171,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         {
             "1.0" => ImportSummaryFormGroup.Form1,
             "2.0" => ImportSummaryFormGroup.Form2,
+            "3.0" => ImportSummaryFormGroup.Form3,
             "4.0" => ImportSummaryFormGroup.Form4,
             "5.0" => ImportSummaryFormGroup.Form5,
             _ => ImportSummaryFormGroup.Form1
@@ -1069,6 +1195,14 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 OrgColumn2 = BaseRepsOkpo,
                 FormNum = ImpRepFormNum,
                 Year = ImpRepYear,
+                Reason = reason
+            },
+            ImportSummaryFormGroup.Form3 => new ImportReportSummaryInfo
+            {
+                OrgColumn1 = BaseRepsRegNum,
+                OrgColumn2 = BaseRepsOkpo,
+                FormNum = ImpRepFormNum,
+                StartPeriod = ImpRepStartPeriod,
                 Reason = reason
             },
             ImportSummaryFormGroup.Form4 => new ImportReportSummaryInfo
@@ -1137,23 +1271,32 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                  {
                      ImportSummaryFormGroup.Form1,
                      ImportSummaryFormGroup.Form2,
+                     ImportSummaryFormGroup.Form3,
                      ImportSummaryFormGroup.Form4,
                      ImportSummaryFormGroup.Form5
                  })
         {
-            var importedReports = ImportedReportsByGroup[formGroup].ToList();
-            var skippedReports = SkippedIdenticalReportsByGroup[formGroup].ToList();
-            if (importedReports.Count == 0 && skippedReports.Count == 0)
-                continue;
+            try
+            {
+                var importedReports = ImportedReportsByGroup[formGroup].ToList();
+                var skippedReports = SkippedIdenticalReportsByGroup[formGroup].ToList();
+                if (importedReports.Count == 0 && skippedReports.Count == 0)
+                    continue;
 
-            ImportedReportsByGroup[formGroup].Clear();
-            SkippedIdenticalReportsByGroup[formGroup].Clear();
+                ImportedReportsByGroup[formGroup].Clear();
+                SkippedIdenticalReportsByGroup[formGroup].Clear();
 
-            await Dispatcher.UIThread.InvokeAsync(() =>
-                new SkippedIdenticalReportsMessageWindow(importedReports, skippedReports, formGroup)
-                    .ShowDialog(Desktop.MainWindow));
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                    new SkippedIdenticalReportsMessageWindow(importedReports, skippedReports, formGroup)
+                        .ShowDialog(Desktop.MainWindow));
 
-            anyShown = true;
+                anyShown = true;
+            }
+            catch(Exception ex)
+            {
+                var x = ex.Message;
+                throw ex;
+            }
         }
 
         return anyShown;
@@ -1330,6 +1473,179 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
         await baseReps.SortAsync().ConfigureAwait(false);
     }
+
+    #endregion
+
+    //TODO
+    //Изменить процесс сверки пересечений периода отчета, на сверку совпадения даты отчета
+    #region ProcessIfHasReports31
+    /// <summary>
+    /// В случае, если в БД есть организация по форме 3.0, соответствующая импортируемой,
+    /// для каждого импортируемого отчёта сверяются период и номер корректировки.
+    /// Пользователю предлагаются соответствующие команды по добавлению/дополнению/замене отчёта или отмене импорта.
+    /// Происходит логирование и сохранение изменений.
+    /// </summary>
+    /// <param name="baseReps">Организация в БД.</param>
+    /// <param name="impReps">Импортируемая организация.</param>
+    /// <param name="impRepList">Список импортируемых отчётов.</param>
+    /// <returns>Сообщение пользователю, логирование и сохранение изменений.</returns>
+    private protected async Task ProcessIfHasReports31(Reports baseReps, Reports impReps, List<Report> impRepList)
+    {
+        BaseRepsOkpo = baseReps.Master.OkpoRep.Value;
+        BaseRepsRegNum = baseReps.Master.RegNoRep.Value;
+        BaseRepsShortName = baseReps.Master.ShortJurLicoRep.Value;
+
+        foreach (var impRep in impRepList) //Для каждого импортируемого отчета
+        {
+            ImpRepFormNum = impRep.FormNum_DB;
+            ImpRepCorNum = impRep.CorrectionNumber_DB;
+            ImpRepFormCount = impRep.Rows.Count;
+            ImpRepStartPeriod = impRep.StartPeriod_DB;
+            ImpRepEndPeriod = impRep.EndPeriod_DB;
+            ImpRepExpDate = impRep.ExportDate_DB;
+
+            var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
+            string? res;
+            foreach (var key1 in baseReps.Report_Collection) //Для каждого отчета соответствующей организации в базе ищем совпадение
+            {
+                var baseRep = (Report)key1;
+                BaseRepFormNum = baseRep.FormNum_DB;
+                BaseRepCorNum = baseRep.CorrectionNumber_DB;
+                BaseRepFormCount = Math.Max(await ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
+                BaseRepStartPeriod = baseRep.StartPeriod_DB;
+                BaseRepEndPeriod = baseRep.EndPeriod_DB;
+                BaseRepExpDate = baseRep.ExportDate_DB;
+
+                
+
+                #region SameDate
+
+                if (DateTime.TryParse(BaseRepStartPeriod, out var baseRepStartPeriod)
+                    && DateTime.TryParse(ImpRepStartPeriod, out var impRepStartPeriod)
+                    && baseRepStartPeriod == impRepStartPeriod)
+                {
+                    baseRep = await FillReportWithForms(baseReps, baseRep);
+                    impInBase = true;
+
+                    #region LessCorrectionNumber
+
+                    if (ImpRepCorNum < BaseRepCorNum)
+                    {
+                        HandleLowerCorrectionNumber(baseReps);
+                        break;
+                    }
+
+                    #endregion
+
+                    #region SameCorrectionNumber
+
+                    if (ImpRepCorNum == BaseRepCorNum)
+                    {
+                        if (AreReportContentEqual(baseRep, impRep))
+                        {
+                            RecordSkippedIdenticalReport(baseReps);
+
+                            break;
+                        }
+
+                        #region MessageImportReportHasSamePeriodCorrectionNumberAndExportDate
+
+                        res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            {
+                                ButtonDefinitions =
+                                [
+                                    new ButtonDefinition { Name = "Заменить", IsDefault = true },
+                                    new ButtonDefinition { Name = "Дополнить" },
+                                    new ButtonDefinition { Name = "Сохранить оба" },
+                                    new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
+                                ],
+                                ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                                ContentHeader = "Уведомление",
+                                ContentMessage =
+                                    "Импортируемый отчет имеет тот же период, номер корректировки, что и имеющийся в базе, но содержимое отличается." +
+                                    $"{Environment.NewLine}" +
+                                    $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                                    $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                    $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                    $"{Environment.NewLine}" +
+                                    $"{Environment.NewLine}Номер формы - {ImpRepFormNum}" +
+                                    $"{Environment.NewLine}Начало отчетного периода - {ImpRepStartPeriod}" +
+                                    $"{Environment.NewLine}Конец отчетного периода - {ImpRepEndPeriod}" +
+                                    $"{Environment.NewLine}Дата выгрузки отчета в базе - {BaseRepExpDate}" +
+                                    $"{Environment.NewLine}Дата выгрузки импортируемого отчета - {ImpRepExpDate}" +
+                                    $"{Environment.NewLine}Номер корректировки - {ImpRepCorNum}" +
+                                    $"{Environment.NewLine}Количество строк отчета в базе - {BaseRepFormCount}{InventoryCheck(baseRep)}" +
+                                    $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}{InventoryCheck(impRep)}",
+                                MinWidth = 400,
+                                WindowStartupLocation = WindowStartupLocation.CenterOwner
+                            })
+                            .ShowDialog(Desktop.MainWindow));
+
+                        #endregion
+
+                        await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
+                        break;
+                    }
+
+                    #endregion
+
+                    #region HigherCorrectionNumber
+
+                    res = "Заменить";
+                    await CheckAnswer(res, baseReps, impReps, baseRep, impRep);
+                    break;
+
+                    #endregion
+                }
+
+                #endregion
+
+            }
+
+            #region TryAddEmptyOrg
+
+            if (impRepList.Count == 0)
+            {
+                impInBase = true;
+
+                #region MessageNewReport
+
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions =
+                        [
+                            new ButtonDefinition { Name = "Ок", IsDefault = true, IsCancel = true }
+                        ],
+                        ContentTitle = "Импорт из .raodb/.xlsx/.json",
+                        ContentHeader = "Уведомление",
+                        ContentMessage =
+                            "Импортируемая организация не содержит отчетов и уже присутствует в базе." +
+                            $"{Environment.NewLine}" +
+                            $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                            $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                            $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    })
+                    .ShowDialog(Desktop.MainWindow));
+
+                #endregion
+            }
+
+            #endregion
+
+            if (impInBase) continue;
+
+            res = "Да";
+
+            await CheckAnswer(res, baseReps, impReps, null, impRep); //AddNewForm
+        }
+
+        await baseReps.SortAsync().ConfigureAwait(false);
+    }
+
 
     #endregion
 

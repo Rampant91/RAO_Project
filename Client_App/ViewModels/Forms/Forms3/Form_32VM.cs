@@ -1,4 +1,11 @@
-﻿using Client_App.Commands.AsyncCommands;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Threading;
+using Client_App.Commands.AsyncCommands;
+using MessageBox.Avalonia.BaseWindows.Base;
+using MessageBox.Avalonia.DTO;
+using MessageBox.Avalonia.Enums;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms.Form3;
@@ -22,6 +29,15 @@ namespace Client_App.ViewModels.Forms.Forms3
                 return "3.2";
             }
         }
+
+        private Window owner 
+        {
+            get
+            {
+                return (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows.FirstOrDefault(w => w.Name == "3.2");
+            }
+        }
+
         #region Constructors
         public Form_32VM() { InitializeCommands(); }
 
@@ -157,20 +173,62 @@ namespace Client_App.ViewModels.Forms.Forms3
             PasteContainerInfo = new NewPasteRowsAsyncCommand(Report.Rows32One.ContainersInfoCollection);
             PasteIdentificator = new NewPasteRowsAsyncCommand(Report.Rows32One.IdentificatorsCollection);
 
-            DeleteExportedZriInfo = ReactiveCommand.Create<Form32ExportedZriInfo>(info =>
+            DeleteExportedZriInfo = ReactiveCommand.Create<Form32ExportedZriInfo>( async info =>
             {
+                if (info == null)
+                {
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                        SelectedItemIsNullMessage.ShowDialog(owner));
+                    return;
+                }
                 info.Form32?.ExportedZriInfoCollection.Remove(info);
             });
-            DeleteContainerInfo = ReactiveCommand.Create<Form32ContainerInfo>(container =>
+            DeleteContainerInfo = ReactiveCommand.Create<Form32ContainerInfo>(async container =>
             {
+                if (container == null)
+                {
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                        SelectedItemIsNullMessage.ShowDialog(owner));
+                    return;
+                }
                 container.Form32?.ContainersInfoCollection.Remove(container);
             });
-            DeleteIdentificator = ReactiveCommand.Create<Form32Identificator>(identificator =>
+            DeleteIdentificator = ReactiveCommand.Create<Form32Identificator>(async identificator =>
             {
+                if (identificator == null)
+                {
+                    #region infoIsNullMessage
+                    await Dispatcher.UIThread.InvokeAsync(() =>
+                        SelectedItemIsNullMessage.ShowDialog(owner));
+                    #endregion
+                    return;
+                }
+
                 identificator.Form32?.IdentificatorsCollection.Remove(identificator);
             });
         }
         #endregion
 
+        #region Messages
+        IMsBoxWindow<ButtonResult> SelectedItemIsNullMessage
+        {
+            get
+            {
+                var message = MessageBox.Avalonia.MessageBoxManager
+                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = ButtonEnum.Ok,
+                    ContentTitle = "Удаление",
+                    ContentHeader = "Ошибка",
+                    ContentMessage = "Выберите строку, которую хотите удалить",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
+                });
+                return message;
+            }
+        }
+        #endregion
     }
 }

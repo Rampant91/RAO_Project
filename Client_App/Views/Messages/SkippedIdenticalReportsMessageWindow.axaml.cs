@@ -54,6 +54,13 @@ public partial class SkippedIdenticalReportsMessageWindow : BaseWindow<BaseVM>
                 AddTextColumn(grid, "Номер формы", nameof(ImportReportSummaryInfo.FormNum), 110);
                 AddTextColumn(grid, "Отчётный год", nameof(ImportReportSummaryInfo.Year), "*");
                 break;
+            case ImportSummaryFormGroup.Form3:
+                AddTextColumn(grid, "Рег. №", nameof(ImportReportSummaryInfo.OrgColumn1), 120);
+                AddTextColumn(grid, "ОКПО", nameof(ImportReportSummaryInfo.OrgColumn2), 100);
+                AddTextColumn(grid, "Номер формы", nameof(ImportReportSummaryInfo.FormNum), 110);
+                AddTextColumn(grid, "Начало периода", nameof(ImportReportSummaryInfo.StartPeriod), "*");
+                AddTextColumn(grid, "Конец периода", nameof(ImportReportSummaryInfo.EndPeriod), "*");
+                break;
             case ImportSummaryFormGroup.Form4:
                 AddTextColumn(grid, "Код субъекта", nameof(ImportReportSummaryInfo.OrgColumn1), 120);
                 AddTextColumn(grid, "Номер формы", nameof(ImportReportSummaryInfo.FormNum), 110);

@@ -4,6 +4,7 @@ public enum ImportSummaryFormGroup
 {
     Form1,
     Form2,
+    Form3,
     Form4,
     Form5
 }

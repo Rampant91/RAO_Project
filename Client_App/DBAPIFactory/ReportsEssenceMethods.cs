@@ -130,6 +130,7 @@ public static partial class EssenceMethods
                     .Include(x => x.DBObservable)
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
                     .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                    .Include(x => x.Master_DB).ThenInclude(x => x.Rows30)
                     .Include(x => x.Report_Collection).ThenInclude(x => x.Rows11)
                     .Include(x => x.Report_Collection).ThenInclude(x => x.Rows12)
                     .Include(x => x.Report_Collection).ThenInclude(x => x.Rows13)
@@ -151,6 +152,8 @@ public static partial class EssenceMethods
                     .Include(x => x.Report_Collection).ThenInclude(x => x.Rows210)
                     .Include(x => x.Report_Collection).ThenInclude(x => x.Rows211)
                     .Include(x => x.Report_Collection).ThenInclude(x => x.Rows212)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows31One)
+                    .Include(x => x.Report_Collection).ThenInclude(x => x.Rows32One)
                     .Include(x => x.Report_Collection).ThenInclude(x => x.Notes)
                     .Where(x => x.DBObservable != null && x.Id == id)
                     .FirstOrDefaultAsync(ReportsStorage.cancellationToken) as T;

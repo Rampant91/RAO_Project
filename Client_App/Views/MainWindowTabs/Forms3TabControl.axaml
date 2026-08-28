@@ -439,23 +439,7 @@
 								<DataTemplate>
 									<Border Classes="headerTemplate">
 										<Grid ColumnDefinitions="*,Auto" Margin="3">
-											<TextBlock Grid.Column="0" Text="Дата начала периода"/>
-											<!--<Button Grid.Column="1"/>-->
-										</Grid>
-									</Border>
-								</DataTemplate>
-							</DataGridTextColumn.HeaderTemplate>
-						</DataGridTextColumn>
-
-						<DataGridTextColumn x:DataType="models:Report"
-											Width="*"
-											IsReadOnly="True"
-											Binding="{Binding EndPeriod.Value}">
-							<DataGridTextColumn.HeaderTemplate>
-								<DataTemplate>
-									<Border Classes="headerTemplate">
-										<Grid ColumnDefinitions="*,Auto" Margin="3">
-											<TextBlock Grid.Column="0" Text="Дата конца периода"/>
+											<TextBlock Grid.Column="0" Text="Дата уведомления"/>
 											<!--<Button Grid.Column="1"/>-->
 										</Grid>
 									</Border>

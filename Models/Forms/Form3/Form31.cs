@@ -2,6 +2,7 @@
 using Models.Collections;
 using Models.Comparers.FormContent;
 using Models.Forms.DataAccess;
+using Models.Forms.Form1;
 using Models.Interfaces;
 using Models.Passports;
 using OfficeOpenXml;
@@ -24,7 +25,7 @@ namespace Models.Forms.Form3
     [Serializable]
     [Form_Class("Форма 3.1")]
     [Table(name: "form_31")]
-    public class Form31 : Form, ICopiable
+    public class Form31 : Form
     {
         #region Constructor
         public Form31()
@@ -814,6 +815,17 @@ namespace Models.Forms.Form3
         #endregion
         #endregion
 
+        #region CleanIds
+        public void CleanIds()
+        {
+            Id = 0;
+            foreach (var item in ExportedZriOziiiInfoCollection)
+            {
+                item.Id = 0;
+            }
+        }
+        #endregion
+
         #region ICopiable
         #region ConvertToTSVstring
 
@@ -846,9 +858,40 @@ namespace Models.Forms.Form3
         {
             throw new NotImplementedException();
         }
-        public override bool IsContentEqual(Form other)
+        public override bool IsContentEqual(Form otherForm)
         {
-            throw new NotImplementedException();
+            if (otherForm is not Form31 formToCompare) return false;
+
+            //Сравниваю количество элементов в коллекции
+            if (ExportedZriOziiiInfoCollection.Count() != formToCompare.ExportedZriOziiiInfoCollection.Count())
+                return false;
+
+            //Поштучно сравниваю содержимое коллекции
+            for (int i = 0; i< ExportedZriOziiiInfoCollection.Count(); i++)
+            {
+                if (!ExportedZriOziiiInfoCollection[i]
+                    .IsContentEqual(formToCompare.ExportedZriOziiiInfoCollection[i]))
+                {
+                    return false;
+                }
+            }
+
+            //Сравниваю содержимое формы 3.1
+            return FormTextEquality.Equals(RecipientName_DB, formToCompare.RecipientName_DB)
+                   && FormTextEquality.Equals(RecipientJurLicoAddress_DB, formToCompare.RecipientJurLicoAddress_DB)
+                   && FormTextEquality.Equals(RecipientWorkplaceAddress_DB, formToCompare.RecipientWorkplaceAddress_DB)
+                   && FormTextEquality.Equals(LicenseNum_DB, formToCompare.LicenseNum_DB)
+                   && ValidityPeriod_DB == formToCompare.ValidityPeriod_DB
+                   && ExpectedDecisionTimeframe_DB == formToCompare.ExpectedDecisionTimeframe_DB
+                   && FormTextEquality.Equals(FinalUserName_DB, formToCompare.FinalUserName_DB)
+                   && FormTextEquality.Equals(FinalUserJurLicoAddress_DB, formToCompare.FinalUserJurLicoAddress_DB)
+                   && FormTextEquality.Equals(FinalUserWorkplaceAddress_DB, formToCompare.FinalUserWorkplaceAddress_DB)
+                   && FormTextEquality.Equals(FinalUserTelephone_DB, formToCompare.FinalUserTelephone_DB)
+                   && FormTextEquality.Equals(FinalUserEmail_DB, formToCompare.FinalUserEmail_DB)
+                   && FormTextEquality.Equals(ApplicationScope_DB, formToCompare.ApplicationScope_DB)
+                   && FormTextEquality.Equals(ContractNum_DB, formToCompare.ContractNum_DB)
+                   && ContractDate_DB == formToCompare.ContractDate_DB
+                   && FormTextEquality.Equals(ManufacturerOksm_DB, formToCompare.ManufacturerOksm_DB);
         }
         #endregion
 

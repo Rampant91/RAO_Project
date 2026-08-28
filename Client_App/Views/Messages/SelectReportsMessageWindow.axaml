@@ -47,17 +47,17 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Рег. №"
                                     Binding="{Binding RegNum}"
-									IsVisible="{Binding DataContext.IsFormNum10or20,
+									IsVisible="{Binding DataContext.IsFormNum10or20or30or30,
                                      RelativeSource={RelativeSource AncestorType=Window}}"
                                     Width="120"/>
                 <DataGridTextColumn Header="Наименование" 
-									IsVisible="{Binding DataContext.IsFormNum10or20,
+									IsVisible="{Binding DataContext.IsFormNum10or20or30,
                                      RelativeSource={RelativeSource AncestorType=Window}}"
                                     Binding="{Binding ShortName}" 
                                     Width="*"/>
                 <DataGridTextColumn Header="ОКПО" 
                                     Binding="{Binding Okpo}" 
-									IsVisible="{Binding DataContext.IsFormNum10or20,
+									IsVisible="{Binding DataContext.IsFormNum10or20or30,
                                      RelativeSource={RelativeSource AncestorType=Window}}"
                                     Width="100"/>
 				<DataGridTextColumn Header="Код субъекта РФ"

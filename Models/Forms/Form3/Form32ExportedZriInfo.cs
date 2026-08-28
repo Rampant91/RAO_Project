@@ -281,6 +281,23 @@ namespace Models.Forms.Form3
         #endregion
         #endregion
 
+        #region IsContentEqual
+        public bool IsContentEqual(Form32ExportedZriInfo other)
+        {
+            return FormTextEquality.Equals(PassportNum, other.PassportNum)
+                && FormTextEquality.Equals(Type, other.Type)
+                && FormTextEquality.Equals(FactoryNum, other.FactoryNum)
+                && FormTextEquality.Equals(RadionuclidComposition, other.RadionuclidComposition)
+                && ReleaseDate == other.ReleaseDate
+                && FormTextEquality.Equals(ActivityOnRealeseDate, other.ActivityOnRealeseDate)
+                && FormTextEquality.Equals(NuclearMaterials, other.NuclearMaterials)
+                && FormTextEquality.Equals(Category, other.Category)
+                && FormTextEquality.Equals(ManufacturerOksm, other.ManufacturerOksm)
+                && FormTextEquality.Equals(CertificateNum, other.CertificateNum)
+                && CertificateExpirationDate == other.CertificateExpirationDate;
+        }
+        #endregion
+
         #region Validation
 
         public void ValidateAll()

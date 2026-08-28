@@ -3204,6 +3204,9 @@ public class Report : IKey, IDataGridColumn
         Rows210.CleanIds();
         Rows211.CleanIds();
         Rows212.CleanIds();
+        Rows30.CleanIds();
+        Rows31One.CleanIds();
+        Rows32One.CleanIds();
         Rows40.CleanIds();
         Rows41.CleanIds();
         Rows50.CleanIds();

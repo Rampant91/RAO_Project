@@ -136,6 +136,12 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         impReps.Master.Rows20[1].RegNo_DB = impReps.Master.Rows20[0].RegNo_DB;
                     }
 
+                    if (impReps.Master.Rows30.Count != 0)
+                    {
+                        impReps.Master_DB.ReportChangedDate = dateTime;
+                        impReps.Master.Rows30[1].RegNo_DB = impReps.Master.Rows30[0].RegNo_DB;
+                    }
+
                     if (impReps.Master.Rows40.Count != 0
                         || impReps.Master.Rows50.Count !=0)
                     {
@@ -144,6 +150,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
                     Reports? baseReps11;
                     Reports? baseReps21;
+                    Reports? baseReps31;
                     Reports? baseReps41;
                     Reports? baseReps51;
                     var executeMode = parameter switch
@@ -159,6 +166,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                         {
                             baseReps11 = GetReports11FromLocalEqual(impReps);
                             baseReps21 = GetReports21FromLocalEqual(impReps);
+                            baseReps31 = GetReports31FromLocalEqual(impReps);
                             baseReps41 = GetReports41FromLocalEqual(impReps);
                             baseReps51 = GetReports51FromLocalEqual(impReps);
 
@@ -178,6 +186,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
                             baseReps11 = GetReports11FromLocalEqual(impRepsFromDb);
                             baseReps21 = GetReports21FromLocalEqual(impRepsFromDb);
+                            baseReps31 = GetReports31FromLocalEqual(impRepsFromDb);
                             baseReps41 = GetReports41FromLocalEqual(impRepsFromDb);
                             baseReps51 = GetReports51FromLocalEqual(impRepsFromDb);
 
@@ -194,6 +203,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                             
                             baseReps11 = GetReports11FromLocalEqual(impRepsFromDb);
                             baseReps21 = GetReports21FromLocalEqual(impRepsFromDb);
+                            baseReps31 = GetReports31FromLocalEqual(impRepsFromDb);
                             baseReps41 = GetReports41FromLocalEqual(impRepsFromDb);
                             baseReps51 = GetReports51FromLocalEqual(impRepsFromDb);
 
@@ -205,6 +215,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
                     FillEmptyRegNo(ref baseReps11);
                     FillEmptyRegNo(ref baseReps21);
+                    FillEmptyRegNo(ref baseReps31);
                     impReps.CleanIds();
                     ProcessIfNoteOrder0(impReps);
 
@@ -231,6 +242,10 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     {
                         await ProcessIfHasReports21(baseReps21, impReps, impRepsReportList);
                     }
+                    else if (baseReps31 != null)
+                    {
+                        await ProcessIfHasReports31(baseReps31, impReps, impRepsReportList);
+                    }
                     else if (baseReps41 != null)
                     {
                         await ProcessIfHasReports41(baseReps41, impReps, impRepsReportList);
@@ -239,7 +254,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     {
                         await ProcessIfHasReports51(baseReps51, impReps, impRepsReportList);
                     }
-                    else if (baseReps11 == null && baseReps21 == null && baseReps41 == null && baseReps51 == null)
+                    else if (baseReps11 == null && baseReps21 == null && baseReps31 == null && baseReps41 == null && baseReps51 == null)
                     {
                         ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
                         AtLeastOneImportDone = true;
@@ -283,6 +298,9 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                             break;
                         case "2.0":
                             await impReps.Master_DB.Rows20.QuickSortAsync();
+                            break;
+                        case "3.0":
+                            await impReps.Master_DB.Rows30.QuickSortAsync();
                             break;
                         case "4.0":
                             await impReps.Master_DB.Rows40.QuickSortAsync();
@@ -354,6 +372,10 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
                 return;
             }
+        }
+        catch(Exception ex)
+        {
+            throw ex;
         }
         finally
         {
@@ -428,6 +450,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
             reports = await db.ReportsCollectionDbSet
                 .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
                 .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+                .Include(x => x.Master_DB).ThenInclude(x => x.Rows30)
                 .Include(x => x.Master_DB).ThenInclude(x => x.Rows40)
                 .Include(x => x.Master_DB).ThenInclude(x => x.Rows50)
                 .Include(x => x.Report_Collection)
@@ -532,6 +555,43 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
                 item.Master_DB.Rows20.Sorted = false;
                 await item.Master_DB.Rows20.QuickSortAsync();
+            }
+            if (item.Master_DB.FormNum_DB == "3.0")
+            {
+                if (item.Master_DB.Rows30[0].Id > item.Master_DB.Rows30[1].Id)
+                {
+                    if (item.Master_DB.Rows30[0].NumberInOrder_DB == 0)
+                    {
+                        item.Master_DB.Rows30[0].NumberInOrder_DB = 2;
+                    }
+
+                    if (item.Master_DB.Rows30[1].NumberInOrder_DB == 0)
+                    {
+                        item.Master_DB.Rows30[1].NumberInOrder_DB = item.Master_DB.Rows30[1].NumberInOrder_DB == 2
+                            ? 1
+                            : 2;
+                    }
+
+                    item.Master_DB.Rows30.Sorted = false;
+                    await item.Master_DB.Rows30.QuickSortAsync();
+                }
+                else
+                {
+                    if (item.Master_DB.Rows30[0].NumberInOrder_DB == 0)
+                    {
+                        item.Master_DB.Rows30[0].NumberInOrder_DB = 1;
+                    }
+
+                    if (item.Master_DB.Rows30[1].NumberInOrder_DB == 0)
+                    {
+                        item.Master_DB.Rows30[1].NumberInOrder_DB = item.Master_DB.Rows30[1].NumberInOrder_DB == 2
+                            ? 1
+                            : 2;
+                    }
+
+                    item.Master_DB.Rows30.Sorted = false;
+                    await item.Master_DB.Rows30.QuickSortAsync();
+                }
             }
         }
     }

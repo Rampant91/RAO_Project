@@ -164,6 +164,17 @@ namespace Models.Forms.Form3
         #endregion
         #endregion
 
+        #region IsContentEqual
+        public bool IsContentEqual(Form32ContainerInfo other)
+        {
+            return FormTextEquality.Equals(Name, other.Name)
+                && FormTextEquality.Equals(Type, other.Type)
+                && FormTextEquality.Equals(IdNum, other.IdNum)
+                && ReleaseYear == other.ReleaseYear
+                && FormTextEquality.Equals(DepletedUraniumMass, other.DepletedUraniumMass);
+        }
+        #endregion
+
         #region Validation
         public void ValidateAll()
         {
