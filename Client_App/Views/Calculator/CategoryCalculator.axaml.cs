@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
@@ -22,11 +22,13 @@ public partial class CategoryCalculator : BaseWindow<CategoryCalculatorVM>
     public CategoryCalculator()
     {
         AvaloniaXamlLoader.Load(this);
+        Name = "CategoryCalculatorWindow";
     }
 
     public CategoryCalculator(CategoryCalculatorVM vm)
     {
         AvaloniaXamlLoader.Load(this);
+        Name = "CategoryCalculatorWindow";
         this.AttachDevTools();
         VM = vm;
     }

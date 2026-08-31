@@ -1,5 +1,5 @@
 using Client_App.Services;
-﻿using Client_App.Services.DataAccess;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
@@ -49,15 +49,18 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
         var mainWindow = (Desktop.MainWindow as MainWindow)!;
         var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
 
-        if (mainWindowVM.SelectedReports is null) return;
+        var selectedReports = parameter as Reports
+                              ?? _formsTabControlVM.SelectedReports
+                              ?? mainWindowVM.SelectedReports;
+        if (selectedReports is null) return;
 
-        if (await ReportExportLock.TryBlockOrganizationAccessAsync(mainWindowVM.SelectedReports.Id))
+        if (await ReportExportLock.TryBlockOrganizationAccessAsync(selectedReports.Id))
             return;
 
         mainWindow.SetReportOpeningOverlay(true);
         try
         {
-            await OpenOrganizationFormAsync(mainWindow, mainWindowVM);
+            await OpenOrganizationFormAsync(mainWindow, mainWindowVM, selectedReports);
         }
         finally
         {
@@ -65,9 +68,12 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
         }
     }
 
-    private static async Task OpenOrganizationFormAsync(MainWindow mainWindow, MainWindowVM mainWindowVM)
+    private static async Task OpenOrganizationFormAsync(
+        MainWindow mainWindow,
+        MainWindowVM mainWindowVM,
+        Reports selectedReports)
     {
-        var report = mainWindowVM.SelectedReports!.Master;
+        var report = selectedReports.Master;
         var formNum = report.FormNum.Value;
         var refreshOrgListAfterTitle = false;
 
@@ -90,7 +96,7 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
                 if (titleBefore != titleAfter)
                 {
                     MainWindowListQuery.UpsertOrgKeyForm10FromMaster(
-                        mainWindowVM.SelectedReports.Id, report);
+                        selectedReports.Id, report);
                     mainWindowVM.Forms1TabControlVM.RefreshOrgListAfterTitleChange();
                 }
 
@@ -112,7 +118,7 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
                 if (titleBefore != titleAfter)
                 {
                     MainWindowListQuery.UpsertOrgKeyForm20FromMaster(
-                        mainWindowVM.SelectedReports.Id, report);
+                        selectedReports.Id, report);
                     mainWindowVM.Forms2TabControlVM.RefreshOrgListAfterTitleChange();
                 }
 

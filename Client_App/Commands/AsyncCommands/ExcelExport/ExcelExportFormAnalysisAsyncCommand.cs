@@ -441,7 +441,7 @@ public class ExcelExportFormAnalysisAsyncCommand : ExcelBaseAsyncCommand
                 fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{startPeriod}_{endPeriod}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}";
                 break;
             case '2':
-                var year = RemoveForbiddenChars(rep.Year_DB);
+                var year = RemoveForbiddenChars(rep.Year_DB?.ToString());
                 fileName = $"{ExportType}_{regNum}_{okpo}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}";
                 break;
             default:

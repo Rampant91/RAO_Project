@@ -1,8 +1,9 @@
-﻿using Avalonia.Controls;
+using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Properties;
 using Client_App.Resources;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -10,6 +11,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
@@ -45,15 +47,15 @@ public partial class OpenPasAsyncCommand : BaseAsyncCommand
         {
             #region MessageUnableToOpenPassport
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow("Уведомление",
+            await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                    .GetMessageBoxStandard("Уведомление",
                         "Паспорт не может быть открыт, поскольку не заполнены или заполнены некорректно все требуемые поля:"
                         + Environment.NewLine + "- номер паспорта (сертификата);"
                         + Environment.NewLine + "- тип;"
                         + Environment.NewLine + "- номер;"
                         + Environment.NewLine + "- код ОКПО изготовителя;"
                         + Environment.NewLine + "- дата выпуска;")
-                    .ShowDialog(Desktop.MainWindow));
+                    .ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -68,10 +70,10 @@ public partial class OpenPasAsyncCommand : BaseAsyncCommand
         {
             #region MessagePasportFileMissing
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Поиск файла паспорта",
                     ContentHeader = "Уведомление",
@@ -82,7 +84,7 @@ public partial class OpenPasAsyncCommand : BaseAsyncCommand
                     MinWidth = 475,
                     MinHeight = 175,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
-                }).ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
         }
@@ -101,10 +103,10 @@ public partial class OpenPasAsyncCommand : BaseAsyncCommand
         {
             #region MessagePasportFileMissing
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Поиск файла паспорта",
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Паспорт {uniqPasName}" +
@@ -113,7 +115,7 @@ public partial class OpenPasAsyncCommand : BaseAsyncCommand
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
-                }).ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
         }

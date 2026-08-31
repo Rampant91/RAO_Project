@@ -6,6 +6,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
+using Avalonia.Threading;
 using Models.Attributes;
 using Models.Collections;
 using Models.Interfaces;
@@ -18,6 +19,7 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Client_App.Controls.DataGrid.DataGrids;
+using Client_App.Resources;
 using Client_App.VisualRealization.Converters;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -72,10 +74,39 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 //{
                 //    NowPage = "1";
                 //}
+                AttachItemsNotifier(value);
                 SetAndRaise(ItemsProperty, ref _items, value);
-                UpdateCells();
-                SetSelectedControls();
+                if (_uiInitialized)
+                {
+                    UpdateCells();
+                    SetSelectedControls();
+                }
             }
+        }
+    }
+
+    private INotifyCollectionChanged? _itemsNotifier;
+
+    private void AttachItemsNotifier(IKeyCollection? items)
+    {
+        if (_itemsNotifier != null)
+        {
+            _itemsNotifier.CollectionChanged -= OnItemsCollectionChanged;
+            _itemsNotifier = null;
+        }
+
+        if (items is INotifyCollectionChanged notifier)
+        {
+            _itemsNotifier = notifier;
+            _itemsNotifier.CollectionChanged += OnItemsCollectionChanged;
+        }
+    }
+
+    private void OnItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (_uiInitialized && !_isInitializing)
+        {
+            UpdateCells();
         }
     }
 
@@ -124,7 +155,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             {
                 SetAndRaise(SelectedCellsProperty, ref _selectedCells, value);
             }
-            UpdateCells();
+
+            if (_uiInitialized)
+            {
+                UpdateCells();
+            }
         }
     }
 
@@ -160,7 +195,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         set
         {
             SetAndRaise(CommentСhangeableProperty, ref _CommentСhangeable, value);
-            Init();
+            ReinitIfReady();
         }
     }
 
@@ -182,7 +217,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (value != null && value != _Comment)
             {
                 SetAndRaise(CommentProperty, ref _Comment, value);
-                Init();
+                ReinitIfReady();
             }
         }
     }
@@ -206,7 +241,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (value != null)
             {
                 SetAndRaise(SearchProperty, ref _Search, value);
-                Init();
+                ReinitIfReady();
             }
         }
     }
@@ -228,7 +263,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         set
         {
             SetAndRaise(SumProperty, ref _Sum, value);
-            Init();
+            ReinitIfReady();
         }
     }
 
@@ -428,7 +463,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         set
         {
             SetAndRaise(IsReadableProperty, ref _IsReadable, value);
-            Init();
+            ReinitIfReady();
         }
     }
 
@@ -449,7 +484,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         set
         {
             SetAndRaise(IsAutoSizableProperty, ref _IsAutoSizable, value);
-            Init();
+            ReinitIfReady();
         }
     }
 
@@ -470,7 +505,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         set
         {
             SetAndRaise(IsReadableSumProperty, ref _IsReadableSum, value);
-            Init();
+            ReinitIfReady();
         }
     }
 
@@ -491,7 +526,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         set
         {
             SetAndRaise(IsColumnResizeProperty, ref _IsColumnResize, value);
-            Init();
+            ReinitIfReady();
         }
     }
 
@@ -512,7 +547,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         set
         {
             SetAndRaise(PageSizeProperty, ref _pageSize, value);
-            Init();
+            ReinitIfReady();
         }
     }
 
@@ -790,6 +825,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
     private void CommandListChanged(object sender, NotifyCollectionChangedEventArgs args)
     {
+        if (!_uiInitialized || _isInitializing)
+        {
+            return;
+        }
+
         if (args.NewItems.Cast<KeyCommand>().Any(item => item.IsContextMenuCommand))
         {
             MakeContextMenu();
@@ -907,7 +947,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (_Columns != value)
             {
                 _Columns = value;
-                Init();
+                ReinitIfReady();
             }
         }
     }
@@ -940,6 +980,10 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
     private StackPanel HeaderStackPanel { get; set; }
     private StackPanel CenterStackPanel { get; set; }
+    private Panel? _centerPanel;
+    private bool _uiInitialized;
+    private bool _initScheduled;
+    private bool _isInitializing;
 
     protected DataGrid(string name = "")
     {
@@ -957,6 +1001,27 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         AddHandler(KeyDownEvent, OnDataGridKeyDown, handledEventsToo: true);
 
         _CommandsList.CollectionChanged += CommandListChanged;
+    }
+
+    protected override void OnAttachedToVisualTree(Avalonia.VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (_uiInitialized || _initScheduled)
+        {
+            return;
+        }
+
+        _initScheduled = true;
+        _uiInitialized = true;
+        Init();
+    }
+
+    private void ReinitIfReady()
+    {
+        if (_uiInitialized && !_isInitializing)
+        {
+            Init();
+        }
     }
 
     #region SetSelectedControls
@@ -1426,6 +1491,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
     private void UpdateCells()
     {
+        if (!_uiInitialized || Rows.Count == 0)
+        {
+            return;
+        }
+
         var count = 0;
         var num = Convert.ToInt32(_nowPage);
         var offset = (num - 1) * PageSize;
@@ -1490,11 +1560,12 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             {
                 for (var i = offset; i < offsetMax; i++)
                 {
-                    if (count < PageSize && i < tmpColl.Count)
+                    if (count < PageSize && i < tmpColl.Count && count < Rows.Count)
                     {
                         Rows[count].DataContext = null; // правит баг с записью данных в пустые ячейки на первых страницах
                         Rows[count].DataContext = tmpColl.Get<T>(i);
                         Rows[count].IsVisible = true;
+                        Rows[count].MinHeight = 30;
                         count++;
                     }
                     else break;
@@ -1521,7 +1592,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 .FindInterfaces((x, y) => x.ToString() == y.ToString(), typeof(IBaseColor).FullName);
             if (t.Length != 0)
             {
-                for (var i = 0; i < PageSize; i++)
+                for (var i = 0; i < PageSize && i < Rows.Count; i++)
                 {
                     if (Rows[i].DataContext is not IBaseColor baseColor) continue;
                     var _t = baseColor;
@@ -1700,11 +1771,55 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
     protected void Init()
     {
-        MakeAll();
-        MakeHeaderRows();
-        MakeCenterRows();
-        UpdateCells();
-        MakeContextMenu();
+        if (!_uiInitialized || _isInitializing)
+        {
+            return;
+        }
+
+        _isInitializing = true;
+        try
+        {
+            MakeAll();
+            MakeHeaderRows();
+            MakeCenterRows();
+            ApplyCenterPanelWidthIfNeeded();
+            UpdateCells();
+            MakeContextMenu();
+            Dispatcher.UIThread.Post(() =>
+            {
+                ApplyCenterPanelWidthIfNeeded();
+                UpdateCells();
+            }, DispatcherPriority.Loaded);
+        }
+        finally
+        {
+            _isInitializing = false;
+        }
+    }
+
+    private void ApplyCenterPanelWidthIfNeeded()
+    {
+        if (!Sum || IsAutoSizable || _centerPanel is null)
+        {
+            return;
+        }
+
+        if (CenterStackPanel?.Children.FirstOrDefault() is not DataGridRow firstRow)
+        {
+            return;
+        }
+
+        var w = firstRow.ColumnDefinitions.Sum(col =>
+        {
+            var width = col.Width;
+            return width.IsAbsolute ? width.Value - 1 : 0;
+        });
+
+        if (w > 0)
+        {
+            _centerPanel.MinWidth = w;
+            _centerPanel.Width = double.NaN;
+        }
     }
 
     private void MakeContextMenu()
@@ -1736,12 +1851,12 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         tmp.Tapped += CommandTapped;
                         inlr.Add(tmp);
                     }
-                    lr.Add(new MenuItem { Header = item.Key, Items = inlr });
+                    lr.Add(new MenuItem { Header = item.Key, ItemsSource = inlr });
                     break;
                 }
             }
         }
-        menu.Items = lr;
+        menu.ItemsSource = lr;
         ContextMenu = menu;
     }
 
@@ -1844,6 +1959,9 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
     }
 
+    private static Binding CreateRowValueBinding(DataGridRow row, string fieldName, BindingMode mode = BindingMode.TwoWay) =>
+        new($"DataContext.{fieldName}.Value") { Source = row, Mode = mode };
+
     private void MakeCenterInner(DataGridColumns ls)
     {
         if (ls == null) return;
@@ -1855,7 +1973,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             var column = 0;
             var count = 0;
-            DataGridRow rowStackPanel = new() { Row = i };
+            DataGridRow rowStackPanel = new() { Row = i, MinHeight = 30 };
 
             foreach (var item in lst)
             {
@@ -1872,6 +1990,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 {
                     [Grid.ColumnProperty] = count,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                    MinHeight = 30,
                     Row = i,
                     Column = column,
                     BorderColor = new SolidColorBrush(Color.Parse("Gray")),
@@ -1890,8 +2010,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         {
                             textBox = new TextBox
                             {
-                                [!DataContextProperty] = new Binding(item.Binding),
-                                [!TextBox.TextProperty] = new Binding("Value"),
+                                [!TextBox.TextProperty] = CreateRowValueBinding(rowStackPanel, item.Binding),
                                 [!BackgroundProperty] = cell[!Cell.ChooseColorProperty]
                             };
                             ((TextBox)textBox).TextAlignment = TextAlignment.Left;
@@ -1908,8 +2027,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         {
                             textBox = new TextBlock
                             {
-                                [!DataContextProperty] = new Binding(item.Binding),
-                                [!TextBlock.TextProperty] = new Binding("Value"),
+                                [!TextBlock.TextProperty] = CreateRowValueBinding(rowStackPanel, item.Binding, BindingMode.OneWay),
                                 [!BackgroundProperty] = cell[!Cell.ChooseColorProperty]
                             };
 
@@ -1929,8 +2047,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     {
                         textBox = new TextBlock
                         {
-                            [!DataContextProperty] = new Binding(item.Binding),
-                            [!TextBlock.TextProperty] = new Binding("Value"),
+                            [!TextBlock.TextProperty] = CreateRowValueBinding(rowStackPanel, item.Binding, BindingMode.OneWay),
                             [!BackgroundProperty] = cell[!Cell.ChooseColorProperty]
                         };
 
@@ -2010,8 +2127,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     {
                         textBox = new TextBox
                         {
-                            [!DataContextProperty] = new Binding(item.Binding),
-                            [!TextBox.TextProperty] = new Binding("Value"),
+                            [!TextBox.TextProperty] = CreateRowValueBinding(rowStackPanel, item.Binding),
                             [!BackgroundProperty] = cell[!Cell.ChooseColorProperty],
                             VerticalAlignment = VerticalAlignment.Stretch,
                             HorizontalAlignment = HorizontalAlignment.Stretch,
@@ -2180,67 +2296,21 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
         Panel centerPanel = new()
         {
-            //Background=new SolidColorBrush(Color.Parse("Black")),
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Stretch,
             Background = new SolidColorBrush(Color.FromArgb(255, 255, 255, 255))
         };
-        if (!Sum)
+        _centerPanel = centerPanel;
+        ScrollViewer centerScrollViewer = new()
         {
-            ScrollViewer centerScrollViewer = new()
-            {
-                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                Content = centerPanel,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                HorizontalAlignment = HorizontalAlignment.Stretch
-            };
-            centerBorder.Child = centerScrollViewer;
-        }
-        else
-        {
-            Panel pnl = new();
-            var h = 500;
-            Canvas centerCanvas = new() { Height = h };
-            //CenterPanel.Height = h;
-
-            ScrollBar bar = new()
-            {
-                ZIndex = 999,
-                Height = h,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                [!MarginProperty] = this[!FixedContentProperty]
-            };
-            centerCanvas.Children.Add(bar);
-
-            Binding b = new()
-            {
-                Source = bar,
-                Path = nameof(bar.Value),
-                Mode = BindingMode.TwoWay
-            };
-
-            ScrollViewer centerScrollViewer = new()
-            {
-                Height = h,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Hidden,
-                Content = centerPanel
-            };
-
-            bar[!RangeBase.MaximumProperty] = centerScrollViewer[!ScrollViewer.VerticalScrollBarMaximumProperty];
-
-            centerScrollViewer[!ScrollViewer.VerticalScrollBarValueProperty] = b;
-            centerCanvas.Children.Add(centerScrollViewer);
-
-            pnl.Children.Add(centerCanvas);
-            centerBorder.Child = pnl;
-            if (!IsAutoSizable)
-            {
-                var i = 0;
-                var RDef = ((DataGridRow)CenterStackPanel.Children.FirstOrDefault()).ColumnDefinitions;
-                var w = RDef.Sum(r => r.Width.Value - 1);
-                centerPanel.Width = w;
-            }
-        }
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+            HorizontalScrollBarVisibility = Sum ? ScrollBarVisibility.Disabled : ScrollBarVisibility.Auto,
+            Content = centerPanel,
+            VerticalAlignment = VerticalAlignment.Stretch,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            MinHeight = Sum ? 200 : 0,
+        };
+        centerBorder.Child = centerScrollViewer;
         CenterStackPanel = new StackPanel
         {
             Orientation = Orientation.Vertical,
@@ -2269,7 +2339,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Stretch,
-            Background = new SolidColorBrush(Color.FromArgb(150, 180, 154, 255)),
+            Background = Brushes.White,
             Orientation = Orientation.Vertical
         };
         middleFooterBorder.Child = middleFooterStackPanel;
@@ -2385,7 +2455,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Stretch,
-            Background = new SolidColorBrush(Color.FromArgb(150, 180, 154, 255)),
+            Background = Brushes.White,
             Height = 40
         };
         footerBorder.Child = footerPanel;

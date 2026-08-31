@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
 
+using Client_App.Resources;
 namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
@@ -116,7 +117,7 @@ public class CopyRowsAsyncCommand : BaseAsyncCommand
             textInSelectedCells = textInSelectedCells[..^1] + "\n";
         }
         textInSelectedCells = textInSelectedCells[..^1];
-        if (Application.Current.Clipboard is { } clip)
+        if (Avalonia11Compat.MainClipboard! is { } clip)
         {
             var currentClipboard = "";
             // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract

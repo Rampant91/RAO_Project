@@ -1,3 +1,4 @@
+﻿using MsBox.Avalonia;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,13 +18,14 @@ using Client_App.ViewModels.Messages;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
 using FirebirdSql.Data.FirebirdClient;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using OfficeOpenXml;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
 /// <summary>
@@ -127,7 +129,7 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
             .Select(o => o.Id)
             .ToHashSet();
 
-        var reportCandidates = new List<(int Id, int OrgId, string FormNum_DB, string? StartPeriod_DB, string? EndPeriod_DB, string? Year_DB)>();
+        var reportCandidates = new List<(int Id, int OrgId, string FormNum_DB, string? StartPeriod_DB, string? EndPeriod_DB, int? Year_DB)>();
 
         if (form1Numbers.Length > 0 && orgIdsForm10.Count > 0)
         {
@@ -209,7 +211,7 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
                             StaticStringMethods.RemoveForbiddenChars(repFull.Reports.Master.RegNoRep.Value) +
                             $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Reports.Master.OkpoRep.Value)}" +
                             $"_{repFull.FormNum_DB}" +
-                            $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Year_DB)}" +
+                            $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Year_DB?.ToString())}" +
                             $"_{repFull.CorrectionNumber_DB}" +
                             $"_{Assembly.GetExecutingAssembly().GetName().Version}",
 
@@ -243,10 +245,10 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
                     }
                     catch (Exception e)
                     {
-                        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                            .GetMessageBoxStandard(new MessageBoxStandardParams
                             {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                ButtonDefinitions = ButtonEnum.Ok,
                                 ContentTitle = "Выгрузка",
                                 ContentHeader = "Ошибка",
                                 ContentMessage =
@@ -256,8 +258,7 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
                                 MinWidth = 400,
                                 MinHeight = 150,
                                 WindowStartupLocation = WindowStartupLocation.CenterScreen
-                            })
-                            .ShowDialog(Desktop.MainWindow));
+                            }).ShowWindowDialogAsync(Desktop.MainWindow));
                         return;
                     }
 
@@ -299,8 +300,8 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
                 ? "а"
                 : "ий";
 
-            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -316,8 +317,7 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             if (answer is "Открыть расположение файлов")
             {
@@ -454,11 +454,11 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
     }
 
     private static bool ReportMatchesPeriod(
-        string formNum, string? startDb, string? endDb, string? yearDb, DateOnly periodStart, DateOnly periodEnd)
+        string formNum, string? startDb, string? endDb, int? yearDb, DateOnly periodStart, DateOnly periodEnd)
     {
         if (formNum.StartsWith("2.", StringComparison.Ordinal))
         {
-            return int.TryParse(yearDb, out var year)
+            return yearDb is { } year
                    && periodStart.Year <= year
                    && year <= periodEnd.Year;
         }
@@ -545,18 +545,17 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
     private static async Task ShowErrorMessage(string message, string? details)
     {
         var content = details is null ? message : $"{message}{Environment.NewLine}{details}";
-        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxStandard(new MessageBoxStandardParams
             {
-                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ButtonDefinitions = ButtonEnum.Ok,
                 ContentTitle = "Групповая выгрузка",
                 ContentHeader = "Уведомление",
                 ContentMessage = content,
                 MinWidth = 400,
                 MinHeight = 150,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
-            })
-            .ShowDialog(Desktop.MainWindow));
+            }).ShowWindowDialogAsync(Desktop.MainWindow));
     }
 
     private static string InsertIndexInFilePath(string fullPath)

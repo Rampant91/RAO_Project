@@ -3,6 +3,8 @@ using Avalonia.Interactivity;
 using Avalonia;
 using System;
 
+using Avalonia.Controls;
+using System.Threading.Tasks;
 namespace Client_App.Controls.MaskedTextBox;
 
 /// <summary>
@@ -24,7 +26,7 @@ public class MaskedTextBoxForDate : Avalonia.Controls.MaskedTextBox
             return;
         }
 
-        var text = await ((IClipboard)AvaloniaLocator.Current.GetService(typeof(IClipboard))!).GetTextAsync();
+        var text = await (TopLevel.GetTopLevel(this)?.Clipboard?.GetTextAsync() ?? Task.FromResult<string?>(null));
 
         if (string.IsNullOrEmpty(text))
         {

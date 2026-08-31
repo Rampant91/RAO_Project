@@ -1,10 +1,11 @@
-﻿using Avalonia.Threading;
+using MsBox.Avalonia;
+using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
 using Models.Collections;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Avalonia.Controls;
 using System.Threading.Tasks;
 
@@ -43,8 +44,8 @@ public class ReorganizeReportAsyncCommand : BaseAsyncCommand
             if (form_10VM.IsSeparateDivision)
             {
                 // Предупреждение пользователя
-                var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                var answer = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions =
                         [
@@ -58,7 +59,7 @@ public class ReorganizeReportAsyncCommand : BaseAsyncCommand
                         MinHeight = 125,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    }).Show());
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 switch (answer)
                 {
@@ -106,8 +107,8 @@ public class ReorganizeReportAsyncCommand : BaseAsyncCommand
             if (form_20VM.IsSeparateDivision)
             {
                 // Предупреждение пользователя
-                var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                var answer = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions =
                         [
@@ -121,7 +122,7 @@ public class ReorganizeReportAsyncCommand : BaseAsyncCommand
                         MinHeight = 125,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    }).Show());
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 switch (answer)
                 {

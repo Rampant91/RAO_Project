@@ -1,19 +1,18 @@
-<Window x:Class="Client_App.Views.Forms.Forms5.Form_50"
+﻿<Window x:Class="Client_App.Views.Forms.Forms5.Form_50"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms5"
-        xmlns:behaviors="clr-namespace:Client_App.Behaviors"
+        xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
         Title="Форма 5.0"
-        Name="Форма 5.0"
-        behaviors:WindowScreenSizeBehavior.WidthRatio="0.5"
-        behaviors:WindowScreenSizeBehavior.HeightRatio="0.75"
+        Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.5', FallbackValue='600', Mode=OneTime}"
+        Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.75', FallbackValue='800', Mode=OneTime}"
         MinWidth="950"
         MinHeight="600"
         x:CompileBindings="True"
         x:DataType="vm:Form_50VM"
-        WindowStartupLocation="Manual"
+        WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
 
 	<Design.DataContext>
@@ -47,7 +46,7 @@
 				    Grid.Column="1"
 				    MaxDropDownHeight="300"
 				    FilterMode="Contains"
-					Items="{Binding FederalExecutiveAuthorityList}"
+					ItemsSource="{Binding FederalExecutiveAuthorityList}"
 				    Margin="0,5,0,3"
 					Text="{Binding Storage.Rows50[0].ExecutiveAuthority.Value}">
 				</AutoCompleteBox>

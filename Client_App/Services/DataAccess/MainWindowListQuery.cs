@@ -17,7 +17,7 @@ public sealed class ReportListStub
     public string FormNum { get; init; } = "";
     public string? StartPeriod { get; init; }
     public string? EndPeriod { get; init; }
-    public string? Year { get; init; }
+    public int? Year { get; init; }
     public byte CorrectionNumber { get; init; }
 }
 
@@ -442,7 +442,7 @@ public static class MainWindowListQuery
 
         ordered = orderByYear
             ? ordered
-                .ThenByDescending(r => int.TryParse(r.Year, out var y) ? y : int.MaxValue)
+                .ThenByDescending(r => r.Year ?? int.MaxValue)
                 .ThenBy(r => r.CorrectionNumber)
             : ordered
                 .ThenByDescending(r => ParseDateOrMax(r.StartPeriod))

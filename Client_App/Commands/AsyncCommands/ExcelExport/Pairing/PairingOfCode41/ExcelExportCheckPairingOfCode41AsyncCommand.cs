@@ -1,3 +1,4 @@
+using MsBox.Avalonia;
 using System;
 using System.IO;
 using System.Linq;
@@ -8,11 +9,12 @@ using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Models.Collections;
 using Models.Interfaces;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41;
 
 /// <summary>
@@ -275,8 +277,8 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
     private static async Task<(string fullPath, bool openTemp)> ExcelGetFullPathWithUniqueIndex(
         string fileName, CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
     {
-        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -289,8 +291,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
                 ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(Desktop.MainWindow));
+            }).ShowWindowDialogAsync(Desktop.MainWindow));
 
         switch (res)
         {
@@ -351,10 +352,10 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
 
     private static async Task ShowNoUnpairedOperationsMessage(AnyTaskProgressBar progressBar)
     {
-        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxStandard(new MessageBoxStandardParams
             {
-                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ButtonDefinitions = ButtonEnum.Ok,
                 ContentTitle = "Выгрузка в .xlsx",
                 ContentHeader = "Уведомление",
                 ContentMessage = "Операции с кодом 41 без парных записей при переводе РВ → РАО (1.1↔1.5, 1.2↔1.6, 1.3↔1.6, 1.4↔1.6) не обнаружены.",
@@ -362,15 +363,15 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
                 MinHeight = 150,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .Show(progressBar ?? Desktop.MainWindow));
+            .ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
     }
 
     private static async Task ShowRDictionaryLoadErrorMessage(AnyTaskProgressBar progressBar, string message)
     {
-        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxStandard(new MessageBoxStandardParams
             {
-                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ButtonDefinitions = ButtonEnum.Ok,
                 ContentTitle = "Выгрузка в .xlsx",
                 ContentHeader = "Ошибка",
                 ContentMessage = message,
@@ -378,7 +379,7 @@ public partial class ExcelExportCheckPairingOfCode41AsyncCommand : ExcelExportBa
                 MinHeight = 150,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .Show(progressBar ?? Desktop.MainWindow));
+            .ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
     }
 
     private static async Task CleanupAndClose(AnyTaskProgressBar progressBar, string tmpDbPath)

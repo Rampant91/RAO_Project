@@ -1,4 +1,5 @@
-﻿using System;
+using MsBox.Avalonia;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -9,17 +10,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.DTO;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 
 /// <summary>
@@ -249,23 +252,21 @@ public partial class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncComman
 
         #region MessageInputCategoryNums
 
-        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxInputWindow(new MessageBoxInputParams
-            {
-                ButtonDefinitions =
-                [
-                    new ButtonDefinition { Name = "Ок", IsDefault = true },
-                    new ButtonDefinition { Name = "Отмена", IsCancel = true }
-                ],
-                CanResize = true,
-                ContentTitle = "Выбор категории",
-                ContentMessage = "Введите через запятую номера категорий " +
-                                 $"{Environment.NewLine}(допускается несколько значений)",
-                MinWidth = 600,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Topmost = true,
-            })
-            .ShowDialog(progressBar ?? Desktop.MainWindow));
+        var res = await Avalonia11Compat.ShowInputDialogAsync(new MessageBoxCustomParams
+        {
+            ButtonDefinitions =
+            [
+                new ButtonDefinition { Name = "Ок", IsDefault = true },
+                new ButtonDefinition { Name = "Отмена", IsCancel = true }
+            ],
+            CanResize = true,
+            ContentTitle = "Выбор категории",
+            ContentMessage = "Введите через запятую номера категорий " +
+                             $"{Environment.NewLine}(допускается несколько значений)",
+            MinWidth = 600,
+            WindowStartupLocation = WindowStartupLocation.CenterOwner,
+            Topmost = true,
+        }, progressBar ?? Desktop.MainWindow);
 
         #endregion
 
@@ -284,10 +285,10 @@ public partial class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncComman
 
             #region MessageInvalidCategoryNums
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
@@ -298,8 +299,7 @@ public partial class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncComman
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
+                }).ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
 
             #endregion
         }

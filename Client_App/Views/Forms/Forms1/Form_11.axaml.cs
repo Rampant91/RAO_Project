@@ -1,3 +1,4 @@
+﻿using MsBox.Avalonia;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -10,9 +11,9 @@ using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.Forms.Forms1;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
+using MsBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -58,6 +59,7 @@ public partial class Form_11 : BaseWindow<Form_11VM>
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
+        Name = "1.1";
 
 #if DEBUG
         this.AttachDevTools();
@@ -308,33 +310,33 @@ public partial class Form_11 : BaseWindow<Form_11VM>
 
         #region MessageSaveChanges
 
-        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" },
-                    new ButtonDefinition { Name = "Отмена" }
+                    new ButtonDefinition { Name = "��" },
+                    new ButtonDefinition { Name = "���" },
+                    new ButtonDefinition { Name = "������" }
                 ],
-                ContentTitle = "Сохранение изменений",
-                ContentHeader = "Уведомление",
-                ContentMessage = $"Сохранить форму {vm.FormType}?",
+                ContentTitle = "���������� ���������",
+                ContentHeader = "�����������",
+                ContentMessage = $"��������� ����� {vm.FormType}?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(this));
+            }).ShowWindowDialogAsync(this));
 
         #endregion
 
         var dbm = StaticConfiguration.DBModel;
         switch (res)
         {
-            case "Да":
+            case "��":
             {
                 _isCloseConfirmed = true;
 
+                //����� ��� ��� ��������� ������ ������������ ���������� ������� ������ �������
                 try
                 {
                     await RemoveEmptyForms(vm);
@@ -346,24 +348,26 @@ public partial class Form_11 : BaseWindow<Form_11VM>
                     ServiceExtension.LoggerManager.Error(msg);
                 }
 
-                // На закрытии «Да» — только SaveReportAsyncCommand (без отдельного SaveChangesAsync).
-                try
+                await dbm.SaveChangesAsync();
+                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+
+                if (desktop.Windows.Count == 1)
                 {
-                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                    desktop.MainWindow.WindowState = OwnerPrevState;
+               
+                    break; 
                 }
-                catch (Exception ex)
-                {
-                    var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                              $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                    ServiceExtension.LoggerManager.Error(msg);
-                }
+
+                args.Cancel = false;
 
                 break;
             }
-            case "Нет":
+            case "���":
             {
                 _isCloseConfirmed = true;
-                await vm.DiscardUnsavedChangesAsync();
+                dbm.Restore();
+                new NewSortFormSyncCommand(vm).Execute(null);
+                await dbm.SaveChangesAsync();
 
                 var lst = vm.Report[vm.FormType];
 
@@ -404,7 +408,7 @@ public partial class Form_11 : BaseWindow<Form_11VM>
                 }
                 break;
             }
-            case "Отмена" or null:
+            case "������" or null:
             {
                 _isCloseConfirmed = false;
                 return;
@@ -444,23 +448,23 @@ public partial class Form_11 : BaseWindow<Form_11VM>
                 {
                     #region MessageFindIntersection
 
-                    await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams()
+                    await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                        .GetMessageBoxStandard(new MessageBoxStandardParams()
                         {
                             ButtonDefinitions = ButtonEnum.Ok,
-                            ContentTitle = "Пересечение",
-                            ContentHeader = "Уведомление",
-                            ContentMessage = $"У организации {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value} " +
-                                             $"{Environment.NewLine}присутствует отчёт по форме " +
+                            ContentTitle = "�����������",
+                            ContentHeader = "�����������",
+                            ContentMessage = $"� ����������� {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value} " +
+                                             $"{Environment.NewLine}������������ ����� �� ����� " +
                                              $"{currentReport.FormNum_DB} {currentReport.StartPeriod_DB}-{currentReport.EndPeriod_DB}" +
-                                             $"{Environment.NewLine}пересекающийся с введённым периодом " +
+                                             $"{Environment.NewLine}�������������� � �������� �������� " +
                                              $"{rep.StartPeriod_DB}-{rep.EndPeriod_DB}.",
                             MinWidth = 450,
                             MinHeight = 170,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner,
                             Topmost = true,
                         })
-                        .ShowDialog(this));
+                        .ShowWindowDialogAsync(this));
 
                     #endregion
 
@@ -517,27 +521,26 @@ public partial class Form_11 : BaseWindow<Form_11VM>
         {
             #region MessageRemoveEmptyForms
 
-            var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
-                        new ButtonDefinition { Name = "Да" },
-                        new ButtonDefinition { Name = "Нет" }
+                        new ButtonDefinition { Name = "��" },
+                        new ButtonDefinition { Name = "���" }
                     ],
-                    ContentTitle = "Сохранение изменений",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = $"В форме {vm.FormType} обнаружены пустые строки." +
-                                     $"{Environment.NewLine}Вы желаете их удалить?",
+                    ContentTitle = "���������� ���������",
+                    ContentHeader = "�����������",
+                    ContentMessage = $"� ����� {vm.FormType} ������������ ������ �������." +
+                                     $"{Environment.NewLine}�� ������ �� �������?",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(this));
+                }).ShowWindowDialogAsync(this));
 
             #endregion
 
-            if (res is "Да")
+            if (res is "��")
             {
                 await using var db = new DBModel(StaticConfiguration.DBPath);
                 foreach (var form in formToDeleteList)

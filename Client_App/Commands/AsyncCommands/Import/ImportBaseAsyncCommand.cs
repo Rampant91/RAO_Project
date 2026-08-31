@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Logging;
@@ -8,8 +9,8 @@ using Client_App.ViewModels;
 using Client_App.ViewModels.Messages;
 using Client_App.Views.Messages;
 using DynamicData;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -738,8 +739,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                         #region MessageImportReportHasSamePeriodCorrectionNumberAndExportDate
 
-                        res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        res = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                            .GetMessageBoxCustom(new MessageBoxCustomParams
                             {
                                 ButtonDefinitions =
                                 [
@@ -767,8 +768,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                     $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}{InventoryCheck(impRep)}",
                                 MinWidth = 400,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner
-                            })
-                            .ShowDialog(Desktop.MainWindow));
+                            }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                         #endregion
 
@@ -800,8 +800,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     #region MessagePeriodsIntersect
 
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                        .GetMessageBoxCustom(new MessageBoxCustomParams
                         {
                             ButtonDefinitions =
                             [
@@ -831,8 +831,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}{InventoryCheck(impRep)}",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(Desktop.MainWindow));
+                        }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                     #endregion
 
@@ -851,8 +850,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 #region MessageNewReport
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions =
                         [
@@ -868,8 +867,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
             }
@@ -1048,7 +1046,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             ImpRepCorNum = impRep.CorrectionNumber_DB;
             ImpRepFormCount = impRep.Rows.Count;
             ImpRepExpDate = impRep.ExportDate_DB;
-            ImpRepYear = impRep.Year_DB;
+            ImpRepYear = impRep.Year_DB?.ToString() ?? "";
 
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
@@ -1059,7 +1057,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
                 BaseRepFormCount = Math.Max(await ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
                 BaseRepExpDate = baseRep.ExportDate_DB;
-                BaseRepYear = baseRep.Year_DB;
+                BaseRepYear = baseRep.Year_DB?.ToString() ?? "";
 
                 if (BaseRepYear != ImpRepYear || ImpRepFormNum != BaseRepFormNum) continue;
                 impInBase = true;
@@ -1089,8 +1087,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     #region MessageImportReportHasSameYearCorrectionNumberAndExportDate
 
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                        .GetMessageBoxCustom(new MessageBoxCustomParams
                         {
                             ButtonDefinitions =
                             [
@@ -1117,8 +1115,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(Desktop.MainWindow));
+                        }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                     #endregion
 
@@ -1145,8 +1142,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 #region MessageNewReport
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions =
                         [
@@ -1162,8 +1159,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
 
@@ -1223,7 +1219,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             ImpRepCorNum = impRep.CorrectionNumber_DB;
             ImpRepFormCount = impRep.Rows.Count;
             ImpRepExpDate = impRep.ExportDate_DB;
-            ImpRepYear = impRep.Year_DB;
+            ImpRepYear = impRep.Year_DB?.ToString() ?? "";
 
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
@@ -1234,7 +1230,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
                 BaseRepFormCount = Math.Max(await ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
                 BaseRepExpDate = baseRep.ExportDate_DB;
-                BaseRepYear = baseRep.Year_DB;
+                BaseRepYear = baseRep.Year_DB?.ToString() ?? "";
 
                 if (BaseRepYear != ImpRepYear || ImpRepFormNum != BaseRepFormNum) continue;
                 impInBase = true;
@@ -1263,8 +1259,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     #region MessageImportReportHasSameYearCorrectionNumberAndExportDate
 
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                        .GetMessageBoxCustom(new MessageBoxCustomParams
                         {
                             ButtonDefinitions =
                             [
@@ -1289,8 +1285,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(Desktop.MainWindow));
+                        }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                     #endregion
 
@@ -1317,8 +1312,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 #region MessageNewReport
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions =
                         [
@@ -1332,8 +1327,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
 
@@ -1401,7 +1395,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             ImpRepCorNum = impRep.CorrectionNumber_DB;
             ImpRepFormCount = impRep.Rows.Count;
             ImpRepExpDate = impRep.ExportDate_DB;
-            ImpRepYear = impRep.Year_DB;
+            ImpRepYear = impRep.Year_DB?.ToString() ?? "";
 
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
@@ -1412,7 +1406,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
                 BaseRepFormCount = Math.Max(await ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
                 BaseRepExpDate = baseRep.ExportDate_DB;
-                BaseRepYear = baseRep.Year_DB;
+                BaseRepYear = baseRep.Year_DB?.ToString() ?? "";
 
                 if (BaseRepYear != ImpRepYear || ImpRepFormNum != BaseRepFormNum) continue;
                 impInBase = true;
@@ -1441,8 +1435,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                     #region MessageImportReportHasSameYearCorrectionNumberAndExportDate
 
-                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    res = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                        .GetMessageBoxCustom(new MessageBoxCustomParams
                         {
                             ButtonDefinitions =
                             [
@@ -1467,8 +1461,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                                 $"{Environment.NewLine}Количество строк импортируемого отчета - {ImpRepFormCount}",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(Desktop.MainWindow));
+                        }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                     #endregion
 
@@ -1495,8 +1488,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                 #region MessageNewReport
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions =
                         [
@@ -1510,8 +1503,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                             $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
 

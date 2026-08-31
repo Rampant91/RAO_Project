@@ -1,12 +1,15 @@
-﻿using Avalonia;
+﻿using MsBox.Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels.Forms;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Models.Collections;
 using System.Threading.Tasks;
 using Models.Forms;
 
+using MsBox.Avalonia.Enums;
+using Client_App.Resources;
 namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
@@ -20,7 +23,7 @@ public class NewPasteNotesAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
 
-        var clipboard = Application.Current.Clipboard;
+        var clipboard = Avalonia11Compat.MainClipboard!;
 
         var pastedString = await clipboard.GetTextAsync();
         if ((pastedString == null) || (pastedString == "")) return;
@@ -38,10 +41,10 @@ public class NewPasteNotesAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
 
         if (start + parsedRows.Length > Storage.Notes.Count)
         {
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = $"Вставка данных из буфера обмена",
                         ContentHeader = "Внимание",
                         ContentMessage =
@@ -50,8 +53,7 @@ public class NewPasteNotesAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
         }
 
         for (var i = 0; i < parsedRows.Length && i+start<Storage.Notes.Count; i++)

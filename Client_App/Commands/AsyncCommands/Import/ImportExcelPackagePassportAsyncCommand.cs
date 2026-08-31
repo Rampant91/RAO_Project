@@ -1,11 +1,12 @@
-﻿using Avalonia;
+﻿using MsBox.Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.Controls.DataGrid;
 using Client_App.ViewModels.Passports;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.JSON;
 using Models.Passports;
@@ -18,6 +19,7 @@ using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.Import
 {
     public class ImportExcelPackagePassportAsyncCommand(PassportsMenuWindowVM passportMenuVM) : ImportBaseAsyncCommand
@@ -49,10 +51,10 @@ namespace Client_App.Commands.AsyncCommands.Import
                 }
                 catch (Exception ex)
                 {
-                    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Ошибка",
                         ContentHeader = $"Произошла ошибка при импорте файла {SourceFile.Name}",
                         ContentMessage = $"Описание:\n" +
@@ -60,8 +62,7 @@ namespace Client_App.Commands.AsyncCommands.Import
                         MinWidth = 400,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
                     return;
                 }
                 ExcelPackage excelPackage = new(SourceFile);
@@ -78,8 +79,8 @@ namespace Client_App.Commands.AsyncCommands.Import
                 {
                     #region InvalidDataFormatMessage
 
-                    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                        .GetMessageBoxCustom(new MessageBoxCustomParams
                         {
                             ButtonDefinitions =
                             [
@@ -91,8 +92,7 @@ namespace Client_App.Commands.AsyncCommands.Import
                                              $"{Environment.NewLine}Не соответствует формат данных!",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(owner));
+                        }).ShowWindowDialogAsync(owner));
 
                     #endregion
 

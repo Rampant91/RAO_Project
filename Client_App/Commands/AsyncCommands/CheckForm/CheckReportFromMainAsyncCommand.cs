@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels;
@@ -6,7 +7,8 @@ using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
+using Microsoft.EntityFrameworkCore;
 using Models.CheckForm;
 using Models.Collections;
 using Models.DBRealization;
@@ -17,6 +19,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
 /// <summary>
@@ -107,10 +110,10 @@ public class CheckReportFromMainAsyncCommand : BaseAsyncCommand
         {
             #region MessageCheckFailed
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = $"Проверка формы {par.FormNum_DB}",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Функция проверки данных форм находится в процессе реализации.",
@@ -118,8 +121,7 @@ public class CheckReportFromMainAsyncCommand : BaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -133,10 +135,10 @@ public class CheckReportFromMainAsyncCommand : BaseAsyncCommand
 
             #region MessageCheckFailed
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = $"Проверка формы {par.FormNum_DB}",
                     ContentHeader = "Уведомление",
                     ContentMessage = "В ходе выполнения проверки формы возникла непредвиденная ошибка.",
@@ -144,8 +146,7 @@ public class CheckReportFromMainAsyncCommand : BaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -168,10 +169,10 @@ public class CheckReportFromMainAsyncCommand : BaseAsyncCommand
         {
             #region MessageSourceTransmissionFailed
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = $"Проверка формы {rep.FormNum_DB}",
                     ContentHeader = "Уведомление",
                     ContentMessage = "По результатам проверки формы, ошибок не выявлено.",
@@ -179,8 +180,7 @@ public class CheckReportFromMainAsyncCommand : BaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
         }

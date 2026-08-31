@@ -1,8 +1,8 @@
-﻿using Avalonia;
+﻿using MsBox.Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using AvaloniaEdit.Utils;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.BackgroundLoader;
@@ -15,8 +15,8 @@ using Client_App.ViewModels.Messages;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -174,8 +174,8 @@ public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
     #region private Functions
     private async Task<bool> ShowAskDependOnReportOrNotMessage(Window owner)
     {
-        string answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        string answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -189,8 +189,7 @@ public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
                 MinHeight = 125,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(owner));
+            }).ShowWindowDialogAsync(owner));
 
         if (answer == "Да")
             return true;
@@ -253,8 +252,8 @@ public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
         }
         catch (Exception ex)
         {
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-               .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+               .GetMessageBoxCustom(new MessageBoxCustomParams
                {
                    ButtonDefinitions =
                    [
@@ -268,8 +267,7 @@ public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
                    MinHeight = 125,
                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
                    Topmost = true,
-               })
-               .ShowDialog(owner));
+               }).ShowWindowDialogAsync(owner));
             return new List<Reports>();
         }
     }
@@ -302,8 +300,8 @@ public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
         }
         catch (Exception ex)
         {
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-               .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+               .GetMessageBoxCustom(new MessageBoxCustomParams
                {
                    ButtonDefinitions =
                    [
@@ -317,8 +315,7 @@ public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
                    MinHeight = 125,
                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
                    Topmost = true,
-               })
-               .ShowDialog(owner));
+               }).ShowWindowDialogAsync(owner));
             return new List<Reports>();
         }
     }

@@ -1,9 +1,10 @@
+using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Services.DataAccess;
 using Client_App.ViewModels.Forms;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
@@ -32,8 +33,8 @@ public class NewDeleteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         #region MessageDeleteLine
 
         var suffix = candidates.Length == 1 ? 'у' : 'и';
-        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -48,7 +49,7 @@ public class NewDeleteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
             })
-            .ShowDialog(Desktop.MainWindow));
+            .ShowWindowDialogAsync(Desktop.MainWindow));
 
         #endregion
 

@@ -48,7 +48,7 @@ internal static class WindowScreenContext
 
         try
         {
-            var density = screen.PixelDensity;
+            var density = screen.Scaling;
             return density > 0 ? density : 1.0;
         }
         catch
@@ -239,14 +239,14 @@ internal static class WindowScreenContext
 
     private static Screen? TryScreenFromWindow(Screens screens, Window? window)
     {
-        if (window?.PlatformImpl == null)
+        if (window == null)
         {
             return null;
         }
 
         try
         {
-            return screens.ScreenFromWindow(window.PlatformImpl);
+            return screens.ScreenFromWindow(window);
         }
         catch
         {

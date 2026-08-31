@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
@@ -8,9 +9,9 @@ using Client_App.Services.DataAccess;
 using Client_App.Services.Updates;
 using Client_App.ViewModels;
 using Client_App.Views.Messages;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -302,8 +303,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         if (owner is null)
             return;
 
-        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxInputParams
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -320,7 +321,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
             })
-            .ShowDialog(owner));
+            .ShowWindowDialogAsync(owner));
 
         switch (res)
         {
@@ -629,8 +630,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
                 #region MessageFailedToReadFile
 
-                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Ошибка",
@@ -647,8 +648,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult(); 
+                    }).ShowWindowDialogAsync(Desktop.MainWindow)).GetAwaiter().GetResult(); 
 
                 #endregion
             }
@@ -656,8 +656,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             {
                 #region MessageFailedToCreateFile
 
-                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Ошибка",
@@ -667,8 +667,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
+                    }).ShowWindowDialogAsync(Desktop.MainWindow)).GetAwaiter().GetResult();
 
                 #endregion
 
@@ -684,8 +683,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             {
                 #region MessageFailedToCreateFile
 
-                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Ошибка",
@@ -695,8 +694,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
+                    }).ShowWindowDialogAsync(Desktop.MainWindow)).GetAwaiter().GetResult();
 
                 #endregion
 
@@ -716,8 +714,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         {
             #region MessageFailedToCreateFile
 
-            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Ошибка",
@@ -727,8 +725,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
+                }).ShowWindowDialogAsync(Desktop.MainWindow)).GetAwaiter().GetResult();
 
             #endregion
 
@@ -745,8 +742,8 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
             #region MessageFailedToCreateFile
 
-            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Ошибка",
@@ -756,8 +753,7 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
+                }).ShowWindowDialogAsync(Desktop.MainWindow)).GetAwaiter().GetResult();
 
             #endregion
             

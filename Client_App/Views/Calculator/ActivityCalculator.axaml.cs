@@ -1,9 +1,9 @@
-using Avalonia.Markup.Xaml;
+﻿using Avalonia.Markup.Xaml;
 using Client_App.ViewModels.Calculator;
 
 namespace Client_App.Views.Calculator;
 
-public class ActivityCalculator : BaseWindow<ActivityCalculatorVM>
+public partial class ActivityCalculator : BaseWindow<ActivityCalculatorVM>
 {
     private ActivityCalculatorVM _vm = null!;
 

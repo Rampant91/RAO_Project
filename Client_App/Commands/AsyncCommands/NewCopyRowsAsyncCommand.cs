@@ -1,5 +1,6 @@
-﻿using Avalonia;
-using Models.Forms; 
+using Avalonia;
+using Client_App.Resources;
+using Models.Forms;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -32,7 +33,7 @@ public class NewCopyRowsAsyncCommand() : BaseAsyncCommand
             plainText.AppendLine(form.ConvertToTSVstring());
         }
 
-        var clipboard = Application.Current!.Clipboard;
+        var clipboard = Avalonia11Compat.MainClipboard;
         if (clipboard != null) 
         {
             await clipboard.SetTextAsync(plainText.ToString());

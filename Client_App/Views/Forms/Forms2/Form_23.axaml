@@ -13,7 +13,6 @@
     xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms2"
-    x:Name="2.3"
     Title="{Binding WindowTitle}"
     MinWidth="800"
     MinHeight="600"
@@ -22,7 +21,7 @@
     x:DataType="vm:Form_23VM"
     KeyDown="DataGrid_KeyDown"
     KeyUp="DataGrid_KeyUp"
-    WindowStartupLocation="Manual"
+    WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
 
     <Window.Resources>
@@ -321,7 +320,7 @@
 					x:CompileBindings="True"
 					CanUserSortColumns="True"
 					CanUserReorderColumns="False"
-					Items="{Binding FormList}"
+					ItemsSource="{Binding FormList}"
 					SelectedItem="{Binding SelectedForm}"
 					ColumnWidth="125">
 
@@ -658,7 +657,7 @@
                         Grid.Row="1"
                         x:CompileBindings="True"
                         Classes="notesTable"
-                        Items="{Binding NoteList}"
+                        ItemsSource="{Binding NoteList}"
                         SelectedItem="{Binding SelectedNote}">
 
                         <interactivity:Interaction.Behaviors>

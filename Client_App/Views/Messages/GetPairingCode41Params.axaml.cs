@@ -1,10 +1,10 @@
-using Avalonia.Interactivity;
+﻿using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Client_App.ViewModels.Messages;
 
 namespace Client_App.Views.Messages;
 
-public class GetPairingCode41Params : BaseWindow<GetPairingCode41ParamsVM>
+public partial class GetPairingCode41Params : BaseWindow<GetPairingCode41ParamsVM>
 {
     public GetPairingCode41ParamsVM Vm = null!;
 

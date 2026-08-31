@@ -1,27 +1,21 @@
-using Avalonia.Controls;
-using Avalonia.Threading;
-using Client_App.Interfaces.Logger;
-using Client_App.Interfaces.Logger.EnumLogger;
-using Client_App.Logging;
-using Client_App.Services;
-using Client_App.Services.DataAccess;
-using Client_App.ViewModels;
+﻿using MsBox.Avalonia;
+using System.Collections;
 using Client_App.Views;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
-using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
-using System;
-using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Controls;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
+using Models.Interfaces;
+using Avalonia.Threading;
+using Client_App.ViewModels;
 
 namespace Client_App.Commands.AsyncCommands.Delete;
 
 /// <summary>
-/// Устаревшая команда удаления отчёта (не привязана к UI).
-/// Оставлена Id-based, чтобы случайный вызов не ломался на stubs.
+/// Удалить выбранный отчёт у выбранной организации.
 /// </summary>
 public class DeleteReportAsyncCommand : BaseAsyncCommand
 {
@@ -31,8 +25,8 @@ public class DeleteReportAsyncCommand : BaseAsyncCommand
 
         #region MessageDeleteReport
 
-        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -45,72 +39,28 @@ public class DeleteReportAsyncCommand : BaseAsyncCommand
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(Desktop.MainWindow));
+            }).ShowWindowDialogAsync(Desktop.MainWindow));
 
         #endregion
 
-        if (answer is not "Да")
-            return;
+        if (answer is not "Да" || mainWindow!.SelectedReports is null || !mainWindow.SelectedReports.Any()) return;
 
-        Report? reportShell = null;
-        if (parameter is IEnumerable enumerable)
-            reportShell = enumerable.OfType<Report>().FirstOrDefault();
-        else if (parameter is Report report)
-            reportShell = report;
+        var selectedReports = new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
+        var selectedReportsFirst = mainWindow.SelectedReports.First() as Reports;
 
-        if (reportShell is null)
-        {
-            ServiceExtension.LoggerManager.Warning(
-                "Удаление отчёта (legacy): отчёт не передан.",
-                ErrorCodeLogger.Application);
-            return;
-        }
+        var enumerable = parameter as IEnumerable;
+        var report = enumerable!.Cast<Report>().FirstOrDefault();
 
-        try
-        {
-            var db = StaticConfiguration.DBModel;
-            var tracked = db.ReportCollectionDbSet.Local.FirstOrDefault(r => r.Id == reportShell.Id)
-                          ?? await db.ReportCollectionDbSet
-                              .Include(r => r.Reports)
-                              .FirstOrDefaultAsync(r => r.Id == reportShell.Id);
+        if (report is null) return;
 
-            if (tracked is null)
-            {
-                ServiceExtension.LoggerManager.Warning(
-                    $"Удаление отчёта (legacy) Id={reportShell.Id}: не найден в БД.",
-                    ErrorCodeLogger.DataBase);
-                return;
-            }
+        selectedReportsFirst!.Report_Collection.Remove(report);
 
-            var orgId = tracked.Reports?.Id
-                        ?? (mainWindow?.DataContext as MainWindowVM)?.SelectedReports?.Id
-                        ?? 0;
+        //await ReportDeletionLogger.LogDeletionAsync(report);
 
-            if (tracked.Reports is null && (mainWindow?.DataContext as MainWindowVM)?.SelectedReports is { } org)
-                tracked.Reports = org;
+        mainWindow.SelectedReports = selectedReports;
+        var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
+        mainWindowVM.UpdateTotalReportCount();
 
-            await ReportDeletionLogger.LogDeletionAsync(tracked);
-
-            db.ReportCollectionDbSet.Remove(tracked);
-            await db.SaveChangesAsync();
-
-            if (orgId != 0)
-                Forms1WarmCache.Instance.InvalidateOrg(orgId);
-
-            if (mainWindow?.DataContext is MainWindowVM mainWindowVM)
-            {
-                mainWindowVM.UpdateReportCollection();
-                mainWindowVM.UpdateFormsPageInfo();
-                mainWindowVM.UpdateTotalReportCount();
-            }
-        }
-        catch (Exception ex)
-        {
-            var msg = $"Удаление отчёта (legacy) Id={reportShell.Id}." +
-                      $"{Environment.NewLine}Message: {ex.Message}" +
-                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
-        }
+        await StaticConfiguration.DBModel.SaveChangesAsync();
     }
 }

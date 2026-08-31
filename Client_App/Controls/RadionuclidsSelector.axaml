@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Client_App.Controls.RadionuclidsSelector"
              x:Name="Root">
@@ -56,7 +56,7 @@
                PlacementTarget="{Binding ElementName=AddBtn}"
                PlacementMode="Bottom"
                IsLightDismissEnabled="True"
-               StaysOpen="False">
+              >
             <Border Background="White" 
                     BorderBrush="Gray" 
                     BorderThickness="1" 
@@ -99,7 +99,7 @@
                PlacementTarget="{Binding ElementName=RemoveBtn}"
                PlacementMode="Bottom"
                IsLightDismissEnabled="True"
-               StaysOpen="False">
+              >
             <Border Background="White" 
                     BorderBrush="Gray" 
                     BorderThickness="1" 

@@ -1,10 +1,11 @@
-﻿using Avalonia.Controls;
+﻿using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels.Messages;
 using Client_App.Views.Messages;
 using CommunityToolkit.Mvvm.DependencyInjection;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -67,8 +68,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
         #region AskMessages
         protected async Task<bool> ShowConfirmationMessage(Window owner)
         {
-            string answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            string answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -83,8 +84,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     MinHeight = 125,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(owner));
+                }).ShowWindowDialogAsync(owner));
 
             if (answer == "Да")
                 return true;
@@ -142,8 +142,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             }
             catch (Exception ex)
             {
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                   .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                   .GetMessageBoxCustom(new MessageBoxCustomParams
                    {
                        ButtonDefinitions =
                        [
@@ -157,8 +157,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                        MinHeight = 125,
                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
                        Topmost = true,
-                   })
-                   .ShowDialog(owner));
+                   }).ShowWindowDialogAsync(owner));
                 return new List<int>();
             }
         }

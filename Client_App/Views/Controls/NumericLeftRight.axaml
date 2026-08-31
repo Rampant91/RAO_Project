@@ -5,9 +5,29 @@
 			 xmlns:local="using:Client_App.Behaviors"
 			 xmlns:inputBehaviors="using:Client_App.Behaviors.Input"
 			 xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="Client_App.Views.Controls.NumericLeftRight">
-	<Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto">
+             mc:Ignorable="d" d:DesignWidth="120" d:DesignHeight="28"
+             x:Class="Client_App.Views.Controls.NumericLeftRight"
+             Width="100"
+             VerticalAlignment="Center">
+	<UserControl.Styles>
+		<Style Selector="Button.DecreasePart, Button.IncreasePart">
+			<Setter Property="Width" Value="22"/>
+			<Setter Property="Height" Value="24"/>
+			<Setter Property="Padding" Value="0"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+		</Style>
+		<Style Selector="TextBox">
+			<Setter Property="Background" Value="White"/>
+			<Setter Property="MinWidth" Value="36"/>
+			<Setter Property="MaxWidth" Value="48"/>
+			<Setter Property="Height" Value="24"/>
+			<Setter Property="Padding" Value="4,2"/>
+			<Setter Property="TextAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+		</Style>
+	</UserControl.Styles>
+	<Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto" VerticalAlignment="Center">
 		<Button Grid.Column="0" 
 					  Classes="DecreasePart" 
 					  Command="{Binding Decrease, RelativeSource={RelativeSource AncestorType=UserControl}}" 

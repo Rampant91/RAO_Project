@@ -1,3 +1,4 @@
+using MsBox.Avalonia;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -6,8 +7,8 @@ using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.Forms.Forms1;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.Forms;
@@ -16,6 +17,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Views.Forms.Forms1;
 
 public partial class Form_10 : BaseWindow<Form_10VM>
@@ -29,8 +31,10 @@ public partial class Form_10 : BaseWindow<Form_10VM>
 
     public Form_10(Form_10VM vm)
     {
-        AvaloniaXamlLoader.Load(this);
+        DataContext = vm;
         _vm = vm;
+        AvaloniaXamlLoader.Load(this);
+        Name = "1.0";
         Closing += OnStandardClosing;
     }
 
@@ -38,7 +42,6 @@ public partial class Form_10 : BaseWindow<Form_10VM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
-        args.Cancel = true;
         if (DataContext is not Form_10VM vm) return;
 
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
@@ -47,8 +50,6 @@ public partial class Form_10 : BaseWindow<Form_10VM>
             if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
             {
                 desktop.MainWindow.WindowState = WindowState.Normal;
-                Closing -= OnStandardClosing;
-                Close();
                 return;
             }
         }
@@ -98,16 +99,16 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         //{
         //    args.Cancel = true;
 
-        //    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-        //        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        //    await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+        //        .GetMessageBoxStandard(new MessageBoxStandardParams
         //        {
-        //            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-        //            ContentTitle = "Ошибка при сохранении титульного листа организации",
-        //            ContentHeader = "Ошибка",
+        //            ButtonDefinitions = ButtonEnum.Ok,
+        //            ContentTitle = "������ ��� ���������� ���������� ����� �����������",
+        //            ContentHeader = "������",
         //            ContentMessage =
-        //                $"Не удалось сохранить изменения в титульном листе организации, " +
-        //                $"поскольку организация с данными ОКПО и рег.№ уже существует в базе данных. " +
-        //                $"Убедитесь в правильности заполнения ОКПО и рег.№.",
+        //                $"�� ������� ��������� ��������� � ��������� ����� �����������, " +
+        //                $"��������� ����������� � ������� ���� � ���.� ��� ���������� � ���� ������. " +
+        //                $"��������� � ������������ ���������� ���� � ���.�.",
         //            MinWidth = 400,
         //            MaxWidth = 600,
         //            MinHeight = 150,
@@ -115,7 +116,7 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         //            WindowStartupLocation = WindowStartupLocation.CenterOwner,
         //            Topmost = true,
         //        })
-        //        .ShowDialog(window ?? Desktop.MainWindow));
+        //        .ShowWindowDialogAsync(window ?? Desktop.MainWindow));
 
         //    return;
         //}
@@ -152,27 +153,26 @@ public partial class Form_10 : BaseWindow<Form_10VM>
                 || string.IsNullOrWhiteSpace(jurForm10.Okopf_DB)
                 || string.IsNullOrWhiteSpace(jurForm10.Okfs_DB)))
         {
-            var answer = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            var answer = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
-                        new ButtonDefinition { Name = "Да" },
-                        new ButtonDefinition { Name = "Нет" }
+                        new ButtonDefinition { Name = "��" },
+                        new ButtonDefinition { Name = "���" }
                     ],
-                    ContentTitle = "Форма 1.0",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = "Не все обязательные поля юридического лица заполнены, " +
-                                     $"{Environment.NewLine}часть заполненных полей будет очищена. " +
-                                     $"{Environment.NewLine}Вы уверены, что хотите выйти, " +
-                                     $"несмотря на незаполненные поля юридического лица?",
+                    ContentTitle = "����� 1.0",
+                    ContentHeader = "�����������",
+                    ContentMessage = "��� ���������� ������ ������������� ���������������� �������������, " +
+                                     $"{Environment.NewLine}����� ���������� ��������� ������ ������������ ����. " +
+                                     $"{Environment.NewLine}�� �������, ��� ������ ������� �����, " +
+                                     $"������� ������ ������������ ���� ��������������?",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(desktop.MainWindow));
+                }).ShowWindowDialogAsync(desktop.MainWindow));
 
-            if (answer is not "Да")
+            if (answer is not "��")
             {
                 args.Cancel = true;
                 return;
@@ -183,22 +183,21 @@ public partial class Form_10 : BaseWindow<Form_10VM>
 
         #region MessageRemoveEmptyForms
 
-        var res = Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var res = Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" }
+                    new ButtonDefinition { Name = "��" },
+                    new ButtonDefinition { Name = "���" }
                 ],
-                ContentTitle = "Сохранение изменений",
-                ContentHeader = "Уведомление",
-                ContentMessage = $"Сохранить форму {vm.FormType}?",
+                ContentTitle = "���������� ���������",
+                ContentHeader = "�����������",
+                ContentMessage = $"��������� ����� {vm.FormType}?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(desktop.MainWindow));
+            }).ShowWindowDialogAsync(desktop.MainWindow));
 
         #endregion
 
@@ -206,18 +205,22 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         var dbm = StaticConfiguration.DBModel;
         switch (res.Result)
         {
-            case "Да":
+            case "��":
             {
-                flag = true;
                 try
                 {
+                    await dbm.SaveChangesAsync();
                     await new SaveReportAsyncCommand(vm).AsyncExecute(null);
                 }
                 catch { }
 
-                break;
+                if (desktop.Windows.Count == 1)
+                {
+                    desktop.MainWindow.WindowState = WindowState.Normal;
+                }
+                return;
             }
-            case "Нет":
+            case "���":
             {
                 flag = true;
                 dbm.Restore();
@@ -248,7 +251,6 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         desktop.MainWindow.WindowState = WindowState.Normal;
         if (flag)
         {
-            Closing -= OnStandardClosing;
             Close();
         }
         args.Cancel = true;

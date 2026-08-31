@@ -1,13 +1,12 @@
-﻿using Client_App.Resources;
-using Client_App.Services.DataAccess;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
+﻿using MsBox.Avalonia;
+using Client_App.Resources;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
 using Models.Collections;
-using Models.DBRealization;
 using Avalonia.Threading;
 using Client_App.Resources.CustomComparers;
 
@@ -26,9 +25,9 @@ public class CopyExecutorDataAsyncCommand(ChangeOrCreateVM changeOrCreateViewMod
     public override async Task AsyncExecute(object? parameter)
     {
         var comparator = new CustomStringDateComparer(StringComparer.CurrentCulture);
-        var shells = OrgReportsQuery.LoadReportShells(StaticConfiguration.DBModel, Storages.Id, FormType);
-        var lastReportWithExecutor = shells
-            .Where(rep => rep.Id != Storage.Id
+        var lastReportWithExecutor = Storages.Report_Collection
+            .Where(rep => rep.FormNum_DB == FormType
+                          && !rep.Equals(Storage)
                           && (rep.FIOexecutor_DB is not (null or "" or "-")
                               || rep.ExecEmail_DB is not (null or "" or "-")
                               || rep.ExecPhone_DB is not (null or "" or "-")
@@ -39,8 +38,8 @@ public class CopyExecutorDataAsyncCommand(ChangeOrCreateVM changeOrCreateViewMod
             #region ShowMessageMissingExecutorData
 
             var orgName = "данной организации";
-            var lastReport = shells
-                .Where(rep => rep.Id != Storage.Id)
+            var lastReport = Storages.Report_Collection
+                .Where(rep => rep.FormNum_DB.Equals(FormType) && !rep.Equals(Storage))
                 .MaxBy(rep => rep.EndPeriod_DB, comparator);
             if (FormType.ToCharArray()[0] == '1')
             {
@@ -68,14 +67,13 @@ public class CopyExecutorDataAsyncCommand(ChangeOrCreateVM changeOrCreateViewMod
                 ? $"У {orgName}" + Environment.NewLine + $"отсутствуют другие формы {FormType}"
                 : $"У {orgName}" + Environment.NewLine + $"в формах {FormType} не заполнены данные исполнителя";
             
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
                     ContentHeader = "Уведомление",
                     ContentMessage = msg
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 

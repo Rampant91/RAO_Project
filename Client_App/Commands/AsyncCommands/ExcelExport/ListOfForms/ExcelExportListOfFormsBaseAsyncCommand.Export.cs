@@ -1,3 +1,4 @@
+﻿using MsBox.Avalonia;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,12 +13,13 @@ using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using OfficeOpenXml;
 using static Client_App.Resources.StaticStringMethods;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 
 public abstract partial class ExcelExportListOfFormsBaseAsyncCommand
@@ -770,10 +772,10 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand
     AnyTaskProgressBar progressBar,
     CancellationTokenSource cts)
   {
-    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-      .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+    await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+      .GetMessageBoxStandard(new MessageBoxStandardParams
       {
-        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+        ButtonDefinitions = ButtonEnum.Ok,
         CanResize = true,
         ContentTitle = "Выгрузка в .xlsx",
         ContentHeader = "Уведомление",
@@ -783,8 +785,7 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand
         MinWidth = 400,
         MinHeight = 150,
         WindowStartupLocation = WindowStartupLocation.CenterOwner
-      })
-      .ShowDialog(progressBar ?? Desktop.MainWindow));
+      }).ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
 
     await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
   }

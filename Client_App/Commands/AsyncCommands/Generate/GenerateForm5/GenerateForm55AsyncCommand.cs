@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using MsBox.Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
@@ -10,8 +11,8 @@ using Client_App.ViewModels.Messages;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -34,7 +35,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
         private Report Report => formVM.Report;
 
-        private string year => formVM.Report.Year_DB;
+        private string year => formVM.Report.Year_DB?.ToString() ?? "";
 
         
 
@@ -174,8 +175,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             }
             catch (Exception ex)
             {
-                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     CanResize = true,
                     ContentTitle = "Ошибка",
@@ -184,8 +185,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                     MinHeight = 125,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(owner));
+                }).ShowWindowDialogAsync(owner));
                 throw ex;
             }
             return repList;
@@ -228,8 +228,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 }
                 catch (Exception ex)
                 {
-                    Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         CanResize = true,
                         ContentTitle = "Ошибка",
@@ -238,8 +238,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         MinHeight = 125,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    })
-                    .ShowDialog(owner));
+                    }).ShowWindowDialogAsync(owner));
                     throw ex;
                 }
             }
@@ -285,8 +284,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         }
                         catch (Exception ex)
                         {
-                            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                            .GetMessageBoxCustom(new MessageBoxCustomParams
                             {
                                 CanResize = true,
                                 ContentTitle = "Ошибка",
@@ -295,8 +294,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                                 MinHeight = 125,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                                 Topmost = true,
-                            })
-                            .ShowDialog(owner));
+                            }).ShowWindowDialogAsync(owner));
                             throw ex;
                         }
                     }
@@ -322,8 +320,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         }
                         catch (Exception ex)
                         {
-                            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                            .GetMessageBoxCustom(new MessageBoxCustomParams
                             {
                                 CanResize = true,
                                 ContentTitle = "Ошибка",
@@ -332,8 +330,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                                 MinHeight = 125,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                                 Topmost = true,
-                            })
-                            .ShowDialog(owner));
+                            }).ShowWindowDialogAsync(owner));
                             throw ex;
                         }
                     }
@@ -348,8 +345,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                 }
                 catch (Exception ex)
                 {
-                    Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         CanResize = true,
                         ContentTitle = "Ошибка",
@@ -358,8 +355,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         MinHeight = 125,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    })
-                    .ShowDialog(owner));
+                    }).ShowWindowDialogAsync(owner));
                     throw ex;
                 }
             }

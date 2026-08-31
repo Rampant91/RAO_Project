@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Resources.CustomComparers;
@@ -6,8 +7,8 @@ using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views.Messages;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
@@ -27,6 +28,7 @@ using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
 using Microsoft.EntityFrameworkCore;
 using Models.Forms.Form5;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.Import;
 
 /// <summary>
@@ -95,10 +97,10 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 }
                 catch(Exception ex)
                 {
-                    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Ошибка",
                         ContentHeader = $"Произошла ошибка при импорте файла {SourceFile.Name}",
                         ContentMessage = $"Описание:\n" +
@@ -106,8 +108,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         MinWidth = 400,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
                     return;
                 }
                 ExcelPackage excelPackage = new(SourceFile);
@@ -139,8 +140,8 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 {
                     #region InvalidDataFormatMessage
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions = 
                         [
@@ -152,8 +153,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                          $"{Environment.NewLine}Не соответствует формат данных!",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
 
@@ -372,7 +372,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 ImpRepFormCount = impRep.Rows.Count;
                 ImpRepFormNum = impRep.FormNum_DB;
                 ImpRepStartPeriod = impRep.StartPeriod_DB;
-                ImpRepYear = impRep.Year_DB ?? "";
+                ImpRepYear = impRep.Year_DB?.ToString() ?? "";
 
                 //SkipNewOrg = SkipInter = SkipLess = SkipNew = SkipReplace = AtLeastOneImportDone = false;
                 HasMultipleReport = answer.Length > 1;
@@ -418,8 +418,8 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                             if (worksheet0.Name is "1.0" or "2.0")
                             {
                                 #region MessageNewOrg 1.0 or 2.0
-                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                                    .GetMessageBoxCustom(new MessageBoxCustomParams
                                     {
                                         ButtonDefinitions =
                                         [
@@ -440,8 +440,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                             $"{Environment.NewLine}импортировать все новые организации.",
                                         MinWidth = 400,
                                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                    })
-                                    .ShowDialog(Desktop.MainWindow));
+                                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                                 #endregion
                             }
@@ -449,8 +448,8 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                             {
                                 #region MessageNewOrg 4.0 5.0
 
-                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                                    .GetMessageBoxCustom(new MessageBoxCustomParams
                                     {
                                         ButtonDefinitions =
                                         [
@@ -469,8 +468,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                             $"{Environment.NewLine}импортировать все новые организации.",
                                         MinWidth = 400,
                                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                    })
-                                    .ShowDialog(Desktop.MainWindow));
+                                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                                 #endregion
                             }
@@ -483,8 +481,8 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                             {
                                 #region MessageNewOrg
 
-                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                                    .GetMessageBoxCustom(new MessageBoxCustomParams
                                     {
                                         ButtonDefinitions =
                                         [
@@ -500,8 +498,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                                          $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                                         MinWidth = 400,
                                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                    })
-                                    .ShowDialog(Desktop.MainWindow));
+                                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                                 #endregion
                             }
@@ -509,8 +506,8 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                             {
                                 #region MessageNewOrg 4.0 5.0
 
-                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                                    .GetMessageBoxCustom(new MessageBoxCustomParams
                                     {
                                         ButtonDefinitions =
                                         [
@@ -526,8 +523,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                             $"{Environment.NewLine}",
                                         MinWidth = 400,
                                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                    })
-                                    .ShowDialog(Desktop.MainWindow));
+                                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                                 #endregion
                             }
@@ -572,18 +568,17 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             {
                 #region MessageImportError
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Импорт из .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = "При сохранении импортированных данных возникла ошибка.\n",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -616,18 +611,17 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 ? "а"
                 : "ов";
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Импорт из .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Импорт из файл{suffix} .xlsx был отменен.",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
         }
@@ -920,7 +914,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                     impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
                     impRep.SourcesQuantity26_DB = Convert.ToInt32(worksheet1.Cells["G5"].Value);
-                    impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Value);
+                    impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Value);
 
                     #endregion
 
@@ -936,7 +930,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     impRep.ValidBegin27_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
                     impRep.ValidThru27_DB = Convert.ToString(worksheet1.Cells["J5"].Value);
                     impRep.PermissionDocumentName27_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
-                    impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Value);
+                    impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Value);
 
                     #endregion
                 
@@ -969,7 +963,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells["F21"].Value);
                     impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells["I21"].Value);
                     impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells["K21"].Value);
-                    impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Value);
+                    impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Value);
 
                         #endregion
 
@@ -980,7 +974,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     #region BindData_2.x
 
                         impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Text);
+                        impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Text);
 
                         #endregion
 
@@ -991,34 +985,12 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         else if (formNumber.Split('.')[0] == "4")
         {
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B1"].Value);
-            impRep.Year_DB = Convert.ToString(worksheet.Cells["B15"].Text).Trim();
-            //Отсекаем мусор из ячейки
-            if(!impRep.Year_DB.All(c => char.IsDigit(c)))
-            {
-                var digits = "";
-                foreach (var c in impRep.Year_DB)
-                {
-                    if (char.IsDigit(c))
-                        digits += c;
-                }
-                impRep.Year_DB = digits;
-            }
+            impRep.Year_DB = Report.ParseYearFromText(Convert.ToString(worksheet.Cells["B15"].Text).Trim());
         }
         else if (formNumber.Split('.')[0] == "5")
         {
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B7"].Value);
-            impRep.Year_DB = Convert.ToString(worksheet.Cells["B16"].Text).Trim();
-            //Отсекаем мусор из ячейки
-            if (!impRep.Year_DB.All(c => char.IsDigit(c)))
-            {
-                var digits = "";
-                foreach (var c in impRep.Year_DB)
-                {
-                    if (char.IsDigit(c))
-                        digits += c;
-                }
-                impRep.Year_DB = digits;
-            }
+            impRep.Year_DB = Report.ParseYearFromText(Convert.ToString(worksheet.Cells["B16"].Text).Trim());
         }
 
         #region BindCommonData

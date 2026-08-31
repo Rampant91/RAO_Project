@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
@@ -61,7 +60,7 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
     #region Events
 
     private bool _mouseDownForWindowMoving;
-    private PointerPoint? _originalPoint;
+    private Point _dragStart;
 
     private void InputElement_OnPointerMoved(object? sender, PointerEventArgs e)
     {
@@ -70,10 +69,11 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
             return;
         }
 
-        var currentPoint = e.GetCurrentPoint(this);
+        var currentPosition = e.GetPosition(this);
+        var startPosition = _dragStart;
         Position = new PixelPoint(
-            Position.X + (int)(currentPoint.Position.X - _originalPoint!.Position.X),
-            Position.Y + (int)(currentPoint.Position.Y - _originalPoint.Position.Y));
+            Position.X + (int)(currentPosition.X - startPosition.X),
+            Position.Y + (int)(currentPosition.Y - startPosition.Y));
     }
 
     private void InputElement_OnPointerPressed(object? sender, PointerPressedEventArgs e)
@@ -84,7 +84,7 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
         }
 
         _mouseDownForWindowMoving = true;
-        _originalPoint = e.GetCurrentPoint(this);
+        _dragStart = e.GetPosition(this);
     }
 
     private void InputElement_OnPointerReleased(object? sender, PointerReleasedEventArgs e)
@@ -94,7 +94,10 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
 
     #endregion
 
-    protected override void OnClosing(CancelEventArgs e)
+    /// <summary>
+    /// Крестик, Escape и кнопка «Отмена» должны останавливать команду, а не только прятать окно.
+    /// </summary>
+    protected override void OnClosing(WindowClosingEventArgs e)
     {
         if (!_suppressCancelOnClose)
         {

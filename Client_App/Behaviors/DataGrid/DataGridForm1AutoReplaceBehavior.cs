@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -96,7 +96,7 @@ public class DataGridForm1AutoReplaceBehavior : Behavior<DataGrid>
             return;
         }
 
-        var focused = FocusManager.Instance?.Current as Control;
+        var focused = TopLevel.GetTopLevel(AssociatedObject!)?.FocusManager?.GetFocusedElement() as Control;
         if (focused is null || !TryResolveEditContext(focused, out var row, out var column))
         {
             FinalizeActiveEdit();

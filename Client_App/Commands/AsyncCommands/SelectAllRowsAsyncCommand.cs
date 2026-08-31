@@ -1,4 +1,3 @@
-﻿using AvaloniaEdit.Utils;
 using Client_App.ViewModels.Forms;
 using Models.Forms;
 using System.Collections.ObjectModel;
@@ -16,7 +15,8 @@ public class SelectAllRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         // Создаем новую коллекцию вместо изменения существующей
         var allRows = new ObservableCollection<Form>();
 
-        allRows.AddRange(FormList);
+        foreach (var item in FormList)
+            allRows.Add(item);
         // Заменяем всю коллекцию (это вызовет PropertyChanged)
         formVM.SelectedForms = allRows;
     }

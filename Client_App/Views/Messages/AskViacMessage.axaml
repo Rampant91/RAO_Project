@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -10,11 +10,10 @@
 	<Grid RowDefinitions="Auto,*,Auto">
 		<TextBlock Grid.Row="0" Margin="10,5,10,5" Text="Выберите ВИАЦ" TextWrapping="Wrap"/>
 		<DataGrid Grid.Row="1" Margin="5"
-				  Items="{Binding ViacList}"
+				  ItemsSource="{Binding ViacList}"
 				  SelectedItem="{Binding SelectedViac}"
 				  RowHeight="25"
 				  GridLinesVisibility="All"
-				  AlternatingRowBackground="White"
 				  RowBackground="White">
 
 			<DataGrid.Columns>

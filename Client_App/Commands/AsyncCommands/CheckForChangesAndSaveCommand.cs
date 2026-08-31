@@ -1,11 +1,12 @@
+using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.Forms;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Models.DBRealization;
 using System;
 using System.Linq;
@@ -37,8 +38,8 @@ public class CheckForChangesAndSaveCommand(BaseFormVM formVM) : BaseAsyncCommand
 
         #region MessageSaveChanges
 
-        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -52,8 +53,7 @@ public class CheckForChangesAndSaveCommand(BaseFormVM formVM) : BaseAsyncCommand
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(window ?? desktop.MainWindow));
+            }).ShowWindowDialogAsync(window ?? desktop.MainWindow));
 
         #endregion
 

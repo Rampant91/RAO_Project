@@ -1,9 +1,10 @@
-﻿using Avalonia.Controls;
+﻿using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.DTO;
@@ -115,8 +116,8 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
         {
             #region MessageFailedToLoadPassportUniqParam
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
                     CanResize = true,
@@ -129,8 +130,7 @@ public partial class ExcelExportSourceMovementHistoryAsyncCommand : ExcelBaseAsy
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
+                }).ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
 
             #endregion
 

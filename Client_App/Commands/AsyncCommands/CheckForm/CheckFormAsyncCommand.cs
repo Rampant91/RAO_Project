@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MsBox.Avalonia;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -7,11 +8,12 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Microsoft.EntityFrameworkCore;
 using Models.CheckForm;
 using Models.DBRealization;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
 /// <summary>
@@ -136,10 +138,10 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
                 {
                     #region MessageCheckFailed
 
-                    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                        .GetMessageBoxStandard(new MessageBoxStandardParams
                         {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ButtonDefinitions = ButtonEnum.Ok,
                             ContentTitle = $"Проверка формы {rep.FormNum_DB}",
                             ContentHeader = "Уведомление",
                             ContentMessage = "Функция проверки данных форм находится в процессе реализации.",
@@ -147,8 +149,7 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
                             MinHeight = 150,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner,
                             Topmost = true,
-                        })
-                        .ShowDialog(window ?? Desktop.MainWindow));
+                        }).ShowWindowDialogAsync(window ?? Desktop.MainWindow));
 
                     #endregion
 
@@ -164,10 +165,10 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
 
             #region MessageCheckFailed
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = $"Проверка формы {rep.FormNum_DB}",
                     ContentHeader = "Уведомление",
                     ContentMessage = "В ходе выполнения проверки формы возникла непредвиденная ошибка.",
@@ -175,8 +176,7 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(window ?? Desktop.MainWindow));
+                }).ShowWindowDialogAsync(window ?? Desktop.MainWindow));
 
             #endregion
 
@@ -187,10 +187,10 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
         {
             #region MessageSourceTransmissionFailed
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = $"Проверка формы {rep.FormNum_DB}",
                     ContentHeader = "Уведомление",
                     ContentMessage = "По результатам проверки формы, ошибок не выявлено.",
@@ -198,8 +198,7 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(window ?? Desktop.MainWindow));
+                }).ShowWindowDialogAsync(window ?? Desktop.MainWindow));
 
             #endregion
         }

@@ -1,3 +1,4 @@
+﻿using MsBox.Avalonia;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -7,8 +8,8 @@ using Avalonia.Markup.Xaml;
 using Client_App.Commands.AsyncCommands;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Messages;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
 
 namespace Client_App.Views.Messages;
 
@@ -54,8 +55,8 @@ public partial class MultipleRaodbFilesMessageWindow : BaseWindow<BaseVM>
     }
 
     private async Task ShowFileNotFoundMessageAsync() =>
-        await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        await MessageBoxManager
+            .GetMessageBoxStandard(new MessageBoxStandardParams
             {
                 ButtonDefinitions = ButtonEnum.Ok,
                 CanResize = true,
@@ -66,8 +67,7 @@ public partial class MultipleRaodbFilesMessageWindow : BaseWindow<BaseVM>
                 MinWidth = 250,
                 MinHeight = 150,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(this);
+            }).ShowWindowDialogAsync(this);
 
     private async void OnOpenRaoFolderClicked(object? sender, RoutedEventArgs e) =>
         await _openFolderAsyncCommand.AsyncExecute(BaseVM.RaoDirectory);

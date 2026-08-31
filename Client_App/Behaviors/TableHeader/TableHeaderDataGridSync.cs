@@ -445,8 +445,8 @@ internal static class TableHeaderDataGridSync
 
         try
         {
-            var screen = window.Screens.ScreenFromWindow(window.PlatformImpl) ?? window.Screens.Primary;
-            var scale = screen?.PixelDensity ?? 1.0;
+            var screen = window.Screens.ScreenFromWindow(window) ?? window.Screens.Primary;
+            var scale = screen?.Scaling ?? 1.0;
             return scale > 0 ? scale : 1.0;
         }
         catch

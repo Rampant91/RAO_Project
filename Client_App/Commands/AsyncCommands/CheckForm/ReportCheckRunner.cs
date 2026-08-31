@@ -162,6 +162,6 @@ public static class ReportCheckRunner
 
     private static string GetPeriodHint(Report rep) =>
         rep.FormNum_DB.StartsWith('2') || rep.FormNum_DB == "4.1"
-            ? rep.Year_DB ?? string.Empty
+            ? rep.Year_DB?.ToString() ?? string.Empty
             : $"{rep.StartPeriod_DB}-{rep.EndPeriod_DB}";
 }

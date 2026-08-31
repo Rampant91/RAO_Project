@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MsBox.Avalonia;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -12,7 +13,7 @@ using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -21,6 +22,7 @@ using Models.Forms.Form2;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 /// <summary>
@@ -200,10 +202,10 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         {
             #region MessageRepsNotFound
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
@@ -213,8 +215,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
+                }).ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
 
             #endregion
 
@@ -916,7 +917,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
     /// <summary>
     /// Проверяет, попадает ли отчёт в заданный пользователем период фильтрации.
     /// </summary>
-    private bool MatchesExportPeriodFilter(string formNum, string? startPeriod, string? endPeriod, string? year)
+    private bool MatchesExportPeriodFilter(string formNum, string? startPeriod, string? endPeriod, int? year)
     {
         if (string.IsNullOrEmpty(formNum))
             return false;
@@ -938,7 +939,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
             if (_form2YearStart == int.MinValue && _form2YearEnd == int.MaxValue)
                 return true;
 
-            return int.TryParse(year, out var reportYear)
+            return year is { } reportYear
                    && reportYear >= _form2YearStart
                    && reportYear <= _form2YearEnd;
         }
@@ -980,7 +981,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         string FormNum_DB,
         string? StartPeriod_DB,
         string? EndPeriod_DB,
-        string? Year_DB);
+        int? Year_DB);
 
     #endregion
 }

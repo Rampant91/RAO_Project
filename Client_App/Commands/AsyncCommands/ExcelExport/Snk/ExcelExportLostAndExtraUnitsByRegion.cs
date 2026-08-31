@@ -1,10 +1,11 @@
-﻿using Avalonia.Controls;
+using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Resources.CustomComparers.SnkComparers;
 using Client_App.ViewModels.Messages;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using OfficeOpenXml;
@@ -18,6 +19,7 @@ using System.Threading.Tasks;
 using Client_App.ViewModels.ProgressBar;
 using static Client_App.Resources.StaticStringMethods;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
 public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBaseAsyncCommand
@@ -541,10 +543,10 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
         {
             #region MessageRepsNotFound
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Выгрузка в Excel",
                     ContentHeader = "Уведомление",
                     ContentMessage = @"Не удалось совершить выгрузку, поскольку в БД отсутствуют организации "
@@ -557,8 +559,7 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
                     CanResize = true,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -619,16 +620,16 @@ public class ExcelExportLostAndExtraUnitsByRegionAsyncCommand : ExcelExportSnkBa
 
     private static async Task ShowErrorMessage(string title, string message)
     {
-        var messageBoxStandardWindow = MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        var messageBoxStandardWindow = MessageBoxManager
+            .GetMessageBoxStandard(new MessageBoxStandardParams
             {
-                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ButtonDefinitions = ButtonEnum.Ok,
                 ContentTitle = title,
                 ContentMessage = message,
-                Icon = MessageBox.Avalonia.Enums.Icon.Error,
+                Icon = Icon.Error,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen
             });
-        await messageBoxStandardWindow.Show();
+        await messageBoxStandardWindow.ShowAsync();
     }
 
     #endregion

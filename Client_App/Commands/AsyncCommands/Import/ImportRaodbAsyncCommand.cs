@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Resources.CustomComparers;
@@ -6,9 +7,9 @@ using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views.Messages;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -95,8 +96,8 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 {
                     #region MessageFailedToReadFile
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Импорт из .raodb",
@@ -106,8 +107,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                             $"{Environment.NewLine}файл поврежден или не содержит данных.",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow)); 
+                    }).ShowWindowDialogAsync(Desktop.MainWindow)); 
 
                 #endregion
 
@@ -253,8 +253,8 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                             {
                                 #region MessageNewOrg
 
-                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                                    .GetMessageBoxCustom(new MessageBoxCustomParams
                                     {
                                         ButtonDefinitions =
                                         [
@@ -275,8 +275,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                             $"{Environment.NewLine}импортировать все новые организации.",
                                         MinWidth = 400,
                                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                    })
-                                    .ShowDialog(Desktop.MainWindow));
+                                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                                 #endregion
 
@@ -286,8 +285,8 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                             {
                                 #region MessageNewOrg
 
-                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                                    .GetMessageBoxCustom(new MessageBoxCustomParams
                                     {
                                         ButtonDefinitions =
                                         [
@@ -304,8 +303,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                                             $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
                                         MinWidth = 400,
                                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                                    })
-                                    .ShowDialog(Desktop.MainWindow));
+                                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                                 #endregion
                             }
@@ -412,18 +410,17 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
             {
                 #region MessageImportError
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Импорт из .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = "При сохранении импортированных данных возникла ошибка.\n",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -460,8 +457,8 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 ? "а"
                 : "ов";
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Импорт из .raodb",
@@ -470,8 +467,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
         }

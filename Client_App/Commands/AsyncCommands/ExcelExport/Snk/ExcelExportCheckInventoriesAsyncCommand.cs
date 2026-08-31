@@ -1,9 +1,10 @@
-﻿using Avalonia.Controls;
+﻿using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
 using DynamicData;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using OfficeOpenXml;
@@ -21,6 +22,7 @@ using Client_App.ViewModels;
 using static Client_App.Resources.StaticStringMethods;
 using SnkRadionuclidsEqualityComparer = Client_App.Resources.CustomComparers.SnkComparers.SnkRadionuclidsEqualityComparer;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
 /// <summary>
@@ -135,18 +137,17 @@ public partial class ExcelExportCheckInventoriesAsyncCommand(MainWindowVM mainWi
         {
             #region MessageExcelExportFail
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = $"Выгрузка не выполнена, поскольку у организации отсутствуют формы {formNum} с кодом операции 10.",
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 

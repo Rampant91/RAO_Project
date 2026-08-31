@@ -1,4 +1,4 @@
-<UserControl x:Class="Client_App.Views.MainWindowTabs.Forms4TabControl"
+﻿<UserControl x:Class="Client_App.Views.MainWindowTabs.Forms4TabControl"
              xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Client_App.Views.Controls"
@@ -40,12 +40,12 @@
                          Margin="5"
                          Text="{Binding SearchText, Mode=OneWayToSource}"
                          Watermark="Поиск..." />
-                <Grid Grid.Row="2" Margin="5">
                 <DataGrid x:Name="ReportsDataGrid"
-                          AlternatingRowBackground="White"
+                          Grid.Row="2"
+                          Margin="5"
                           CanUserSortColumns="False"
                           GridLinesVisibility="All"
-                          Items="{Binding ReportsCollection, Mode=TwoWay}"
+                          ItemsSource="{Binding ReportsCollection, Mode=TwoWay}"
                           RowBackground="White"
                           RowHeight="25"
                           SelectedItem="{Binding SelectedReports, Mode=OneWayToSource}"
@@ -141,8 +141,6 @@
 
                     </DataGrid.Columns>
                 </DataGrid>
-                <controls:DataGridLoadingOverlay IsVisible="{Binding IsOrgsLoading}" />
-                </Grid>
                 <Border Grid.Row="3" Classes="pageControlContainer">
                     <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
                         <TextBlock Grid.Row="0"
@@ -243,12 +241,12 @@
                            FontWeight="SemiBold"
                            Text="Список отчётов:"
                            TextWrapping="Wrap" />
-                <Grid Grid.Row="1" Margin="5">
                 <DataGrid x:Name="ReportDataGrid"
-                          AlternatingRowBackground="White"
+                          Grid.Row="1"
+                          Margin="5"
                           CanUserSortColumns="False"
                           GridLinesVisibility="All"
-                          Items="{Binding ReportCollection}"
+                          ItemsSource="{Binding ReportCollection}"
                           RowBackground="White"
                           RowHeight="25"
                           SelectedItem="{Binding SelectedReport}"
@@ -354,8 +352,6 @@
                         </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-                <controls:DataGridLoadingOverlay IsVisible="{Binding IsReportsLoading}" />
-                </Grid>
                 <Border Grid.Row="2" Classes="pageControlContainer">
                     <Grid ColumnDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowDefinitions="Auto,Auto">
                         <TextBlock Grid.Row="0"
@@ -398,9 +394,7 @@
                                    Text="Строчек в отчёте:" />
                         <TextBlock Grid.Row="1"
                                    Grid.Column="5"
-                                   MinWidth="56"
                                    Margin="5"
-                                   HorizontalAlignment="Left"
                                    Text="{Binding InSelectedReportFormsCount}" />
                     </Grid>
                 </Border>

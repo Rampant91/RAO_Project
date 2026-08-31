@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels;
@@ -6,8 +7,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands;
 
 public class OpenFolderAsyncCommand : BaseAsyncCommand
@@ -30,10 +32,10 @@ public class OpenFolderAsyncCommand : BaseAsyncCommand
 
             #region MessageFailedToOpenFolder
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Открытие папки",
                     ContentHeader = "Ошибка",
                     ContentMessage = "При попытке открыть папку возникла ошибка.",
@@ -41,8 +43,7 @@ public class OpenFolderAsyncCommand : BaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
         }

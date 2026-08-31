@@ -70,11 +70,7 @@ public partial class AskForm57Message : Window, INotifyPropertyChanged
         ReportList = new ObservableCollection<Report>(shells
                 .Where(x => x.Id != report.Id)
                 .OrderBy(x => x.FormNum_DB)
-                .ThenByDescending(x =>
-                x.Year_DB == null
-                || !int.TryParse(x.Year_DB, out _)
-                ? int.MaxValue
-                : int.Parse(x.Year_DB))
+                .ThenByDescending(x => x.Year_DB ?? int.MaxValue)
                 .ThenByDescending(rep => rep.CorrectionNumber_DB));
 
         DataContext = this;

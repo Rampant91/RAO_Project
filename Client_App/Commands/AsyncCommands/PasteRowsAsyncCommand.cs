@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 
+using Client_App.Resources;
 namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
@@ -30,7 +31,7 @@ public class PasteRowsAsyncCommand : BaseAsyncCommand
             minColumn++;
         }
 
-        if (Application.Current.Clipboard is not { } clip) return;
+        if (Avalonia11Compat.MainClipboard! is not { } clip) return;
 
         var text = await clip.GetTextAsync();
         var rowsText = ParseInnerTextRows(text);

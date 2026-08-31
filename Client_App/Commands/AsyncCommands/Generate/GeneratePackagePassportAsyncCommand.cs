@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using MsBox.Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
@@ -6,8 +7,8 @@ using Client_App.ViewModels.Forms;
 using Client_App.Services.DataAccess;
 using Client_App.Views;
 using DynamicData;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
@@ -153,8 +154,8 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 else
                 {
                     #region WrongClassRaoErrorMessage
-                    Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions =
                         [
@@ -168,8 +169,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
                         MinWidth = 300,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(owner));
+                    }).ShowWindowDialogAsync(owner));
                     #endregion
 
                     return;
@@ -311,8 +311,8 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
                 msg += "Так как их код операции не равен 01, 11, 12, 14, 16, 18, 55";
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams()
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams()
                 {
                     ButtonDefinitions =
                     [
@@ -325,7 +325,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
                     MinHeight = 125,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(owner));
+                .ShowWindowDialogAsync(owner));
             }
 
             #region DBModel.SaveChanges
@@ -335,8 +335,8 @@ namespace Client_App.Commands.AsyncCommands.Generate
             }
             catch (Exception ex)
             {
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -350,16 +350,15 @@ namespace Client_App.Commands.AsyncCommands.Generate
                     MinWidth = 300,
                     MinHeight = 125,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(owner));
+                }).ShowWindowDialogAsync(owner));
 
                 return;
             }
             #endregion
 
             #region CommandCompletedMessage
-            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -371,8 +370,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 MinWidth = 300,
                 MinHeight = 125,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(owner));
+            }).ShowWindowDialogAsync(owner));
             #endregion
         }
         private static Form17 ResolveForm17(Form17 selected, List<Form17> all)

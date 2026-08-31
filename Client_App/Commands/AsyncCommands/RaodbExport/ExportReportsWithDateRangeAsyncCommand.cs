@@ -1,4 +1,5 @@
-﻿using System;
+using MsBox.Avalonia;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,11 +8,14 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Interfaces;
+
+using Client_App.Resources;
+using MsBox.Avalonia.Enums;
 
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
@@ -58,8 +62,8 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
 
         #region MessageAskStartDate
 
-        var startDate = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxInputWindow(new MessageBoxInputParams
+        var startDate = await Dispatcher.UIThread.InvokeAsync(async () =>
+            await Avalonia11Compat.ShowInputDialogAsync(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -74,8 +78,8 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
                 MinWidth = 600,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(Desktop.MainWindow));
+                InputParams = new InputParams()
+            }, Desktop.MainWindow));
         
         #endregion
 
@@ -83,8 +87,8 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
 
         #region MessageAskEndDate
 
-        var endDate = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxInputWindow(new MessageBoxInputParams
+        var endDate = await Dispatcher.UIThread.InvokeAsync(async () =>
+            await Avalonia11Compat.ShowInputDialogAsync(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -98,8 +102,8 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
                 MinWidth = 600,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(Desktop.MainWindow));
+                InputParams = new InputParams()
+            }, Desktop.MainWindow));
         
         #endregion
 
@@ -114,10 +118,10 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
         {
             #region MessageErrorAtParseDate
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Выгрузка",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Экспорт не будет выполнен, поскольку период дат введён некорректно.",
@@ -125,7 +129,7 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                }).ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -136,10 +140,10 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
             StaticConfiguration.DBModel, reports.Id, CancellationToken.None);
         if (orgFromDb is null)
         {
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Выгрузка",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Экспорт не будет выполнен: организация не найдена в базе.",
@@ -147,7 +151,7 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                }).ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
             return;
         }
 
@@ -156,7 +160,7 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
                           && DateOnly.TryParse(rep.EndPeriod_DB, out var repEndDateTime)
                           && startDateTime <= repEndDateTime && endDateTime >= repStartDateTime)
                           ||
-                          (int.TryParse(rep.Year_DB, out var year)
+                          (rep.Year_DB is { } year
                           && startDateTime.Year <= year && year <= endDateTime.Year))
             .ToArray();
 

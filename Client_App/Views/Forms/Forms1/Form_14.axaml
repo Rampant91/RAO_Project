@@ -15,7 +15,6 @@
         xmlns:inputBehaviors="using:Client_App.Behaviors.Input"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
-        x:Name="1.4"
         Title="{Binding WindowTitle}"
         MinWidth="800"
         MinHeight="600"
@@ -23,7 +22,7 @@
         d:DesignWidth="900"
         x:DataType="vm:Form_14VM"
         KeyUp="DataGrid_KeyUp"
-        WindowStartupLocation="Manual"
+        WindowStartupLocation="CenterScreen"
         mc:Ignorable="d">
 
     <Window.Resources>
@@ -61,52 +60,38 @@
                 <Border Classes="borderContainer">
                     <Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
-                        <Grid Grid.Row="0"
-                              Grid.RowSpan="2"
-                              ColumnDefinitions="Auto,83,Auto"
-                              RowDefinitions="Auto,Auto">
-                            <TextBlock Grid.Row="0" Grid.Column="0"
-                                       Margin="5,8"
-                                       VerticalAlignment="Center"
+                        <Grid Grid.Row="0" ColumnDefinitions="*,*,*">
+                            <TextBlock Grid.Column="0"
+                                       Margin="5,11"
                                        Text="Дата окончания предыдущего отчетного периода:" />
-                            <TextBox Grid.Row="0" Grid.Column="1"
+                            <TextBox Grid.Column="1"
                                      MinWidth="83"
-                                     VerticalAlignment="Center"
                                      Text="{Binding Report.StartPeriod.Value}"
                                      Watermark="дд.мм.гггг" />
-                            <CalendarDatePicker Grid.Row="0" Grid.Column="2"
+                            <CalendarDatePicker Grid.Column="2"
                                                 Classes="buttonOnly"
-                                                VerticalAlignment="Center"
                                                 SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}" />
+                        </Grid>
 
-                            <TextBlock Grid.Row="1" Grid.Column="0"
-                                       Margin="5,8"
-                                       VerticalAlignment="Center"
+                        <Grid Grid.Row="1" ColumnDefinitions="*,*,*">
+                            <TextBlock Grid.Column="0"
+                                       Margin="5,13"
                                        Text="Дата окончания настоящего отчетного периода:" />
-                            <TextBox Grid.Row="1" Grid.Column="1"
+                            <TextBox Grid.Column="1"
                                      MinWidth="83"
-                                     VerticalAlignment="Center"
+                                     Margin="11,3,0,0"
                                      Text="{Binding Report.EndPeriod.Value}"
                                      Watermark="дд.мм.гггг" />
-                            <CalendarDatePicker Grid.Row="1" Grid.Column="2"
+                            <CalendarDatePicker Grid.Column="2"
                                                 Classes="buttonOnly"
-                                                VerticalAlignment="Center"
                                                 SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}" />
                         </Grid>
 
-                        <StackPanel Grid.Row="2" Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Margin="5,8"
-                                       VerticalAlignment="Center"
-                                       Text="Номер корректировки:" />
+                        <StackPanel Grid.Row="2" Orientation="Horizontal">
+                            <TextBlock Margin="5">Номер корректировки:</TextBlock>
                             <TextBox Width="75"
-                                     Margin="5,8"
-                                     MaxLength="3"
-                                     VerticalAlignment="Center"
-                                     Text="{Binding Path=Report.CorrectionNumber.Value}">
-                                <interactivity:Interaction.Behaviors>
-                                    <inputBehaviors:TextBoxDigitValidationBehavior MaxValue="255" />
-                                </interactivity:Interaction.Behaviors>
-                            </TextBox>
+                                     Margin="5"
+                                     Text="{Binding Path=Report.CorrectionNumber.Value}" />
                         </StackPanel>
 
                         <StackPanel Grid.Row="3" Orientation="Horizontal">
@@ -445,7 +430,7 @@
                           Classes="table"
                           ColumnWidth="125"
                           FrozenColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"
-                          Items="{Binding FormList}"
+                          ItemsSource="{Binding FormList}"
                           SelectedItem="{Binding SelectedForm}">
 
                     <interactivity:Interaction.Behaviors>
@@ -499,7 +484,7 @@
                                                          Height="26"
                                                          HorizontalAlignment="Stretch"
                                                          IsTextCompletionEnabled="False"
-                                                         Items="{Binding VM.OperationCodes, ElementName=1.4}"
+                                                         ItemsSource="{Binding VM.OperationCodes, ElementName=1.4}"
                                                          MinimumPrefixLength="0"
                                                          Text="{Binding OperationCode.Value, Mode=TwoWay}">
 
@@ -715,7 +700,7 @@
                                                          Height="26"
                                                          HorizontalAlignment="Stretch"
                                                          IsTextCompletionEnabled="False"
-                                                         Items="{Binding VM.AggregateStates, ElementName=1.4}"
+                                                         ItemsSource="{Binding VM.AggregateStates, ElementName=1.4}"
                                                          MinimumPrefixLength="0"
                                                          Text="{Binding AggregateState.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}">
 
@@ -766,7 +751,7 @@
                                                          Height="26"
                                                          HorizontalAlignment="Stretch"
                                                          IsTextCompletionEnabled="False"
-                                                         Items="{Binding VM.OwnershipForms, ElementName=1.4}"
+                                                         ItemsSource="{Binding VM.OwnershipForms, ElementName=1.4}"
                                                          MinimumPrefixLength="0"
                                                          Text="{Binding PropertyCode.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}">
 
@@ -834,7 +819,7 @@
                                                          Height="26"
                                                          HorizontalAlignment="Stretch"
                                                          IsTextCompletionEnabled="False"
-                                                         Items="{Binding VM.DocumentVids, ElementName=1.4}"
+                                                         ItemsSource="{Binding VM.DocumentVids, ElementName=1.4}"
                                                          MinimumPrefixLength="0"
                                                          Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}">
 
@@ -1075,7 +1060,7 @@
                               Grid.Row="1"
                               x:CompileBindings="True"
                               Classes="notesTable"
-                              Items="{Binding NoteList}"
+                              ItemsSource="{Binding NoteList}"
                               SelectedItem="{Binding SelectedNote}">
 
                         <interactivity:Interaction.Behaviors>

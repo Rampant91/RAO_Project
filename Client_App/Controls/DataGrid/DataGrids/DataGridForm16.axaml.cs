@@ -1,10 +1,10 @@
-using Avalonia.Markup.Xaml;
+﻿using Avalonia.Markup.Xaml;
 using Models;
 using Models.Forms.Form1;
 
 namespace Client_App.Controls.DataGrid.DataGrids;
 
-public class DataGridForm16 : DataGrid<Form16>
+public partial class DataGridForm16 : DataGrid<Form16>
 {
     public DataGridForm16()
     {

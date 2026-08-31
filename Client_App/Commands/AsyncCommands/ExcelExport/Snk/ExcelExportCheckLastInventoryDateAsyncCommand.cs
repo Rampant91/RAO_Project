@@ -1,10 +1,11 @@
-﻿using Avalonia.Controls;
+﻿using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels.Messages;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using OfficeOpenXml;
@@ -19,6 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static Client_App.Resources.StaticStringMethods;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
 /// <summary>
@@ -107,10 +109,10 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
         {
             #region MessageExcelExportFail
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = "Выгрузка не выполнена, поскольку не выбран ни один номер формы.",
@@ -118,8 +120,7 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                     MinHeight = 115,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -129,10 +130,10 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
         {
             #region MessageExcelExportFail
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = "Выгрузка не выполнена, поскольку не выбран ни один из параметров, для определения учётной единицы.",
@@ -140,8 +141,7 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                     MinHeight = 115,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -200,10 +200,10 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
         {
             #region MessageRepsNotFound
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Не удалось совершить выгрузку, поскольку в БД отсутствуют организации с указанным регионом.",
@@ -211,8 +211,7 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -241,10 +240,10 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
         {
             #region MessageRepsNotFound
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Не удалось совершить выгрузку, поскольку в БД отсутствуют отчёты по формам {string.Join(", ", formNums)}.",
@@ -252,8 +251,7 @@ public partial class ExcelExportCheckLastInventoryDateAsyncCommand : ExcelExport
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 

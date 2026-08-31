@@ -427,8 +427,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         try
         {
             await Avalonia.Threading.Dispatcher.UIThread
-                .InvokeAsync(static () => { }, Avalonia.Threading.DispatcherPriority.Render)
-                .ConfigureAwait(true);
+                .InvokeAsync(static () => { }, Avalonia.Threading.DispatcherPriority.Render);
 
             if (generation != _contentLoadGeneration)
                 return;
@@ -984,8 +983,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         try
         {
             await Dispatcher.UIThread
-                .InvokeAsync(static () => { }, DispatcherPriority.Render)
-                .ConfigureAwait(true);
+                .InvokeAsync(static () => { }, DispatcherPriority.Render);
 
             if (generation != _contentLoadGeneration || Report?.Id <= 0)
                 return;

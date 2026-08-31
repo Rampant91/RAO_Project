@@ -1,3 +1,4 @@
+﻿using MsBox.Avalonia;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,13 +9,14 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Interfaces;
 using static Client_App.Resources.StaticStringMethods;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.FormPrintCompare;
 
 /// <summary>
@@ -236,18 +238,17 @@ public class ExcelExportCompareFormPrintAsyncCommand : ExcelExportBaseAllAsyncCo
         }
         catch (Exception ex)
         {
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Сверка отчётов с БД",
                     ContentHeader = "Ошибка",
                     ContentMessage = $"{ex.Message}{Environment.NewLine}{ex.StackTrace}",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true
-                })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
+                }).ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar!);
         }
         finally
@@ -488,15 +489,14 @@ public class ExcelExportCompareFormPrintAsyncCommand : ExcelExportBaseAllAsyncCo
 
     private static async Task ShowInfoAsync(AnyTaskProgressBar? progressBar, string message)
     {
-        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxStandard(new MessageBoxStandardParams
             {
-                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ButtonDefinitions = ButtonEnum.Ok,
                 ContentTitle = "Сверка отчётов с БД",
                 ContentMessage = message,
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(progressBar ?? Desktop.MainWindow));
+            }).ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
     }
 }

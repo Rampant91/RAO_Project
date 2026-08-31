@@ -1,10 +1,11 @@
+﻿using MsBox.Avalonia;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.CheckForm;
 using Models.Collections;
@@ -138,8 +139,8 @@ public abstract class CheckF41 : CheckBase
                         }
                         catch (Exception ex)
                         {
-                            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                                .GetMessageBoxCustom(new MessageBoxCustomParams
                                 {
                                     ButtonDefinitions =
                                     [
@@ -153,8 +154,7 @@ public abstract class CheckF41 : CheckBase
                                     MinHeight = 125,
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                                     Topmost = true,
-                                })
-                                .ShowDialog(owner));
+                                }).ShowWindowDialogAsync(owner));
                         }
                     }
                 }
@@ -288,6 +288,7 @@ public abstract class CheckF41 : CheckBase
 
             if (organization != null)
             {
+                var reportYearText = form41.Report.Year_DB?.ToString() ?? "";
                 count = await dbModel.ReportsCollectionDbSet
                     .AsNoTracking()
                     .Include(x => x.DBObservable)
@@ -297,7 +298,7 @@ public abstract class CheckF41 : CheckBase
                     .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows14)
                     .Where(reps => reps.DBObservable != null && reps.Id == organization.Id)
                     .SelectMany(x => x.Report_Collection
-                        .Where(y => y.EndPeriod_DB.EndsWith(form41.Report.Year_DB)
+                        .Where(y => y.EndPeriod_DB.EndsWith(reportYearText)
                                     &&
                                     (
                                         y.FormNum_DB == "1.1" && y.Rows11.All(form => form.OperationCode_DB != "10")
@@ -360,7 +361,7 @@ public abstract class CheckF41 : CheckBase
             }
             else
             {
-                var year = form41.Report!.Year_DB;
+                var year = form41.Report!.Year_DB?.ToString() ?? "";
 
                 count = await dbModel.ReportsCollectionDbSet
                     .AsNoTracking()
@@ -530,7 +531,7 @@ public abstract class CheckF41 : CheckBase
                 .Any(report =>
                     report.FormNum_DB == "1.9"
                     && DateOnly.TryParse(report.EndPeriod_DB, out var dateOnly)
-                    && dateOnly.Year.ToString() == year))
+                    && dateOnly.Year == year))
             return
                 new CheckError
                 {
@@ -545,10 +546,9 @@ public abstract class CheckF41 : CheckBase
                     $"Должен быть отчет по форме 2.12, потому что у нее есть отчет по форме 1.9"
                 };
 
-        if ((organization20 != null) && organization20.Report_Collection.Any(report => 
+        if ((organization20 != null) && year is { } reportYear && organization20.Report_Collection.Any(report => 
                 report.FormNum_DB == "2.12" 
-                && int.TryParse(year, out var intYear)
-                && report.Year_DB == (intYear - 1).ToString())) //проверка на предыдущий отчет
+                && report.Year_DB == reportYear - 1)) //проверка на предыдущий отчет
             return new CheckError
             {
                 FormNum = "form_41",
@@ -567,7 +567,8 @@ public abstract class CheckF41 : CheckBase
     {
         cts.Token.ThrowIfCancellationRequested();
 
-        if (!int.TryParse(form41.Report.Year_DB, out var year)) return null;
+        if (!form41.Report.Year_DB.HasValue) return null;
+        var year = form41.Report.Year_DB.Value;
 
 
         var organization = organizations10.FirstOrDefault(org => 
@@ -690,7 +691,8 @@ public abstract class CheckF41 : CheckBase
     {
         cts.Token.ThrowIfCancellationRequested();
 
-        if (!int.TryParse(form41.Report.Year_DB, out var year)) return null;
+        if (!form41.Report.Year_DB.HasValue) return null;
+        var year = form41.Report.Year_DB.Value;
 
         var organization = organizations10.FirstOrDefault(org => 
             org.RegNo == form41.RegNo_DB && org.Okpo == form41.Okpo_DB);
@@ -806,7 +808,8 @@ public abstract class CheckF41 : CheckBase
     {
         cts.Token.ThrowIfCancellationRequested();
 
-        if (!int.TryParse(form41.Report.Year_DB, out var year)) return null;
+        if (!form41.Report.Year_DB.HasValue) return null;
+        var year = form41.Report.Year_DB.Value;
 
         var organization = organizations10.FirstOrDefault(org =>
                 org.RegNo == form41.RegNo_DB && org.Okpo == form41.Okpo_DB);
@@ -919,7 +922,8 @@ public abstract class CheckF41 : CheckBase
     {
         cts.Token.ThrowIfCancellationRequested();
 
-        if (!int.TryParse(form41.Report.Year_DB, out var year)) return null;
+        if (!form41.Report.Year_DB.HasValue) return null;
+        var year = form41.Report.Year_DB.Value;
 
         var organization = organizations10.FirstOrDefault(org =>
                 org.RegNo == form41.RegNo_DB && org.Okpo == form41.Okpo_DB);
@@ -1090,8 +1094,8 @@ public abstract class CheckF41 : CheckBase
 
     private static async Task<bool> ShowAskSecondDB(Window owner)
     {
-        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -1105,8 +1109,7 @@ public abstract class CheckF41 : CheckBase
                 MinHeight = 125,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(owner));
+            }).ShowWindowDialogAsync(owner));
 
         return answer == "Да";
     }

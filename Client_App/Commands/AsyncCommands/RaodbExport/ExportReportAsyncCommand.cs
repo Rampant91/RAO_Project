@@ -1,3 +1,4 @@
+﻿using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.CheckForm;
@@ -9,9 +10,9 @@ using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views.ProgressBar;
 using DynamicData;
 using FirebirdSql.Data.FirebirdClient;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.CheckForm;
 using Models.Collections;
@@ -108,28 +109,22 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
                 : _formsTabControlVM.SelectedReport;
         if (selectedReport is null)
         {
-            await progressBar.CloseAsync();
             return;
         }
 
         var organizationId = ReportExportLock.ResolveOrganizationId(selectedReport, _formsTabControlVM.SelectedReports);
         if (organizationId <= 0)
         {
-            await progressBar.CloseAsync();
             return;
         }
 
         using var exportLock = ReportExportLock.Acquire(repId, organizationId);
-        using var releaseExportLockOnCancel = cts.Token.Register(exportLock.Dispose);
 
         var dt = DateTime.Now;
         var fileNameTmp = $"Report_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
 
-        Report reportWithoutRows;
-        Report exportReport;
+        await using var dbReadOnly = new DBModel(StaticConfiguration.DBPath);
 
-        await using (var dbReadOnly = new DBModel(StaticConfiguration.DBPath))
-        {
         #region Progress = 10
 
         loadStatus = "Загрузка данных организации";
@@ -140,7 +135,7 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #region GetReportWithoutForms
 
-            reportWithoutRows = dbReadOnly.ReportCollectionDbSet
+        var reportWithoutRows = dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -179,7 +174,7 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #region GetReportWithForm
 
-            exportReport = await dbReadOnly.ReportCollectionDbSet
+        var exportReport = await dbReadOnly.ReportCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -221,8 +216,8 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
             #region FailedToExportReportMessage
 
             await Dispatcher.UIThread.InvokeAsync(() =>
-                MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Выгрузка в .raodb",
@@ -232,16 +227,14 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    }).ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-            return;
         }
 
-            #endregion
-        }
+        #endregion
 
         #region Progress = 25
 
@@ -255,25 +248,15 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
         var dtMonth = dt.Month.ToString();
         if (dtDay.Length < 2) dtDay = $"0{dtDay}";
         if (dtMonth.Length < 2) dtMonth = $"0{dtMonth}";
-        var exportDate = $"{dtDay}.{dtMonth}.{dt.Year}";
-        exportReport.ExportDate.Value = exportDate;
+        exportReport.ExportDate.Value = $"{dtDay}.{dtMonth}.{dt.Year}";
 
-        await using (var dbUpdate = new DBModel(StaticConfiguration.DBPath))
-        {
-            var trackedReport = await dbUpdate.ReportCollectionDbSet
-                .FirstOrDefaultAsync(x => x.Id == repId, cts.Token);
-            if (trackedReport is not null)
-            {
-                trackedReport.ExportDate.Value = exportDate;
-                await dbUpdate.SaveChangesAsync(cts.Token);
-            }
-        }
+        await StaticConfiguration.DBModel.SaveChangesAsync(cts.Token);
 
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");
 
         Reports orgWithExpForm = new()
         {
-            Master_DB = reportWithoutRows.Reports.Master_DB,
+            Master = reportWithoutRows.Reports.Master,
             Report_Collection = new ObservableCollectionWithItemPropertyChanged<Report>([exportReport])
         };
 
@@ -281,11 +264,6 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
         progressBarVM.SetProgressBar(28, "Проверка отчёта");
         await CheckForm(exportReport, cts, progressBar);
-        await progressBar.BringToForegroundAsync();
-        if (cts.Token.IsCancellationRequested)
-        {
-            return;
-        }
 
         var filename = reportWithoutRows.Reports.Master_DB.FormNum_DB switch
         {
@@ -302,35 +280,28 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
                 StaticStringMethods.RemoveForbiddenChars(orgWithExpForm.Master.RegNoRep.Value) +
                 $"_{StaticStringMethods.RemoveForbiddenChars(orgWithExpForm.Master.OkpoRep.Value)}" +
                 $"_{exportReport.FormNum_DB}" +
-                $"_{StaticStringMethods.RemoveForbiddenChars(exportReport.Year_DB)}" +
+                $"_{StaticStringMethods.RemoveForbiddenChars(exportReport.Year_DB?.ToString())}" +
                 $"_{exportReport.CorrectionNumber_DB}" +
                 $"_{Assembly.GetExecutingAssembly().GetName().Version}",
 
             "4.0" when orgWithExpForm.Master.Rows40.Count > 0 =>
                 $"{orgWithExpForm.Master.Rows40.OrderBy(r =>r.NumberInOrder_DB).ToList()[0].CodeSubjectRF_DB}" +
                 $"_{exportReport.FormNum_DB}" +
-                $"_{StaticStringMethods.RemoveForbiddenChars(exportReport.Year_DB)}" +
+                $"_{StaticStringMethods.RemoveForbiddenChars(exportReport.Year_DB?.ToString())}" +
                 $"_{exportReport.CorrectionNumber_DB}" +
                 $"_{Assembly.GetExecutingAssembly().GetName().Version}",
 
             "5.0" when orgWithExpForm.Master.Rows50.Count > 0 =>
                 $"{exportReport.FormNum_DB}" +
-                $"_{StaticStringMethods.RemoveForbiddenChars(exportReport.Year_DB)}" +
+                $"_{StaticStringMethods.RemoveForbiddenChars(exportReport.Year_DB?.ToString())}" +
                 $"_{exportReport.CorrectionNumber_DB}" +
                 $"_{Assembly.GetExecutingAssembly().GetName().Version}",
 
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        progressBarVM.SetProgressBar(29, "Выбор папки назначения");
-        var folderPath = await Dispatcher.UIThread.InvokeAsync(() =>
-            new OpenFolderDialog().ShowAsync(progressBar));
-        await progressBar.BringToForegroundAsync();
-        if (string.IsNullOrEmpty(folderPath))
-        {
-            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-            return;
-        }
+        var folderPath = await new OpenFolderDialog().ShowAsync(Desktop.MainWindow);
+        if (string.IsNullOrEmpty(folderPath)) return;
 
         var fullPath = Path.Combine(folderPath, $"{filename}.RAODB");
 
@@ -345,8 +316,8 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
                 #region FailedToSaveFileMessage
 
                 await Dispatcher.UIThread.InvokeAsync(() =>
-                    MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    MessageBoxManager
+                        .GetMessageBoxStandard(new MessageBoxStandardParams
                         {
                             ButtonDefinitions = ButtonEnum.Ok,
                             ContentTitle = "Выгрузка в .raodb",
@@ -361,7 +332,7 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
                             MinHeight = 150,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner,
                             Topmost = true,
-                        }).ShowDialog(Desktop.MainWindow));
+                        }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
 
@@ -427,13 +398,11 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
         }
         catch (Exception e)
         {
-            await CloseProgressBarBeforeResultDialog(progressBar);
-
             #region FailedCopyFromTempMessage
 
             await Dispatcher.UIThread.InvokeAsync(() =>
-                MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Выгрузка в .RAODB",
@@ -443,12 +412,11 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
                         MinWidth = 400,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterScreen
-                    }).ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
-            await cts.CancelAsync();
-            return;
+            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
 
         //Создаёт .zip архив рядом с файлом выгрузки.
@@ -475,8 +443,6 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
         
         #endregion
 
-        await CloseProgressBarBeforeResultDialog(progressBar);
-
         if (!cts.IsCancellationRequested)
         {
             string? answer = null;
@@ -484,8 +450,8 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
             {
                 #region ExportCompliteMessage 1.0, 2.0
 
-                answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions =
                         [
@@ -510,7 +476,7 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
                             $"{Environment.NewLine}Количество строк - {exportReport.Rows.Count}{InventoryCheck(exportReport)}",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterScreen
-                    }).ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
             }
@@ -518,8 +484,8 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
             {
                 #region ExportCompliteMessage 4.0
 
-                answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions =
                         [
@@ -541,7 +507,7 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
                             $"{Environment.NewLine}Количество строк - {exportReport.Rows.Count}{InventoryCheck(exportReport)}",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterScreen
-                    }).ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
             }
@@ -551,56 +517,42 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
                 Process.Start("explorer", folderPath);
             }
         }
+
+        await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
     }
 
     private static async Task CheckForm(Report exportReport, CancellationTokenSource cts, AnyTaskProgressBar progressBar)
     {
-        if (cts.Token.IsCancellationRequested)
-        {
-            return;
-        }
-
-        if (exportReport.FormNum_DB is not ("1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8"))
-        {
-            return;
-        }
-
-        var progressBarVM = progressBar.AnyTaskProgressBarVM;
-        var checkProgress = ReportCheckProgress.ForExportPhase(
-            progressBarVM,
-            28,
-            35,
-            progressBarVM.ExportType ?? "Выгрузка в .raodb");
-        checkProgress.SetOrgHeader(
-            exportReport.Reports?.Master_DB?.RegNoRep?.Value ?? string.Empty,
-            exportReport.Reports?.Master_DB?.OkpoRep?.Value ?? string.Empty,
-            exportReport.FormNum_DB,
-            $"{exportReport.StartPeriod_DB}-{exportReport.EndPeriod_DB}");
-        checkProgress.OnLoadComplete(Services.DataAccess.ReportCheckSnapshotLoader.CountLoadedRows(exportReport));
-
-        var checkTask = Task.Run(
-            () => ReportCheckRunner.ExecuteCheck(exportReport.Reports, exportReport, checkProgress),
-            cts.Token);
-
-        var cancelWait = Task.Delay(Timeout.Infinite, cts.Token);
-        if (await Task.WhenAny(checkTask, cancelWait) != checkTask)
-        {
-            return;
-        }
-
-        List<CheckError> errorList;
+        var errorList = new List<CheckError>();
         try
         {
-            errorList = await checkTask;
+            errorList.Add(exportReport.FormNum_DB switch
+            {
+                "1.1" => CheckF11.Check_Total(exportReport.Reports, exportReport),
+                "1.2" => CheckF12.Check_Total(exportReport.Reports, exportReport),
+                "1.3" => CheckF13.Check_Total(exportReport.Reports, exportReport),
+                "1.4" => CheckF14.Check_Total(exportReport.Reports, exportReport),
+                "1.5" => CheckF15.Check_Total(exportReport.Reports, exportReport),
+                "1.6" => CheckF16.Check_Total(exportReport.Reports, exportReport),
+                "1.7" => CheckF17.Check_Total(exportReport.Reports, exportReport),
+                "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
+                //"2.1" => await new CheckF21().AsyncExecute(exportReport),
+                //"2.2" => await new CheckF22().AsyncExecute(exportReport),
+                //"2.3" => await new CheckF23().AsyncExecute(exportReport),
+                //"2.4" => await new CheckF24().AsyncExecute(exportReport),
+                //"2.5" => await new CheckF25().AsyncExecute(exportReport),
+                //"2.6" => await new CheckF26().AsyncExecute(exportReport),
+                //"2.7" => await new CheckF27().AsyncExecute(exportReport),
+                //"2.8" => await new CheckF28().AsyncExecute(exportReport),
+                //"2.9" => await new CheckF29().AsyncExecute(exportReport),
+                //"2.10" => await new CheckF210().AsyncExecute(exportReport),
+                //"2.11" => await new CheckF211().AsyncExecute(exportReport),
+                _ => []
+            });
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            return;
-        }
-
-        if (cts.Token.IsCancellationRequested)
-        {
-            return;
+            //ignored
         }
 
         if (!errorList.Any(x => x.IsCritical)) return;
@@ -610,8 +562,8 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
             #region ExportTerminatedDueToCriticalErrors
 
             await Dispatcher.UIThread.InvokeAsync(() =>
-                MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Выгрузка в .raodb",
@@ -621,7 +573,7 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
                         MinWidth = 250,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterScreen
-                    }).ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -633,8 +585,8 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
         {
             #region ReportHasCriticalErrors
 
-            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            var answer = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -648,8 +600,7 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 

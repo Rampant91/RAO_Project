@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -126,7 +126,7 @@
 					CanUserResizeColumns="True"
 					x:CompileBindings="True"
 					SelectionMode="Single"
-					Items="{Binding StoragePoint.LicenseInfoList}"
+					ItemsSource="{Binding StoragePoint.LicenseInfoList}"
 					SelectedItem="{Binding SelectedLicense}"
 					ColumnWidth="125">
 

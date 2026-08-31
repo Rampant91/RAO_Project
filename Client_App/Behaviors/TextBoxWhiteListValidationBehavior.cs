@@ -63,7 +63,7 @@ public class TextBoxWhiteListValidationBehavior : Behavior<TextBox>
         // Отменяем стандартную вставку
         e.Handled = true;
 
-        var clipboard = Application.Current?.Clipboard;
+        var clipboard = TopLevel.GetTopLevel(AssociatedObject!)?.Clipboard;
         if (clipboard is null)
             return;
 

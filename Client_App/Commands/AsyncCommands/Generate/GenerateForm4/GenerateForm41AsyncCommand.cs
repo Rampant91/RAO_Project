@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using MsBox.Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
@@ -8,8 +9,8 @@ using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Messages;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -104,10 +105,14 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         Report.Reports.Master_DB.Rows40[0].CodeSubjectRF_DB = codeSubjectRF;
         Report.Reports.Master_DB.Rows40[0].SubjectRF_DB = Spravochniks.DictionaryOfSubjectRF[intCode];
 
-        if (!int.TryParse(Report.Year_DB, out year))
+        if (!Report.Year_DB.HasValue)
         {
             year = await Dispatcher.UIThread.InvokeAsync(async () => await ShowAskYearMessage(owner));
-            Report.Year_DB = year.ToString();
+            Report.Year_DB = year;
+        }
+        else
+        {
+            year = Report.Year_DB.Value;
         }
 
         #endregion
@@ -237,8 +242,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     #region AskMessages
     private static async Task<bool> ShowConfirmationMessage(Window owner)
     {
-        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -253,8 +258,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 MinHeight = 125,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(owner));
+            }).ShowWindowDialogAsync(owner));
 
         if (answer == "Да")
             return true;
@@ -263,8 +267,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     }
     private static async Task<bool> ShowAskDependOnReportOrNotMessage(Window owner)
     {
-        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -278,8 +282,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 MinHeight = 125,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(owner));
+            }).ShowWindowDialogAsync(owner));
 
         if (answer == "Да")
             return true;
@@ -309,8 +312,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
     private static async Task<bool> ShowAskAllOrOneSubjectRFMessage(Window owner)
     {
-        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -324,8 +327,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 MinHeight = 125,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(owner));
+            }).ShowWindowDialogAsync(owner));
 
         if (answer == "Да")
             return true;
@@ -343,8 +345,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
 
     private static async Task<bool> ShowAskSecondDB(Window owner)
     {
-        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -358,8 +360,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                 MinHeight = 125,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(owner));
+            }).ShowWindowDialogAsync(owner));
 
         if (answer == "Да")
             return true;
@@ -562,8 +563,8 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         }
         catch (Exception ex)
         {
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-               .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+               .GetMessageBoxCustom(new MessageBoxCustomParams
                {
                    ButtonDefinitions =
                    [
@@ -577,8 +578,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                    MinHeight = 125,
                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
                    Topmost = true,
-               })
-               .ShowDialog(owner));
+               }).ShowWindowDialogAsync(owner));
             return [];
         }
     }
@@ -652,7 +652,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                     .AsQueryable()
                     .Include(report => report.Reports)
                     .Where(report => report.Reports.Id == organization20.Id)
-                    .Where(report => report.Year_DB == year.ToString())
+                    .Where(report => report.Year_DB == year)
                     .Where(report => report.FormNum_DB == "2.12")
                     .CountAsync(cancellationToken);
         }

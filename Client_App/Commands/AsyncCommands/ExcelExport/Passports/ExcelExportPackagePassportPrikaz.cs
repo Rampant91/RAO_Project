@@ -1,10 +1,11 @@
-﻿using Avalonia;
+﻿using MsBox.Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Controls.DataGrid;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models.DBRealization;
@@ -22,6 +23,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
 {
     public class ExcelExportPackagePassportPrikaz : ExcelBaseAsyncCommand
@@ -96,10 +98,10 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
             {
                 #region MessageFailedExportExcel
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = ButtonEnum.Ok,
                         CanResize = true,
                         ContentTitle = "Выгрузка в .xlsx",
                         ContentHeader = "Ошибка",
@@ -109,8 +111,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
                         MinHeight = 175,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
             }

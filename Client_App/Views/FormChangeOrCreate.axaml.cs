@@ -1,3 +1,4 @@
+п»їusing MsBox.Avalonia;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
@@ -17,19 +18,22 @@ using Client_App.Controls.DataGrid;
 using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.Interfaces.Logger;
 using Client_App.VisualRealization.Long_Visual;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Models;
 using Models.Forms;
 using Client_App.ViewModels;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
 
 namespace Client_App.Views;
 
-public class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
+public partial class FormChangeOrCreate : BaseWindow<ChangeOrCreateVM>
 {
     private readonly string _param = "";
+    private bool _contentInitialized;
+
+    protected override bool IsFullScreenWindow => true;
 
     #region Constructor
 
@@ -44,6 +48,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
     {
         _param = param.FormType;
         DataContext = param;
+        Name = param.FormType;
         InitializeComponent();
 #if DEBUG
         this.AttachDevTools();
@@ -51,13 +56,25 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
         this.WhenActivated(d =>
         {
             var vm = (ChangeOrCreateVM)ViewModel!;
-            d(vm.ShowDialogIn.RegisterHandler(DoShowDialogAsync));
-            d(vm.ShowDialog.RegisterHandler(DoShowDialogAsync));
-            d(vm.ShowMessageT.RegisterHandler(DoShowDialogAsyncT));
+            d(vm.ShowDialogIn.RegisterHandler(async context => await DoShowDialogAsync(context)));
+            d(vm.ShowDialog.RegisterHandler(async context => await DoShowDialogAsync(context)));
+            d(vm.ShowMessageT.RegisterHandler(async context => await DoShowDialogAsyncT(context)));
         });
 
         Closing += OnStandardClosing;
+    }
 
+    protected override void OnOpened(EventArgs e)
+    {
+        base.OnOpened(e);
+        WindowState = WindowState.Maximized;
+
+        if (_contentInitialized)
+        {
+            return;
+        }
+
+        _contentInitialized = true;
         Init();
     }
 
@@ -66,10 +83,10 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
     #region CheckPeriod
 
     /// <summary>
-    /// Проверяет наличие отчёта с пересекающимся периодом.
+    /// РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р… РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р… РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р… РїС—Р… РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р… РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р….
     /// </summary>
-    /// <param name="vm">Модель открытого отчёта.</param>
-    /// <returns>Сообщение о наличии пересечения.</returns>
+    /// <param name="vm">РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р… РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р… РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р….</param>
+    /// <returns>РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р… РїС—Р… РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р… РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р…РїС—Р….</returns>
     private static async Task CheckPeriod(ChangeOrCreateVM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
@@ -88,23 +105,23 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                 {
                     #region MessageFindIntersection
 
-                    await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams()
+                    await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                        .GetMessageBoxStandard(new MessageBoxStandardParams()
                         {
                             ButtonDefinitions = ButtonEnum.Ok,
-                            ContentTitle = "Пересечение",
-                            ContentHeader = "Уведомление",
-                            ContentMessage = $"У организации {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value} " +
-                                             $"{Environment.NewLine}присутствует отчёт по форме " +
+                            ContentTitle = "РЈРІРµРґРѕРјР»РµРЅРёРµ",
+                            ContentHeader = "РЈРІРµРґРѕРјР»РµРЅРёРµ",
+                            ContentMessage = $"РЈ РѕСЂРіР°РЅРёР·Р°С†РёРё {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value} " +
+                                             $"{Environment.NewLine}РѕР±РЅР°СЂСѓР¶РµРЅ РѕС‚С‡С‘С‚ РЅР° С„РѕСЂРјСѓ " +
                                              $"{currentReport.FormNum_DB} {currentReport.StartPeriod_DB}-{currentReport.EndPeriod_DB}" +
-                                             $"{Environment.NewLine}пересекающийся с введённым периодом " +
+                                             $"{Environment.NewLine}РїРµСЂРµСЃРµРєР°СЋС‰РёР№СЃСЏ СЃ С‚РµРєСѓС‰РёРј РїРµСЂРёРѕРґРѕРј " +
                                              $"{rep.StartPeriod_DB}-{rep.EndPeriod_DB}.",
                             MinWidth = 450,
                             MinHeight = 170,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner,
                             Topmost = true,
                         })
-                        .ShowDialog(desktop.MainWindow));
+                        .ShowWindowDialogAsync(desktop.MainWindow));
 
                     #endregion
 
@@ -119,10 +136,10 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
     #region RemoveEmptyForms
 
     /// <summary>
-    /// Проверяет на пустые строчки и предлагает их удалить.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
-    /// <param name="vm">Модель открытого отчёта.</param>
-    /// <returns>Сообщение с предложением удалить пустые строчки.</returns>
+    /// <param name="vm">пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.</param>
+    /// <returns>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.</returns>
     private static async Task RemoveEmptyForms(ChangeOrCreateVM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
@@ -732,27 +749,26 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
         {
             #region MessageRemoveEmptyForms
 
-            var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
-                        new ButtonDefinition { Name = "Да" },
-                        new ButtonDefinition { Name = "Нет" }
+                        new ButtonDefinition { Name = "Р”Р°" },
+                        new ButtonDefinition { Name = "РќРµС‚" }
                     ],
-                    ContentTitle = "Сохранение изменений",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = $"В форме {vm.FormType} присутствуют пустые строчки." +
-                                     $"{Environment.NewLine}Вы хотите их удалить?",
+                    ContentTitle = "РЎРѕС…СЂР°РЅРµРЅРёРµ РёР·РјРµРЅРµРЅРёР№",
+                    ContentHeader = "РЈРІРµРґРѕРјР»РµРЅРёРµ",
+                    ContentMessage = $"Р’ С„РѕСЂРјРµ {vm.FormType} РѕР±РЅР°СЂСѓР¶РµРЅС‹ РїСѓСЃС‚С‹Рµ СЃС‚СЂРѕРєРё." +
+                                     $"{Environment.NewLine}Р’С‹ С…РѕС‚РёС‚Рµ РёС… СѓРґР°Р»РёС‚СЊ?",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(desktop.MainWindow));
+                }).ShowWindowDialogAsync(desktop.MainWindow));
 
             #endregion
 
-            if (res is "Да")
+            if (res is "Р”Р°")
             {
                 await using var db = new DBModel(StaticConfiguration.DBPath);
                 foreach (var form in formToDeleteList)
@@ -781,27 +797,27 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
 
     #region DoShowDialog
 
-    private async Task DoShowDialogAsync(InteractionContext<int, int> interaction)
+    private async Task DoShowDialogAsync(IInteractionContext<int, int> interaction)
     {
         RowNumberIn frm = new(interaction.Input);
         await frm.ShowDialog(this);
         interaction.SetOutput(Convert.ToInt32(frm.Number2));
     }
 
-    private async Task DoShowDialogAsync(InteractionContext<object, int> interaction)
+    private async Task DoShowDialogAsync(IInteractionContext<object, int> interaction)
     {
         RowNumber frm = new();
         await frm.ShowDialog(this);
         interaction.SetOutput(Convert.ToInt32(frm.Number));
     }
 
-    private async Task DoShowDialogAsyncT(InteractionContext<List<string>, string> interaction)
+    private async Task DoShowDialogAsyncT(IInteractionContext<List<string>, string> interaction)
     {
         MessageBoxCustomParams par = new()
         {
-            ContentHeader = "Уведомление",
+            ContentHeader = "РЈРІРµРґРѕРјР»РµРЅРёРµ",
             ContentMessage = interaction.Input[0],
-            ContentTitle = "Уведомление",
+            ContentTitle = "РЈРІРµРґРѕРјР»РµРЅРёРµ",
             WindowStartupLocation = WindowStartupLocation.CenterScreen
         };
         interaction.Input.RemoveAt(0);
@@ -811,8 +827,8 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                 Name = elem
             });
 
-        var message = MessageBox.Avalonia.MessageBoxManager.GetMessageBoxCustomWindow(par);
-        var answer = await message.ShowDialog(this);
+        var message = MessageBoxManager.GetMessageBoxCustom(par);
+        var answer = await message.ShowWindowDialogAsync(this);
 
         interaction.SetOutput(answer);
     }
@@ -852,7 +868,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "SelectAll",
-                    ContextMenuText = ["Выделить все                                            Ctrl+A"],
+                    ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                                            Ctrl+A"],
                     Command = null
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -862,7 +878,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = ["Добавить строку                                      Ctrl+T"],
+                    ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                                      Ctrl+T"],
                     Command = dataContext.AddRow
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -872,7 +888,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = ["Добавить N строк                                    Ctrl+N"],
+                    ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ                                    Ctrl+N"],
                     Command = dataContext.AddRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -882,7 +898,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
-                    ContextMenuText = ["Добавить N строк перед                         Ctrl+I"],
+                    ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ                         Ctrl+I"],
                     Command = dataContext.AddRowsIn
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -892,7 +908,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Copy",
-                    ContextMenuText = ["Копировать                                               Ctrl+C"],
+                    ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                                               Ctrl+C"],
                     Command = dataContext.CopyRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -902,7 +918,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = false,
                     ParamName = "Copy",
-                    ContextMenuText = ["Копировать                                               Ctrl+Ins"],
+                    ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                                               Ctrl+Ins"],
                     Command = dataContext.CopyRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -912,7 +928,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Paste",
-                    ContextMenuText = ["Вставить                                                    Ctrl+V"],
+                    ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                                                    Ctrl+V"],
                     Command = dataContext.PasteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -923,7 +939,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     IsContextMenuCommand = true,
                     IsUpdateCells = true,
                     ParamName = "SelectedItems",
-                    ContextMenuText = ["Удалить строки                                         Ctrl+D"],
+                    ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                                         Ctrl+D"],
                     Command = dataContext.DeleteRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -933,7 +949,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = ["Выставить номер п/п                               Ctrl+O"],
+                    ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                               Ctrl+O"],
                                         
                     Command = dataContext.SetNumberOrder
                 });
@@ -944,7 +960,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "",
-                    ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                    ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                     Command = dataContext.SortForm
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -953,7 +969,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Del",
-                    ContextMenuText = ["Очистить ячейки                                      Delete"],
+                    ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                                      Delete"],
                     Command = dataContext.DeleteDataInRows
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -963,7 +979,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Copy",
-                    ContextMenuText = ["Открыть паспорт                                      Ctrl+P"],
+                    ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ                                      Ctrl+P"],
                     Command = dataContext.OpenPas
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -973,7 +989,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
-                    ContextMenuText = ["Рассчитать категорию"],
+                    ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ"],
                     Command = dataContext.CategoryCalculationFromReport
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -983,7 +999,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Copy",
-                    ContextMenuText = ["Выгрузка в Excel движения источника   Ctrl+E"],
+                    ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ Excel пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ   Ctrl+E"],
                     Command = dataContext.ExcelExportSourceMovementHistory
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -993,7 +1009,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "Copy",
-                    ContextMenuText = ["Скопировать в буфер имя паспорта      Ctrl+K"],
+                    ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ      Ctrl+K"],
                     Command = dataContext.CopyPasName
                 });
                 Rgrd.CommandsList.Add(new KeyCommand
@@ -1003,7 +1019,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     IsDoubleTappedCommand = false,
                     IsContextMenuCommand = true,
                     ParamName = "SelectedItems",
-                    ContextMenuText = ["Перевести источник в РАО                     Ctrl+Z"],
+                    ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ                     Ctrl+Z"],
                     Command = dataContext.SourceTransmission
                 });
 
@@ -1018,7 +1034,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1028,7 +1044,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1038,7 +1054,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1048,7 +1064,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1058,7 +1074,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1067,7 +1083,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -1094,7 +1110,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                                 Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                                 Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1104,7 +1120,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку                           Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                           Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1114,7 +1130,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк                         Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ                         Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1124,7 +1140,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед              Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ              Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1134,7 +1150,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                                   Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                                   Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1144,7 +1160,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                                         Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                                         Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1154,7 +1170,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                              Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                              Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1164,7 +1180,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п                    Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1174,7 +1190,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п        Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ        Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1183,7 +1199,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки                           Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                           Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1193,7 +1209,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Перевести источник в РАО          Ctrl+Z"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ          Ctrl+Z"],
                         Command = dataContext.SourceTransmission
                     });
 
@@ -1209,7 +1225,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1219,7 +1235,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1229,7 +1245,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1239,7 +1255,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1249,7 +1265,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1258,7 +1274,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
 
@@ -1286,7 +1302,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                            Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                            Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1296,7 +1312,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку                      Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1306,7 +1322,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк                    Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ                    Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1316,7 +1332,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед         Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ         Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1326,7 +1342,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                              Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                              Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1336,7 +1352,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                                   Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                                   Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1346,7 +1362,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                        Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1356,7 +1372,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1366,7 +1382,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1375,7 +1391,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки                     Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                     Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1385,7 +1401,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Перевести источник в РАО    Ctrl+Z"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ    Ctrl+Z"],
                         Command = dataContext.SourceTransmission
                     });
 
@@ -1401,7 +1417,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1411,7 +1427,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1421,7 +1437,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1431,7 +1447,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1441,7 +1457,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1450,7 +1466,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
 
@@ -1478,7 +1494,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                           Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                           Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1488,7 +1504,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку                      Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1498,7 +1514,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк                    Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ                    Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1508,7 +1524,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед         Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ         Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1518,7 +1534,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                              Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                              Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1528,7 +1544,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                                   Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                                   Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1538,7 +1554,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                        Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1548,7 +1564,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1558,7 +1574,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1567,7 +1583,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки                     Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                     Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1577,7 +1593,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Перевести источник в РАО    Ctrl+Z"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ    Ctrl+Z"],
                         Command = dataContext.SourceTransmission
                     });
 
@@ -1593,7 +1609,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1603,7 +1619,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1613,7 +1629,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1623,7 +1639,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1633,7 +1649,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1642,7 +1658,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
 
@@ -1669,7 +1685,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1679,7 +1695,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1689,7 +1705,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1699,7 +1715,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1709,7 +1725,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1719,7 +1735,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1729,7 +1745,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1739,7 +1755,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1749,7 +1765,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1758,7 +1774,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     //Rgrd.CommandsList.Add(new KeyCommand
@@ -1768,7 +1784,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     //    IsDoubleTappedCommand = false,
                     //    IsContextMenuCommand = true,
                     //    ParamName = "Copy",
-                    //    ContextMenuText = new[] { "Открыть паспорт                                      Ctrl+P" },
+                    //    ContextMenuText = new[] { "пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ                                      Ctrl+P" },
                     //    Command = dataContext.OpenPassport
                     //});
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1778,7 +1794,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Выгрузка в Excel движения источника   Ctrl+E"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ Excel пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ   Ctrl+E"],
                         Command = dataContext.ExcelExportSourceMovementHistory
                     });
                     //Rgrd.CommandsList.Add(new KeyCommand
@@ -1788,7 +1804,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                     //    IsDoubleTappedCommand = false,
                     //    IsContextMenuCommand = true,
                     //    ParamName = "Copy",
-                    //    ContextMenuText = new[] { "Скопировать в буфер имя паспорта      Ctrl+K" },
+                    //    ContextMenuText = new[] { "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ      Ctrl+K" },
                     //    Command = dataContext.CopyPasName
                     //});
                     #endregion
@@ -1802,7 +1818,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1812,7 +1828,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1822,7 +1838,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1832,7 +1848,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1842,7 +1858,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1851,7 +1867,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -1877,7 +1893,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1887,7 +1903,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1897,7 +1913,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1907,7 +1923,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1917,7 +1933,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1927,7 +1943,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1937,7 +1953,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1947,7 +1963,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1957,7 +1973,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -1966,7 +1982,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -1980,7 +1996,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -1990,7 +2006,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2000,7 +2016,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2010,7 +2026,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2020,7 +2036,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2029,7 +2045,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -2055,7 +2071,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2065,7 +2081,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2075,7 +2091,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2085,7 +2101,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2095,7 +2111,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2105,7 +2121,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2115,7 +2131,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2125,7 +2141,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2135,7 +2151,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2144,7 +2160,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2154,7 +2170,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Паспорт для упаковки                    Ctrl+P"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                    Ctrl+P"],
                         Command = dataContext.PassportFill
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2164,7 +2180,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Паспорта для всех упаковок              Ctrl+Shift+P"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+Shift+P"],
                         Command = dataContext.PassportFillAll
                     });
                     #endregion
@@ -2178,7 +2194,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2188,7 +2204,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2198,7 +2214,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2208,7 +2224,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2218,7 +2234,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2227,7 +2243,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -2253,7 +2269,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2263,7 +2279,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2273,7 +2289,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2283,7 +2299,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2293,7 +2309,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2303,7 +2319,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2313,7 +2329,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2323,7 +2339,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2333,7 +2349,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2342,7 +2358,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -2356,7 +2372,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2366,7 +2382,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2376,7 +2392,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2386,7 +2402,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2396,7 +2412,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2405,7 +2421,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -2431,7 +2447,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2441,7 +2457,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2451,7 +2467,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2461,7 +2477,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2471,7 +2487,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2481,7 +2497,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2491,7 +2507,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2501,7 +2517,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2511,7 +2527,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2520,7 +2536,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -2534,7 +2550,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2544,7 +2560,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2554,7 +2570,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2564,7 +2580,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2574,7 +2590,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2583,7 +2599,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -2626,7 +2642,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2636,7 +2652,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2646,7 +2662,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2656,7 +2672,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2666,7 +2682,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2676,7 +2692,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2686,7 +2702,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2696,7 +2712,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2706,7 +2722,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2715,7 +2731,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -2729,7 +2745,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2739,7 +2755,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2749,7 +2765,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2759,7 +2775,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2769,7 +2785,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2778,7 +2794,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -2804,7 +2820,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2814,7 +2830,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2824,7 +2840,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2834,7 +2850,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2844,7 +2860,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2854,7 +2870,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2864,7 +2880,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2874,7 +2890,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2884,7 +2900,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2893,7 +2909,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -2907,7 +2923,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2917,7 +2933,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2927,7 +2943,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2937,7 +2953,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2947,7 +2963,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -2956,7 +2972,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -2982,7 +2998,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -2992,7 +3008,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3002,7 +3018,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3012,7 +3028,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3022,7 +3038,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3032,7 +3048,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3042,7 +3058,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3052,7 +3068,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3062,7 +3078,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3071,7 +3087,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -3085,7 +3101,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3095,7 +3111,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3105,7 +3121,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3115,7 +3131,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3125,7 +3141,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3134,7 +3150,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -3160,7 +3176,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3170,7 +3186,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3180,7 +3196,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3190,7 +3206,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3200,7 +3216,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3210,7 +3226,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3220,7 +3236,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3230,7 +3246,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3240,7 +3256,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3249,7 +3265,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -3263,7 +3279,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3273,7 +3289,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3283,7 +3299,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3293,7 +3309,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3303,7 +3319,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3312,7 +3328,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -3338,7 +3354,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3348,7 +3364,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3358,7 +3374,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3368,7 +3384,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3378,7 +3394,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3388,7 +3404,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3398,7 +3414,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3408,7 +3424,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3418,7 +3434,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3427,7 +3443,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -3441,7 +3457,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3451,7 +3467,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3461,7 +3477,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3471,7 +3487,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3481,7 +3497,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3490,7 +3506,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -3516,7 +3532,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3526,7 +3542,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3536,7 +3552,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3546,7 +3562,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3556,7 +3572,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3566,7 +3582,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3576,7 +3592,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3586,7 +3602,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3596,7 +3612,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3605,7 +3621,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -3619,7 +3635,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3629,7 +3645,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3639,7 +3655,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3649,7 +3665,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3659,7 +3675,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3668,7 +3684,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -3694,7 +3710,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3704,7 +3720,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3714,7 +3730,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3724,7 +3740,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3734,7 +3750,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3744,7 +3760,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3754,7 +3770,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3764,7 +3780,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3774,7 +3790,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3783,7 +3799,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -3797,7 +3813,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3807,7 +3823,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3817,7 +3833,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3827,7 +3843,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3837,7 +3853,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3846,7 +3862,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -3872,7 +3888,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3882,7 +3898,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3892,7 +3908,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3902,7 +3918,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3912,7 +3928,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3922,7 +3938,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3932,7 +3948,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3942,7 +3958,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3952,7 +3968,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -3961,7 +3977,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -3975,7 +3991,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3985,7 +4001,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -3995,7 +4011,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4005,7 +4021,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4015,7 +4031,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4024,7 +4040,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -4050,7 +4066,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4060,7 +4076,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4070,7 +4086,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4080,7 +4096,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4090,7 +4106,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4100,7 +4116,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4110,7 +4126,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4120,7 +4136,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4130,7 +4146,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4139,7 +4155,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -4153,7 +4169,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4163,7 +4179,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4173,7 +4189,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4183,7 +4199,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4193,7 +4209,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4202,7 +4218,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -4228,7 +4244,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4238,7 +4254,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4248,7 +4264,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4258,7 +4274,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4268,7 +4284,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4278,7 +4294,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4288,7 +4304,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4298,7 +4314,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4308,7 +4324,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4317,7 +4333,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -4331,7 +4347,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4341,7 +4357,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4351,7 +4367,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4361,7 +4377,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4371,7 +4387,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4380,7 +4396,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -4406,7 +4422,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4416,7 +4432,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4426,7 +4442,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4436,7 +4452,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4446,7 +4462,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4456,7 +4472,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4466,7 +4482,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4476,7 +4492,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4486,7 +4502,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4495,7 +4511,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -4509,7 +4525,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4519,7 +4535,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4529,7 +4545,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4539,7 +4555,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4549,7 +4565,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4558,7 +4574,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -4584,7 +4600,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectAll",
-                        ContextMenuText = ["Выделить все                    Ctrl+A"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ                    Ctrl+A"],
                         Command = null
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4594,7 +4610,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку              Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Ctrl+T"],
                         Command = dataContext.AddRow
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4604,7 +4620,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк            Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ            Ctrl+N"],
                         Command = dataContext.AddRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4614,7 +4630,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Добавить N строк перед Ctrl+I"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ Ctrl+I"],
                         Command = dataContext.AddRowsIn
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4624,7 +4640,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                      Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                      Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4634,7 +4650,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                            Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                            Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4644,7 +4660,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки                 Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ                 Ctrl+D"],
                         Command = dataContext.DeleteRows
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4654,7 +4670,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Выставить номер п/п              Ctrl+O"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ              Ctrl+O"],
                         Command = dataContext.SetNumberOrder
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4664,7 +4680,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Сортировать по номеру п/п                    Ctrl+L"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ/пїЅ                    Ctrl+L"],
                         Command = dataContext.SortForm
                     });
                     Rgrd.CommandsList.Add(new KeyCommand
@@ -4673,7 +4689,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -4687,7 +4703,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить строку          Ctrl+T"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ          Ctrl+T"],
                         Command = dataContext.AddNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4697,7 +4713,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "",
-                        ContextMenuText = ["Добавить N строк        Ctrl+N"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ N пїЅпїЅпїЅпїЅпїЅ        Ctrl+N"],
                         Command = dataContext.AddNotes
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4707,7 +4723,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Copy",
-                        ContextMenuText = ["Копировать                  Ctrl+C"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                  Ctrl+C"],
                         Command = dataContext.CopyRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4717,7 +4733,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Paste",
-                        ContextMenuText = ["Вставить                        Ctrl+V"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ                        Ctrl+V"],
                         Command = dataContext.PasteRows
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4727,7 +4743,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "SelectedItems",
-                        ContextMenuText = ["Удалить строки             Ctrl+D"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ             Ctrl+D"],
                         Command = dataContext.DeleteNote
                     });
                     Ngrd.CommandsList.Add(new KeyCommand
@@ -4736,7 +4752,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                         IsDoubleTappedCommand = false,
                         IsContextMenuCommand = true,
                         ParamName = "Del",
-                        ContextMenuText = ["Очистить ячейки              Delete"],
+                        ContextMenuText = ["пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ              Delete"],
                         Command = dataContext.DeleteDataInRows
                     });
                     #endregion
@@ -4767,11 +4783,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
-        // Сразу отменяем закрытие: после первого await иначе окно уже «уехало» или зависает.
-        args.Cancel = true;
         if (DataContext is not ChangeOrCreateVM vm) return;
-
-        var closeConfirmed = false;
         try
         {
             await RemoveEmptyForms(vm);
@@ -4789,9 +4801,6 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
             if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
             {
                 desktop.MainWindow.WindowState = WindowState.Normal;
-                closeConfirmed = true;
-                Closing -= OnStandardClosing;
-                Close();
                 return;
             }
         }
@@ -4802,62 +4811,48 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
             ServiceExtension.LoggerManager.Error(msg);
         }
 
+        var flag = false;
+
         #region MessageRemoveEmptyForms
 
-        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var res = Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" },
-                    new ButtonDefinition { Name = "Отмена" }
+                    new ButtonDefinition { Name = "Р”Р°" },
+                    new ButtonDefinition { Name = "РќРµС‚" }
                 ],
-                ContentTitle = "Сохранение изменений",
-                ContentHeader = "Уведомление",
-                ContentMessage = $"Сохранить форму {vm.FormType}?",
+                ContentTitle = "РЎРѕС…СЂР°РЅРµРЅРёРµ РёР·РјРµРЅРµРЅРёР№",
+                ContentHeader = "РЈРІРµРґРѕРјР»РµРЅРёРµ",
+                ContentMessage = $"РЎРѕС…СЂР°РЅРёС‚СЊ С„РѕСЂРјСѓ {vm.FormType}?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(this));
+            }).ShowWindowDialogAsync(desktop.MainWindow));
 
         #endregion
 
+        await res.WaitAsync(new CancellationToken());
         var dbm = StaticConfiguration.DBModel;
-        switch (res)
+        switch (res.Result)
         {
-            case "Да":
+            case "Р”Р°":
             {
-                closeConfirmed = true;
-                try
+                await dbm.SaveChangesAsync();
+                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                if (desktop.Windows.Count == 1)
                 {
-                    await dbm.SaveChangesAsync();
-                    await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+                    desktop.MainWindow.WindowState = WindowState.Normal;
                 }
-                catch (Exception ex)
-                {
-                    var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                              $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                    ServiceExtension.LoggerManager.Error(msg);
-                }
-                break;
+                return;
             }
-            case "Нет":
+            case "РќРµС‚":
             {
-                closeConfirmed = true;
+                flag = true;
                 dbm.Restore();
                 new SortFormSyncCommand(vm).Execute(null);
-                try
-                {
-                    await dbm.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
-                    var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                              $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                    ServiceExtension.LoggerManager.Error(msg);
-                }
+                await dbm.SaveChangesAsync();
 
                 var lst = vm.Storage[vm.FormType];
 
@@ -4899,16 +4894,13 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
 
                 break;
             }
-            default:
-                return; // Отмена — окно остаётся открытым (args.Cancel уже true)
         }
-
         desktop.MainWindow.WindowState = WindowState.Normal;
-        if (closeConfirmed)
+        if (flag)
         {
-            Closing -= OnStandardClosing;
             Close();
         }
+        args.Cancel = true;
     }
 
     #endregion

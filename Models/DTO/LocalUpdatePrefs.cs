@@ -9,7 +9,7 @@ namespace Models.DTO;
 public class LocalUpdatePrefs
 {
     /// <summary>
-    /// Время последней автопроверки обновлений.
+    /// Время последнего показа предложения обновить / отметки «напомнить позже» для этого ключа.
     /// </summary>
     public DateTime? LastUpdateCheck { get; set; }
 
@@ -22,4 +22,14 @@ public class LocalUpdatePrefs
     /// Пропущенная версия с сайта (внешние пользователи).
     /// </summary>
     public string SkippedVersion { get; set; } = string.Empty;
+
+    /// <summary>
+    /// releaseId, для которого уже показывали автодиалог (в т.ч. «напомнить позже»).
+    /// </summary>
+    public string LastNotifiedReleaseId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Версия с сайта, для которой уже показывали автодиалог.
+    /// </summary>
+    public string LastNotifiedVersion { get; set; } = string.Empty;
 }

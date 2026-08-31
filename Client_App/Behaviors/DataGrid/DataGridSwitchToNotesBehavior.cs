@@ -62,7 +62,7 @@ namespace Client_App.Behaviors.DataGridBehaviors;
         {
             if (sender is not DataGrid sourceDataGrid) return;
 
-            if (AssociatedObject.Items is not ObservableCollection<Note> notes) return;
+            if (AssociatedObject.ItemsSource is not ObservableCollection<Note> notes) return;
 
             var oldRow = GetRowByIndex(sourceDataGrid, sourceDataGrid.SelectedIndex);
             if (oldRow == null) return;
@@ -174,7 +174,7 @@ namespace Client_App.Behaviors.DataGridBehaviors;
         }
         private int GetRowIndex(DataGrid dataGrid, DataGridRow row)
         {
-            var items = dataGrid.Items?.Cast<object>().ToList();
+            var items = dataGrid.ItemsSource?.Cast<object>().ToList();
             if (items == null) return -1;
 
             return items.IndexOf(row.DataContext);

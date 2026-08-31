@@ -11,7 +11,8 @@
         x:Class="Client_App.Views.Messages.MultipleRaodbFilesMessageWindow"
         Title="Выбор файла базы данных"
         WindowStartupLocation="Manual"
-        MinWidth="375" MinHeight="215">
+        MinWidth="420" MinHeight="260"
+        Background="White">
 
     <Window.Resources>
         <customConverters:NotNullToBoolConverter x:Key="NotNullToBoolConverter"/>
@@ -29,7 +30,8 @@
                    Margin="0,0,0,10"/>
 
         <DataGrid Grid.Row="1"
-                  Items="{Binding Files}"
+                  Classes="dbPicker"
+                  ItemsSource="{Binding Files}"
                   SelectedItem="{Binding SelectedFile, Mode=TwoWay}"
                   AutoGenerateColumns="False"
                   SelectionMode="Single"
@@ -39,12 +41,22 @@
                   CanUserSortColumns="False"
                   GridLinesVisibility="All"
                   HeadersVisibility="Column"
-                  RowBackground="White"
-                  AlternatingRowBackground="White">
+                  RowBackground="White">
             <DataGrid.Styles>
                 <Style Selector="DataGridColumnHeader">
-                    <Setter Property="Padding" Value="8,4,4,4"/>
+                    <Setter Property="Padding" Value="6,2"/>
                     <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                    <Setter Property="FontSize" Value="12"/>
+                </Style>
+                <Style Selector="DataGridCell">
+                    <Setter Property="FontSize" Value="12"/>
+                    <Setter Property="Padding" Value="6,2"/>
+                </Style>
+                <Style Selector="DataGridCell:focus /template/ Grid#FocusVisual">
+                    <Setter Property="IsVisible" Value="False"/>
+                </Style>
+                <Style Selector="DataGridCell:current /template/ Rectangle#CurrencyVisual">
+                    <Setter Property="IsVisible" Value="False"/>
                 </Style>
             </DataGrid.Styles>
             <DataGrid.Columns>
@@ -54,10 +66,10 @@
                                     MinWidth="120"/>
                 <DataGridTextColumn Header="Дата изменения"
                                     Binding="{Binding LastModified}"
-                                    Width="150"/>
+                                    Width="130"/>
                 <DataGridTextColumn Header="Размер, Мб"
                                     Binding="{Binding SizeMb}"
-                                    Width="100"/>
+                                    Width="90"/>
             </DataGrid.Columns>
         </DataGrid>
 
@@ -70,14 +82,20 @@
                     IsDefault="True"
                     IsEnabled="{Binding SelectedFile, Converter={StaticResource NotNullToBoolConverter}}"
                     Click="OnOpenClicked"
-                    MinWidth="110"/>
+                    MinWidth="120"
+                    MinHeight="28"
+                    Padding="8,4"/>
             <Button Content="Открыть папку RAO"
                     Click="OnOpenRaoFolderClicked"
-                    MinWidth="140"/>
+                    MinWidth="150"
+                    MinHeight="28"
+                    Padding="8,4"/>
             <Button Content="Выход"
                     IsCancel="True"
                     Click="OnExitClicked"
-                    MinWidth="90"/>
+                    MinWidth="90"
+                    MinHeight="28"
+                    Padding="8,4"/>
         </StackPanel>
     </Grid>
 </Window>

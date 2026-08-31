@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+п»їusing System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
@@ -8,7 +8,7 @@ using Models.CheckForm;
 
 namespace Client_App.Views.Forms;
 
-public class NewCheckForm41 : BaseWindow<NewCheckFormVM>
+public partial class NewCheckForm41 : BaseWindow<NewCheckFormVM>
 {
     #region Constructor
 
@@ -31,7 +31,7 @@ public class NewCheckForm41 : BaseWindow<NewCheckFormVM>
     #region Events
 
     /// <summary>
-    /// Устанавливает цвет строки в зависимости от того, является ли ошибка критической.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>

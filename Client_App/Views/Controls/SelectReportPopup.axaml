@@ -1,4 +1,4 @@
-<UserControl xmlns="https://github.com/avaloniaui"
+﻿<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -72,7 +72,7 @@
 							Grid.Row="2"
 							IsEnabled="{Binding YearMode, Converter={StaticResource LogicalNotConverter}}"
 							IsVisible="{Binding YearMode, Converter={StaticResource LogicalNotConverter}}"
-							Items="{Binding ReportCollection}"
+							ItemsSource="{Binding ReportCollection}"
 							SelectedItem="{Binding SelectedReport, Mode=TwoWay}"
 							PointerReleased ="ListBox_PointerReleased"
 							SelectionMode="Single">
@@ -94,7 +94,7 @@
 							Grid.Row="2"
 							IsEnabled="{Binding YearMode}"
 							IsVisible="{Binding YearMode}"
-							Items="{Binding ReportCollection}"
+							ItemsSource="{Binding ReportCollection}"
 							SelectedItem="{Binding SelectedReport, Mode=TwoWay}"
 							PointerReleased ="ListBox_PointerReleased"
 							SelectionMode="Single">

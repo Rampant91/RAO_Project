@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Client_App.Resources;
 namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
@@ -33,7 +34,7 @@ public class NewCopyNotesAsyncCommand : BaseAsyncCommand
             plainText.AppendLine(note.ConvertToTSVstring());
         }
 
-        var clipboard = Application.Current.Clipboard;
+        var clipboard = Avalonia11Compat.MainClipboard!;
 
         await clipboard.SetTextAsync(plainText.ToString());
     }

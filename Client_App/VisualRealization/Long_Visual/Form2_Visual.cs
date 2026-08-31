@@ -13,6 +13,7 @@ using Client_App.ViewModels;
 using Client_App.VisualRealization.Converters;
 using Models.Attributes;
 
+using Client_App.Resources;
 namespace Client_App.VisualRealization.Long_Visual;
 
 public class Form2_Visual
@@ -120,7 +121,7 @@ public class Form2_Visual
                 Width = width,
                 Height = height,
                 Margin = Thickness.Parse(margin),
-                VerticalAlignment = VerticalAlignment.Top,
+                VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Text = text
             };
@@ -131,7 +132,7 @@ public class Form2_Visual
             {
                 Height = height,
                 Margin = Thickness.Parse(margin),
-                VerticalAlignment = VerticalAlignment.Top,
+                VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Text = text
             };
@@ -378,7 +379,8 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            Background = new SolidColorBrush(Colors.White)
         };
         StackPanel mainGrid = new();
         vw.Content = mainGrid;
@@ -409,24 +411,27 @@ public class Form2_Visual
         };
         StackPanel? content = new()
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
 
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:               "));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.Year", 70, scp, "year"));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateTextBlock("5,20,0,5", 30, "Суммирование:"));
         var testS = CreateToggleSwitch("Суммировать", "65,0,0,15", 30, "SumRow");
@@ -434,7 +439,8 @@ public class Form2_Visual
         leftStPT.Children.Add(content);
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
@@ -474,39 +480,44 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:"));
-        content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:"));
-        content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-        content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
@@ -538,7 +549,7 @@ public class Form2_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm21.ScrollLeftRightProperty];
+        Avalonia11Compat.BindHorizontalScroll(vw, grd, DataGridForm21.ScrollLeftRightProperty);
 
         Binding b = new()
         {
@@ -616,7 +627,8 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -647,24 +659,27 @@ public class Form2_Visual
         };
         StackPanel? content = new()
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
 
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:               "));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.Year", 70, scp, "year"));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateTextBlock("5,20,0,5", 30, "Суммирование:"));
         var testS = CreateToggleSwitch("Суммировать", "65,0,0,15", 30, "SumRow");
@@ -673,7 +688,8 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
@@ -713,39 +729,44 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:"));
-        content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:"));
-        content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-        content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
@@ -777,7 +798,7 @@ public class Form2_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm22.ScrollLeftRightProperty];
+        Avalonia11Compat.BindHorizontalScroll(vw, grd, DataGridForm22.ScrollLeftRightProperty);
 
         Binding b = new()
         {
@@ -856,7 +877,8 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -887,24 +909,27 @@ public class Form2_Visual
         };
         StackPanel? content = new()
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
 
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:               "));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.Year", 70, scp, "year"));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
@@ -944,39 +969,44 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:"));
-        content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:"));
-        content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-        content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
@@ -1007,7 +1037,7 @@ public class Form2_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm23.ScrollLeftRightProperty];
+        Avalonia11Compat.BindHorizontalScroll(vw, grd, DataGridForm23.ScrollLeftRightProperty);
 
         Binding b = new()
         {
@@ -1086,7 +1116,8 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -1117,24 +1148,27 @@ public class Form2_Visual
         };
         StackPanel? content = new()
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
 
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:               "));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.Year", 70, scp, "year"));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
@@ -1174,39 +1208,44 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:"));
-        content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:"));
-        content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-        content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
@@ -1237,7 +1276,7 @@ public class Form2_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm24.ScrollLeftRightProperty];
+        Avalonia11Compat.BindHorizontalScroll(vw, grd, DataGridForm24.ScrollLeftRightProperty);
 
         Binding b = new()
         {
@@ -1316,7 +1355,8 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -1347,24 +1387,27 @@ public class Form2_Visual
         };
         StackPanel? content = new()
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
 
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:               "));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.Year", 70, scp, "year"));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
@@ -1404,39 +1447,44 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:"));
-        content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:"));
-        content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-        content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
@@ -1467,7 +1515,7 @@ public class Form2_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm25.ScrollLeftRightProperty];
+        Avalonia11Compat.BindHorizontalScroll(vw, grd, DataGridForm25.ScrollLeftRightProperty);
 
         Binding b = new()
         {
@@ -1546,7 +1594,8 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -1577,24 +1626,27 @@ public class Form2_Visual
         };
         StackPanel? content = new()
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
 
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:               "));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.Year", 70, scp, "year"));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
@@ -1602,7 +1654,8 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Количество наблюдательных скважин, принадлежащих организации:"));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.SourcesQuantity26", 100, scp));
@@ -1642,39 +1695,44 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:"));
-        content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:"));
-        content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-        content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
@@ -1705,7 +1763,7 @@ public class Form2_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm26.ScrollLeftRightProperty];
+        Avalonia11Compat.BindHorizontalScroll(vw, grd, DataGridForm26.ScrollLeftRightProperty);
 
         Binding b = new()
         {
@@ -1784,7 +1842,8 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -1814,24 +1873,27 @@ public class Form2_Visual
         };
         StackPanel? content = new()
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
 
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:               "));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.Year", 70, scp, "year"));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
@@ -1839,7 +1901,8 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
 
         content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Разрешение на допустимые выбросы радионуклидов в атмосферу №"));
@@ -1854,7 +1917,8 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Наименование разрешительного документа на допустимые выбросы радионуклидов в атмосферу:"));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.PermissionDocumentName27", 600, scp));
@@ -1893,39 +1957,44 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:"));
-        content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:"));
-        content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-        content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
@@ -1956,7 +2025,7 @@ public class Form2_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm27.ScrollLeftRightProperty];
+        Avalonia11Compat.BindHorizontalScroll(vw, grd, DataGridForm27.ScrollLeftRightProperty);
 
         Binding b = new()
         {
@@ -2035,7 +2104,8 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -2069,21 +2139,23 @@ public class Form2_Visual
             VerticalAlignment = VerticalAlignment.Bottom
         };
 
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:               "));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.Year", 70, scp, "year"));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
@@ -2091,7 +2163,8 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Разрешение на сброс радионуклидов в водные объекты №", 350));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.PermissionNumber_28", 100, scp));
@@ -2105,7 +2178,8 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Наименование разрешительного документа на сброс:"));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.PermissionDocumentName_28", 600, scp));
@@ -2113,7 +2187,8 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Разрешение на сброс радионуклидов на рельеф местности №", 350));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.PermissionNumber1_28", 100, scp));
@@ -2127,7 +2202,8 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Наименование разрешительного документа на сброс:"));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.PermissionDocumentName1_28", 600, scp));
@@ -2135,7 +2211,8 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Договор на передачу сточных вод в сети канализации №", 350));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ContractNumber_28", 100, scp));
@@ -2149,7 +2226,8 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Организация, осуществляющая прием сточных вод:"));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.OrganisationReciever_28", 100, scp));
@@ -2188,39 +2266,44 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:"));
-        content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:"));
-        content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-        content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
@@ -2251,7 +2334,7 @@ public class Form2_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm28.ScrollLeftRightProperty];
+        Avalonia11Compat.BindHorizontalScroll(vw, grd, DataGridForm28.ScrollLeftRightProperty);
 
         Binding b = new()
         {
@@ -2330,7 +2413,8 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -2361,24 +2445,27 @@ public class Form2_Visual
         };
         StackPanel? content = new()
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
 
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:               "));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.Year", 70, scp, "year"));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
@@ -2418,39 +2505,44 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:"));
-        content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:"));
-        content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-        content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
@@ -2481,7 +2573,7 @@ public class Form2_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm29.ScrollLeftRightProperty];
+        Avalonia11Compat.BindHorizontalScroll(vw, grd, DataGridForm29.ScrollLeftRightProperty);
 
         Binding b = new()
         {
@@ -2560,7 +2652,8 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -2591,24 +2684,27 @@ public class Form2_Visual
         };
         StackPanel? content = new()
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
 
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:               "));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.Year", 70, scp, "year"));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
@@ -2648,39 +2744,44 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:"));
-        content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:"));
-        content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-        content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
@@ -2711,7 +2812,7 @@ public class Form2_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm210.ScrollLeftRightProperty];
+        Avalonia11Compat.BindHorizontalScroll(vw, grd, DataGridForm210.ScrollLeftRightProperty);
 
         Binding b = new()
         {
@@ -2790,7 +2891,8 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -2821,24 +2923,27 @@ public class Form2_Visual
         };
         StackPanel? content = new()
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
 
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:               "));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.Year", 70, scp, "year"));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
@@ -2878,39 +2983,44 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:"));
-        content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:"));
-        content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-        content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
@@ -2941,7 +3051,7 @@ public class Form2_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm211.ScrollLeftRightProperty];
+        Avalonia11Compat.BindHorizontalScroll(vw, grd, DataGridForm211.ScrollLeftRightProperty);
 
         Binding b = new()
         {
@@ -3020,7 +3130,8 @@ public class Form2_Visual
     {
         ScrollViewer vw = new()
         {
-            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible
+            HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
         vw.Content = maingrid;
@@ -3051,24 +3162,27 @@ public class Form2_Visual
         };
         StackPanel? content = new()
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
 
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:               "));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Отчетный год:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.Year", 70, scp, "year"));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Номер корректировки:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.CorrectionNumber", 70, scp));
         leftStPT.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Проверить", "5,5,0,5", 30, "CheckReport"));
         content.Children.Add(CreateButton("Сохранить", "5,5,0,5", 30, "SaveReport"));
@@ -3108,39 +3222,44 @@ public class Form2_Visual
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:"));
-        content.Children.Add(CreateTextBox("10,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "ФИО исполнителя:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.FIOexecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:"));
-        content.Children.Add(CreateTextBox("49,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Должность:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.GradeExecutor", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:"));
-        content.Children.Add(CreateTextBox("64,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Телефон:", 155));
+        content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecPhone", 180, scp, ""));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
-        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:"));
+        content.Children.Add(CreateTextBlock("5,5,0,5", 30, "Электронная почта:", 155));
         content.Children.Add(CreateTextBox("5,0,0,0", 30, "DataContext.Storage.ExecEmail", 180, scp));
         rigthStP.Children.Add(content);
 
         content = new StackPanel
         {
-            Orientation = Orientation.Horizontal
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
         };
         content.Children.Add(CreateButton("Скопировать данные предыдущей формы", "5,0,0,3", 30, "CopyExecutorData"));
         rigthStP.Children.Add(content);
@@ -3171,7 +3290,7 @@ public class Form2_Visual
         };
         grd.SetValue(Grid.RowProperty, 2);
 
-        vw[!ScrollViewer.HorizontalScrollBarValueProperty] = grd[!DataGridForm212.ScrollLeftRightProperty];
+        Avalonia11Compat.BindHorizontalScroll(vw, grd, DataGridForm212.ScrollLeftRightProperty);
 
         Binding b = new()
         {

@@ -1,3 +1,4 @@
+using MsBox.Avalonia;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,11 +11,12 @@ using Client_App.ViewModels;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Models.Collections;
 using Models.Interfaces;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing;
 
 /// <summary>
@@ -294,8 +296,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
     private static async Task<(string fullPath, bool openTemp)> ExcelGetFullPathWithUniqueIndex(
         string fileName, CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
     {
-        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -308,8 +310,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
                 ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(Desktop.MainWindow));
+            }).ShowWindowDialogAsync(Desktop.MainWindow));
 
         switch (res)
         {
@@ -448,10 +449,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
             ? "Непарные операции приёма/передачи по формам 1.1–1.6 по всей базе не обнаружены."
             : "Непарные операции приёма/передачи по формам 1.1–1.6 у выбранной организации не обнаружены.";
 
-        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxStandard(new MessageBoxStandardParams
             {
-                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ButtonDefinitions = ButtonEnum.Ok,
                 ContentTitle = "Выгрузка в .xlsx",
                 ContentHeader = "Уведомление",
                 ContentMessage = contentMessage,
@@ -459,15 +460,15 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
                 MinHeight = 150,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .Show(progressBar ?? Desktop.MainWindow));
+            .ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
     }
 
     private static async Task ShowNoFormsSelectedMessage()
     {
-        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxStandard(new MessageBoxStandardParams
             {
-                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ButtonDefinitions = ButtonEnum.Ok,
                 ContentTitle = "Проверка приёма-передачи",
                 ContentHeader = "Уведомление",
                 ContentMessage =
@@ -476,7 +477,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
                 MinHeight = 160,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
-            .Show(Desktop.MainWindow));
+            .ShowWindowDialogAsync(Desktop.MainWindow));
     }
 
     private static async Task CleanupAndClose(AnyTaskProgressBar progressBar, string tmpDbPath)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MsBox.Avalonia;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -8,7 +9,7 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.Forms;
@@ -18,6 +19,7 @@ using Models.Forms.Form4;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
 
 public abstract partial class ExcelExportListOfFormsBaseAsyncCommand : ExcelBaseAsyncCommand
@@ -171,7 +173,7 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand : ExcelBase
         string FormNum_DB,
         string? StartPeriod_DB,
         string? EndPeriod_DB,
-        string? Year_DB,
+        int? Year_DB,
         byte CorrectionNumber_DB);
 
     private readonly record struct TitleRowInfo(
@@ -664,8 +666,9 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand : ExcelBase
     {
         if (minYear == 0 && maxYear == 9999)
             return true;
-        if (rep.Year_DB?.Length != 4 || !int.TryParse(rep.Year_DB, out var currentRepsYear))
+        if (!rep.Year_DB.HasValue)
             return false;
+        var currentRepsYear = rep.Year_DB.Value;
         return currentRepsYear >= minYear && currentRepsYear <= maxYear;
     }
 
@@ -680,21 +683,21 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand : ExcelBase
     private protected static List<FormReportListInfo> OrderForm2Reports(IReadOnlyList<FormReportListInfo> reports) =>
         reports
             .OrderBy(x => byte.TryParse(x.FormNum_DB[2..], out var formNum) ? formNum : byte.MaxValue)
-            .ThenByDescending(x => int.TryParse(x.Year_DB, out var year) ? year : int.MinValue)
+            .ThenByDescending(x => x.Year_DB ?? int.MinValue)
             .ThenByDescending(x => x.CorrectionNumber_DB)
             .ToList();
 
     private protected static List<FormReportListInfo> OrderForm4Reports(IReadOnlyList<FormReportListInfo> reports) =>
         reports
             .OrderBy(x => x.FormNum_DB)
-            .ThenByDescending(x => int.TryParse(x.Year_DB, out var year) ? year : int.MinValue)
+            .ThenByDescending(x => x.Year_DB ?? int.MinValue)
             .ThenByDescending(x => x.CorrectionNumber_DB)
             .ToList();
 
     private protected static List<FormReportListInfo> OrderForm5Reports(IReadOnlyList<FormReportListInfo> reports) =>
         reports
             .OrderBy(x => int.TryParse(x.FormNum_DB.Split('.')[1], out var formNum) ? formNum : int.MaxValue)
-            .ThenByDescending(x => int.TryParse(x.Year_DB, out var year) ? year : int.MinValue)
+            .ThenByDescending(x => x.Year_DB ?? int.MinValue)
             .ThenByDescending(x => x.CorrectionNumber_DB)
             .ToList();
 
@@ -1061,10 +1064,10 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand : ExcelBase
         {
             #region MessageRepsNotFound
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Уведомление",
@@ -1075,8 +1078,7 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand : ExcelBase
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
+                }).ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
 
             #endregion
 

@@ -1,6 +1,4 @@
-using System;
-using System.ComponentModel;
-using System.Linq;
+﻿using MsBox.Avalonia;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -8,10 +6,15 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.Passports;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using Client_App.Views;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
+using Models.Passports;
+using System;
+using System.ComponentModel;
+using System.Linq;
 
 namespace Client_App.Views.Passports;
 
@@ -53,8 +56,8 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
         WindowState = WindowState.Maximized;
 
 
-        //Костыль
-        //Без этого содержимое таблицы не отображается 
+        //�������
+        //��� ����� ���������� ������� �� ������������ 
         Dispatcher.UIThread.InvokeAsync(() =>
         {
             var dataGrid2 = this.FindControl<DataGrid>("dataGrid2");
@@ -70,12 +73,12 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
-        args.Cancel = true; // Сразу запрещаем закрытие окна, т.к., из-за асинхронности окно может закрыться в любой момент
+        args.Cancel = true; // ����� ��������� �������� ����, �.�. ��-�� ������������ ���� ����� ��������� � ����� ������
 
 
-        _isCloseConfirmed = true; // перед выходом из обработчика события стоит проверка на _isCloseConfirmed,
-                                  // если true, то окно закроется,
-                                  // если false, то не закроется
+        _isCloseConfirmed = true; // ����� ������� �� ����������� ������� ����� �������� �� _isCloseConfirmed,
+                                  // ���� true, �� ���� ���������,
+                                  // ���� false, �� �� ���������
         if (DataContext is not PackagePassportWindowVM vm) return;
 
 
@@ -93,7 +96,7 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
                 if (vm.SkipChangeTracking) vm.SkipChangeTracking = false;
                 desktop.MainWindow.WindowState = OwnerPrevState;
 
-                if (_isCloseConfirmed) //выход из обработчика события
+                if (_isCloseConfirmed) //����� �� ����������� �������
                 {
                     Closing -= OnStandardClosing;
                     Close();
@@ -113,29 +116,28 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
 
         #region MessageSaveChanges
 
-        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" },
-                    new ButtonDefinition { Name = "Отмена" }
+                    new ButtonDefinition { Name = "��" },
+                    new ButtonDefinition { Name = "���" },
+                    new ButtonDefinition { Name = "������" }
                 ],
-                ContentTitle = "Сохранение изменений",
-                ContentHeader = "Уведомление",
-                ContentMessage = $"Сохранить паспорт на упаковку твердых радиоактивных отходов?",
+                ContentTitle = "���������� ���������",
+                ContentHeader = "�����������",
+                ContentMessage = $"��������� ������� �� �������� ������� ������������� �������?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(this));
+            }).ShowWindowDialogAsync(this));
 
         #endregion
 
         var dbm = StaticConfiguration.DBModel;
         switch (res)
         {
-            case "Да":
+            case "��":
                 {
                     _isCloseConfirmed = true;
 
@@ -146,21 +148,20 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
                     }
                     catch (Exception ex)
                     {
-                        Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                        .GetMessageBoxCustom(new MessageBoxCustomParams
                         {
                             ButtonDefinitions =
                             [
-                                new ButtonDefinition { Name = "Ок" },
+                                new ButtonDefinition { Name = "��" },
                             ],
-                            ContentTitle = "Сохранение изменений",
-                            ContentHeader = "Ошибка",
-                            ContentMessage = $"Произошла ошибка во время попытки сохранения:\n" +
+                            ContentTitle = "���������� ���������",
+                            ContentHeader = "������",
+                            ContentMessage = $"��������� ������ �� ����� ������� ����������:\n" +
                                 $"{ex.Message}",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(this));
+                        }).ShowWindowDialogAsync(this));
                     }
 
                     if (desktop.Windows.Count == 1)
@@ -174,7 +175,7 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
 
                     break;
                 }
-            case "Нет":
+            case "���":
                 {
                     _isCloseConfirmed = true;
                     dbm.Restore();
@@ -183,7 +184,7 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
 
                     break;
                 }
-            case "Отмена" or null:
+            case "������" or null:
                 {
                     _isCloseConfirmed = false;
                     return;
@@ -191,7 +192,7 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
         }
         desktop.MainWindow.WindowState = OwnerPrevState;
 
-        if (_isCloseConfirmed)      //выход из обработчика события
+        if (_isCloseConfirmed)      //����� �� ����������� �������
         {
             Closing -= OnStandardClosing;
             Close();

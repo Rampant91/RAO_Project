@@ -1,3 +1,4 @@
+﻿using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.CheckForm;
@@ -8,9 +9,9 @@ using Client_App.ViewModels.MainWindowTabs;
 using Client_App.ViewModels.ProgressBar;
 using Client_App.Views.ProgressBar;
 using DynamicData;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.CheckForm;
 using Models.Collections;
@@ -82,18 +83,17 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         }
 
         using var exportLock = ReportExportLock.Acquire(repId, organizationId);
-        using var releaseExportLockOnCancel = cts.Token.Register(exportLock.Dispose);
 
         try
         {
-            progressBarVM.SetProgressBar(5, "Загрузка отчёта", "Выгрузка отчёта для печати", ExportType);
-            var rep = await GetReportWithRows(repId, cts);
+            progressBarVM.SetProgressBar(5, "Определение имени файла");
+            var fileName = await GetFileName(repParam, progressBar, cts);
 
-            progressBarVM.SetProgressBar(10, "Определение имени файла", "Выгрузка отчёта для печати", ExportType);
-            var fileName = await GetFileName(rep, progressBar, cts);
-
-            progressBarVM.SetProgressBar(15, "Запрос пути сохранения");
+            progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
             var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+
+            progressBarVM.SetProgressBar(15, "Загрузка отчёта", "Выгрузка отчёта для печати", ExportType);
+            var rep = await GetReportWithRows(repId, cts);
 
             progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
             using var excelPackage = await InitializeExcelPackage(fullPath, rep);
@@ -141,7 +141,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         {
             progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
             progressBarVM = progressBar.AnyTaskProgressBarVM;
-            progressBarVM.SetProgressBar(5, "Загрузка отчёта", "Выгрузка отчёта для печати", ExportType);
+            progressBarVM.SetProgressBar(5, "Определение имени файла");
         }
 
         var organizationId = ReportExportLock.ResolveOrganizationId(report, _formsTabControlVM.SelectedReports);
@@ -153,14 +153,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
         try
         {
-            var rep = await GetReportWithRows(report.Id, cts);
-
-            if (!suppressDialogs && progressBarVM != null)
-            {
-                progressBarVM.SetProgressBar(10, "Определение имени файла", "Выгрузка отчёта для печати", ExportType);
-            }
-
-            var fileName = await GetFileName(rep, progressBar, cts);
+            var fileName = await GetFileName(report, progressBar, cts);
             var fullPath = Path.Combine(destinationFolder, fileName + ".xlsx");
 
             // Проверяем существование файла и генерируем уникальное имя при необходимости
@@ -174,8 +167,14 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
             if (!suppressDialogs && progressBarVM != null)
             {
-                progressBarVM.SetProgressBar(15, "Запрос пути сохранения");
+                progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
             }
+
+            if (!suppressDialogs && progressBarVM != null)
+            {
+                progressBarVM.SetProgressBar(15, "Загрузка отчёта", "Выгрузка отчёта для печати", ExportType);
+            }
+            var rep = await GetReportWithRows(report.Id, cts);
 
             if (!suppressDialogs && progressBarVM != null)
             {
@@ -226,59 +225,38 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
     #region CheckForm
 
-    private static async Task CheckForm(Report exportReport, CancellationTokenSource cts, AnyTaskProgressBar? progressBar)
+    private static async Task CheckForm(Report exportReport, CancellationTokenSource cts, AnyTaskProgressBar progressBar)
     {
-        if (cts.Token.IsCancellationRequested)
-        {
-            return;
-        }
-
-        if (exportReport.FormNum_DB is not ("1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8"))
-        {
-            return;
-        }
-
-        if (progressBar is null)
-        {
-            return;
-        }
-
-        var progressBarVM = progressBar.AnyTaskProgressBarVM;
-        var checkProgress = ReportCheckProgress.ForExportPhase(
-            progressBarVM,
-            75,
-            80,
-            progressBarVM.ExportType ?? "Для_печати");
-        checkProgress.SetOrgHeader(
-            exportReport.Reports?.Master_DB?.RegNoRep?.Value ?? string.Empty,
-            exportReport.Reports?.Master_DB?.OkpoRep?.Value ?? string.Empty,
-            exportReport.FormNum_DB,
-            $"{exportReport.StartPeriod_DB}-{exportReport.EndPeriod_DB}");
-        checkProgress.OnLoadComplete(Services.DataAccess.ReportCheckSnapshotLoader.CountLoadedRows(exportReport));
-
-        var checkTask = Task.Run(
-            () => ReportCheckRunner.ExecuteCheck(exportReport.Reports, exportReport, checkProgress),
-            cts.Token);
-
-        var cancelWait = Task.Delay(Timeout.Infinite, cts.Token);
-        if (await Task.WhenAny(checkTask, cancelWait) != checkTask)
-        {
-            return;
-        }
-
-        List<CheckError> errorList;
+        var errorList = new List<CheckError>();
         try
         {
-            errorList = await checkTask;
+            errorList.AddRange(exportReport.FormNum_DB switch
+            {
+                "1.1" => CheckF11.Check_Total(exportReport.Reports, exportReport),
+                "1.2" => CheckF12.Check_Total(exportReport.Reports, exportReport),
+                "1.3" => CheckF13.Check_Total(exportReport.Reports, exportReport),
+                "1.4" => CheckF14.Check_Total(exportReport.Reports, exportReport),
+                "1.5" => CheckF15.Check_Total(exportReport.Reports, exportReport),
+                "1.6" => CheckF16.Check_Total(exportReport.Reports, exportReport),
+                "1.7" => CheckF17.Check_Total(exportReport.Reports, exportReport),
+                "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
+                //"2.1" => await new CheckF21().AsyncExecute(exportReport),
+                //"2.2" => await new CheckF22().AsyncExecute(exportReport),
+                //"2.3" => await new CheckF23().AsyncExecute(exportReport),
+                //"2.4" => await new CheckF24().AsyncExecute(exportReport),
+                //"2.5" => await new CheckF25().AsyncExecute(exportReport),
+                //"2.6" => await new CheckF26().AsyncExecute(exportReport),
+                //"2.7" => await new CheckF27().AsyncExecute(exportReport),
+                //"2.8" => await new CheckF28().AsyncExecute(exportReport),
+                //"2.9" => await new CheckF29().AsyncExecute(exportReport),
+                //"2.10" => await new CheckF210().AsyncExecute(exportReport),
+                //"2.11" => await new CheckF211().AsyncExecute(exportReport),
+                _ => []
+            });
         }
         catch (Exception)
         {
-            return;
-        }
-
-        if (cts.Token.IsCancellationRequested)
-        {
-            return;
+            //ignored
         }
 
         if (!errorList.Any(x => x.IsCritical)) return;
@@ -288,8 +266,8 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
             #region ExportTerminatedDueToCriticalErrors
 
             await Dispatcher.UIThread.InvokeAsync(() =>
-                MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
                         ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Выгрузка в .xlsx",
@@ -299,7 +277,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                         MinWidth = 250,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterScreen
-                    }).ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -311,8 +289,8 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         {
             #region ReportHasCriticalErrors
 
-            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            var answer = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -326,8 +304,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -436,7 +413,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                 }
             case '2':
                 {
-                    var year = RemoveForbiddenChars(rep.Year_DB);
+                    var year = RemoveForbiddenChars(rep.Year_DB?.ToString());
                     fileName = $"{regNum}_{okpo}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
                     break;
                 }
@@ -446,13 +423,13 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                     var row40 = rep.Reports?.Master_DB?.Rows40?.FirstOrDefault();
                     if (row40?.CodeSubjectRF?.Value != null)
                         codeSubjectRF = RemoveForbiddenChars(row40.CodeSubjectRF.Value);
-                    var year = RemoveForbiddenChars(rep.Year_DB);
+                    var year = RemoveForbiddenChars(rep.Year_DB?.ToString());
                     fileName = $"{codeSubjectRF}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
                     break;
                 }
             case '5':
                 {
-                    var year = RemoveForbiddenChars(rep.Year_DB);
+                    var year = RemoveForbiddenChars(rep.Year_DB?.ToString());
                     fileName = $"{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
                     break;
                 }

@@ -353,7 +353,7 @@ internal static partial class FormPrintRaodbIndex
             report.FormNum_DB ?? "",
             report.StartPeriod_DB,
             report.EndPeriod_DB,
-            report.Year_DB,
+            report.Year_DB?.ToString(),
             hints);
 
     internal static bool IsNeededForCompareHints(
@@ -507,12 +507,12 @@ internal static partial class FormPrintRaodbIndex
             ReportId = report.Id,
             FormNum = report.FormNum_DB,
             PeriodKey = FormPrintCompareNormalize.BuildPeriodKey(
-                report.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, report.Year_DB),
+                report.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, report.Year_DB?.ToString()),
             PeriodDisplay = FormPrintCompareNormalize.BuildPeriodDisplay(
-                report.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, report.Year_DB),
+                report.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, report.Year_DB?.ToString()),
             StartPeriod = report.StartPeriod_DB ?? "",
             EndPeriod = report.EndPeriod_DB ?? "",
-            Year = report.Year_DB ?? "",
+            Year = report.Year_DB?.ToString() ?? "",
             CorrectionNumber = report.CorrectionNumber_DB,
             RegNo = regNo,
             Okpo = okpo,

@@ -1,9 +1,10 @@
+﻿using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.CheckForm;
 using Models.Collections;
@@ -17,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Models.Helpers;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
 /// <summary>
@@ -54,18 +56,13 @@ public class CheckF211 : CheckBase
         string form20RegNo = rep!.Reports.Master_DB.RegNoRep.Value;
         string form20Okpo = rep!.Reports.Master_DB.OkpoRep.Value;
 
-        string repYear = rep.Year_DB;
+        var repYear = rep.Year_DB;
         string repFormNum = rep.FormNum_DB;
 
         if (string.IsNullOrWhiteSpace(form20RegNo))
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
-
-
-        int yearRealCurrent;
-        int.TryParse(repYear, out yearRealCurrent);
-        string yearPrevious = (yearRealCurrent - 1).ToString();
 
         Reports? reps210Cur = null;
         foreach (var _ in db2.ReportsCollectionDbSet
@@ -249,8 +246,8 @@ public class CheckF211 : CheckBase
     {
         #region MessageSaveOrOpenTemp
 
-        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -264,8 +261,7 @@ public class CheckF211 : CheckBase
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(Desktop.MainWindow));
+            }).ShowWindowDialogAsync(Desktop.MainWindow));
 
         #endregion
 
@@ -310,10 +306,10 @@ public class CheckF211 : CheckBase
                         {
                             #region MessageFailedToSaveFile
 
-                            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                                .GetMessageBoxStandard(new MessageBoxStandardParams
                                 {
-                                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                    ButtonDefinitions = ButtonEnum.Ok,
                                     ContentTitle = "Выгрузка в .xlsx",
                                     ContentHeader = "Ошибка",
                                     ContentMessage =
@@ -324,8 +320,7 @@ public class CheckF211 : CheckBase
                                     MinHeight = 150,
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                                     Topmost = true,
-                                })
-                                .ShowDialog(Desktop.MainWindow));
+                                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                             #endregion
 

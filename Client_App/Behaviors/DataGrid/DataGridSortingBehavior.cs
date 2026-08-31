@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+п»їusing Avalonia.Controls;
 using Avalonia.Xaml.Interactivity;
 using Client_App.Resources.CustomComparers;
 using System;
@@ -36,25 +36,25 @@ public class DataGridSortingBehavior : Behavior<DataGrid>
 
         e.Handled = true;
 
-        // Если это первая сортировка и мы сортируем по индексу, то сортируем по индексу по убыванию
+        // пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (_lastSortedColumn is null && e.Column.SortMemberPath is "Index")
         {
             _lastSortedColumn = e.Column;
             _isSortedAscending = false;
         }
-        // Если в последний раз сортировали эту колонку - сортируем в обратном направлении
+        // пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ - пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         else if (_lastSortedColumn == e.Column)
         {
             _isSortedAscending = !_isSortedAscending;
         }
-        // Сортируем по возрастанию выбранную колонку
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         else
         {
             _lastSortedColumn = e.Column;
             _isSortedAscending = true;
         }
 
-        if (AssociatedObject?.Items is not IList { Count: > 0 } items)
+        if (AssociatedObject?.ItemsSource is not IList { Count: > 0 } items)
             return;
 
         var array = new object[items.Count];
@@ -65,6 +65,6 @@ public class DataGridSortingBehavior : Behavior<DataGrid>
         Array.Sort(array, comparer);
 
         // Update the items source
-        AssociatedObject.Items = array;
+        AssociatedObject.ItemsSource = array;
     }
 }
