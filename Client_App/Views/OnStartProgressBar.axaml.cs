@@ -19,11 +19,11 @@ public partial class OnStartProgressBar : BaseWindow<OnStartProgressBarVM>
         this.WhenActivated(d =>
         {
             var vm = (OnStartProgressBarVM)ViewModel;
-            d(vm!.ShowDialog.RegisterHandler(DoShowDialogAsync));
+            d(vm!.ShowDialog.RegisterHandler(context => DoShowDialogAsync(context).GetAwaiter().GetResult()));
         });
     }
 
-    private async Task DoShowDialogAsync(InteractionContext<MainWindowVM, object> interaction)
+    private async Task DoShowDialogAsync(IInteractionContext<MainWindowVM, object> interaction)
     {
         if (Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {

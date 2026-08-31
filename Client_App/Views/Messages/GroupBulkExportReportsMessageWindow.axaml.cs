@@ -1,13 +1,15 @@
+﻿using MsBox.Avalonia;
 using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Client_App.ViewModels.Messages;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Views.Messages;
 
-public class GroupBulkExportReportsMessageWindow : BaseWindow<GroupBulkExportReportsMessageVM>
+public partial class GroupBulkExportReportsMessageWindow : BaseWindow<GroupBulkExportReportsMessageVM>
 {
     private GroupBulkExportReportsMessageVM Vm => (GroupBulkExportReportsMessageVM)DataContext!;
 
@@ -97,17 +99,16 @@ public class GroupBulkExportReportsMessageWindow : BaseWindow<GroupBulkExportRep
 
     private async System.Threading.Tasks.Task ShowValidationMessageAsync(string message)
     {
-        await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        await MessageBoxManager
+            .GetMessageBoxStandard(new MessageBoxStandardParams
             {
-                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ButtonDefinitions = ButtonEnum.Ok,
                 ContentTitle = "Групповая выгрузка",
                 ContentHeader = "Уведомление",
                 ContentMessage = message,
                 MinWidth = 400,
                 MinHeight = 120,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(this);
+            }).ShowWindowDialogAsync(this);
     }
 }

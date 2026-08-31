@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using Avalonia;
 using Avalonia.Controls;
@@ -56,12 +56,12 @@ public partial class RatioConverter : MarkupExtension, IValueConverter
                         // If cursor screen detection fails, fallback to main window screen
                         if (targetScreen == null && mainWindow != null)
                         {
-                            targetScreen = screens.ScreenFromWindow(mainWindow.PlatformImpl);
+                            targetScreen = screens.ScreenFromWindow(mainWindow);
                         }
                         
                         if (targetScreen != null)
                         {
-                            var scale = targetScreen.PixelDensity;
+                            var scale = targetScreen.Scaling;
                             var height = targetScreen.WorkingArea.Height * par / scale;
                             var width = targetScreen.WorkingArea.Width * par / scale;
                             
@@ -76,8 +76,8 @@ public partial class RatioConverter : MarkupExtension, IValueConverter
                 var mainWindowFallback = appLifetime?.MainWindow;
                 if (mainWindowFallback?.Screens != null)
                 {
-                    var mainScreen = mainWindowFallback.Screens.ScreenFromWindow(mainWindowFallback.PlatformImpl);
-                    var scale = mainScreen.PixelDensity;
+                    var mainScreen = mainWindowFallback.Screens.ScreenFromWindow(mainWindowFallback);
+                    var scale = mainScreen.Scaling;
                     var height = mainScreen.WorkingArea.Height * par / scale;
                     var width = mainScreen.WorkingArea.Width * par / scale;
                     

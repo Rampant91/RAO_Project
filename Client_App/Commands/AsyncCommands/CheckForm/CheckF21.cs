@@ -1,3 +1,4 @@
+﻿using MsBox.Avalonia;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.CheckForm;
 using Models.Collections;
@@ -18,6 +19,7 @@ using Models.Forms.Form1;
 using Models.Forms.Form2;
 using Models.Helpers;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
 /// <summary>
@@ -71,8 +73,8 @@ public class CheckF21 : CheckBase
 
             #region MessageFailedToOpenForm
 
-            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -89,8 +91,7 @@ public class CheckF21 : CheckBase
                     MinHeight = 200,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(desktop.MainWindow));
+                }).ShowWindowDialogAsync(desktop.MainWindow));
 
             #endregion
 
@@ -142,10 +143,10 @@ public class CheckF21 : CheckBase
         {
             #region MessageCheckFailed
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = $"Проверка формы {rep.FormNum_DB}",
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Не удалось проверить форму, поскольку в выбранном файле БД отсутствуют записи для организации {form20RegNo}_{form20Okpo}.",
@@ -153,8 +154,7 @@ public class CheckF21 : CheckBase
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 

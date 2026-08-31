@@ -1,12 +1,14 @@
-﻿using Avalonia.Threading;
+﻿using MsBox.Avalonia;
+using Avalonia.Threading;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Client_App.Interfaces.Logger;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
@@ -43,10 +45,10 @@ public class OpenFileAsyncCommand : BaseAsyncCommand
 
             #region MessageFailedToOpenFile
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Открытие файла",
                     ContentHeader = "Ошибка",
                     ContentMessage = "При попытке открыть файл возникла ошибка.",
@@ -54,8 +56,7 @@ public class OpenFileAsyncCommand : BaseAsyncCommand
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
         }

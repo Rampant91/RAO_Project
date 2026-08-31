@@ -1,4 +1,4 @@
-﻿<Window x:Class="Client_App.Views.Forms.Forms1.Form_11"
+<Window x:Class="Client_App.Views.Forms.Forms1.Form_11"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:appControls="clr-namespace:Client_App.Controls"
@@ -15,7 +15,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
         xmlns:items="clr-namespace:Client_App.ViewModels.Forms.Forms1.Items"
-        x:Name="1.1"
         Title="{Binding WindowTitle}"
         MinWidth="800"
         MinHeight="600"
@@ -540,7 +539,7 @@
                           Classes="table"
                           ColumnWidth="125"
                           FrozenColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"
-                          Items="{Binding FormList}"
+                          ItemsSource="{Binding FormList}"
                           Margin="8,-5,0,0"
                           SelectedItem="{Binding SelectedForm}">
 
@@ -592,7 +591,7 @@
                                     <Grid ColumnDefinitions="*,Auto">
                                         <AutoCompleteBox Grid.Column="0"
                                                          Height="26"
-                                                         Items="{Binding  VM.OperationCodes, ElementName=1.1}"
+                                                         ItemsSource="{Binding  VM.OperationCodes, ElementName=1.1}"
                                                          Text="{Binding OperationCode.Value, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
@@ -807,7 +806,7 @@
                                 <DataTemplate x:DataType="forms1:Form11">
                                     <Grid ColumnDefinitions="*,Auto">
                                         <AutoCompleteBox Height="26"
-                                                         Items="{Binding VM.CategoryCodes, ElementName=1.1}"
+                                                         ItemsSource="{Binding VM.CategoryCodes, ElementName=1.1}"
                                                          Text="{Binding Category.Value, Converter={StaticResource ShortNullableToStringConverter}, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
@@ -874,7 +873,7 @@
                                 <DataTemplate x:DataType="forms1:Form11">
                                     <Grid ColumnDefinitions="*,Auto">
                                         <AutoCompleteBox Height="26"
-                                                         Items="{Binding VM.OwnershipForms, ElementName=1.1}"
+                                                         ItemsSource="{Binding VM.OwnershipForms, ElementName=1.1}"
                                                          Text="{Binding PropertyCode.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
@@ -942,7 +941,7 @@
                                     <Grid ColumnDefinitions="*,Auto">
                                         <AutoCompleteBox Grid.Column="0"
                                                          Height="26"
-                                                         Items="{Binding VM.DocumentVids, ElementName=1.1}"
+                                                         ItemsSource="{Binding VM.DocumentVids, ElementName=1.1}"
                                                          Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
@@ -1185,7 +1184,7 @@
                               Grid.Row="1"
                               x:CompileBindings="True"
                               Classes="notesTable"
-                              Items="{Binding NoteList}"
+                              ItemsSource="{Binding NoteList}"
                               SelectedItem="{Binding SelectedNote}">
 
                         <interactivity:Interaction.Behaviors>

@@ -1,3 +1,4 @@
+using MsBox.Avalonia;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,9 +9,10 @@ using Avalonia.Threading;
 using Client_App.Properties;
 using Client_App.Services.Updates;
 using Client_App.Views.Messages;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Models.DTO;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Services;
 
 /// <summary>
@@ -148,19 +150,18 @@ public class UpdateService
 
     var confirmed = await Dispatcher.UIThread.InvokeAsync(async () =>
     {
-      var result = await MessageBox.Avalonia.MessageBoxManager
-        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+      var result = await MessageBoxManager
+        .GetMessageBoxStandard(new MessageBoxStandardParams
         {
-          ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.YesNo,
+          ButtonDefinitions = ButtonEnum.YesNo,
           ContentTitle = "Откат версии",
           ContentMessage =
             "Программа будет перезапущена с предыдущей установленной версией. Продолжить?",
           MinWidth = 420,
           MinHeight = 140,
           WindowStartupLocation = WindowStartupLocation.CenterOwner
-        })
-        .ShowDialog(GetMainWindow());
-      return result == MessageBox.Avalonia.Enums.ButtonResult.Yes;
+        }).ShowWindowDialogAsync(GetMainWindow());
+      return result == ButtonResult.Yes;
     }).ConfigureAwait(false);
 
     if (!confirmed)
@@ -406,17 +407,16 @@ public class UpdateService
 
   private static async Task ShowUpToDateDialog(Version currentVersion)
   {
-    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-      .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+    await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+      .GetMessageBoxStandard(new MessageBoxStandardParams
       {
-        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+        ButtonDefinitions = ButtonEnum.Ok,
         ContentTitle = "Проверка обновлений",
         ContentMessage = $"У вас установлена последняя версия ПО «МПЗФ» — {currentVersion}.",
         MinWidth = 400,
         MinHeight = 120,
         WindowStartupLocation = WindowStartupLocation.CenterOwner
-      })
-      .ShowDialog(GetMainWindow())).ConfigureAwait(false);
+      }).ShowWindowDialogAsync(GetMainWindow())).ConfigureAwait(false);
   }
 
   private static async Task ShowNetworkUpToDateDialog(NetworkReleaseInfo release, LocalUpdateState localState)
@@ -424,10 +424,10 @@ public class UpdateService
     var installed = NetworkUpdateLabels.FormatInstalled(localState);
     var remote = NetworkUpdateLabels.FormatRemote(release);
 
-    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-      .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+    await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+      .GetMessageBoxStandard(new MessageBoxStandardParams
       {
-        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+        ButtonDefinitions = ButtonEnum.Ok,
         ContentTitle = "Проверка обновлений",
         ContentMessage =
           $"На сетевой шаре актуальна версия {remote}.\n" +
@@ -435,39 +435,36 @@ public class UpdateService
         MinWidth = 460,
         MinHeight = 140,
         WindowStartupLocation = WindowStartupLocation.CenterOwner
-      })
-      .ShowDialog(GetMainWindow())).ConfigureAwait(false);
+      }).ShowWindowDialogAsync(GetMainWindow())).ConfigureAwait(false);
   }
 
   private static async Task ShowWebsiteCheckFailedDialog()
   {
-    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-      .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+    await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+      .GetMessageBoxStandard(new MessageBoxStandardParams
       {
-        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+        ButtonDefinitions = ButtonEnum.Ok,
         ContentTitle = "Проверка обновлений",
         ContentMessage =
           "Не удалось проверить наличие обновлений. Проверьте подключение к интернету и повторите попытку позже.",
         MinWidth = 400,
         MinHeight = 120,
         WindowStartupLocation = WindowStartupLocation.CenterOwner
-      })
-      .ShowDialog(GetMainWindow())).ConfigureAwait(false);
+      }).ShowWindowDialogAsync(GetMainWindow())).ConfigureAwait(false);
   }
 
   private static async Task ShowNetworkCheckUnavailableDialog(string message)
   {
-    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-      .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+    await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+      .GetMessageBoxStandard(new MessageBoxStandardParams
       {
-        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+        ButtonDefinitions = ButtonEnum.Ok,
         ContentTitle = "Проверка обновлений",
         ContentMessage = message,
         MinWidth = 460,
         MinHeight = 140,
         WindowStartupLocation = WindowStartupLocation.CenterOwner
-      })
-      .ShowDialog(GetMainWindow())).ConfigureAwait(false);
+      }).ShowWindowDialogAsync(GetMainWindow())).ConfigureAwait(false);
   }
 
   private static Window? GetMainWindow() =>

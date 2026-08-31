@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands;
 using Client_App.ViewModels;
@@ -7,8 +8,8 @@ using Client_App.ViewModels.Forms.Forms2;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms2;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -84,8 +85,8 @@ namespace Client_App.Commands.AsyncCommands.SpecificCommands
 
                 Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions =
                         [
@@ -111,8 +112,7 @@ namespace Client_App.Commands.AsyncCommands.SpecificCommands
                         MinHeight = 125,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow);
+                    }).ShowWindowDialogAsync(Desktop.MainWindow);
                 });
             }
             catch (Exception ex)

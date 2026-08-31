@@ -1,3 +1,4 @@
+using MsBox.Avalonia;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -6,8 +7,9 @@ using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.Forms.Forms2;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using Client_App.Views;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using Models.Forms;
@@ -15,12 +17,11 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Views.Forms.Forms2;
 
-public partial class Form_20 : BaseWindow<Form_20VM>
-{
+public partial class Form_20 : BaseWindow<Form_20VM>{
     private protected static readonly IClassicDesktopStyleApplicationLifetime Desktop =
         (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
 
@@ -30,8 +31,10 @@ public partial class Form_20 : BaseWindow<Form_20VM>
 
     public Form_20(Form_20VM vm)
     {
-        AvaloniaXamlLoader.Load(this);
+        DataContext = vm;
         _vm = vm;
+        AvaloniaXamlLoader.Load(this);
+        Name = "2.0";
         Closing += OnStandardClosing;
     }
 
@@ -96,24 +99,23 @@ public partial class Form_20 : BaseWindow<Form_20VM>
         {
             args.Cancel = true;
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                    ContentTitle = "Ошибка при сохранении титульного листа организации",
-                    ContentHeader = "Ошибка",
+                    ButtonDefinitions = ButtonEnum.Ok,
+                    ContentTitle = "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+                    ContentHeader = "пїЅпїЅпїЅпїЅпїЅпїЅ",
                     ContentMessage =
-                        $"Не удалось сохранить изменения в титульном листе организации, " +
-                        $"поскольку организация с данными ОКПО и рег.№ уже существует в базе данных. " +
-                        $"Убедитесь в правильности заполнения ОКПО и рег.№.",
+                        $"пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, " +
+                        $"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ.пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ. " +
+                        $"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ.пїЅ.",
                     MinWidth = 400,
                     MaxWidth = 600,
                     MinHeight = 150,
                     MaxHeight = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(window ?? Desktop.MainWindow));
+                }).ShowWindowDialogAsync(window ?? Desktop.MainWindow));
 
             return;
         }
@@ -122,22 +124,21 @@ public partial class Form_20 : BaseWindow<Form_20VM>
 
         #region MessageRemoveEmptyForms
 
-        var res = Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var res = Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" }
+                    new ButtonDefinition { Name = "пїЅпїЅ" },
+                    new ButtonDefinition { Name = "пїЅпїЅпїЅ" }
                 ],
-                ContentTitle = "Сохранение изменений",
-                ContentHeader = "Уведомление",
-                ContentMessage = $"Сохранить форму {vm.FormType}?",
+                ContentTitle = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+                ContentHeader = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+                ContentMessage = $"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ {vm.FormType}?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(desktop.MainWindow));
+            }).ShowWindowDialogAsync(desktop.MainWindow));
 
         #endregion
 
@@ -145,7 +146,7 @@ public partial class Form_20 : BaseWindow<Form_20VM>
         var dbm = StaticConfiguration.DBModel;
         switch (res.Result)
         {
-            case "Да":
+            case "пїЅпїЅ":
             {
                 try
                 {
@@ -160,7 +161,7 @@ public partial class Form_20 : BaseWindow<Form_20VM>
                 }
                 return;
             }
-            case "Нет":
+            case "пїЅпїЅпїЅ":
             {
                 flag = true;
                 dbm.Restore();

@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Resources.CustomComparers;
 using Client_App.ViewModels.Forms.Forms1;
@@ -6,8 +7,8 @@ using Client_App.ViewModels.Forms.Forms2;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms2;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Models.Collections;
 using Models.Interfaces;
 using System.Collections.Generic;
@@ -41,8 +42,8 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
         {
             #region AskIfTheOrganizationIsSeparateDivision
 
-            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -57,8 +58,7 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                     MinHeight = 125,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(mainWindow));
+                }).ShowWindowDialogAsync(mainWindow));
 
             switch (answer)
             {

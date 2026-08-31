@@ -1,3 +1,4 @@
+﻿using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
@@ -16,9 +17,10 @@ using Avalonia.OpenGL.Surfaces;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.MainWindowTabs;
 using Client_App.ViewModels.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 /// <summary>
@@ -289,16 +291,16 @@ public class ExcelExportAllFormsByFormNumberAsyncCommand : BaseAsyncCommand
     private static async Task ShowNoSelectedOrgMessage()
     {
         await Dispatcher.UIThread.InvokeAsync(() =>
-            MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Информация",
                     ContentMessage = "Не выбрана организация для выгрузки.",
                     MinWidth = 300,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
-                }).ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
     }
 
     /// <summary>
@@ -314,16 +316,16 @@ public class ExcelExportAllFormsByFormNumberAsyncCommand : BaseAsyncCommand
         };
 
         await Dispatcher.UIThread.InvokeAsync(() =>
-            MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Информация",
                     ContentMessage = message,
                     MinWidth = 300,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
-                }).ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
     }
 
     /// <summary>
@@ -336,8 +338,8 @@ public class ExcelExportAllFormsByFormNumberAsyncCommand : BaseAsyncCommand
             : $"Выгружено {exported} из {total} отчётов.{Environment.NewLine}Некоторые отчёты не удалось выгрузить.{Environment.NewLine}{Environment.NewLine}Папка:{Environment.NewLine}{folderPath}";
 
         var answer = await Dispatcher.UIThread.InvokeAsync(async () =>
-            await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            await MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -349,7 +351,7 @@ public class ExcelExportAllFormsByFormNumberAsyncCommand : BaseAsyncCommand
                     ContentMessage = message,
                     MinWidth = 450,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen
-                }).ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
         if (answer is "Открыть папку")
         {

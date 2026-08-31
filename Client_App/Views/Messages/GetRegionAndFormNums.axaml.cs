@@ -1,11 +1,11 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Client_App.ViewModels.Messages;
 
 namespace Client_App.Views.Messages;
 
-public class GetRegionAndFormNums : BaseWindow<GetRegionAndFormNumsVM>
+public partial class GetRegionAndFormNums : BaseWindow<GetRegionAndFormNumsVM>
 {
     public GetRegionAndFormNumsVM _vm = null!;
 

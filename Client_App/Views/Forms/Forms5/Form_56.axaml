@@ -12,7 +12,6 @@
     xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms5"
-    x:Name="5.6"
     Title="Форма 5.6"
     MinWidth="800"
     MinHeight="600"
@@ -240,7 +239,7 @@
 					x:CompileBindings="True"
 					CanUserSortColumns="True"
 					CanUserReorderColumns="False"
-					Items="{Binding FormList}"
+					ItemsSource="{Binding FormList}"
 					SelectedItem="{Binding SelectedForm}"
                     Margin="8,-5,0,0"
 					ColumnWidth="125">
@@ -422,7 +421,7 @@
                         Grid.Row="1"
                         x:CompileBindings="True"
                         Classes="notesTable"
-                        Items="{Binding NoteList}"
+                        ItemsSource="{Binding NoteList}"
                         SelectedItem="{Binding SelectedNote}">
 
 						<interactivity:Interaction.Behaviors>

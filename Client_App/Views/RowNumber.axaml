@@ -7,7 +7,7 @@
         MinWidth="250" MinHeight="100"
         MaxWidth="250" MaxHeight="100"
         Width="250" Height="100"
-        Name="RowNumber"
+        x:Name="RowNumberRoot"
         Icon="/Assets/logo.png"
         Title="{Binding WindowHeader}"
         WindowStartupLocation="CenterScreen">
@@ -17,7 +17,7 @@
             <TextBlock Text="Какое кол-во строчек вы хотите добавить?" 
                        Margin="5,5,5,5" />
             <TextBox x:Name="MainTextBox"
-                     Text="{Binding #RowNumber.Number, Mode=TwoWay}"
+                     Text="{Binding #RowNumberRoot.Number, Mode=TwoWay}"
                      Margin="5,5,5,5" />
             <StackPanel Orientation="Horizontal">
                 <Button Content="Подтвердить"

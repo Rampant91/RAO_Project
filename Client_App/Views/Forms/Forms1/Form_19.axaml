@@ -15,7 +15,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
         xmlns:items="clr-namespace:Client_App.ViewModels.Forms.Forms1.Items"
-        x:Name="1.9"
         Title="{Binding WindowTitle}"
         MinWidth="800"
         MinHeight="600"
@@ -372,7 +371,7 @@
                           Classes="table"
                           ColumnWidth="125"
                           FrozenColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"
-                          Items="{Binding FormList}"
+                          ItemsSource="{Binding FormList}"
                           SelectedItem="{Binding SelectedForm}">
 
                     <interactivity:Interaction.Behaviors>
@@ -424,7 +423,7 @@
                                         <AutoCompleteBox x:Name="OperationCodeAutoComplete"
                                                          Grid.Column="0"
                                                          Height="26"
-                                                         Items="{Binding VM.OperationCodes, ElementName=1.9}"
+                                                         ItemsSource="{Binding VM.OperationCodes, ElementName=1.9}"
                                                          Text="{Binding OperationCode.Value, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
@@ -498,7 +497,7 @@
                                     <Grid ColumnDefinitions="*,Auto">
                                         <AutoCompleteBox Grid.Column="0" 
                                                          Height="26"
-                                                         Items="{Binding VM.DocumentVids, ElementName=1.9}"
+                                                         ItemsSource="{Binding VM.DocumentVids, ElementName=1.9}"
                                                          Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
@@ -589,7 +588,7 @@
                                     <Grid ColumnDefinitions="*,Auto">
                                         <AutoCompleteBox Grid.Column="0" 
                                                          Height="26"
-                                                         Items="{Binding VM.CodeTypeAccObjects, ElementName=1.9}"
+                                                         ItemsSource="{Binding VM.CodeTypeAccObjects, ElementName=1.9}"
                                                          Text="{Binding CodeTypeAccObject.Value, Converter={StaticResource ShortNullableToStringConverter}, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
@@ -743,7 +742,7 @@
                               Grid.Row="1"
                               x:CompileBindings="True"
                               Classes="notesTable"
-                              Items="{Binding NoteList}"
+                              ItemsSource="{Binding NoteList}"
                               SelectedItem="{Binding SelectedNote}">
 
                         <interactivity:Interaction.Behaviors>

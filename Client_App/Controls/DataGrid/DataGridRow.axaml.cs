@@ -1,11 +1,11 @@
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 
 namespace Client_App.Controls.DataGrid;
 
-public class DataGridRow : Grid
+public partial class DataGridRow : Grid
 {
     #region Row
 

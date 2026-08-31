@@ -36,13 +36,12 @@
 
 
     <Application.Styles>
-        <!--FluentTheme Mode="Light"/-->
+        <FluentTheme />
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+
         <Style Selector="DataGridCell.cell_tooltip">
             <Setter Property="ToolTip.Tip" Value="{Binding Content.Text, Mode=OneWay, RelativeSource={RelativeSource Self}}"/>
         </Style>
-        <StyleInclude Source="avares://Avalonia.Themes.Default/DefaultTheme.xaml"/>
-        <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>
-        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Default.xaml"/>
 
         <Style Selector="HeaderedContentControl">
             <Setter Property="Template">
@@ -165,7 +164,7 @@
             <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="CanUserResizeColumns" Value="True"/>
             <Setter Property="RowBackground" Value="White"/>
-            <Setter Property="AlternatingRowBackground" Value="White"/>
+            <Setter Property="Background" Value="White"/>
             <Setter Property="Margin" Value="5,-5,5,5"/>
             <Setter Property="SelectionMode" Value="Extended"/>
             <Setter Property="GridLinesVisibility" Value="All"/>
@@ -173,20 +172,22 @@
             <Setter Property="ColumnWidth" Value="125" />
             <Setter Property="MinColumnWidth" Value="30" />
             <Setter Property="MaxColumnWidth" Value="500" />
+            <Setter Property="FontSize" Value="13"/>
         </Style>
 		
 		<Style Selector="DataGridColumnHeader">
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
 			<Setter Property="VerticalContentAlignment" Value="Stretch"/>
             <Setter Property="Padding" Value="0"/>
-			
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
         </Style>
 		
 		<Style Selector="Border.headerTemplate">
 			<Setter Property="BorderThickness" Value="1"/>
 		    <Setter Property="BorderBrush" Value="#aaaaaa"/>
 		    <Setter Property="Margin" Value="-1,-1,-1,0"/>
-			
+		    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+		    <Setter Property="VerticalAlignment" Value="Stretch"/>
 		</Style>
 		
 		<Style Selector="Border.headerTemplate TextBlock">
@@ -241,9 +242,22 @@
             <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
             <Setter Property="Margin" Value="5"/>
         </Style>
+		<Style Selector="Border.pageControlContainer TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
 		<Style Selector="Border.pageControlContainer NumericUpDown">
 			<Setter Property="CornerRadius" Value="5"/>
 		</Style>
+
+        <Style Selector="DataGridCell:focus /template/ Grid#FocusVisual">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+        <Style Selector="DataGridCell:focus /template/ Panel#FocusVisual">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+        <Style Selector="DataGridCell:current /template/ Rectangle#CurrencyVisual">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
 		
         <!--Notes-->
 		<Style Selector="Border.notesContainer">
@@ -263,7 +277,7 @@
 			<Setter Property="Background" Value="LightGray"/>
 			<Setter Property="SelectionMode" Value="Extended"/>
 			<Setter Property="CanUserResizeColumns" Value="True"/>
-            <Setter Property="AlternatingRowBackground" Value="White"/>
+            
             <Setter Property="Margin" Value="5"/>
 			<Setter Property="GridLinesVisibility" Value="All"></Setter>
         </Style>
@@ -314,5 +328,9 @@
 		<Style Selector="AutoCompleteBox.hitable TextBox">
 			<Setter Property="IsHitTestVisible" Value="True"/>
 		</Style>
+
+        <Style Selector="DataGrid.dbPicker">
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
     </Application.Styles>
 </Application>

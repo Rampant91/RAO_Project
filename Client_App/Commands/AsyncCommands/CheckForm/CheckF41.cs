@@ -1,10 +1,11 @@
+﻿using MsBox.Avalonia;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.CheckForm;
 using Models.Collections;
@@ -138,8 +139,8 @@ public abstract class CheckF41 : CheckBase
                         }
                         catch (Exception ex)
                         {
-                            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                                .GetMessageBoxCustom(new MessageBoxCustomParams
                                 {
                                     ButtonDefinitions =
                                     [
@@ -153,8 +154,7 @@ public abstract class CheckF41 : CheckBase
                                     MinHeight = 125,
                                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                                     Topmost = true,
-                                })
-                                .ShowDialog(owner));
+                                }).ShowWindowDialogAsync(owner));
                         }
                     }
                 }
@@ -1094,8 +1094,8 @@ public abstract class CheckF41 : CheckBase
 
     private static async Task<bool> ShowAskSecondDB(Window owner)
     {
-        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -1109,8 +1109,7 @@ public abstract class CheckF41 : CheckBase
                 MinHeight = 125,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(owner));
+            }).ShowWindowDialogAsync(owner));
 
         return answer == "Да";
     }

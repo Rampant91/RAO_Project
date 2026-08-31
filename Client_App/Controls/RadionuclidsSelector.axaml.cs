@@ -153,13 +153,6 @@ public partial class RadionuclidsSelector : UserControl
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
-        AddFilter = this.FindControl<TextBox>("AddFilter");
-        AddList = this.FindControl<ListBox>("AddList");
-        AddPopup = this.FindControl<Popup>("AddPopup");
-        RemoveList = this.FindControl<ListBox>("RemoveList");
-        RemovePopup = this.FindControl<Popup>("RemovePopup");
-        ErrorIndicator = this.FindControl<Border>("ErrorIndicator");
-        AddBtn = this.FindControl<Button>("AddBtn");
 
         // Подписываемся на изменения текста в основном TextBox для валидации с задержкой
         var textBox = this.FindControl<TextBox>("RadionuclidsTextBox");
@@ -194,14 +187,6 @@ public partial class RadionuclidsSelector : UserControl
         });
     }
 
-    private TextBox? AddFilter;
-    private ListBox? AddList;
-    private Popup? AddPopup;
-    private ListBox? RemoveList;
-    private Popup? RemovePopup;
-    private Border? ErrorIndicator;
-    private Button? AddBtn;
-
     private void AddBtn_Click(object? sender, RoutedEventArgs e)
     {
         if (AddPopup == null || AddList == null) return;
@@ -215,7 +200,7 @@ public partial class RadionuclidsSelector : UserControl
         var availableItems = RadionuclidsProvider.GetAvailableRadionuclids(Text);
         if (availableItems.Count == 0) return;
 
-        AddList.Items = new ObservableCollection<RadionuclidItem>(availableItems);
+        AddList.ItemsSource = new ObservableCollection<RadionuclidItem>(availableItems);
         AddFilter!.Text = "";
         AddPopup.IsOpen = true;
         AddFilter.Focus();
@@ -232,7 +217,7 @@ public partial class RadionuclidsSelector : UserControl
             ? availableItems
             : availableItems.Where(r => r.Name.ToLower().Contains(f)).ToList();
 
-        AddList.Items = new ObservableCollection<RadionuclidItem>(filtered);
+        AddList.ItemsSource = new ObservableCollection<RadionuclidItem>(filtered);
     }
 
     private void AddList_SelectionChanged(object? selectedItemObj)
@@ -270,7 +255,7 @@ public partial class RadionuclidsSelector : UserControl
 
         if (allItems.Count == 0) return;
 
-        RemoveList.Items = allItems;
+        RemoveList.ItemsSource = allItems;
         RemovePopup.IsOpen = true;
     }
 

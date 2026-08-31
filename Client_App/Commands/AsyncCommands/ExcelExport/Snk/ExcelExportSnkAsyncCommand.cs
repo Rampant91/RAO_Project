@@ -1,4 +1,5 @@
-﻿using Avalonia.Threading;
+﻿using MsBox.Avalonia;
+using Avalonia.Threading;
 using Client_App.Views.ProgressBar;
 using System.Threading;
 using System;
@@ -6,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Client_App.Views;
 using Models.DBRealization;
 using System.Reflection;
@@ -17,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using static Client_App.Resources.StaticStringMethods;
 using Client_App.ViewModels.ProgressBar;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.ExcelExport.Snk;
 
 /// <summary>
@@ -121,17 +123,16 @@ public class ExcelExportSnkAsyncCommand(MainWindowVM mainWindowVM) : ExcelExport
         {
             #region MessageExcelExportFail
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Выгрузка в .xlsx",
                     ContentMessage = $"На {endSnkDate.ToShortDateString()} учётные единицы в наличии отсутствуют.",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 

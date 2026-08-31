@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform;
@@ -61,11 +61,11 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM> where T : class
             Screen? ownerScreen = null;
 
             // First try to get screen from owner window
-            if (ownerWindow.PlatformImpl != null)
+            if (ownerWindow != null)
             {
                 try
                 {
-                    ownerScreen = ownerWindow.Screens.ScreenFromWindow(ownerWindow.PlatformImpl);
+                    ownerScreen = ownerWindow.Screens.ScreenFromWindow(ownerWindow);
                 }
                 catch
                 {
@@ -82,7 +82,7 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM> where T : class
             if (ownerScreen != null)
             {
                 // Get DPI scaling factor
-                var scale = ownerScreen.PixelDensity;
+                var scale = ownerScreen.Scaling;
                 if (scale <= 0) scale = 1.0;
 
                 var windowWidth = Width;

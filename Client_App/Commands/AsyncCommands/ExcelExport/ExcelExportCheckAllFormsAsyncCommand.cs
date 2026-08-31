@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+using MsBox.Avalonia;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Interfaces;
@@ -11,7 +12,7 @@ using OfficeOpenXml;
 using System.IO;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Client_App.Interfaces.Logger;
 using Client_App.Views.ProgressBar;
 using Models.CheckForm;
@@ -21,6 +22,7 @@ using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.ViewModels.ProgressBar;
 using static Client_App.Resources.StaticStringMethods;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.ExcelExport;
 
 /// <summary>
@@ -90,11 +92,11 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
 
             #region MessageCheckComplete
 
-            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
 
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Проверка форм",
                     ContentHeader = "Уведомление",
@@ -106,7 +108,7 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
                 })
-                .Show(progressBar ?? Desktop.MainWindow)
+                .ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow)
             );
 
             #endregion
@@ -174,10 +176,10 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
 
                 #region MessageCheckFailed
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = $"Проверка формы {rep.FormNum_DB}",
                         ContentHeader = "Уведомление",
                         ContentMessage =
@@ -188,7 +190,7 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
                     })
-                    .Show(Desktop.MainWindow));
+                    .ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
 

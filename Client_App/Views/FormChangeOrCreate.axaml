@@ -3,18 +3,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="800"
-        Width="890"
         MinHeight="200" MinWidth="200"
         x:Class="Client_App.Views.FormChangeOrCreate"
         xmlns:vm="using:Client_App.ViewModels"
         Icon="/Assets/logo.png"
         Title="{Binding WindowHeader, Mode = OneWay}"
-        Name="{Binding FormType, Mode = OneWay}"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Background="White">
 
     <Design.DataContext>
         <vm:ChangeOrCreateVM/>
     </Design.DataContext>
 
-    <Panel x:Name="ChangingPanel"/>
+    <Panel x:Name="ChangingPanel" Background="White"/>
 </Window>

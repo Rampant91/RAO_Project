@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -57,7 +57,7 @@
                           DoubleTapped="OnAddButtonClicked"
                           Margin="5"
                           SelectionMode="Single"
-                          Items="{Binding Path=RadionuclidDictionary}"
+                          ItemsSource="{Binding Path=RadionuclidDictionary}"
                           SelectedItem="{Binding Path=SelectedDictionaryNuclid, Mode=TwoWay}">
 
                     <DataGrid.Columns>
@@ -277,7 +277,7 @@
                               MinHeight="150"
                               MaxHeight="175"
                               SelectionMode="Single"
-                              Items="{Binding Path=SelectedRadionuclids}"
+                              ItemsSource="{Binding Path=SelectedRadionuclids}"
                               SelectedItem="{Binding Path=SelectedNuclid, Mode=TwoWay}">
                         <DataGrid.Columns>
 

@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Avalonia.X11;
 using Client_App.Commands.AsyncCommands.ExcelExport;
@@ -8,8 +9,8 @@ using Client_App.Views;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
 using DynamicData;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -28,6 +29,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands
 {
     public class CalculateVolumesRaoProcessingByPeriodAsyncCommand : ExcelBaseAsyncCommand
@@ -76,10 +78,10 @@ namespace Client_App.Commands.AsyncCommands
             catch (Exception ex)
             {
                 #region ReadFileError
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Ошибка",
                     ContentHeader = $"Произошла ошибка при импорте файла {SourceFile.Name}",
                     ContentMessage = $"Описание:\n" +
@@ -88,8 +90,7 @@ namespace Client_App.Commands.AsyncCommands
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
                 #endregion
                 return null;
             }
@@ -103,8 +104,8 @@ namespace Client_App.Commands.AsyncCommands
             {
                 #region InvalidDataFormatMessage
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions =
                         [
@@ -117,8 +118,7 @@ namespace Client_App.Commands.AsyncCommands
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
                 return null;

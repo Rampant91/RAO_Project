@@ -1,4 +1,4 @@
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -12,7 +12,7 @@ using System.Runtime.CompilerServices;
 
 namespace Client_App;
 
-public class AskViacMessage : Window, INotifyPropertyChanged
+public partial class AskViacMessage : Window, INotifyPropertyChanged
 {
     private ObservableCollection<string> _viacList;
     public ObservableCollection<string> ViacList

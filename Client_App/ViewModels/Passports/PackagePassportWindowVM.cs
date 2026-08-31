@@ -1,11 +1,12 @@
-﻿using Avalonia;
+﻿using MsBox.Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.ExcelExport.Passports;
 using DynamicData;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models.DBRealization;
@@ -203,8 +204,8 @@ namespace Client_App.ViewModels.Passports
                 }
                 catch (Exception ex)
                 {
-                    Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                    Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions =
                         [
@@ -216,8 +217,7 @@ namespace Client_App.ViewModels.Passports
                             $"{ex.Message}",
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(owner));
+                    }).ShowWindowDialogAsync(owner));
                 }
             });
 

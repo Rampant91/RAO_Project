@@ -67,7 +67,7 @@ public class DataGridEditingStateBehavior : Behavior<DataGrid>
     {
         if (AssociatedObject is null) return;
 
-        if (e.Source is IVisual v)
+        if (e.Source is Visual v)
         {
             var tb = v.GetSelfAndVisualAncestors().OfType<TextBox>().FirstOrDefault();
             if (tb != null)
@@ -90,12 +90,12 @@ public class DataGridEditingStateBehavior : Behavior<DataGrid>
         }
 
         // If still inside, check if any TextBox retains focus; if not, assume edit ended
-        if (e.Source is IVisual v)
+        if (e.Source is Visual v)
         {
             // Defer to DataGrid events when possible, but ensure fallback
             // Keep true if another TextBox is focused; otherwise set false
-            var focused = FocusManager.Instance?.Current;
-            if (focused is IVisual focusedVisual && AssociatedObject is IVisual gridVisual)
+            var focused = TopLevel.GetTopLevel(AssociatedObject!)?.FocusManager?.GetFocusedElement();
+            if (focused is Visual focusedVisual && AssociatedObject is Visual gridVisual)
             {
                 // Keep editing true only if focus is still inside the grid and on a TextBox
                 var isTextBox = focusedVisual.GetSelfAndVisualAncestors().OfType<TextBox>().Any();

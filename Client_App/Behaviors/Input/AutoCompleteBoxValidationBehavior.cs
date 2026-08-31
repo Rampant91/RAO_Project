@@ -1,3 +1,4 @@
+﻿using MsBox.Avalonia;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,8 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
 
 namespace Client_App.Behaviors.Input;
 
@@ -237,8 +238,8 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
     {
         Dispatcher.UIThread.InvokeAsync(async () =>
         {
-            await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams()
+            await MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams()
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Ошибка ввода",
@@ -248,7 +249,7 @@ public class AutoCompleteBoxValidationBehavior : Behavior<AutoCompleteBox>
                     MinHeight = 170,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 })
-                .ShowDialog(AssociatedObject?.GetVisualRoot() as Window)
+                .ShowWindowDialogAsync(AssociatedObject?.GetVisualRoot() as Window)
                 .ConfigureAwait(false);
         });
     }

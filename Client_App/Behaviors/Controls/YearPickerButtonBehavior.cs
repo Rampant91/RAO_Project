@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
@@ -78,7 +78,7 @@ namespace Client_App.Behaviors.Controls;
                 // ListView for items
                 var listView = new ListBox
                 {
-                    Items = GetItemsSource(button),
+                    ItemsSource = GetItemsSource(button),
                     Margin = new Thickness(10),
                     Height = 300
                 };

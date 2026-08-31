@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
@@ -8,7 +8,7 @@ using Models.CheckForm;
 
 namespace Client_App.Views.Forms;
 
-public class NewCheckForm : BaseWindow<NewCheckFormVM>
+public partial class NewCheckForm : BaseWindow<NewCheckFormVM>
 {
     #region Constructor
 

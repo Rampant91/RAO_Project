@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using MsBox.Avalonia;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Models.Collections;
 using Models.Forms;
 using Models.Interfaces;
@@ -28,8 +29,8 @@ public class NewDeleteNoteAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
             #region MessageDeleteNote
 
             var suffix = param.Length == 1 ? 'у' : 'и';
-            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -43,8 +44,7 @@ public class NewDeleteNoteAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 

@@ -17,10 +17,11 @@
         <vm:OnStartProgressBarVM/>
     </Design.DataContext>
 
-    <Panel>
+    <Panel Background="White">
 		<ProgressBar Maximum="100" 
                      Minimum="0" 
                      Height="40" 
+                     Background="White"
                      Value="{Binding OnStartProgressBar, Mode=OneWay}"/>
 		<TextBlock HorizontalAlignment="Center" 
                    VerticalAlignment="Center" 

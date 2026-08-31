@@ -15,7 +15,6 @@
         xmlns:inputBehaviors="using:Client_App.Behaviors.Input"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms1"
-        x:Name="1.4"
         Title="{Binding WindowTitle}"
         MinWidth="800"
         MinHeight="600"
@@ -431,7 +430,7 @@
                           Classes="table"
                           ColumnWidth="125"
                           FrozenColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"
-                          Items="{Binding FormList}"
+                          ItemsSource="{Binding FormList}"
                           SelectedItem="{Binding SelectedForm}">
 
                     <interactivity:Interaction.Behaviors>
@@ -485,7 +484,7 @@
                                                          Height="26"
                                                          HorizontalAlignment="Stretch"
                                                          IsTextCompletionEnabled="False"
-                                                         Items="{Binding VM.OperationCodes, ElementName=1.4}"
+                                                         ItemsSource="{Binding VM.OperationCodes, ElementName=1.4}"
                                                          MinimumPrefixLength="0"
                                                          Text="{Binding OperationCode.Value, Mode=TwoWay}">
 
@@ -701,7 +700,7 @@
                                                          Height="26"
                                                          HorizontalAlignment="Stretch"
                                                          IsTextCompletionEnabled="False"
-                                                         Items="{Binding VM.AggregateStates, ElementName=1.4}"
+                                                         ItemsSource="{Binding VM.AggregateStates, ElementName=1.4}"
                                                          MinimumPrefixLength="0"
                                                          Text="{Binding AggregateState.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}">
 
@@ -752,7 +751,7 @@
                                                          Height="26"
                                                          HorizontalAlignment="Stretch"
                                                          IsTextCompletionEnabled="False"
-                                                         Items="{Binding VM.OwnershipForms, ElementName=1.4}"
+                                                         ItemsSource="{Binding VM.OwnershipForms, ElementName=1.4}"
                                                          MinimumPrefixLength="0"
                                                          Text="{Binding PropertyCode.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}">
 
@@ -820,7 +819,7 @@
                                                          Height="26"
                                                          HorizontalAlignment="Stretch"
                                                          IsTextCompletionEnabled="False"
-                                                         Items="{Binding VM.DocumentVids, ElementName=1.4}"
+                                                         ItemsSource="{Binding VM.DocumentVids, ElementName=1.4}"
                                                          MinimumPrefixLength="0"
                                                          Text="{Binding DocumentVid.Value, Converter={StaticResource ByteNullableToStringConverter}, Mode=TwoWay}">
 
@@ -1061,7 +1060,7 @@
                               Grid.Row="1"
                               x:CompileBindings="True"
                               Classes="notesTable"
-                              Items="{Binding NoteList}"
+                              ItemsSource="{Binding NoteList}"
                               SelectedItem="{Binding SelectedNote}">
 
                         <interactivity:Interaction.Behaviors>

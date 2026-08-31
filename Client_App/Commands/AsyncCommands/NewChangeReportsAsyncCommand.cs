@@ -1,4 +1,4 @@
-﻿using Client_App.Services;
+using Client_App.Services;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
@@ -10,6 +10,7 @@ using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms2;
 using Client_App.Views.Forms.Forms4;
 using Client_App.Views.Forms.Forms5;
+using Models.Collections;
 using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands;
@@ -41,14 +42,17 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
         var mainWindow = (Desktop.MainWindow as MainWindow)!;
         var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
 
-        if (mainWindowVM.SelectedReports is null) return;
+        var selectedReports = parameter as Reports
+                              ?? _formsTabControlVM.SelectedReports
+                              ?? mainWindowVM.SelectedReports;
+        if (selectedReports is null) return;
 
-        if (await ReportExportLock.TryBlockOrganizationAccessAsync(mainWindowVM.SelectedReports.Id))
+        if (await ReportExportLock.TryBlockOrganizationAccessAsync(selectedReports.Id))
         {
             return;
         }
 
-        var report = mainWindowVM.SelectedReports.Master;
+        var report = selectedReports.Master;
         var formNum = report.FormNum.Value;
 
         switch (formNum)

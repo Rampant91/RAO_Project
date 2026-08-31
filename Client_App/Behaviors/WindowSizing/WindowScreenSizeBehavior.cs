@@ -79,9 +79,9 @@ public static class WindowScreenSizeBehavior
                 var appLifetime = Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime;
                 var mainWindow = appLifetime?.MainWindow;
                     
-                if (mainWindow?.PlatformImpl != null)
+                if (mainWindow != null)
                 {
-                    var screenFromMainWindow = screens.ScreenFromWindow(mainWindow.PlatformImpl);
+                    var screenFromMainWindow = screens.ScreenFromWindow(mainWindow);
                     if (screenFromMainWindow != null)
                     {
                         targetScreen = screenFromMainWindow;
@@ -96,9 +96,9 @@ public static class WindowScreenSizeBehavior
             // Try to get screen from window position if window is already initialized
             try
             {
-                if (window.PlatformImpl != null)
+                if (window.IsVisible)
                 {
-                    var screenFromWindow = screens.ScreenFromWindow(window.PlatformImpl);
+                    var screenFromWindow = screens.ScreenFromWindow(window);
                     if (screenFromWindow != null)
                     {
                         targetScreen = screenFromWindow;
@@ -123,7 +123,7 @@ public static class WindowScreenSizeBehavior
             var scale = 1.0;
             try
             {
-                scale = targetScreen.PixelDensity;
+                scale = targetScreen.Scaling;
                 if (scale <= 0) scale = 1.0; // Fallback if PixelDensity is invalid
             }
             catch

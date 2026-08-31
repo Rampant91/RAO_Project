@@ -1,9 +1,9 @@
-using Avalonia.Markup.Xaml;
+﻿using Avalonia.Markup.Xaml;
 using Client_App.ViewModels;
 
 namespace Client_App.Views;
 
-public class Contacts : BaseWindow<BaseVM>
+public partial class Contacts : BaseWindow<BaseVM>
 {
     public Contacts()
     {

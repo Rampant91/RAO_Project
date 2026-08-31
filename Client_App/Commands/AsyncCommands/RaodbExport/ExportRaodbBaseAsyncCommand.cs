@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MsBox.Avalonia;
+using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,8 +9,9 @@ using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.RaodbExport;
 
 /// <summary>
@@ -86,10 +88,10 @@ public abstract class ExportRaodbBaseAsyncCommand : BaseAsyncCommand
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.System);
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Выгрузка в .RAODB",
                     ContentHeader = "Уведомление",
@@ -98,8 +100,7 @@ public abstract class ExportRaodbBaseAsyncCommand : BaseAsyncCommand
                     MinHeight = 150,
                     MinWidth = 250,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(progressBar ?? Desktop.MainWindow));
+                }).ShowWindowDialogAsync(progressBar ?? Desktop.MainWindow));
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }

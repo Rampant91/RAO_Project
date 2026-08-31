@@ -1,7 +1,8 @@
-﻿using Avalonia.Controls;
+﻿using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using DynamicData.Binding;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Models.Collections;
 using Models.DTO;
 using Models.Forms;
@@ -17,6 +18,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.Calculator;
 
 public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncCommand
@@ -98,10 +100,10 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                     _ => string.Empty
                 };
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Расчёт категории ЗРИ.",
                         ContentHeader = "Уведомление",
                         ContentMessage = msg,
@@ -109,8 +111,7 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 return;
             }
@@ -127,10 +128,10 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                     _ => string.Empty
                 };
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Расчёт категории ЗРИ.",
                         ContentHeader = "Уведомление",
                         ContentMessage = msg,
@@ -138,8 +139,7 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 return;
             }
@@ -156,10 +156,10 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
 
         if (form.Quantity_DB is not { } quantity)
         {
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Расчёт категории ЗРИ.",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Не удалось выполнить расчёт категории. Введено некорректное значение количества.",
@@ -167,18 +167,17 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             return;
         }
 
         if (radsSet.Count is 0)
         {
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Расчёт категории ЗРИ.",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Не удалось выполнить расчёт категории. Поле радионуклиды не заполнено.",
@@ -186,8 +185,7 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             return;
         }
@@ -200,10 +198,10 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                 new CultureInfo("ru-RU", useUserOverride: false),
                 out var activityValue))
         {
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Расчёт категории ЗРИ.",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Не удалось выполнить расчёт категории. Некорректно заполнена графа активности радионуклида.",
@@ -211,8 +209,7 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             return;
         }
@@ -221,10 +218,10 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
             .All(radName => R
                 .Any(x => x.Name == radName)))
         {
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Расчёт категории ЗРИ.",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Не удалось выполнить расчёт категории. " +
@@ -233,8 +230,7 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             return;
         }
@@ -243,10 +239,10 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
             .Any(radName => R
                 .Any(x => x.Name == radName && string.Equals(x.D, "неограниченно", StringComparison.OrdinalIgnoreCase))))
         {
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Расчёт категории ЗРИ.",
                     ContentHeader = "Уведомление",
                     ContentMessage = "Категория ЗРИ - 5. Опасность для человека очень маловероятна (A/D < 0,01).",
@@ -254,8 +250,7 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             return;
         }
@@ -279,10 +274,10 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
             }
             else
             {
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Расчёт категории ЗРИ.",
                         ContentHeader = "Уведомление",
                         ContentMessage = "Не удалось выполнить расчёт категории. " +
@@ -291,8 +286,7 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 return;
             }
@@ -302,10 +296,10 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                     new CultureInfo("ru-RU", useUserOverride: false),
                     out var mza))
             {
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Расчёт категории ЗРИ.",
                         ContentHeader = "Уведомление",
                         ContentMessage = "Не удалось выполнить расчёт категории. Некорректное значение МЗА в справочнике.",
@@ -313,8 +307,7 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 return;
             }
@@ -324,10 +317,10 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                 countNonRadioactiveRads++;
                 if (countNonRadioactiveRads == radsSet.Count)
                 {
-                    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                        .GetMessageBoxStandard(new MessageBoxStandardParams
                         {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ButtonDefinitions = ButtonEnum.Ok,
                             ContentTitle = "Расчёт категории ЗРИ.",
                             ContentHeader = "Уведомление",
                             ContentMessage = $"Нерадиоактивный, активность ниже МЗА ({nuclidFromR.Mza}).",
@@ -335,8 +328,7 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                             MinHeight = 150,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner,
                             Topmost = true,
-                        })
-                        .ShowDialog(Desktop.MainWindow));
+                        }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                     return;
                 }
@@ -389,10 +381,10 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
             var category = minCategory.ToString();
             var msg = SetCategoryText(category);
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Расчёт категории ЗРИ.",
                     ContentHeader = "Уведомление",
                     ContentMessage = msg,
@@ -400,15 +392,14 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
         }
         else
         {
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Расчёт категории ЗРИ.",
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Возможна категория опасности ЗРИ от {minCategory.ToString()} до {maxCategory.ToString()}.",
@@ -416,8 +407,7 @@ public partial class CategoryCalculationFromReportAsyncCommand : BaseAsyncComman
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
         }
     }

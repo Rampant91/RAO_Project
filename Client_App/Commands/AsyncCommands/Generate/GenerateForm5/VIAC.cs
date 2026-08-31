@@ -1,11 +1,11 @@
-﻿using Avalonia;
+using MsBox.Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using AvaloniaEdit.Utils;
 using Client_App.ViewModels;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Models.Forms.Form5;
 using OfficeOpenXml;
 using System;
@@ -82,8 +82,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
             if (!val)
             {
                 #region InvalidDataFormatMessage
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
                     {
                         ButtonDefinitions =
                         [
@@ -96,8 +96,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
                         MinWidth = 400,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
                 #endregion
                 return ;
             }
@@ -146,7 +145,8 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
         public static async Task<string> ShowChooseViacMessage(Window owner)
         {
             var observableCollection = new ObservableCollection<string>();
-            observableCollection.AddRange(ViacList);
+            foreach (var item in ViacList)
+                observableCollection.Add(item);
 
             return await Dispatcher.UIThread.InvokeAsync(async () =>
             {

@@ -1,18 +1,19 @@
-﻿using Avalonia;
+using MsBox.Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Client_App.Properties;
 using Client_App.Views;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
 using Client_App.Services;
 using System;
 using System.Threading;
 
 namespace Client_App;
 
-public class App : Application
+public partial class App : Application
 {
     private static Mutex? _instanceCheckMutex;
 
@@ -47,8 +48,8 @@ public class App : Application
 
                     #region MessageAppAlreadyOpen
 
-                    await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    await MessageBoxManager
+                        .GetMessageBoxStandard(new MessageBoxStandardParams
                         {
                             ButtonDefinitions = ButtonEnum.Ok,
                             ContentTitle = "Запуск программы",
@@ -59,7 +60,7 @@ public class App : Application
                             MinHeight = 120,
                             WindowStartupLocation = WindowStartupLocation.CenterScreen
                         })
-                        .Show();
+                        .ShowAsync();
 
                     #endregion
 

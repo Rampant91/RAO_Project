@@ -109,7 +109,7 @@ namespace Client_App.Controls.AutoCompleteBox
         {
             if (AssociatedObject is not null 
                 && (string.IsNullOrWhiteSpace(AssociatedObject.Text) 
-                    || AssociatedObject.Items
+                    || AssociatedObject.ItemsSource
                         .Cast<string>()
                         .Any(x => x.Contains(AssociatedObject.Text))))
             {

@@ -1,10 +1,9 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
-using AvaloniaEdit.Utils;
 using Models.Forms.Form1;
 using System;
 using System.Collections.Generic;
@@ -91,7 +90,7 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
             if (e.PointerPressedEventArgs.KeyModifiers != KeyModifiers.Shift)
                 AssociatedObject.SelectedItems.Clear();
             // Захватываем указатель для получения всех событий
-            AssociatedObject.CapturePointer(e.PointerPressedEventArgs.Pointer);
+            e.PointerPressedEventArgs.Pointer.Capture(AssociatedObject!);
 
             var row = GetRowAtPoint(point.Position);
             if (row != null)
@@ -144,7 +143,7 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
             _lastSelectedItem = null;
 
             // Освобождаем захват указателя
-            AssociatedObject.ReleasePointerCapture(e.Pointer);
+            e.Pointer.Capture(null);
 
         }
     }
@@ -175,7 +174,7 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
     }
     private void SelectRange()
     {
-        var items = AssociatedObject.Items?.OfType<object>().ToList();
+        var items = AssociatedObject.ItemsSource?.OfType<object>().ToList();
         if (items == null) return;
 
 
@@ -215,7 +214,7 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
         if (point.Properties.IsLeftButtonPressed)
         {
             // Захватываем указатель для получения всех событий
-            AssociatedObject.CapturePointer(e.PointerPressedEventArgs.Pointer);
+            e.PointerPressedEventArgs.Pointer.Capture(AssociatedObject!);
 
             // Находим визуальный элемент в точке клика
             var visual = AssociatedObject.GetVisualAt(point.Position);
@@ -267,7 +266,7 @@ public class DataGridPointerBehavior : Behavior<DataGrid>
             _lastSelectedTextBox = null;
 
             // Освобождаем захват указателя
-            AssociatedObject.ReleasePointerCapture(e.Pointer);
+            e.Pointer.Capture(null);
 
         }
     }

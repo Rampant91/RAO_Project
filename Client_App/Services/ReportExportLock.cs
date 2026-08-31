@@ -1,3 +1,4 @@
+﻿using MsBox.Avalonia;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,9 +7,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Models.Collections;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Services;
 
 /// <summary>
@@ -163,10 +165,10 @@ public static class ReportExportLock
             return;
         }
 
-        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+        await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxStandard(new MessageBoxStandardParams
             {
-                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                ButtonDefinitions = ButtonEnum.Ok,
                 ContentTitle = "Выгрузка",
                 ContentHeader = "Уведомление",
                 ContentMessage = message,
@@ -174,8 +176,7 @@ public static class ReportExportLock
                 MinHeight = 150,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true
-            })
-            .ShowDialog(window));
+            }).ShowWindowDialogAsync(window));
     }
 
     private sealed class Scope(int reportId, int organizationId) : IDisposable

@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -38,7 +38,7 @@
                   GridLinesVisibility="All"
                   IsReadOnly="True"
                   SelectionMode="Extended"
-                  Items="{Binding Path=CheckError, Mode=OneWay}">
+                  ItemsSource="{Binding Path=CheckError, Mode=OneWay}">
 
             <i:Interaction.Behaviors>
                 <behaviors:DataGridSortingBehavior/>

@@ -5,7 +5,7 @@ using Client_App.Controls.DataGrid;
 using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;

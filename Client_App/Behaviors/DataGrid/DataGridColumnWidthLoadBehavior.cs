@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -44,7 +44,14 @@ namespace Client_App.Behaviors.DataGridBehaviors;
 
             for (int i = 0; i < columnWidths.Count && i < columns.Count; i++)
             {
-                columns[i].Width = new DataGridLength(columnWidths[i]);
+                var width = columnWidths[i];
+                if (!double.IsFinite(width) || width <= 0)
+                {
+                    continue;
+                }
+
+                width = Math.Clamp(width, AssociatedObject.MinColumnWidth, AssociatedObject.MaxColumnWidth);
+                columns[i].Width = new DataGridLength(width);
             }
         }
 

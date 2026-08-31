@@ -1,8 +1,10 @@
-﻿using Avalonia;
+using MsBox.Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Resources;
 using Client_App.ViewModels.Forms;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Models.Collections;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -11,6 +13,7 @@ using Models.Forms.Form5;
 using System;
 using System.Threading.Tasks;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
@@ -132,7 +135,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         if (SelectedForm == null) return;
-        var clipboard = Application.Current!.Clipboard;
+        var clipboard = Avalonia11Compat.MainClipboard;
 
         var pastedString = await clipboard.GetTextAsync();
         if (string.IsNullOrEmpty(pastedString)) return;
@@ -215,10 +218,10 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
         {
             #region NotEnoughSpaceMessage
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                        .GetMessageBoxStandard(new MessageBoxStandardParams
                         {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ButtonDefinitions = ButtonEnum.Ok,
                             ContentTitle = "Вставка данных из буфера обмена",
                             ContentHeader = "Внимание",
                             ContentMessage = "В таблице не хватает места для некоторых строк, которые вы хотите вставить.",
@@ -226,8 +229,7 @@ public class NewPasteRowsAsyncCommand(BaseFormVM formVM) : BaseAsyncCommand
                             MinHeight = 150,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner,
                             Topmost = true,
-                        })
-                        .ShowDialog(Desktop.MainWindow));
+                        }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
         }

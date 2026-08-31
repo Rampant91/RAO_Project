@@ -1,3 +1,4 @@
+﻿using MsBox.Avalonia;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,8 +15,8 @@ using Client_App.Interfaces.Logger;
 using Client_App.Properties;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.CheckForm;
 using Models.Collections;
@@ -26,6 +27,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using Models.Helpers;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
 /// <summary>
@@ -140,8 +142,8 @@ public class CheckF22 : CheckBase
 
             #region MessageFailedToOpenForm
 
-            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions = _dbWithForm1Prev == null ?
                     [
@@ -164,8 +166,7 @@ public class CheckF22 : CheckBase
                     MinHeight = 200,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(desktop.MainWindow));
+                }).ShowWindowDialogAsync(desktop.MainWindow));
 
             #endregion
 
@@ -271,9 +272,9 @@ public class CheckF22 : CheckBase
                     Topmost = true,
                 };
 
-                var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxCustomWindow(messageBoxCustomParams)
-                    .ShowDialog(desktop.MainWindow));
+                var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxCustom(messageBoxCustomParams)
+                    .ShowWindowDialogAsync(desktop.MainWindow));
 
                 if (answer != null)
                 {
@@ -326,10 +327,10 @@ public class CheckF22 : CheckBase
         {
             #region MessageCheckFailed
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = $"Проверка формы {repFormNum}",
                     ContentHeader = "Уведомление",
                     ContentMessage = $"Не удалось проверить форму, поскольку в выбранном файле БД отсутствуют записи для организации {form20RegNo}_{form20Okpo}.",
@@ -337,8 +338,7 @@ public class CheckF22 : CheckBase
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -1328,10 +1328,10 @@ public class CheckF22 : CheckBase
             {
                 #region MessageCopyFailed
 
-                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = $"Проверка формы 2.2",
                         ContentHeader = "Ошибка",
                         ContentMessage = $"Ошибка при копировании строки формы 2.2\n" +
@@ -1340,8 +1340,7 @@ public class CheckF22 : CheckBase
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
                 throw new ArgumentNullException(nameof(form)); 
@@ -1385,10 +1384,10 @@ public class CheckF22 : CheckBase
         {
             #region MessageCopyFailed
 
-            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = $"Проверка формы 2.2",
                     ContentHeader = "Ошибка",
                     ContentMessage = $"Ошибка во время копирования строки №{form?.NumberInOrder_DB} отчета по форме {form?.FormNum_DB}\n" +
@@ -1399,8 +1398,7 @@ public class CheckF22 : CheckBase
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
             throw ex;
@@ -2055,8 +2053,8 @@ public class CheckF22 : CheckBase
     {
         #region MessageSaveOrOpenTemp
 
-        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -2070,8 +2068,7 @@ public class CheckF22 : CheckBase
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(Desktop.MainWindow));
+            }).ShowWindowDialogAsync(Desktop.MainWindow));
 
         #endregion
 
@@ -2116,10 +2113,10 @@ public class CheckF22 : CheckBase
                     {
                         #region MessageFailedToSaveFile
 
-                        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                        await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                            .GetMessageBoxStandard(new MessageBoxStandardParams
                             {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                ButtonDefinitions = ButtonEnum.Ok,
                                 ContentTitle = "Выгрузка в .xlsx",
                                 ContentHeader = "Ошибка",
                                 ContentMessage =
@@ -2130,8 +2127,7 @@ public class CheckF22 : CheckBase
                                 MinHeight = 150,
                                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                                 Topmost = true,
-                            })
-                            .ShowDialog(Desktop.MainWindow));
+                            }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                         #endregion
 
@@ -2179,10 +2175,10 @@ public class CheckF22 : CheckBase
         {
             #region MessageFailedToSaveFile
 
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     CanResize = true,
                     ContentTitle = "Выгрузка в .xlsx",
                     ContentHeader = "Ошибка",
@@ -2192,8 +2188,7 @@ public class CheckF22 : CheckBase
                     MinHeight = 175,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 
@@ -2213,8 +2208,8 @@ public class CheckF22 : CheckBase
             #region MessageExcelExportComplete
 
             var answer =
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -2228,8 +2223,7 @@ public class CheckF22 : CheckBase
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
             #endregion
 

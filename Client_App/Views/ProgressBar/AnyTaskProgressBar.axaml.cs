@@ -54,7 +54,7 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
     #region Events
 
     private bool _mouseDownForWindowMoving = false;
-    private PointerPoint? _originalPoint;
+    private Point _dragStart;
 
     #region OnPointerMoved
 
@@ -62,9 +62,11 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
     {
         if (!_mouseDownForWindowMoving) return;
 
-        var currentPoint = e.GetCurrentPoint(this);
-        Position = new PixelPoint(Position.X + (int)(currentPoint.Position.X - _originalPoint!.Position.X),
-            Position.Y + (int)(currentPoint.Position.Y - _originalPoint.Position.Y));
+        var currentPosition = e.GetPosition(this);
+        var startPosition = _dragStart;
+        Position = new PixelPoint(
+            Position.X + (int)(currentPosition.X - startPosition.X),
+            Position.Y + (int)(currentPosition.Y - startPosition.Y));
     }
 
     #endregion
@@ -76,7 +78,7 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
         if (WindowState is Maximized or FullScreen) return;
 
         _mouseDownForWindowMoving = true;
-        _originalPoint = e.GetCurrentPoint(this);
+        _dragStart = e.GetPosition(this);
     }
 
     #endregion
@@ -95,7 +97,7 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
     /// <summary>
     /// Крестик, Escape и кнопка «Отмена» должны останавливать команду, а не только прятать окно.
     /// </summary>
-    protected override void OnClosing(CancelEventArgs e)
+    protected override void OnClosing(WindowClosingEventArgs e)
     {
         TryCancelLinkedCommand();
         base.OnClosing(e);

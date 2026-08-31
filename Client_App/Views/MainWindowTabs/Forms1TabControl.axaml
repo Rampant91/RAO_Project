@@ -42,12 +42,11 @@
                          Text="{Binding SearchText, Mode=OneWayToSource}"/>
 				<DataGrid x:Name="ReportsDataGrid"
 						  Grid.Row="2" Margin="5"
-						  Items="{Binding ReportsCollection, Mode=TwoWay}"
+						  ItemsSource="{Binding ReportsCollection, Mode=TwoWay}"
 						  SelectionMode="Single"
 						  SelectedItem="{Binding SelectedReports, Mode=OneWayToSource}"
 						  RowHeight="25"
 						  GridLinesVisibility="All"
-						  AlternatingRowBackground="White"
 						  RowBackground="White"
 						  CanUserSortColumns="False">
 					
@@ -594,12 +593,11 @@
 				<DataGrid x:Name="ReportDataGrid"
                           Grid.Row="1" 
                           Margin="5"
-						  Items="{Binding ReportCollection}"
+						  ItemsSource="{Binding ReportCollection}"
 						  SelectionMode="Single"
 						  SelectedItem="{Binding SelectedReport}"
 						  RowHeight="25"
 						  GridLinesVisibility="All"
-						  AlternatingRowBackground="White"
 						  RowBackground="White"
 						  CanUserSortColumns="False">
 
@@ -748,7 +746,8 @@
 						<TextBlock Text="Текущая страница:"
                                    Grid.Row="0" 
                                    Grid.Column="0" 
-                                   Margin="5"/>
+                                   Margin="5"
+                                   VerticalAlignment="Center"/>
 						<controls:NumericLeftRight Value="{Binding CurrentPageForms}"
                                                    Grid.Row="0" 
                                                    Grid.Column="1" 
@@ -757,15 +756,18 @@
 						<TextBlock Text ="Всего страниц:"
                                    Grid.Row="0" 
                                    Grid.Column="2" 
-                                   Margin="5"/>
+                                   Margin="5"
+                                   VerticalAlignment="Center"/>
 						<TextBlock Text="{Binding TotalPagesForms}"
                                    Grid.Row="0" 
                                    Grid.Column="3" 
-                                   Margin="5"/>
+                                   Margin="5"
+                                   VerticalAlignment="Center"/>
 						<TextBlock Text="Отчётов на странице:"
                                    Grid.Row="1" 
                                    Grid.Column="0" 
-                                   Margin="5"/>
+                                   Margin="5"
+                                   VerticalAlignment="Center"/>
 						<controls:NumericLeftRight Value="{Binding RowsCountForms}"
                                                    Grid.Row="1" 
                                                    Grid.Column="1" 
@@ -778,7 +780,8 @@
 						<TextBlock Text="{Binding TotalRowsForms}"
                                    Grid.Row="1" 
                                    Grid.Column="3" 
-                                   Margin="5"/>
+                                   Margin="5"
+                                   VerticalAlignment="Center"/>
 						<TextBlock Text="Строчек в отчёте:"
                                    Grid.Row="1" 
                                    Grid.Column="4" 

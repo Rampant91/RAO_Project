@@ -1,3 +1,4 @@
+п»їusing MsBox.Avalonia;
 
 using Avalonia;
 using Avalonia.Controls;
@@ -11,9 +12,9 @@ using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
 using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.Forms.Forms5;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Enums;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Enums;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -57,6 +58,7 @@ public partial class Form_52 : BaseWindow<Form_52VM>
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
+        Name = "5.2";
 
 #if DEBUG
         this.AttachDevTools();
@@ -65,7 +67,7 @@ public partial class Form_52 : BaseWindow<Form_52VM>
         WindowState = WindowState.Maximized;
     }
 
-    //Временное узкоспециализированное решение
+    //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     private void CopyExecutorData_Click(object sender, RoutedEventArgs e)
     {
         var command = new NewCopyExecutorDataAsyncCommand((Form_52VM)DataContext);
@@ -193,12 +195,12 @@ public partial class Form_52 : BaseWindow<Form_52VM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
-        args.Cancel = true; // Сразу запрещаем закрытие окна, т.к. из-за асинхроности окно может закрыться в любой момент
+        args.Cancel = true; // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅ.пїЅ. пїЅпїЅ-пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
 
-        _isCloseConfirmed = true; // перед выходом из обработчика события стоит проверка на _isCloseConfirmed,
-                                  // если true, то окно закроется,
-                                  // если false, то не закроется
+        _isCloseConfirmed = true; // пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ _isCloseConfirmed,
+                                  // пїЅпїЅпїЅпїЅ true, пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ,
+                                  // пїЅпїЅпїЅпїЅ false, пїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         if (DataContext is not Form_52VM vm) return;
 
         try
@@ -226,7 +228,7 @@ public partial class Form_52 : BaseWindow<Form_52VM>
                 if (vm.SkipChangeTacking) vm.SkipChangeTacking = false;
                 desktop.MainWindow.WindowState = OwnerPrevState;
 
-                if (_isCloseConfirmed) //выход из обработчика события
+                if (_isCloseConfirmed) //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 {
                     Closing -= OnStandardClosing;
                     Close();
@@ -246,34 +248,33 @@ public partial class Form_52 : BaseWindow<Form_52VM>
 
         #region MessageSaveChanges
 
-        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" },
-                    new ButtonDefinition { Name = "Отмена" }
+                    new ButtonDefinition { Name = "пїЅпїЅ" },
+                    new ButtonDefinition { Name = "пїЅпїЅпїЅ" },
+                    new ButtonDefinition { Name = "пїЅпїЅпїЅпїЅпїЅпїЅ" }
                 ],
-                ContentTitle = "Сохранение изменений",
-                ContentHeader = "Уведомление",
-                ContentMessage = $"Сохранить форму {vm.FormType}?",
+                ContentTitle = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+                ContentHeader = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+                ContentMessage = $"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ {vm.FormType}?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            })
-            .ShowDialog(this));
+            }).ShowWindowDialogAsync(this));
 
         #endregion
 
         var dbm = StaticConfiguration.DBModel;
         switch (res)
         {
-            case "Да":
+            case "пїЅпїЅ":
             {
                 _isCloseConfirmed = true;
 
-                //Перед тем как сохранить данные пользователю предлагают удалить пустые строчки
+                //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 try
                 {
                     await RemoveEmptyForms(vm);
@@ -299,7 +300,7 @@ public partial class Form_52 : BaseWindow<Form_52VM>
 
                 break;
             }
-            case "Нет":
+            case "пїЅпїЅпїЅ":
             {
                 _isCloseConfirmed = true;
                 dbm.Restore();
@@ -345,7 +346,7 @@ public partial class Form_52 : BaseWindow<Form_52VM>
                 }
                 break;
             }
-            case "Отмена" or null:
+            case "пїЅпїЅпїЅпїЅпїЅпїЅ" or null:
             {
                 _isCloseConfirmed = false;
                 return;
@@ -353,7 +354,7 @@ public partial class Form_52 : BaseWindow<Form_52VM>
         }
         desktop.MainWindow.WindowState = OwnerPrevState;
 
-        if (_isCloseConfirmed)      //выход из обработчика события
+        if (_isCloseConfirmed)      //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         {
             Closing -= OnStandardClosing;
             Close();
@@ -363,10 +364,10 @@ public partial class Form_52 : BaseWindow<Form_52VM>
     #region CheckPeriod
 
     /// <summary>
-    /// Проверяет наличие отчёта с пересекающимся периодом.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
-    /// <param name="vm">Модель открытого отчёта.</param>
-    /// <returns>Сообщение о наличии пересечения.</returns>
+    /// <param name="vm">пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.</param>
+    /// <returns>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.</returns>
     private async Task CheckPeriod(Form_52VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
@@ -385,23 +386,23 @@ public partial class Form_52 : BaseWindow<Form_52VM>
                 {
                     #region MessageFindIntersection
 
-                    await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams()
+                    await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                        .GetMessageBoxStandard(new MessageBoxStandardParams()
                         {
                             ButtonDefinitions = ButtonEnum.Ok,
-                            ContentTitle = "Пересечение",
-                            ContentHeader = "Уведомление",
-                            ContentMessage = $"У организации {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value} " +
-                                             $"{Environment.NewLine}присутствует отчёт по форме " +
+                            ContentTitle = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+                            ContentHeader = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+                            ContentMessage = $"пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value} " +
+                                             $"{Environment.NewLine}пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ " +
                                              $"{currentReport.FormNum_DB} {currentReport.StartPeriod_DB}-{currentReport.EndPeriod_DB}" +
-                                             $"{Environment.NewLine}пересекающийся с введённым периодом " +
+                                             $"{Environment.NewLine}пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ " +
                                              $"{rep.StartPeriod_DB}-{rep.EndPeriod_DB}.",
                             MinWidth = 450,
                             MinHeight = 170,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner,
                             Topmost = true,
                         })
-                        .ShowDialog(this));
+                        .ShowWindowDialogAsync(this));
 
                     #endregion
 
@@ -416,10 +417,10 @@ public partial class Form_52 : BaseWindow<Form_52VM>
     #region RemoveEmptyForms
 
     /// <summary>
-    /// Проверяет на пустые строчки и предлагает их удалить.
+    /// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.
     /// </summary>
-    /// <param name="vm">Модель открытого отчёта.</param>
-    /// <returns>Сообщение с предложением удалить пустые строчки.</returns>
+    /// <param name="vm">пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ.</param>
+    /// <returns>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ.</returns>
     private async Task RemoveEmptyForms(Form_52VM vm)
     {
         var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
@@ -440,27 +441,26 @@ public partial class Form_52 : BaseWindow<Form_52VM>
         {
             #region MessageRemoveEmptyForms
 
-            var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+            var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
-                        new ButtonDefinition { Name = "Да" },
-                        new ButtonDefinition { Name = "Нет" }
+                        new ButtonDefinition { Name = "пїЅпїЅ" },
+                        new ButtonDefinition { Name = "пїЅпїЅпїЅ" }
                     ],
-                    ContentTitle = "Сохранение изменений",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = $"В форме {vm.FormType} присутствуют пустые строчки." +
-                                     $"{Environment.NewLine}Вы хотите их удалить?",
+                    ContentTitle = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+                    ContentHeader = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ",
+                    ContentMessage = $"пїЅ пїЅпїЅпїЅпїЅпїЅ {vm.FormType} пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ." +
+                                     $"{Environment.NewLine}пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ?",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
-                })
-                .ShowDialog(this));
+                }).ShowWindowDialogAsync(this));
 
             #endregion
 
-            if (res is "Да")
+            if (res is "пїЅпїЅ")
             {
                 await using var db = new DBModel(StaticConfiguration.DBPath);
                 foreach (var form in formToDeleteList)

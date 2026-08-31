@@ -1,3 +1,4 @@
+﻿using MsBox.Avalonia;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -7,8 +8,8 @@ using Client_App.Interfaces.Logger;
 using Client_App.ViewModels.Passports;
 using Client_App.ViewModels.StoragePoints;
 using Client_App.Views;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.DBRealization;
 using System;
@@ -102,8 +103,8 @@ public partial class StoragePointWindow : BaseWindow<StoragePointWindowVM>
 
         #region MessageSaveChanges
 
-        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+        var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -116,8 +117,7 @@ public partial class StoragePointWindow : BaseWindow<StoragePointWindowVM>
                 ContentMessage = $"Сохранить пункт хранения?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
-            })
-            .ShowDialog(this));
+            }).ShowWindowDialogAsync(this));
 
         #endregion
 
@@ -135,8 +135,8 @@ public partial class StoragePointWindow : BaseWindow<StoragePointWindowVM>
                     }
                     catch (Exception ex)
                     {
-                        Dispatcher.UIThread.InvokeAsync(async () => await MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                        Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                        .GetMessageBoxCustom(new MessageBoxCustomParams
                         {
                             ButtonDefinitions =
                             [
@@ -148,8 +148,7 @@ public partial class StoragePointWindow : BaseWindow<StoragePointWindowVM>
                                 $"{ex.Message}",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        })
-                        .ShowDialog(this));
+                        }).ShowWindowDialogAsync(this));
                     }
 
                     if (desktop.Windows.Count == 1)

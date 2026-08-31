@@ -1,13 +1,12 @@
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Client_App.ViewModels.Messages;
-using JetBrains.Annotations;
 using System;
 
 namespace Client_App.Views.Messages;
 
 /// <summary>
-/// Окно, запрашивающее у пользователя начальную и конечную даты при использовании "Аналитика -> Список форм 1".
+/// ????, ????????????? ? ???????????? ????????? ? ???????? ???? ??? ????????????? "????????? -> ?????? ???? 1".
 /// </summary>
 public partial class AskDatePeriodMessageWindow : BaseWindow<AskDatePeriodMessageVM>
 {
@@ -29,14 +28,13 @@ public partial class AskDatePeriodMessageWindow : BaseWindow<AskDatePeriodMessag
     #region OnCancelButtonClicked
 
     /// <summary>
-    /// Ивент при нажатии кнопки "Отмена".
+    /// ????? ??? ??????? ?????? "??????".
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     private void OnCancelButtonClicked(object? sender, RoutedEventArgs e)
     {
-        Close(("Отмена", DateOnly.MinValue, DateOnly.MaxValue));
+        Close(("??????", DateOnly.MinValue, DateOnly.MaxValue));
     }
 
     #endregion
@@ -44,17 +42,16 @@ public partial class AskDatePeriodMessageWindow : BaseWindow<AskDatePeriodMessag
     #region OnOkButtonClicked
 
     /// <summary>
-    /// Ивент при нажатии кнопки "Ок". Возвращает кортеж из введённой пользователем начальной/конечной даты.
+    /// ????? ??? ??????? ?????? "??". ?????????? ?????? ?? ???????? ????????????? ?????????/???????? ????.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     private void OnOkButtonClicked(object? sender, RoutedEventArgs e)
     {
         if (!DateOnly.TryParse(_askDatePeriodMessageVM.InitialDate, out var initialDateOnly)) initialDateOnly = DateOnly.MinValue;
         if (!DateOnly.TryParse(_askDatePeriodMessageVM.ResidualDate, out var residualDateOnly)) residualDateOnly = DateOnly.MaxValue;
 
-        Close(("Ок", initialDateOnly, residualDateOnly));
+        Close(("??", initialDateOnly, residualDateOnly));
     }
 
     #endregion 

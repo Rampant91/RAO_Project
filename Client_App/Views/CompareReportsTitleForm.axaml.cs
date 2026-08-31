@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Client_App.ViewModels;
@@ -7,7 +8,7 @@ using Models.Collections;
 
 namespace Client_App.Views;
 
-public class CompareReportsTitleForm : BaseWindow<CompareReportsTitleFormVM>
+public partial class CompareReportsTitleForm : BaseWindow<CompareReportsTitleFormVM>
 {
     private Report _repInBase = null!;
     private CompareReportsTitleFormVM _vm = null!;
@@ -37,7 +38,7 @@ public class CompareReportsTitleForm : BaseWindow<CompareReportsTitleFormVM>
 
     #region OnClosing
     
-    protected override void OnClosing(CancelEventArgs e)
+    protected override void OnClosing(WindowClosingEventArgs e)
     {
         if (_vm.Replace is false || _vm.RepsWhereTitleFormCheckIsCancel.Contains((_vm.RegNo, _vm.Okpo)))
         {

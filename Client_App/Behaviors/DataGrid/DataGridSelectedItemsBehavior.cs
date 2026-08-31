@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Xaml.Interactivity;
 using System.Collections;
@@ -43,7 +43,7 @@ public class DataGridSelectedItemsBehavior : Behavior<DataGrid>
         base.OnDetaching();
     }
 
-    protected override void OnPropertyChanged<T>(AvaloniaPropertyChangedEventArgs<T> change)
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
 

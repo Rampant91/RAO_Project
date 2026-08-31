@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Client_App.Commands.AsyncCommands.SumRow;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms2;

@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -106,12 +106,12 @@ public class DataGridAlternateArrowsKeyBehavior : Behavior<DataGrid>
             var newColumnIndex = columnIndex + columnDelta;
 
             // Проверяем границы
-            var itemsCount = dataGrid.Items?.Cast<object>().Count() ?? 0;
+            var itemsCount = dataGrid.ItemsSource?.Cast<object>().Count() ?? 0;
             if (newRowIndex < 0 || newRowIndex >= itemsCount) return;
             if (newColumnIndex < 0 || newColumnIndex >= dataGrid.Columns.Count) return;
 
             // Получаем элемент данных для новой строки
-            var newItem = dataGrid.Items.Cast<object>().ElementAt(newRowIndex);
+            var newItem = dataGrid.ItemsSource.Cast<object>().ElementAt(newRowIndex);
 
             // Получаем новую колонку
             var newColumn = dataGrid.Columns[newColumnIndex];
@@ -152,11 +152,11 @@ public class DataGridAlternateArrowsKeyBehavior : Behavior<DataGrid>
         private DataGridCell? GetCurrentCell()
         {
             // Получаем текущий фокусный элемент
-            var focusedElement = FocusManager.Instance?.Current;
+            var focusedElement = TopLevel.GetTopLevel(AssociatedObject!)?.FocusManager?.GetFocusedElement();
 
             // Ищем DataGridCell среди предков или самого элемента
             var cell = focusedElement as DataGridCell ??
-                       focusedElement?.FindAncestorOfType<DataGridCell>();
+                       (focusedElement as Visual)?.FindAncestorOfType<DataGridCell>();
 
             return cell;
         }
@@ -164,7 +164,7 @@ public class DataGridAlternateArrowsKeyBehavior : Behavior<DataGrid>
         private int GetRowIndex(DataGridRow row)
         {
             var dataGrid = AssociatedObject;
-            var items = dataGrid.Items?.Cast<object>().ToList();
+            var items = dataGrid.ItemsSource?.Cast<object>().ToList();
             if (items == null) return -1;
 
             return items.IndexOf(row.DataContext);

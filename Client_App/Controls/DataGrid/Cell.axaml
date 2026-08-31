@@ -4,10 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="Client_App.Controls.DataGrid.Cell"
-			 xmlns:local="clr-namespace:Client_App.Controls.DataGrid">
-	<Border BorderThickness="1" BorderBrush="{Binding $parent.BorderColor}">
-		<Panel DataContext="{Binding $parent[local:DataGridRow].DataContext}">
-
+             xmlns:local="clr-namespace:Client_App.Controls.DataGrid">
+	<Border BorderThickness="1" BorderBrush="{Binding BorderColor}">
+		<Panel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=local:DataGridRow}}">
 		</Panel>
 	</Border>
 </UserControl>

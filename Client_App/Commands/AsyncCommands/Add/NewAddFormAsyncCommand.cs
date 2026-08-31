@@ -1,10 +1,11 @@
-﻿using Avalonia.Controls;
+using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.Views;
 using Client_App.VisualRealization.Long_Visual;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Models.Collections;
 using Models.Interfaces;
 using System;
@@ -19,6 +20,7 @@ using Client_App.ViewModels.Forms.Forms2;
 using Client_App.Views.Forms.Forms5;
 using Client_App.ViewModels.Forms.Forms5;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.Add;
 
 /// <summary>
@@ -36,10 +38,10 @@ public class NewAddFormAsyncCommand : BaseAsyncCommand
             {
                 #region MessageFailedToOpenForm
 
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = $"Создание формы {param}",
                         ContentHeader = "Ошибка",
                         ContentMessage =
@@ -49,8 +51,7 @@ public class NewAddFormAsyncCommand : BaseAsyncCommand
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner,
                         Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
                 #endregion
 
                 return;

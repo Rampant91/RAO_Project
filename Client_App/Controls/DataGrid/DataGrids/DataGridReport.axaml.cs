@@ -1,9 +1,9 @@
-using Avalonia.Markup.Xaml;
+﻿using Avalonia.Markup.Xaml;
 using Models.Collections;
 
 namespace Client_App.Controls.DataGrid.DataGrids;
 
-public class DataGridReport : DataGrid<Report>
+public partial class DataGridReport : DataGrid<Report>
 {
     public DataGridReport()
     {

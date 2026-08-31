@@ -1,4 +1,4 @@
-<Window xmlns="https://github.com/avaloniaui"
+﻿<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -38,7 +38,7 @@
                                    TextWrapping="Wrap"
                                    FontWeight="SemiBold"/>
                         <DataGrid x:Name="ImportedReportsGrid"
-                                  Items="{Binding ImportedReports}"
+                                  ItemsSource="{Binding ImportedReports}"
                                   AutoGenerateColumns="False"
                                   IsReadOnly="True"
                                   CanUserReorderColumns="False"
@@ -47,7 +47,6 @@
                                   GridLinesVisibility="All"
                                   HeadersVisibility="Column"
                                   RowBackground="White"
-                                  AlternatingRowBackground="#DDEBF7"
                                   MaxHeight="250"/>
                     </StackPanel>
                 </Border>
@@ -62,7 +61,7 @@
                                    TextWrapping="Wrap"
                                    FontWeight="SemiBold"/>
                         <DataGrid x:Name="SkippedReportsGrid"
-                                  Items="{Binding SkippedReports}"
+                                  ItemsSource="{Binding SkippedReports}"
                                   AutoGenerateColumns="False"
                                   IsReadOnly="True"
                                   CanUserReorderColumns="False"
@@ -71,7 +70,6 @@
                                   GridLinesVisibility="All"
                                   HeadersVisibility="Column"
                                   RowBackground="White"
-                                  AlternatingRowBackground="#DDEBF7"
                                   MaxHeight="250"/>
                     </StackPanel>
                 </Border>

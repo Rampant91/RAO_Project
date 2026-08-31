@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using MsBox.Avalonia;
+using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
@@ -8,7 +9,7 @@ using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
 using Client_App.ViewModels.Forms.Forms4;
 using Client_App.Views;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Microsoft.EntityFrameworkCore;
 using Client_App.ViewModels.Forms.Forms5;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ using System;
 using Models.DBRealization;
 using System.Linq;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.Save;
 
 /// <summary>
@@ -183,10 +185,10 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
 
                 if (reportsAlreadyExist)
                 {
-                    await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                        .GetMessageBoxStandard(new MessageBoxStandardParams
                         {
-                            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                            ButtonDefinitions = ButtonEnum.Ok,
                             ContentTitle = "Ошибка при сохранении титульного листа организации",
                             ContentHeader = "Ошибка",
                             ContentMessage =
@@ -199,8 +201,7 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
                             MaxHeight = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner,
                             Topmost = true,
-                        })
-                        .ShowDialog(window ?? Desktop.MainWindow));
+                        }).ShowWindowDialogAsync(window ?? Desktop.MainWindow));
 
                     return;
                 }

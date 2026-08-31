@@ -1,9 +1,10 @@
+using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
-using MessageBox.Avalonia.DTO;
+using MsBox.Avalonia.Dto;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
@@ -23,6 +24,7 @@ using System.Threading.Tasks;
 using Client_App.ViewModels.ProgressBar;
 using FirebirdSql.Data.FirebirdClient;
 
+using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands;
 
 /// <summary>
@@ -73,7 +75,7 @@ public class ConvertExcelToRaodbAsyncCommand : BaseAsyncCommand
                     }
                 }
 
-                await Dispatcher.UIThread.InvokeAsync(() => progressBarVM.SetProgressBar(95, "Завершение")).ConfigureAwait(false);
+                await Dispatcher.UIThread.InvokeAsync(() => progressBarVM.SetProgressBar(95, "Завершение"));
             }, cts.Token);
 
             await progressBar.CloseAsync();
@@ -81,27 +83,26 @@ public class ConvertExcelToRaodbAsyncCommand : BaseAsyncCommand
             // Показываем ошибки если есть
             if (errorMessages.Count > 0)
             {
-                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
                     {
-                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        ButtonDefinitions = ButtonEnum.Ok,
                         ContentTitle = "Импорт из .xlsx в .RAODB",
                         ContentHeader = "Ошибки при обработке",
                         ContentMessage = string.Join(Environment.NewLine, errorMessages),
                         MinWidth = 400,
                         MinHeight = 150,
                         WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    })
-                    .ShowDialog(Desktop.MainWindow));
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
             }
 
             var suffix = exportedCount.ToString() is [.., '1'] && !exportedCount.ToString().EndsWith("11")
                 ? "а"
                 : "ов";
-            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
-                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                    ButtonDefinitions = ButtonEnum.Ok,
                     ContentTitle = "Импорт из .xlsx в .RAODB",
                     ContentHeader = "Уведомление",
                     ContentMessage = exportedCount > 0
@@ -110,8 +111,7 @@ public class ConvertExcelToRaodbAsyncCommand : BaseAsyncCommand
                     MinWidth = 400,
                     MinHeight = 150,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
         }
         catch (OperationCanceledException)
         {

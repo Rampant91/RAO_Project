@@ -1,10 +1,10 @@
-using Avalonia.Interactivity;
+﻿using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Client_App.ViewModels.Messages;
 
 namespace Client_App.Views.Messages;
 
-public class GetTransferReceiveParams : BaseWindow<GetTransferReceiveParamsVM>
+public partial class GetTransferReceiveParams : BaseWindow<GetTransferReceiveParamsVM>
 {
     public GetTransferReceiveParamsVM Vm = null!;
 

@@ -1,12 +1,13 @@
-﻿using Avalonia;
+﻿using MsBox.Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 using Client_App.ViewModels;
 using Client_App.ViewModels.StoragePoints;
 using Client_App.Views;
-using MessageBox.Avalonia.DTO;
-using MessageBox.Avalonia.Models;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.StoragePoints;
 using System;
@@ -26,8 +27,8 @@ namespace Client_App.Commands.AsyncCommands.Change
             try
             {
 
-                var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
                     [
@@ -39,8 +40,7 @@ namespace Client_App.Commands.AsyncCommands.Change
                     ContentMessage = "Вы действительно хотите удалить паспорт?",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowDialog(Desktop.MainWindow));
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 if (answer is "Да")
                 {
