@@ -329,6 +329,11 @@
 			<Setter Property="IsHitTestVisible" Value="True"/>
 		</Style>
 
+		<!-- Legacy DataGrid (Form2.x и др.): ошибки в tooltip, без роста ячейки -->
+		<Style Selector="TextBox.legacy-dg-cell /template/ DataValidationErrors">
+			<Setter Property="Theme" Value="{StaticResource TooltipDataValidationErrors}" />
+		</Style>
+
         <Style Selector="DataGrid.dbPicker">
             <Setter Property="FontSize" Value="12"/>
         </Style>

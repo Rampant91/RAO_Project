@@ -1,4 +1,4 @@
-using MsBox.Avalonia;
+﻿using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;

@@ -178,12 +178,8 @@ public class RamAccess<T> : RamAccess, INotifyDataErrorInfo
 
     public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
-    public IEnumerable GetErrors(string propertyName)
-    {
-        var tmp = _errorsByPropertyName.Count > 0 ?
-            _errorsByPropertyName : null;
-        return tmp?.Select(item => new Exception(item)).ToList();
-    }
+    public IEnumerable GetErrors(string propertyName) =>
+        _errorsByPropertyName.Count > 0 ? _errorsByPropertyName.ToList() : null;
 
     protected void OnErrorsChanged(string propertyName)
     {

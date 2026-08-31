@@ -2143,6 +2143,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     }
                 }
 
+                if (textBox is TextBox legacyTextBox)
+                {
+                    legacyTextBox.Classes.Add("legacy-dg-cell");
+                }
+
                 cell.Control = textBox;
 
                 rowStackPanel.Children.Add(cell);
