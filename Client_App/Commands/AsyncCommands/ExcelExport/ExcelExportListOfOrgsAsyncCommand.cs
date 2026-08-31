@@ -916,7 +916,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
     /// <summary>
     /// Проверяет, попадает ли отчёт в заданный пользователем период фильтрации.
     /// </summary>
-    private bool MatchesExportPeriodFilter(string formNum, string? startPeriod, string? endPeriod, string? year)
+    private bool MatchesExportPeriodFilter(string formNum, string? startPeriod, string? endPeriod, int? year)
     {
         if (string.IsNullOrEmpty(formNum))
             return false;
@@ -938,7 +938,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
             if (_form2YearStart == int.MinValue && _form2YearEnd == int.MaxValue)
                 return true;
 
-            return int.TryParse(year, out var reportYear)
+            return year is { } reportYear
                    && reportYear >= _form2YearStart
                    && reportYear <= _form2YearEnd;
         }
@@ -980,7 +980,7 @@ public class ExcelExportListOfOrgsAsyncCommand : ExcelBaseAsyncCommand
         string FormNum_DB,
         string? StartPeriod_DB,
         string? EndPeriod_DB,
-        string? Year_DB);
+        int? Year_DB);
 
     #endregion
 }

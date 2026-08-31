@@ -472,9 +472,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelExportListOfFormsBaseAsyncC
                     : DateOnly.MaxValue),
             '2' or '4' => reports
                 .OrderBy(x => GetFormSubNumberOrder(x.FormNum))
-                .ThenByDescending(x => int.TryParse(x.Year, out var year)
-                    ? year
-                    : int.MinValue),
+                .ThenByDescending(x => x.Year ?? int.MinValue),
             _ => reports
         };
 
@@ -837,7 +835,7 @@ public class ExcelExportExecutorsAsyncCommand : ExcelExportListOfFormsBaseAsyncC
         string FormNum,
         string? StartPeriod,
         string? EndPeriod,
-        string? Year,
+        int? Year,
         byte CorrectionNumber,
         string? FioExecutor,
         string? GradeExecutor,

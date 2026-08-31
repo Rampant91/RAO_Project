@@ -53,18 +53,13 @@ public class CheckF26 : CheckBase
         string form20RegNo = rep!.Reports.Master_DB.RegNoRep.Value;
         string form20Okpo = rep!.Reports.Master_DB.OkpoRep.Value;
 
-        string repYear = rep.Year_DB;
-        string repFormNum = rep.FormNum_DB;
-
         if (string.IsNullOrWhiteSpace(form20RegNo))
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
 
-
-        int yearRealCurrent;
-        int.TryParse(repYear, out yearRealCurrent);
-        string yearPrevious = (yearRealCurrent - 1).ToString();
+        var yearRealCurrent = rep.Year_DB ?? 0;
+        var yearPrevious = yearRealCurrent - 1;
 
         Reports? reps26Prev = null;
         foreach (var _ in db2.ReportsCollectionDbSet

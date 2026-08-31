@@ -413,7 +413,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                 }
             case '2':
                 {
-                    var year = RemoveForbiddenChars(rep.Year_DB);
+                    var year = RemoveForbiddenChars(rep.Year_DB?.ToString());
                     fileName = $"{regNum}_{okpo}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
                     break;
                 }
@@ -423,13 +423,13 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                     var row40 = rep.Reports?.Master_DB?.Rows40?.FirstOrDefault();
                     if (row40?.CodeSubjectRF?.Value != null)
                         codeSubjectRF = RemoveForbiddenChars(row40.CodeSubjectRF.Value);
-                    var year = RemoveForbiddenChars(rep.Year_DB);
+                    var year = RemoveForbiddenChars(rep.Year_DB?.ToString());
                     fileName = $"{codeSubjectRF}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
                     break;
                 }
             case '5':
                 {
-                    var year = RemoveForbiddenChars(rep.Year_DB);
+                    var year = RemoveForbiddenChars(rep.Year_DB?.ToString());
                     fileName = $"{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
                     break;
                 }

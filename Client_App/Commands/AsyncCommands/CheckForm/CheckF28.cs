@@ -54,18 +54,13 @@ public class CheckF28 : CheckBase
         string form20RegNo = rep!.Reports.Master_DB.RegNoRep.Value;
         string form20Okpo = rep!.Reports.Master_DB.OkpoRep.Value;
 
-        string repYear = rep.Year_DB;
-        string repFormNum = rep.FormNum_DB;
-
         if (string.IsNullOrWhiteSpace(form20RegNo))
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
 
-
-        int yearRealCurrent;
-        int.TryParse(repYear, out yearRealCurrent);
-        string yearPrevious = (yearRealCurrent - 1).ToString();
+        var yearRealCurrent = rep.Year_DB ?? 0;
+        var yearPrevious = yearRealCurrent - 1;
 
         Reports? reps28Prev = null;
         foreach (var _ in db2.ReportsCollectionDbSet
@@ -130,8 +125,8 @@ public class CheckF28 : CheckBase
     private static void Check_HeaderExpirationDate1(List<CheckError> errorList, Report rep)
     {
         if (DateTime.TryParse(rep.ValidThru_28_DB, out var validThru27)
-            && int.TryParse(rep.Year_DB, out var Year)
-            && validThru27 < new DateTime(Year, 12, DateTime.DaysInMonth(Year, 12)))
+            && rep.Year_DB is { } year
+            && validThru27 < new DateTime(year, 12, DateTime.DaysInMonth(year, 12)))
         {
             errorList.Add(new CheckError
             {
@@ -150,8 +145,8 @@ public class CheckF28 : CheckBase
     private static void Check_HeaderExpirationDate2(List<CheckError> errorList, Report rep)
     {
         if (DateTime.TryParse(rep.ValidThru1_28_DB, out var validThru27)
-            && int.TryParse(rep.Year_DB, out var Year)
-            && validThru27 < new DateTime(Year, 12, DateTime.DaysInMonth(Year, 12)))
+            && rep.Year_DB is { } year
+            && validThru27 < new DateTime(year, 12, DateTime.DaysInMonth(year, 12)))
         {
             errorList.Add(new CheckError
             {
@@ -170,8 +165,8 @@ public class CheckF28 : CheckBase
     private static void Check_HeaderExpirationDate3(List<CheckError> errorList, Report rep)
     {
         if (DateTime.TryParse(rep.ValidThru2_28_DB, out var validThru27)
-            && int.TryParse(rep.Year_DB, out var Year)
-            && validThru27 < new DateTime(Year, 12, DateTime.DaysInMonth(Year, 12)))
+            && rep.Year_DB is { } year
+            && validThru27 < new DateTime(year, 12, DateTime.DaysInMonth(year, 12)))
         {
             errorList.Add(new CheckError
             {

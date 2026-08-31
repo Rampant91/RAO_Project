@@ -34,7 +34,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
         #region private Properties
 
         private Report Report => formVM.Report;
-        private string year => formVM.Report.Year_DB;
+        private string year => formVM.Report.Year_DB?.ToString() ?? "";
 
 
 

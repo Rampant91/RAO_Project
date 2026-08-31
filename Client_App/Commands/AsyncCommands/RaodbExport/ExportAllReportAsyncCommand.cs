@@ -184,20 +184,20 @@ public partial class ExportAllReportAsyncCommand : ExportRaodbBaseAsyncCommand
                             StaticStringMethods.RemoveForbiddenChars(repFull.Reports.Master.RegNoRep.Value) +
                             $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Reports.Master.OkpoRep.Value)}" +
                             $"_{repFull.FormNum_DB}" +
-                            $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Year_DB)}" +
+                            $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Year_DB?.ToString())}" +
                             $"_{repFull.CorrectionNumber_DB}" +
                             $"_{Assembly.GetExecutingAssembly().GetName().Version}",
 
                         "4.0" when repFull.Reports.Master.Rows40.Count > 0 =>
                             $"{repFull.Reports.Master.Rows40.OrderBy(r => r.NumberInOrder_DB).ToList()[0].CodeSubjectRF_DB}" +
                             $"_{repFull.FormNum_DB}" +
-                            $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Year_DB)}" +
+                            $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Year_DB?.ToString())}" +
                             $"_{repFull.CorrectionNumber_DB}" +
                             $"_{Assembly.GetExecutingAssembly().GetName().Version}",
 
                         "5.0" when repFull.Reports.Master.Rows50.Count > 0 =>
                             $"{repFull.FormNum_DB}" +
-                            $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Year_DB)}" +
+                            $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Year_DB?.ToString())}" +
                             $"_{repFull.CorrectionNumber_DB}" +
                             $"_{Assembly.GetExecutingAssembly().GetName().Version}",
 

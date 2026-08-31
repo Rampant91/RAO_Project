@@ -1155,7 +1155,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             ImpRepCorNum = impRep.CorrectionNumber_DB;
             ImpRepFormCount = impRep.Rows.Count;
             ImpRepExpDate = impRep.ExportDate_DB;
-            ImpRepYear = impRep.Year_DB;
+            ImpRepYear = impRep.Year_DB?.ToString() ?? "";
 
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
@@ -1166,7 +1166,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
                 BaseRepFormCount = Math.Max(await ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
                 BaseRepExpDate = baseRep.ExportDate_DB;
-                BaseRepYear = baseRep.Year_DB;
+                BaseRepYear = baseRep.Year_DB?.ToString() ?? "";
 
                 if (BaseRepYear != ImpRepYear || ImpRepFormNum != BaseRepFormNum) continue;
                 impInBase = true;
@@ -1328,7 +1328,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             ImpRepCorNum = impRep.CorrectionNumber_DB;
             ImpRepFormCount = impRep.Rows.Count;
             ImpRepExpDate = impRep.ExportDate_DB;
-            ImpRepYear = impRep.Year_DB;
+            ImpRepYear = impRep.Year_DB?.ToString() ?? "";
 
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
@@ -1339,7 +1339,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
                 BaseRepFormCount = Math.Max(await ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
                 BaseRepExpDate = baseRep.ExportDate_DB;
-                BaseRepYear = baseRep.Year_DB;
+                BaseRepYear = baseRep.Year_DB?.ToString() ?? "";
 
                 if (BaseRepYear != ImpRepYear || ImpRepFormNum != BaseRepFormNum) continue;
                 impInBase = true;
@@ -1504,7 +1504,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
             ImpRepCorNum = impRep.CorrectionNumber_DB;
             ImpRepFormCount = impRep.Rows.Count;
             ImpRepExpDate = impRep.ExportDate_DB;
-            ImpRepYear = impRep.Year_DB;
+            ImpRepYear = impRep.Year_DB?.ToString() ?? "";
 
             var impInBase = false; //Импортируемая форма заменяет/пересекает имеющуюся в базе
             string? res;
@@ -1515,7 +1515,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 BaseRepCorNum = baseRep.CorrectionNumber_DB;
                 BaseRepFormCount = Math.Max(await ReportsStorage.GetReportRowsCount(baseRep), baseRep.Rows.Count);
                 BaseRepExpDate = baseRep.ExportDate_DB;
-                BaseRepYear = baseRep.Year_DB;
+                BaseRepYear = baseRep.Year_DB?.ToString() ?? "";
 
                 if (BaseRepYear != ImpRepYear || ImpRepFormNum != BaseRepFormNum) continue;
                 impInBase = true;

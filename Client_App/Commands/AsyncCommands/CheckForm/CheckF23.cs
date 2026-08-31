@@ -54,18 +54,13 @@ public class CheckF23 : CheckBase
         string form20RegNo = rep!.Reports.Master_DB.RegNoRep.Value;
         string form20Okpo = rep!.Reports.Master_DB.OkpoRep.Value;
 
-        string repYear = rep.Year_DB;
-        string repFormNum = rep.FormNum_DB;
-
         if (string.IsNullOrWhiteSpace(form20RegNo))
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
 
-
-        int yearRealCurrent;
-        int.TryParse(repYear, out yearRealCurrent);
-        string yearPrevious = (yearRealCurrent - 1).ToString();
+        var yearRealCurrent = rep.Year_DB ?? 0;
+        var yearPrevious = yearRealCurrent - 1;
 
         Reports? reps23Prev = null;
         foreach (var _ in db2.ReportsCollectionDbSet
@@ -190,7 +185,8 @@ public class CheckF23 : CheckBase
     private static void Check_DocumentExpiryDate(List<CheckError> errorList, Report rep)
     {
         List<Form23> Rows23Cur = new(rep.Rows23);
-        if (!int.TryParse(rep.Year_DB.Trim(), out int yearCurRaw)) return;
+        if (!rep.Year_DB.HasValue) return;
+        var yearCurRaw = rep.Year_DB.Value;
         DateTime YearEnd = new(yearCurRaw, 12, DateTime.DaysInMonth(yearCurRaw, 12));
         foreach (Form23 row in Rows23Cur)
         {

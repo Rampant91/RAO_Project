@@ -210,7 +210,7 @@ public class ExcelExportAllFormsByFormNumberAsyncCommand : BaseAsyncCommand
         string FormNum_DB,
         string? StartPeriod_DB,
         string? EndPeriod_DB,
-        string? Year_DB,
+        int? Year_DB,
         byte CorrectionNumber_DB);
 
     /// <summary>

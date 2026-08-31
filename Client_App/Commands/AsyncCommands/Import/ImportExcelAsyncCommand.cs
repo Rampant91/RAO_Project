@@ -383,7 +383,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 ImpRepFormCount = impRep.Rows.Count;
                 ImpRepFormNum = impRep.FormNum_DB;
                 ImpRepStartPeriod = impRep.StartPeriod_DB;
-                ImpRepYear = impRep.Year_DB ?? "";
+                ImpRepYear = impRep.Year_DB?.ToString() ?? "";
 
                 //SkipNewOrg = SkipInter = SkipLess = SkipNew = SkipReplace = AtLeastOneImportDone = false;
                 HasMultipleReport = answer.Length > 1;
@@ -1014,7 +1014,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                     impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
                     impRep.SourcesQuantity26_DB = Convert.ToInt32(worksheet1.Cells["G5"].Value);
-                    impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Value);
+                    impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Value);
 
                     #endregion
 
@@ -1030,7 +1030,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     impRep.ValidBegin27_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
                     impRep.ValidThru27_DB = Convert.ToString(worksheet1.Cells["J5"].Value);
                     impRep.PermissionDocumentName27_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
-                    impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Value);
+                    impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Value);
 
                     #endregion
                 
@@ -1063,7 +1063,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells["F21"].Value);
                     impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells["I21"].Value);
                     impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells["K21"].Value);
-                    impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Value);
+                    impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Value);
 
                         #endregion
 
@@ -1074,7 +1074,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     #region BindData_2.x
 
                         impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Text);
+                        impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Text);
 
                         #endregion
 
@@ -1085,34 +1085,12 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
         else if (formNumber.Split('.')[0] == "4")
         {
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B1"].Value);
-            impRep.Year_DB = Convert.ToString(worksheet.Cells["B15"].Text).Trim();
-            //Отсекаем мусор из ячейки
-            if(!impRep.Year_DB.All(c => char.IsDigit(c)))
-            {
-                var digits = "";
-                foreach (var c in impRep.Year_DB)
-                {
-                    if (char.IsDigit(c))
-                        digits += c;
-                }
-                impRep.Year_DB = digits;
-            }
+            impRep.Year_DB = Report.ParseYearFromText(Convert.ToString(worksheet.Cells["B15"].Text).Trim());
         }
         else if (formNumber.Split('.')[0] == "5")
         {
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B7"].Value);
-            impRep.Year_DB = Convert.ToString(worksheet.Cells["B16"].Text).Trim();
-            //Отсекаем мусор из ячейки
-            if (!impRep.Year_DB.All(c => char.IsDigit(c)))
-            {
-                var digits = "";
-                foreach (var c in impRep.Year_DB)
-                {
-                    if (char.IsDigit(c))
-                        digits += c;
-                }
-                impRep.Year_DB = digits;
-            }
+            impRep.Year_DB = Report.ParseYearFromText(Convert.ToString(worksheet.Cells["B16"].Text).Trim());
         }
 
         #region BindCommonData

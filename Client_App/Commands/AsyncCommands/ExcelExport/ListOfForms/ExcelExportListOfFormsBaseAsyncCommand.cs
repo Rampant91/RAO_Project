@@ -171,7 +171,7 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand : ExcelBase
         string FormNum_DB,
         string? StartPeriod_DB,
         string? EndPeriod_DB,
-        string? Year_DB,
+        int? Year_DB,
         byte CorrectionNumber_DB);
 
     private readonly record struct TitleRowInfo(
@@ -664,8 +664,9 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand : ExcelBase
     {
         if (minYear == 0 && maxYear == 9999)
             return true;
-        if (rep.Year_DB?.Length != 4 || !int.TryParse(rep.Year_DB, out var currentRepsYear))
+        if (!rep.Year_DB.HasValue)
             return false;
+        var currentRepsYear = rep.Year_DB.Value;
         return currentRepsYear >= minYear && currentRepsYear <= maxYear;
     }
 
@@ -680,21 +681,21 @@ public abstract partial class ExcelExportListOfFormsBaseAsyncCommand : ExcelBase
     private protected static List<FormReportListInfo> OrderForm2Reports(IReadOnlyList<FormReportListInfo> reports) =>
         reports
             .OrderBy(x => byte.TryParse(x.FormNum_DB[2..], out var formNum) ? formNum : byte.MaxValue)
-            .ThenByDescending(x => int.TryParse(x.Year_DB, out var year) ? year : int.MinValue)
+            .ThenByDescending(x => x.Year_DB ?? int.MinValue)
             .ThenByDescending(x => x.CorrectionNumber_DB)
             .ToList();
 
     private protected static List<FormReportListInfo> OrderForm4Reports(IReadOnlyList<FormReportListInfo> reports) =>
         reports
             .OrderBy(x => x.FormNum_DB)
-            .ThenByDescending(x => int.TryParse(x.Year_DB, out var year) ? year : int.MinValue)
+            .ThenByDescending(x => x.Year_DB ?? int.MinValue)
             .ThenByDescending(x => x.CorrectionNumber_DB)
             .ToList();
 
     private protected static List<FormReportListInfo> OrderForm5Reports(IReadOnlyList<FormReportListInfo> reports) =>
         reports
             .OrderBy(x => int.TryParse(x.FormNum_DB.Split('.')[1], out var formNum) ? formNum : int.MaxValue)
-            .ThenByDescending(x => int.TryParse(x.Year_DB, out var year) ? year : int.MinValue)
+            .ThenByDescending(x => x.Year_DB ?? int.MinValue)
             .ThenByDescending(x => x.CorrectionNumber_DB)
             .ToList();
 

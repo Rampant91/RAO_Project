@@ -161,11 +161,7 @@ public class Forms2TabControlVM : FormsTabControlBaseVM
                         return result;
                     return int.MinValue;
                 })
-                .ThenByDescending(x =>
-                    x.Year_DB == null ||
-                    !int.TryParse(x.Year_DB, out _) ?
-                        int.MaxValue :
-                        int.Parse(x.Year_DB))
+                .ThenByDescending(x => x.Year_DB ?? int.MaxValue)
                 .ThenBy(rep => rep.CorrectionNumber_DB)
                 .Skip((CurrentPageForms - 1) * RowsCountForms)
                 .Take(RowsCountForms);

@@ -126,7 +126,7 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
             .Select(o => o.Id)
             .ToHashSet();
 
-        var reportCandidates = new List<(int Id, int OrgId, string FormNum_DB, string? StartPeriod_DB, string? EndPeriod_DB, string? Year_DB)>();
+        var reportCandidates = new List<(int Id, int OrgId, string FormNum_DB, string? StartPeriod_DB, string? EndPeriod_DB, int? Year_DB)>();
 
         if (form1Numbers.Length > 0 && orgIdsForm10.Count > 0)
         {
@@ -202,7 +202,7 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
                             StaticStringMethods.RemoveForbiddenChars(repFull.Reports.Master.RegNoRep.Value) +
                             $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Reports.Master.OkpoRep.Value)}" +
                             $"_{repFull.FormNum_DB}" +
-                            $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Year_DB)}" +
+                            $"_{StaticStringMethods.RemoveForbiddenChars(repFull.Year_DB?.ToString())}" +
                             $"_{repFull.CorrectionNumber_DB}" +
                             $"_{Assembly.GetExecutingAssembly().GetName().Version}",
 
@@ -447,11 +447,11 @@ public partial class GroupBulkExportReportsAsyncCommand : ExportRaodbBaseAsyncCo
     }
 
     private static bool ReportMatchesPeriod(
-        string formNum, string? startDb, string? endDb, string? yearDb, DateOnly periodStart, DateOnly periodEnd)
+        string formNum, string? startDb, string? endDb, int? yearDb, DateOnly periodStart, DateOnly periodEnd)
     {
         if (formNum.StartsWith("2.", StringComparison.Ordinal))
         {
-            return int.TryParse(yearDb, out var year)
+            return yearDb is { } year
                    && periodStart.Year <= year
                    && year <= periodEnd.Year;
         }

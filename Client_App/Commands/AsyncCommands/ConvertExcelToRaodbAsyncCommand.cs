@@ -297,20 +297,20 @@ public class ConvertExcelToRaodbAsyncCommand : BaseAsyncCommand
                 StaticStringMethods.RemoveForbiddenChars(orgWithExpForm.Master.RegNoRep.Value) +
                 $"_{StaticStringMethods.RemoveForbiddenChars(orgWithExpForm.Master.OkpoRep.Value)}" +
                 $"_{impRep.FormNum_DB}" +
-                $"_{StaticStringMethods.RemoveForbiddenChars(impRep.Year_DB)}" +
+                $"_{StaticStringMethods.RemoveForbiddenChars(impRep.Year_DB?.ToString())}" +
                 $"_{impRep.CorrectionNumber_DB}" +
                 $"_{Assembly.GetExecutingAssembly().GetName().Version}",
 
             "4.0" when orgWithExpForm.Master.Rows40.Count > 0 =>
                 $"{orgWithExpForm.Master.Rows40.OrderBy(r => r.NumberInOrder_DB).ToList()[0].CodeSubjectRF_DB}" +
                 $"_{impRep.FormNum_DB}" +
-                $"_{StaticStringMethods.RemoveForbiddenChars(impRep.Year_DB)}" +
+                $"_{StaticStringMethods.RemoveForbiddenChars(impRep.Year_DB?.ToString())}" +
                 $"_{impRep.CorrectionNumber_DB}" +
                 $"_{Assembly.GetExecutingAssembly().GetName().Version}",
 
             "5.0" when orgWithExpForm.Master.Rows50.Count > 0 =>
                 $"{impRep.FormNum_DB}" +
-                $"_{StaticStringMethods.RemoveForbiddenChars(impRep.Year_DB)}" +
+                $"_{StaticStringMethods.RemoveForbiddenChars(impRep.Year_DB?.ToString())}" +
                 $"_{impRep.CorrectionNumber_DB}" +
                 $"_{Assembly.GetExecutingAssembly().GetName().Version}",
 
@@ -587,7 +587,7 @@ public class ConvertExcelToRaodbAsyncCommand : BaseAsyncCommand
                 case "2.6":
                     impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
                     impRep.SourcesQuantity26_DB = Convert.ToInt32(worksheet1.Cells["G5"].Value);
-                    impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Value);
+                    impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Value);
                     break;
                 case "2.7":
                     impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
@@ -596,7 +596,7 @@ public class ConvertExcelToRaodbAsyncCommand : BaseAsyncCommand
                     impRep.ValidBegin27_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
                     impRep.ValidThru27_DB = Convert.ToString(worksheet1.Cells["J5"].Value);
                     impRep.PermissionDocumentName27_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
-                    impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Value);
+                    impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Value);
                     break;
                 case "2.8":
                     impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
@@ -619,37 +619,23 @@ public class ConvertExcelToRaodbAsyncCommand : BaseAsyncCommand
                     impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells["F21"].Value);
                     impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells["I21"].Value);
                     impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells["K21"].Value);
-                    impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Value);
+                    impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Value);
                     break;
                 default:
                     impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
-                    impRep.Year_DB = Convert.ToString(worksheet.Cells["G10"].Text);
+                    impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Text);
                     break;
             }
         }
         else if (formNumber.Split('.')[0] == "4")
         {
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B1"].Value);
-            impRep.Year_DB = Convert.ToString(worksheet.Cells["B15"].Text).Trim();
-            if (!impRep.Year_DB.All(c => char.IsDigit(c)))
-            {
-                var digits = "";
-                foreach (var c in impRep.Year_DB)
-                    if (char.IsDigit(c)) digits += c;
-                impRep.Year_DB = digits;
-            }
+            impRep.Year_DB = Report.ParseYearFromText(Convert.ToString(worksheet.Cells["B15"].Text).Trim());
         }
         else if (formNumber.Split('.')[0] == "5")
         {
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B7"].Value);
-            impRep.Year_DB = Convert.ToString(worksheet.Cells["B16"].Text).Trim();
-            if (!impRep.Year_DB.All(c => char.IsDigit(c)))
-            {
-                var digits = "";
-                foreach (var c in impRep.Year_DB)
-                    if (char.IsDigit(c)) digits += c;
-                impRep.Year_DB = digits;
-            }
+            impRep.Year_DB = Report.ParseYearFromText(Convert.ToString(worksheet.Cells["B16"].Text).Trim());
         }
 
         // Общие данные исполнителя

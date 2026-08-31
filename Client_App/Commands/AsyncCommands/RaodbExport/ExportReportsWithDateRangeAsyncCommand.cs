@@ -135,7 +135,7 @@ public class ExportReportsWithDateRangeAsyncCommand : ExportRaodbBaseAsyncComman
                           && DateOnly.TryParse(rep.EndPeriod_DB, out var repEndDateTime)
                           && startDateTime <= repEndDateTime && endDateTime >= repStartDateTime)
                           ||
-                          (int.TryParse(rep.Year_DB, out var year)
+                          (rep.Year_DB is { } year
                           && startDateTime.Year <= year && year <= endDateTime.Year))
             .ToArray();
 

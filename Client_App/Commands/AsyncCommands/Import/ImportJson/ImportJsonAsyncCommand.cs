@@ -256,7 +256,7 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                         EndPeriod_DB = DateTime.TryParse(rep.EndPeriod, out dateTimeValue)
                             ? dateTimeValue.ToShortDateString()
                             : string.Empty,
-                        Year_DB = Convert.ToString(rep.Year),
+                        Year_DB = Report.ParseYearFromImport(rep.Year),
                         ReportChangedDate = dateTime
                     };
 
@@ -321,8 +321,8 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
                             ? DateOnly.TryParse(rep.StartPeriod_DB, out var stDate) 
                                 ? stDate 
                                 : DateOnly.MaxValue
-                            : DateOnly.TryParse(rep.Year_DB, out var year)
-                                ? year
+                            : rep.Year_DB is { } reportYear
+                                ? new DateOnly(reportYear, 1, 1)
                                 : DateOnly.MaxValue);
                     reps.Report_Collection = [];
                     reps.Report_Collection.AddRange(newRepCol);

@@ -50,6 +50,8 @@ public class CheckF21 : CheckBase
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
 
+        var reportYearText = rep.Year_DB?.ToString() ?? "";
+
         progressBarVM.SetProgressBar(5, "Поиск соответствующей формы 1.0",
             $"Проверка {rep.Reports.Master_DB.RegNoRep.Value}_{rep.Reports.Master_DB.OkpoRep.Value}", "Проверка отчёта");
 
@@ -123,9 +125,9 @@ public class CheckF21 : CheckBase
                 .Where(report => 
                     (report.FormNum_DB == "1.5" || report.FormNum_DB == "1.6" || report.FormNum_DB == "1.7" || report.FormNum_DB == "1.8") 
                     && (report.StartPeriod_DB.Length >= 4 
-                        && report.StartPeriod_DB.Substring(report.StartPeriod_DB.Length - 4) == rep.Year_DB 
+                        && report.StartPeriod_DB.Substring(report.StartPeriod_DB.Length - 4) == reportYearText 
                         || report.EndPeriod_DB.Length >= 4 
-                        && report.EndPeriod_DB.Substring(report.EndPeriod_DB.Length - 4) == rep.Year_DB)))
+                        && report.EndPeriod_DB.Substring(report.EndPeriod_DB.Length - 4) == reportYearText)))
             .ThenInclude(x => x.Rows15)
             .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows16)
             .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows17)
@@ -175,7 +177,7 @@ public class CheckF21 : CheckBase
                     foreach (var key1 in report.Rows15)
                     {
                         var form = (Form15)key1;
-                        form21New = FormConvert(form, rep.Year_DB);
+                        form21New = FormConvert(form, reportYearText);
                         if (form21New != null)
                         {
                             forms21MetadataBase.Add((form21New.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, form21New.NumberInOrder_DB.ToString()));
@@ -190,7 +192,7 @@ public class CheckF21 : CheckBase
                     foreach (var key1 in report.Rows16)
                     {
                         var form = (Form16)key1;
-                        form21New = FormConvert(form, rep.Year_DB);
+                        form21New = FormConvert(form, reportYearText);
                         if (form21New != null)
                         {
                             forms21MetadataBase.Add((form21New.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, form21New.NumberInOrder_DB.ToString()));
@@ -206,7 +208,7 @@ public class CheckF21 : CheckBase
                     {
                         var form = (Form17)key1;
                         if (!DashStringHelper.IsNullOrWhiteSpaceOrDash(form.OperationCode_DB)) formHeader17 = form;
-                        form21New = FormConvert(form, formHeader17, rep.Year_DB);
+                        form21New = FormConvert(form, formHeader17, reportYearText);
                         if (form21New != null)
                         {
                             forms21MetadataBase.Add((form21New.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, form21New.NumberInOrder_DB.ToString()));
@@ -222,7 +224,7 @@ public class CheckF21 : CheckBase
                     {
                         var form = (Form18)key1;
                         if (!DashStringHelper.IsNullOrWhiteSpaceOrDash(form.OperationCode_DB)) formHeader18 = form;
-                        form21New = FormConvert(form, formHeader18, rep.Year_DB);
+                        form21New = FormConvert(form, formHeader18, reportYearText);
                         if (form21New != null)
                         {
                             forms21MetadataBase.Add((form21New.FormNum_DB, report.StartPeriod_DB, report.EndPeriod_DB, form21New.NumberInOrder_DB.ToString()));

@@ -36,7 +36,7 @@ namespace Client_App.Commands.AsyncCommands.Generate.GenerateForm5
 
         private Window owner;
 
-        private string year => formVM.Report.Year_DB;
+        private string year => formVM.Report.Year_DB?.ToString() ?? "";
 
         
 
