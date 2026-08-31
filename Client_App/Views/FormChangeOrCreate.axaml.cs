@@ -50,6 +50,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
         DataContext = param;
         Name = param.FormType;
         InitializeComponent();
+        param.BeginContentLoading("\u041e\u0442\u043a\u0440\u044b\u0442\u0438\u0435 \u0444\u043e\u0440\u043c\u044b\u2026");
 #if DEBUG
         this.AttachDevTools();
 #endif
@@ -75,7 +76,21 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
         }
 
         _contentInitialized = true;
-        Init();
+        _ = InitWithLoadingAsync();
+    }
+
+    private async Task InitWithLoadingAsync()
+    {
+        if (DataContext is not ChangeOrCreateVM vm)
+        {
+            Init();
+            return;
+        }
+
+        await vm.WithContentLoadingAsync(async () =>
+        {
+            await Dispatcher.UIThread.InvokeAsync(Init, DispatcherPriority.Background);
+        }, clearVisibleRows: false, message: "\u041e\u0442\u043a\u0440\u044b\u0442\u0438\u0435 \u0444\u043e\u0440\u043c\u044b\u2026");
     }
 
     #endregion

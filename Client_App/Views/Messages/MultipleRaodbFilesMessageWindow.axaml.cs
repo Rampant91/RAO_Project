@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Client_App.Commands.AsyncCommands;
@@ -35,6 +37,16 @@ public partial class MultipleRaodbFilesMessageWindow : BaseWindow<BaseVM>
     {
         AvaloniaXamlLoader.Load(this);
         DataContext = new MultipleRaodbFilesMessageWindowVM(files);
+        EnsureCenteredForDialog();
+    }
+
+    private void EnsureCenteredForDialog()
+    {
+        var owner = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)
+            ?.MainWindow;
+        PrepareBeforeShow(owner);
+        PositionWindowOnOwnerScreen(owner);
+        AttachOpenedPositionFallback(owner);
     }
 
     private MultipleRaodbFilesMessageWindowVM ViewModel => (MultipleRaodbFilesMessageWindowVM)DataContext!;

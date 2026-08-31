@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.VisualTree;
 
 namespace Client_App.Views.Controls;
 
@@ -13,6 +14,11 @@ public partial class FormContentLoadingOverlay : UserControl
     {
         InitializeComponent();
         PropertyChanged += OnOverlayVisibilityChanged;
+        AttachedToVisualTree += (_, _) =>
+        {
+            if (IsVisible)
+                StartMarquee();
+        };
     }
 
     private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
@@ -24,8 +30,18 @@ public partial class FormContentLoadingOverlay : UserControl
 
         var marquee = this.FindControl<IndeterminateMarqueeBar>("Marquee");
         if (e.NewValue is true)
-            marquee?.Start();
+            StartMarquee();
         else
-            marquee?.Stop();
+            StopMarquee();
+    }
+
+    private void StartMarquee()
+    {
+        this.FindControl<IndeterminateMarqueeBar>("Marquee")?.Start();
+    }
+
+    private void StopMarquee()
+    {
+        this.FindControl<IndeterminateMarqueeBar>("Marquee")?.Stop();
     }
 }

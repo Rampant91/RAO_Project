@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.VisualTree;
 
 namespace Client_App.Views.Controls;
 
@@ -11,6 +12,13 @@ public partial class DataGridLoadingOverlay : UserControl
     {
         InitializeComponent();
         PropertyChanged += OnOverlayVisibilityChanged;
+        AttachedToVisualTree += OnAttachedToVisualTree;
+    }
+
+    private void OnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
+    {
+        if (IsVisible)
+            StartMarquee();
     }
 
     private void InitializeComponent() => AvaloniaXamlLoader.Load(this);
@@ -20,10 +28,21 @@ public partial class DataGridLoadingOverlay : UserControl
         if (e.Property != IsVisibleProperty)
             return;
 
-        var marquee = this.FindControl<IndeterminateMarqueeBar>("Marquee");
         if (e.NewValue is true)
-            marquee?.Start();
+            StartMarquee();
         else
-            marquee?.Stop();
+            StopMarquee();
+    }
+
+    private void StartMarquee()
+    {
+        var marquee = this.FindControl<IndeterminateMarqueeBar>("Marquee");
+        marquee?.Start();
+    }
+
+    private void StopMarquee()
+    {
+        var marquee = this.FindControl<IndeterminateMarqueeBar>("Marquee");
+        marquee?.Stop();
     }
 }

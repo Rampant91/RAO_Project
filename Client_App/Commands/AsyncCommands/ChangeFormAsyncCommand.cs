@@ -114,9 +114,18 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
         //    .FirstOrDefault(i => i.Report_Collection.Contains(report));
         var numForm = report.FormNum.Value;
 
-        var changeOrCreateVM = new ChangeOrCreateVM(numForm, report);
-
-        await Form2NewInterfaceOpener.PrepareSumRowsAsync(changeOrCreateVM, numForm);
+        mainWindow?.SetReportOpeningOverlay(true);
+        ChangeOrCreateVM changeOrCreateVM;
+        try
+        {
+            changeOrCreateVM = new ChangeOrCreateVM(numForm, report);
+            await Form2NewInterfaceOpener.PrepareSumRowsAsync(changeOrCreateVM, numForm);
+        }
+        catch
+        {
+            mainWindow?.SetReportOpeningOverlay(false);
+            throw;
+        }
 
         switch (numForm)
         {

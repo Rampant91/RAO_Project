@@ -1,4 +1,6 @@
-﻿using Client_App.Commands.AsyncCommands;
+﻿using Avalonia.Threading;
+using Client_App.Interfaces;
+using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Commands.AsyncCommands.Delete;
@@ -29,7 +31,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Client_App.ViewModels;
 
-public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
+public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged, IFormContentLoadingHost
 {
     private string WindowHeader { get; set; } = "default";
 
@@ -87,6 +89,73 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
             }
             _isCanSaveReportEnabled = value;
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsCanSaveReportEnabled)));
+        }
+    }
+
+    #endregion
+
+    #region ContentLoading
+
+    private int _contentLoadingDepth;
+    private bool _isContentLoading;
+    private string _contentLoadingMessage = "\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430\u2026";
+
+    public bool IsContentLoading
+    {
+        get => _isContentLoading;
+        private set
+        {
+            if (_isContentLoading == value)
+                return;
+            _isContentLoading = value;
+            NotifyPropertyChanged();
+        }
+    }
+
+    public string ContentLoadingMessage
+    {
+        get => _contentLoadingMessage;
+        set
+        {
+            if (_contentLoadingMessage == value)
+                return;
+            _contentLoadingMessage = value;
+            NotifyPropertyChanged();
+        }
+    }
+
+    public void BeginContentLoading(string? message = null)
+    {
+        if (_contentLoadingDepth > 0)
+            return;
+
+        ContentLoadingMessage = string.IsNullOrEmpty(message) ? "\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430\u2026" : message;
+        IsContentLoading = true;
+    }
+
+    public async Task WithContentLoadingAsync(Func<Task> work, bool clearVisibleRows = true, string? message = null)
+    {
+        ArgumentNullException.ThrowIfNull(work);
+        _ = clearVisibleRows;
+
+        if (_contentLoadingDepth == 0)
+        {
+            ContentLoadingMessage = string.IsNullOrEmpty(message) ? "\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430\u2026" : message;
+            IsContentLoading = true;
+            await Dispatcher.UIThread
+                .InvokeAsync(static () => { }, DispatcherPriority.Render);
+        }
+
+        _contentLoadingDepth++;
+        try
+        {
+            await work().ConfigureAwait(true);
+        }
+        finally
+        {
+            _contentLoadingDepth--;
+            if (_contentLoadingDepth == 0)
+                IsContentLoading = false;
         }
     }
 

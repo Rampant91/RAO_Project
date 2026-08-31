@@ -175,7 +175,8 @@ public class Form2_Visual
 
         ScrollViewer vw = new()
         {
-            VerticalScrollBarVisibility = ScrollBarVisibility.Visible
+            VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
+            AllowAutoHide = false
         };
 
         #region Main
@@ -380,6 +381,7 @@ public class Form2_Visual
         ScrollViewer vw = new()
         {
             HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            AllowAutoHide = false,
             Background = new SolidColorBrush(Colors.White)
         };
         StackPanel mainGrid = new();
@@ -545,7 +547,7 @@ public class Form2_Visual
             MaxHeight = 700,
             Margin = Thickness.Parse("5,0,0,0"),
             [!DataGridForm21.FixedContentProperty] = ind,
-            [!DataGridForm21.IsReadableSumProperty] = testS[!ToggleButton.IsCheckedProperty]
+            [!DataGridForm21.IsReadableSumProperty] = new Binding(nameof(ChangeOrCreateVM.isSum)) { Source = tmpVM }
         };
         grd.SetValue(Grid.RowProperty, 2);
 
@@ -628,6 +630,7 @@ public class Form2_Visual
         ScrollViewer vw = new()
         {
             HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            AllowAutoHide = false,
             Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
@@ -794,7 +797,7 @@ public class Form2_Visual
             MaxHeight = 700,
             Margin = Thickness.Parse("5,0,0,0"),
             [!DataGridForm22.FixedContentProperty] = ind,
-            [!DataGridForm22.IsReadableSumProperty] = testS[!ToggleButton.IsCheckedProperty]
+            [!DataGridForm22.IsReadableSumProperty] = new Binding(nameof(ChangeOrCreateVM.isSum)) { Source = tmpVM }
         };
         grd.SetValue(Grid.RowProperty, 2);
 
@@ -878,6 +881,7 @@ public class Form2_Visual
         ScrollViewer vw = new()
         {
             HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            AllowAutoHide = false,
             Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
@@ -1117,6 +1121,7 @@ public class Form2_Visual
         ScrollViewer vw = new()
         {
             HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            AllowAutoHide = false,
             Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
@@ -1356,6 +1361,7 @@ public class Form2_Visual
         ScrollViewer vw = new()
         {
             HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            AllowAutoHide = false,
             Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
@@ -1595,6 +1601,7 @@ public class Form2_Visual
         ScrollViewer vw = new()
         {
             HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            AllowAutoHide = false,
             Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
@@ -1843,6 +1850,7 @@ public class Form2_Visual
         ScrollViewer vw = new()
         {
             HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            AllowAutoHide = false,
             Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
@@ -2105,6 +2113,7 @@ public class Form2_Visual
         ScrollViewer vw = new()
         {
             HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            AllowAutoHide = false,
             Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
@@ -2414,6 +2423,7 @@ public class Form2_Visual
         ScrollViewer vw = new()
         {
             HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            AllowAutoHide = false,
             Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
@@ -2653,6 +2663,7 @@ public class Form2_Visual
         ScrollViewer vw = new()
         {
             HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            AllowAutoHide = false,
             Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
@@ -2892,6 +2903,7 @@ public class Form2_Visual
         ScrollViewer vw = new()
         {
             HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            AllowAutoHide = false,
             Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();
@@ -3131,6 +3143,7 @@ public class Form2_Visual
         ScrollViewer vw = new()
         {
             HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+            AllowAutoHide = false,
             Background = new SolidColorBrush(Colors.White)
         };
         StackPanel maingrid = new();

@@ -7,6 +7,7 @@ using Avalonia.ReactiveUI;
 using Avalonia.Threading;
 using Client_App.Behaviors.WindowSizing;
 using Client_App.Interfaces.Logger;
+using Client_App.Interfaces;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms;
 using Client_App.Views.Controls;
@@ -66,7 +67,7 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost, I
     {
         if (_formContentLoadingOverlayAttached)
             return;
-        if (DataContext is not BaseFormVM)
+        if (DataContext is not IFormContentLoadingHost)
             return;
         if (Content is not Control existingContent)
             return;
@@ -79,7 +80,7 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost, I
             VerticalAlignment = VerticalAlignment.Stretch,
             IsHitTestVisible = true,
         };
-        overlay.Bind(IsVisibleProperty, new Binding(nameof(BaseFormVM.IsContentLoading)));
+        overlay.Bind(IsVisibleProperty, new Binding(nameof(IFormContentLoadingHost.IsContentLoading)));
 
         if (existingContent is Grid rootGrid)
         {

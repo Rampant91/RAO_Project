@@ -1,3 +1,4 @@
+using Client_App.Interfaces;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.CheckForm;
@@ -27,7 +28,7 @@ using Avalonia.Threading;
 
 namespace Client_App.ViewModels.Forms;
 
-public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
+public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged, IFormContentLoadingHost
 {
     #region Properties
 
@@ -414,6 +415,15 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     /// Overlay — лёгкая карточка; бегунок крутится на DispatcherTimer.
     /// Примечания не трогаем — догрузка строк к ним не относится.
     /// </summary>
+    public void BeginContentLoading(string? message = null)
+    {
+        if (_isContentLoading)
+            return;
+
+        ContentLoadingMessage = string.IsNullOrEmpty(message) ? "\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430\u2026" : message;
+        IsContentLoading = true;
+    }
+
     public async Task WithContentLoadingAsync(Func<Task> work, bool clearVisibleRows = true, string? message = null)
     {
         ArgumentNullException.ThrowIfNull(work);
@@ -533,19 +543,30 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     public BaseFormVM(Report report)
     {
         _report = report;
-        _reports = report.Reports; 
-        //_DBO = report.Reports.DBObservable;
-        UpdateFormList();
-        UpdatePageInfo();
-
-        //Загружаем примечаний
-        Report.Notes = new ObservableCollectionWithItemPropertyChanged<Note>(
-            StaticConfiguration.DBModel.notes
-            .Where(note => note.ReportId == Report.Id));
-        NoteList = Report.Notes;
-
-        SubscribeSelectedForms(_selectedForms);
+        _reports = report.Reports;
         InitializeUserControls();
+        Avalonia.Threading.Dispatcher.UIThread.Post(
+            () => _ = CompleteInitialLoadAsync(),
+            Avalonia.Threading.DispatcherPriority.Loaded);
+    }
+
+    private async Task CompleteInitialLoadAsync()
+    {
+        await WithContentLoadingAsync(async () =>
+        {
+            await Avalonia.Threading.Dispatcher.UIThread
+                .InvokeAsync(static () => { }, Avalonia.Threading.DispatcherPriority.Render);
+
+            UpdateFormList();
+            UpdatePageInfo();
+
+            Report.Notes = new ObservableCollectionWithItemPropertyChanged<Note>(
+                StaticConfiguration.DBModel.notes
+                    .Where(note => note.ReportId == Report.Id));
+            NoteList = Report.Notes;
+
+            SubscribeSelectedForms(_selectedForms);
+        }, clearVisibleRows: true, message: "\u041e\u0442\u043a\u0440\u044b\u0442\u0438\u0435 \u043e\u0442\u0447\u0451\u0442\u0430\u2026");
     }
 
     public void InitializeUserControls()

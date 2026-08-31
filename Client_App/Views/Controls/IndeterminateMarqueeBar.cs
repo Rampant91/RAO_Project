@@ -23,6 +23,7 @@ public sealed class IndeterminateMarqueeBar : Panel
     private double _offset;
     private bool _running;
     private bool _attached;
+    private bool _startPending;
 
     public static readonly StyledProperty<double> TrackWidthProperty =
         AvaloniaProperty.Register<IndeterminateMarqueeBar, double>(nameof(TrackWidth), DefaultTrackWidth);
@@ -83,7 +84,15 @@ public sealed class IndeterminateMarqueeBar : Panel
         Children.Add(_thumb);
 
         PropertyChanged += OnPropertyChanged;
-        AttachedToVisualTree += (_, _) => _attached = true;
+        AttachedToVisualTree += (_, _) =>
+        {
+            _attached = true;
+            if (_startPending)
+            {
+                _startPending = false;
+                TryStart();
+            }
+        };
         DetachedFromVisualTree += (_, _) =>
         {
             _attached = false;
@@ -92,11 +101,21 @@ public sealed class IndeterminateMarqueeBar : Panel
     }
 
     /// <summary>Запустить бегунок (вызывать при показе overlay).</summary>
-    public void Start() => TryStart();
+    public void Start()
+    {
+        if (!_attached)
+        {
+            _startPending = true;
+            return;
+        }
+
+        TryStart();
+    }
 
     /// <summary>Остановить бегунок.</summary>
     public void Stop()
     {
+        _startPending = false;
         _running = false;
         if (_timer is null)
             return;

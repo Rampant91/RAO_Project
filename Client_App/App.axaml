@@ -148,6 +148,7 @@
         </Style>
         <Style Selector="Grid.tableHeader Border">
             <Setter Property="Margin" Value="-1,0,0,0"/>
+            <Setter Property="Background" Value="White"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="BorderBrush" Value="#aaaaaa"/>
         </Style>
@@ -180,12 +181,13 @@
 			<Setter Property="VerticalContentAlignment" Value="Stretch"/>
             <Setter Property="Padding" Value="0"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="BorderThickness" Value="0"/>
         </Style>
 		
 		<Style Selector="Border.headerTemplate">
-			<Setter Property="BorderThickness" Value="1"/>
-		    <Setter Property="BorderBrush" Value="#aaaaaa"/>
-		    <Setter Property="Margin" Value="-1,-1,-1,0"/>
+			<Setter Property="BorderThickness" Value="0"/>
+		    <Setter Property="BorderBrush" Value="Transparent"/>
+		    <Setter Property="Margin" Value="0"/>
 		    <Setter Property="HorizontalAlignment" Value="Stretch"/>
 		    <Setter Property="VerticalAlignment" Value="Stretch"/>
 		</Style>
@@ -193,8 +195,9 @@
 		<Style Selector="Border.headerTemplate TextBlock">
 			<Setter Property="TextAlignment" Value="Center"/>
 		    <Setter Property="VerticalAlignment" Value="Center"/>
-		    <Setter Property="Margin" Value="0,0,5,0"/>
-			<Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+		    <Setter Property="HorizontalAlignment" Value="Stretch"/>
+		    <Setter Property="Margin" Value="2,2"/>
+			<Setter Property="TextWrapping" Value="NoWrap"/>
 		</Style>
 		
 		<Style Selector="Border.headerTemplate Button">
@@ -329,9 +332,27 @@
 			<Setter Property="IsHitTestVisible" Value="True"/>
 		</Style>
 
-		<!-- Legacy DataGrid (Form2.x и др.): ошибки в tooltip, без роста ячейки -->
+		<!-- Legacy DataGrid: плоские ячейки как Excel, ошибка — иконка внутри -->
+		<Style Selector="TextBox.legacy-dg-cell">
+			<Setter Property="CornerRadius" Value="0"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="Padding" Value="2,0,14,0"/>
+			<Setter Property="TextAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+		</Style>
 		<Style Selector="TextBox.legacy-dg-cell /template/ DataValidationErrors">
-			<Setter Property="Theme" Value="{StaticResource TooltipDataValidationErrors}" />
+			<Setter Property="Theme" Value="{StaticResource TooltipDataValidationErrors}"/>
+		</Style>
+		<Style Selector="TextBox.legacy-dg-cell /template/ DataValidationErrors /template/ ContentControl">
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="0,0,1,0"/>
+			<Setter Property="ZIndex" Value="2"/>
+		</Style>
+
+		<Style Selector="ScrollViewer.legacy-dg-scroll">
+			<Setter Property="AllowAutoHide" Value="False"/>
 		</Style>
 
         <Style Selector="DataGrid.dbPicker">

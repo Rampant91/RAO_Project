@@ -6,12 +6,12 @@
         xmlns:behaviors="clr-namespace:Client_App.Behaviors"
         xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
         mc:Ignorable="d" d:DesignWidth="480" d:DesignHeight="280"
-        behaviors:WindowScreenSizeBehavior.WidthRatio="0.4" 
-        behaviors:WindowScreenSizeBehavior.HeightRatio="0.33"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.42" 
+        behaviors:WindowScreenSizeBehavior.HeightRatio="0.42"
         x:Class="Client_App.Views.Messages.MultipleRaodbFilesMessageWindow"
         Title="Выбор файла базы данных"
         WindowStartupLocation="Manual"
-        MinWidth="420" MinHeight="260"
+        MinWidth="460" MinHeight="320"
         Background="White">
 
     <Window.Resources>
@@ -41,16 +41,27 @@
                   CanUserSortColumns="False"
                   GridLinesVisibility="All"
                   HeadersVisibility="Column"
-                  RowBackground="White">
+                  RowBackground="White"
+                  MinHeight="140"
+                  MaxHeight="220">
             <DataGrid.Styles>
                 <Style Selector="DataGridColumnHeader">
-                    <Setter Property="Padding" Value="6,2"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                    <Setter Property="Padding" Value="6,4"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    <Setter Property="VerticalContentAlignment" Value="Center"/>
                     <Setter Property="FontSize" Value="12"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                    <Setter Property="BorderBrush" Value="#CCCCCC"/>
+                </Style>
+                <Style Selector="DataGridColumnHeader TextBlock">
+                    <Setter Property="TextWrapping" Value="Wrap"/>
+                    <Setter Property="HorizontalAlignment" Value="Stretch"/>
                 </Style>
                 <Style Selector="DataGridCell">
                     <Setter Property="FontSize" Value="12"/>
-                    <Setter Property="Padding" Value="6,2"/>
+                    <Setter Property="Padding" Value="6,3"/>
+                    <Setter Property="BorderThickness" Value="0,0,1,1"/>
+                    <Setter Property="BorderBrush" Value="#CCCCCC"/>
                 </Style>
                 <Style Selector="DataGridCell:focus /template/ Grid#FocusVisual">
                     <Setter Property="IsVisible" Value="False"/>
@@ -63,13 +74,13 @@
                 <DataGridTextColumn Header="Имя файла БД"
                                     Binding="{Binding FileName}"
                                     Width="*"
-                                    MinWidth="120"/>
-                <DataGridTextColumn Header="Дата изменения"
-                                    Binding="{Binding LastModified}"
-                                    Width="130"/>
+                                    MinWidth="140"/>
                 <DataGridTextColumn Header="Размер, Мб"
                                     Binding="{Binding SizeMb}"
-                                    Width="90"/>
+                                    Width="100"/>
+                <DataGridTextColumn Header="Дата изменения"
+                                    Binding="{Binding LastModified}"
+                                    Width="155"/>
             </DataGrid.Columns>
         </DataGrid>
 

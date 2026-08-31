@@ -2,8 +2,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:controls="clr-namespace:Client_App.Views.Controls"
              x:Class="Client_App.Views.Controls.DataGridLoadingOverlay"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
              IsHitTestVisible="True">
-    <Border Background="#CCFFFFFF">
+    <Border Background="#CCFFFFFF"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
         <Border HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Background="White"

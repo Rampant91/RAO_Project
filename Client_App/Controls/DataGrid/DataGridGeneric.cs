@@ -12,6 +12,7 @@ using Models.Collections;
 using Models.Interfaces;
 using System;
 using Avalonia.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,7 +20,9 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Client_App.Controls.DataGrid.DataGrids;
+using Client_App.Interfaces;
 using Client_App.Resources;
+using Client_App.Views.Controls;
 using Client_App.VisualRealization.Converters;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -340,17 +343,17 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                                 _value = _value.ToString().Replace("е", "e").Replace("Е", "E").Replace(".", ",");
                                 if (double.TryParse(_value.ToString(), out _s))
                                 {
-                                    var stackPanel =
-                                        (StackPanel)((StackPanel)((Border)((Grid)((Panel)Content).Children[0]).Children[
-                                            2]).Child).Children[0];
+                                    var stackPanel = _sumColumnStackPanel;
+                                    if (stackPanel == null)
+                                        return null;
                                     stackPanel.Children[0].IsVisible = true;
                                     stackPanel.Children[1].IsVisible = true;
                                 }
                                 else
                                 {
-                                    var stackPanel =
-                                        (StackPanel)((StackPanel)((Border)((Grid)((Panel)Content).Children[0]).Children[
-                                            2]).Child).Children[0];
+                                    var stackPanel = _sumColumnStackPanel;
+                                    if (stackPanel == null)
+                                        return null;
                                     stackPanel.Children[0].IsVisible = false;
                                     stackPanel.Children[1].IsVisible = false;
                                     return null;
@@ -382,9 +385,12 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         }
         else
         {
-            var stackPanel = (StackPanel)((StackPanel)((Border)((Grid)((Panel)Content).Children[0]).Children[2]).Child).Children[0];
-            stackPanel.Children[0].IsVisible = false;
-            stackPanel.Children[1].IsVisible = false;
+            var stackPanel = _sumColumnStackPanel;
+            if (stackPanel != null)
+            {
+                stackPanel.Children[0].IsVisible = false;
+                stackPanel.Children[1].IsVisible = false;
+            }
             return null;
         }
         return _s.ToString();
@@ -769,7 +775,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 {
                     SelectedCells.Clear();
                     SetAndRaise(NowPageProperty, ref _nowPage, value);
-                    UpdateCells();
+                    ScheduleUpdateCellsWithLoading();
                 }
                 else
                 {
@@ -779,14 +785,14 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         {
                             SelectedCells.Clear();
                             SetAndRaise(NowPageProperty, ref _nowPage, maxPage.ToString());
-                            UpdateCells();
+                            ScheduleUpdateCellsWithLoading();
                         }
                     }
                     if (val < 1 && _nowPage != "1")
                     {
                         SelectedCells.Clear();
                         SetAndRaise(NowPageProperty, ref _nowPage, "1");
-                        UpdateCells();
+                        ScheduleUpdateCellsWithLoading();
                     }
                 }
             }
@@ -984,6 +990,15 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     private bool _uiInitialized;
     private bool _initScheduled;
     private bool _isInitializing;
+    private bool _heavyReinitPending;
+    private Panel? _mainPanel;
+    private Grid? _mainStackPanel;
+    private TextBox? _searchTextBox;
+    private StackPanel? _sumColumnStackPanel;
+    private Border? _gridLoadingOverlay;
+    private IndeterminateMarqueeBar? _gridLoadingMarquee;
+    private int _gridLoadingDepth;
+    private int _updateCellsGeneration;
 
     protected DataGrid(string name = "")
     {
@@ -1013,15 +1028,56 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
         _initScheduled = true;
         _uiInitialized = true;
-        Init();
+        _ = InitAsync();
     }
+
+    private static Thickness LegacyCellBorderMargin(bool isFirstColumn, bool isLastRow) =>
+        new(isFirstColumn ? 0 : -1, 0, 0, isLastRow ? 0 : -1);
+
+    private static async Task PumpUiFrameAsync()
+    {
+        await Dispatcher.UIThread.InvokeAsync(static () => { }, DispatcherPriority.Render);
+    }
+
+    private static bool IsRowNumberColumn(DataGridColumns item) =>
+        item.Binding is "NumberInOrderSum" or "NumberInOrder";
 
     private void ReinitIfReady()
     {
-        if (_uiInitialized && !_isInitializing)
+        if (!_uiInitialized || _isInitializing || _heavyReinitPending)
         {
-            Init();
+            return;
         }
+
+        _heavyReinitPending = true;
+        Dispatcher.UIThread.InvokeAsync(PerformDeferredReinitAsync, DispatcherPriority.Render);
+    }
+
+    private async Task PerformDeferredReinitAsync()
+    {
+        try
+        {
+            var host = TryGetContentLoadingHost();
+            if (host is not null)
+            {
+                await host.WithContentLoadingAsync(InitAsync, clearVisibleRows: false,
+                    message: "\u041e\u0431\u043d\u043e\u0432\u043b\u0435\u043d\u0438\u0435 \u0442\u0430\u0431\u043b\u0438\u0446\u044b\u2026");
+            }
+            else
+            {
+                await InitAsync();
+            }
+        }
+        finally
+        {
+            _heavyReinitPending = false;
+        }
+    }
+
+    private IFormContentLoadingHost? TryGetContentLoadingHost()
+    {
+        var top = TopLevel.GetTopLevel(this);
+        return top?.DataContext as IFormContentLoadingHost;
     }
 
     #region SetSelectedControls
@@ -1458,7 +1514,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         if (!paramKey.IsLeftButtonPressed) return;
         var paramRowColumn = FindMousePress([paramPos.Y, paramPos.X]);
         if (LastPressedItem[0] == paramRowColumn[0] && LastPressedItem[1] == paramRowColumn[1]) return;
-        var pr = ((Panel)Content).Bounds.Width;
+        var pr = Bounds.Width;
         if (LastPressedItem[1] < paramRowColumn[1] && paramPos.X > pr / 4)
         {
             ScrollLeftRight += 100;
@@ -1489,7 +1545,61 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
     #region UpdateCells
 
-    private void UpdateCells()
+    private void UpdateCells() => UpdateCellsCore();
+
+    private void ScheduleUpdateCellsWithLoading()
+    {
+        if (!_uiInitialized || Rows.Count == 0)
+            return;
+
+        var generation = Interlocked.Increment(ref _updateCellsGeneration);
+        _ = Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            await RunWithGridLoadingAsync(() =>
+            {
+                if (generation != _updateCellsGeneration)
+                    return Task.CompletedTask;
+
+                UpdateCellsCore();
+                return Task.CompletedTask;
+            });
+        }, DispatcherPriority.Render);
+    }
+
+    private async Task RunWithGridLoadingAsync(Func<Task> work)
+    {
+        if (TryGetContentLoadingHost()?.IsContentLoading == true)
+        {
+            await work();
+            return;
+        }
+
+        _gridLoadingDepth++;
+        if (_gridLoadingDepth == 1)
+        {
+            if (_gridLoadingOverlay != null)
+                _gridLoadingOverlay.IsVisible = true;
+            _gridLoadingMarquee?.Start();
+            await PumpUiFrameAsync();
+        }
+
+        try
+        {
+            await work();
+        }
+        finally
+        {
+            _gridLoadingDepth--;
+            if (_gridLoadingDepth == 0)
+            {
+                if (_gridLoadingOverlay != null)
+                    _gridLoadingOverlay.IsVisible = false;
+                _gridLoadingMarquee?.Stop();
+            }
+        }
+    }
+
+    private void UpdateCellsCore()
     {
         if (!_uiInitialized || Rows.Count == 0)
         {
@@ -1506,18 +1616,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             if (Search)
             {
                 var tmp2Coll = new ObservableCollectionWithItemPropertyChanged<IKey>();
-                var searchText =
-                    ((TextBox)
-                        ((Panel)
-                        ((Border)
-                            ((Grid)
-                                ((Panel)
-                                    Content)
-                                .Children[0]).
-                            Children[0])
-                        .Child)
-                        .Children[0])
-                    .Text;
+                var searchText = _searchTextBox?.Text;
                 if (!string.IsNullOrEmpty(searchText))
                 {
                     num = Convert.ToInt32(_nowPage);
@@ -1549,7 +1648,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         {
                             SetAndRaise(NowPageProperty, ref _nowPage, "1");
                             offsetMax = 5;
-                            UpdateCells();
+                            UpdateCellsCore();
                         }
                         tmpColl = tmp2Coll;
                         ItemsWithSearch = tmp2Coll;
@@ -1776,20 +1875,37 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             return;
         }
 
+        _ = InitAsync();
+    }
+
+    protected async Task InitAsync()
+    {
+        if (!_uiInitialized || _isInitializing)
+        {
+            return;
+        }
+
         _isInitializing = true;
         try
         {
-            MakeAll();
-            MakeHeaderRows();
-            MakeCenterRows();
-            ApplyCenterPanelWidthIfNeeded();
-            UpdateCells();
-            MakeContextMenu();
-            Dispatcher.UIThread.Post(() =>
+            await RunWithGridLoadingAsync(async () =>
             {
+                MakeAll();
+                await PumpUiFrameAsync();
+                MakeHeaderRows();
+                await PumpUiFrameAsync();
+                MakeCenterRows();
+                await PumpUiFrameAsync();
                 ApplyCenterPanelWidthIfNeeded();
-                UpdateCells();
-            }, DispatcherPriority.Loaded);
+                UpdateCellsCore();
+                MakeContextMenu();
+                Dispatcher.UIThread.Post(() =>
+                {
+                    ApplyCenterPanelWidthIfNeeded();
+                    UpdateCellsCore();
+                }, DispatcherPriority.Loaded);
+                await Task.CompletedTask;
+            });
         }
         finally
         {
@@ -1861,7 +1977,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
 
     readonly List<ColumnDefinition> HeadersColumns = [];
-    readonly int GridSplitterSize = 2;
+    readonly int GridSplitterSize = 1;
     private void MakeHeaderInner(DataGridColumns ls)
     {
 
@@ -1897,9 +2013,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 {
                     [Grid.ColumnProperty] = count,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch,
                     Height = i == 2 ? 40 : 25,
                     BorderColor = new SolidColorBrush(Color.Parse("Gray")),
-                    Background = new SolidColorBrush(Color.Parse("White"))
+                    Background = new SolidColorBrush(Color.Parse("White")),
+                    BorderMargin = LegacyCellBorderMargin(count == 0, false)
                 };
 
                 TextBlock textBlock = new()
@@ -1962,6 +2080,23 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     private static Binding CreateRowValueBinding(DataGridRow row, string fieldName, BindingMode mode = BindingMode.TwoWay) =>
         new($"DataContext.{fieldName}.Value") { Source = row, Mode = mode };
 
+    private static void ConfigureLegacyReadOnlyTextBlock(TextBlock textBlock, bool centerContent)
+    {
+        textBlock.TextAlignment = centerContent ? TextAlignment.Center : TextAlignment.Left;
+        textBlock.VerticalAlignment = VerticalAlignment.Center;
+        textBlock.HorizontalAlignment = HorizontalAlignment.Stretch;
+        textBlock.Padding = centerContent ? new Thickness(2, 0, 2, 0) : new Thickness(4, 0, 2, 0);
+    }
+
+    private static void ConfigureLegacyEditableTextBox(TextBox textBox, bool centerContent)
+    {
+        textBox.TextAlignment = centerContent ? TextAlignment.Center : TextAlignment.Left;
+        textBox.VerticalContentAlignment = VerticalAlignment.Center;
+        textBox.VerticalAlignment = VerticalAlignment.Stretch;
+        textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
+        textBox.Padding = centerContent ? new Thickness(0) : new Thickness(4, 0, 2, 0);
+    }
+
     private void MakeCenterInner(DataGridColumns ls)
     {
         if (ls == null) return;
@@ -1995,12 +2130,14 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     Row = i,
                     Column = column,
                     BorderColor = new SolidColorBrush(Color.Parse("Gray")),
-                    Background = new SolidColorBrush(Color.Parse("White"))
+                    Background = new SolidColorBrush(Color.Parse("White")),
+                    BorderMargin = LegacyCellBorderMargin(column == 0, i == PageSize - 1)
                 };
                 if (item.ChooseLine)
                 {
                     cell.Tapped += ChooseAllRow;
                 }
+                var centerCell = IsRowNumberColumn(item);
                 if (IsReadable || item.Blocked || IsReadableSum)
                 {
                     if (Sum || CommentСhangeable)
@@ -2013,9 +2150,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                                 [!TextBox.TextProperty] = CreateRowValueBinding(rowStackPanel, item.Binding),
                                 [!BackgroundProperty] = cell[!Cell.ChooseColorProperty]
                             };
-                            ((TextBox)textBox).TextAlignment = TextAlignment.Left;
-                            textBox.VerticalAlignment = VerticalAlignment.Stretch;
-                            textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
+                            ConfigureLegacyEditableTextBox((TextBox)textBox, centerCell);
                             textBox.ContextMenu = new ContextMenu { Width = 0, Height = 0 };
                             if (item.IsTextWrapping)
                             {
@@ -2035,11 +2170,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             {
                                 textBox[!BackgroundProperty] = cell[!Cell.ChooseColorProperty];
                             }
-                            ((TextBlock)textBox).TextAlignment = TextAlignment.Center;
-                            textBox.VerticalAlignment = VerticalAlignment.Center;
-                            textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-                            ((TextBlock)textBox).Padding = new Thickness(0, 5, 0, 5);
-                            textBox.Height = 30;
+                            ConfigureLegacyReadOnlyTextBlock((TextBlock)textBox, centerCell);
                             textBox.ContextMenu = new ContextMenu { Width = 0, Height = 0 };
                         }
                     }
@@ -2055,11 +2186,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         {
                             textBox[!BackgroundProperty] = cell[!Cell.ChooseColorProperty];
                         }
-                        ((TextBlock)textBox).TextAlignment = TextAlignment.Center;
-                        textBox.VerticalAlignment = VerticalAlignment.Center;
-                        textBox.HorizontalAlignment = HorizontalAlignment.Stretch;
-                        ((TextBlock)textBox).Padding = new Thickness(0, 5, 0, 5);
-                        textBox.Height = 30;
+                        ConfigureLegacyReadOnlyTextBlock((TextBlock)textBox, centerCell);
                         textBox.ContextMenu = new ContextMenu { Width = 0, Height = 0 };
                     }
                 }
@@ -2133,7 +2260,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             HorizontalAlignment = HorizontalAlignment.Stretch,
                             ContextMenu = new ContextMenu { Width = 0, Height = 0 }
                         };
-                        ((TextBox)textBox).TextAlignment = TextAlignment.Left;
+                        ConfigureLegacyEditableTextBox((TextBox)textBox, centerCell);
                         if (item.IsTextWrapping)
                         {
                             ((TextBox)textBox).TextWrapping = TextWrapping.Wrap;
@@ -2192,12 +2319,14 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Stretch
         };
+        _mainPanel = mainPanel;
 
         Grid mainStackPanel = new()
         {
             VerticalAlignment = VerticalAlignment.Stretch,
             HorizontalAlignment = HorizontalAlignment.Stretch
         };
+        _mainStackPanel = mainStackPanel;
         mainPanel.Children.Add(mainStackPanel);
 
         #endregion
@@ -2235,6 +2364,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 Margin = Thickness.Parse("1,1,1,1"),
                 [!TextBox.TextProperty] = this[!SearchTextProperty]
             };
+            _searchTextBox = searchTextBox;
             headerSearchStackPanel.Children.Add(searchTextBox);
         }
 
@@ -2258,13 +2388,13 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Stretch,
-            Background = new SolidColorBrush(Color.FromArgb(150, 180, 154, 255))
+            Background = new SolidColorBrush(Color.FromRgb(220, 210, 252))
         };
         headerBorder.Child = headerPanel;
 
         HeaderStackPanel = new StackPanel
         {
-            Margin = Thickness.Parse(!Sum ? "2,2,2,2" : "20,2,20,2"),
+            Margin = Thickness.Parse(!Sum ? "2,2,2,2" : "4,2,4,2"),
             Orientation = Orientation.Vertical
         };
 
@@ -2308,6 +2438,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         _centerPanel = centerPanel;
         ScrollViewer centerScrollViewer = new()
         {
+            AllowAutoHide = false,
             VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
             HorizontalScrollBarVisibility = Sum ? ScrollBarVisibility.Disabled : ScrollBarVisibility.Auto,
             Content = centerPanel,
@@ -2319,7 +2450,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         CenterStackPanel = new StackPanel
         {
             Orientation = Orientation.Vertical,
-            Margin = Thickness.Parse(!Sum ? "2,2,2,2" : "20,2,20,2")
+            Margin = Thickness.Parse(!Sum ? "2,2,2,2" : "4,2,4,2")
         };
         centerPanel.Children.Add(CenterStackPanel);
 
@@ -2357,6 +2488,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 [!MarginProperty] = this[!FixedContentProperty],
                 Orientation = Orientation.Horizontal
             };
+            _sumColumnStackPanel = middleFooterStackPanelS;
             middleFooterStackPanelS.Children.Add(new TextBlock()
             { Text = "Сумма:", Margin = Thickness.Parse("5,0,0,0"), IsVisible = false, FontSize = 13 });
             middleFooterStackPanelS.Children.Add(new TextBlock()
@@ -2368,6 +2500,11 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             });
             middleFooterStackPanel.Children.Add(middleFooterStackPanelS);
         }
+        else
+        {
+            _sumColumnStackPanel = null;
+        }
+
         StackPanel middleFooterStackPanel1 = new()
         {
             [!MarginProperty] = this[!FixedContentProperty],
@@ -2508,7 +2645,55 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
         #endregion
 
-        Content = mainPanel;
+        var gridRoot = new Grid
+        {
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Stretch,
+        };
+        gridRoot.Children.Add(mainPanel);
+
+        _gridLoadingMarquee = new IndeterminateMarqueeBar
+        {
+            TrackWidth = 180,
+            HorizontalAlignment = HorizontalAlignment.Center,
+        };
+        var loadingCard = new Border
+        {
+            HorizontalAlignment = HorizontalAlignment.Center,
+            VerticalAlignment = VerticalAlignment.Center,
+            Background = Brushes.White,
+            BorderBrush = new SolidColorBrush(Color.Parse("#DDDDDD")),
+            BorderThickness = new Thickness(1),
+            CornerRadius = new CornerRadius(6),
+            Padding = new Thickness(20, 16),
+            Child = new StackPanel
+            {
+                Spacing = 10,
+                Children =
+                {
+                    _gridLoadingMarquee,
+                    new TextBlock
+                    {
+                        Text = "\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430\u2026",
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        FontSize = 13,
+                        Foreground = new SolidColorBrush(Color.Parse("#FF333333")),
+                    }
+                }
+            }
+        };
+        _gridLoadingOverlay = new Border
+        {
+            Background = new SolidColorBrush(Color.FromArgb(0xCC, 255, 255, 255)),
+            IsVisible = false,
+            IsHitTestVisible = true,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Stretch,
+            Child = loadingCard,
+            [Panel.ZIndexProperty] = 1000,
+        };
+        gridRoot.Children.Add(_gridLoadingOverlay);
+        Content = gridRoot;
     }
 
     #endregion

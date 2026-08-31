@@ -9,14 +9,29 @@ public partial class Cell : UserControl
 {
     public Cell()
     {
+        BorderMargin = new Thickness(-1, 0, 0, -1);
         InitializeComponent();
     }
 
     public Cell(Control ctrl)
     {
+        BorderMargin = new Thickness(-1, 0, 0, -1);
         Control = ctrl;
         InitializeComponent();
     }
+
+    #region BorderMargin
+
+    public static readonly StyledProperty<Thickness> BorderMarginProperty =
+        AvaloniaProperty.Register<Cell, Thickness>(nameof(BorderMargin), new Thickness(-1, 0, 0, -1));
+
+    public Thickness BorderMargin
+    {
+        get => GetValue(BorderMarginProperty);
+        set => SetValue(BorderMarginProperty, value);
+    }
+
+    #endregion
 
     #region BorderColor
     public static readonly DirectProperty<Cell, SolidColorBrush> BorderColorProperty =

@@ -17,15 +17,31 @@ internal class CancelSumRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel
     {
         if (Storage.FormNum_DB == "2.1")
         {
-            await UnSum21();
-            Storage.Rows21.Sorted = false;
-            await Storage.Rows21.QuickSortAsync();
+            await changeOrCreateViewModel.WithContentLoadingAsync(
+                async () =>
+                {
+                    await UnSum21();
+                    Storage.Rows21.Sorted = false;
+                    await Storage.Rows21.QuickSortAsync();
+                    changeOrCreateViewModel.isSum = false;
+                },
+                clearVisibleRows: false,
+                message: "\u041e\u0442\u043c\u0435\u043d\u0430 \u0441\u0443\u043c\u043c\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f\u2026");
+            return;
         }
+
         if (Storage.FormNum_DB == "2.2")
         {
-            await UnSum22();
-            Storage.Rows21.Sorted = false;
-            await Storage.Rows22.QuickSortAsync();
+            await changeOrCreateViewModel.WithContentLoadingAsync(
+                async () =>
+                {
+                    await UnSum22();
+                    Storage.Rows21.Sorted = false;
+                    await Storage.Rows22.QuickSortAsync();
+                    changeOrCreateViewModel.isSum = false;
+                },
+                clearVisibleRows: false,
+                message: "\u041e\u0442\u043c\u0435\u043d\u0430 \u0441\u0443\u043c\u043c\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u044f\u2026");
         }
     }
 

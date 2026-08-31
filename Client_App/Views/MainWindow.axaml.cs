@@ -119,10 +119,18 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
 
     private async Task DoShowDialogAsync(IInteractionContext<ChangeOrCreateVM, object> interaction)
     {
-        FormChangeOrCreate frm = new(interaction.Input);
-        WindowState = WindowState.Minimized;
-        await frm.ShowDialog(this);
-        interaction.SetOutput(null);
+        SetReportOpeningOverlay(true);
+        try
+        {
+            FormChangeOrCreate frm = new(interaction.Input);
+            WindowState = WindowState.Minimized;
+            await frm.ShowDialog(this);
+            interaction.SetOutput(null);
+        }
+        finally
+        {
+            SetReportOpeningOverlay(false);
+        }
     }
 
     private async Task DoShowDialogAsyncT(IInteractionContext<List<string>, string> interaction)

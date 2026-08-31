@@ -25,7 +25,10 @@ internal class SumRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
     
     public async void SumRow(object sender, Avalonia.Interactivity.RoutedEventArgs args)
     {
-        await AsyncExecute(null).ConfigureAwait(false);
+        await changeOrCreateViewModel.WithContentLoadingAsync(
+            () => AsyncExecute(null),
+            clearVisibleRows: false,
+            message: "\u0421\u0443\u043c\u043c\u0438\u0440\u043e\u0432\u0430\u043d\u0438\u0435\u2026");
     }
 
     #endregion
@@ -51,7 +54,7 @@ internal class SumRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
 
     #region Sum21
 
-    private async Task Sum21()
+    private Task Sum21() => Task.Run(() =>
     {
         var tItems = Storage.Rows21
             .GroupBy(x => x.RefineMachineName_DB
@@ -221,13 +224,13 @@ internal class SumRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
             }
         }
         Storage.Rows21.AddRange(lst);
-    }
+    });
 
     #endregion
 
     #region Sum22
 
-    private async Task Sum22()
+    private Task Sum22() => Task.Run(() =>
     {
         var tItems = Storage.Rows22
             .GroupBy(x => x.StoragePlaceName_DB
@@ -372,7 +375,7 @@ internal class SumRowAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : Ba
             }
         }
         Storage.Rows22.AddRange(lst);
-    }
+    });
 
     #endregion
 

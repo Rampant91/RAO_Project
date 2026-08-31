@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Client_App.Commands.AsyncCommands.SumRow;
 using Client_App.ViewModels;
+using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Forms.Forms2;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms2;
@@ -97,6 +98,18 @@ public static class Form2NewInterfaceOpener
             _ => throw new System.ArgumentOutOfRangeException(nameof(numForm), numForm, null)
         };
 
-        await window.ShowDialog(mainWindow);
+        if (window.DataContext is BaseFormVM formVm)
+            formVm.BeginContentLoading("\u041e\u0442\u043a\u0440\u044b\u0442\u0438\u0435 \u043e\u0442\u0447\u0451\u0442\u0430\u2026");
+
+        if (window is IFormOwnerStateWindow ownerState)
+            ownerState.OwnerPrevState = mainWindow.WindowState;
+
+        mainWindow.WindowState = WindowState.Minimized;
+        mainWindow.SetReportOpeningOverlay(true);
+
+        if (window is IFormDialogHost dialogHost)
+            await dialogHost.ShowFormDialogAsync(mainWindow);
+        else
+            await window.ShowDialog(mainWindow);
     }
 }
