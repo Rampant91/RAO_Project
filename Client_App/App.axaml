@@ -8,6 +8,7 @@
              xmlns:resources="clr-namespace:Client_App.Resources"
              xmlns:converters="clr-namespace:Client_App.Converters"
              xmlns:visualConverters="clr-namespace:Client_App.VisualRealization.Converters"
+			 xmlns:appControls="using:Client_App.Controls"
 			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              x:Class="Client_App.App">
 
@@ -93,6 +94,13 @@
         </Style>
 		<Style Selector="CalendarDatePicker.buttonOnly">
 			<Setter Property="controlBehaviors:ScrollBlock.BlockPointerWheel" Value="True"/>
+			<Setter Property="Width" Value="28"/>
+			<Setter Property="MinWidth" Value="28"/>
+			<Setter Property="MaxWidth" Value="28"/>
+			<Setter Property="Height" Value="28"/>
+			<Setter Property="HorizontalAlignment" Value="Left"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="4,0,0,0"/>
 		</Style>
 		<Style Selector="Border#Background">
 			<Setter Property="Background" Value="#f0f8ff"/>
@@ -104,9 +112,18 @@
 			<Setter Property="IsTabStop" Value="False"/>
 		</Style>
 
-		<Style Selector="Expander ToggleButton">
+		<Style Selector="Expander">
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+		</Style>
+		<Style Selector="Expander > ToggleButton">
 			<Setter Property="IsTabStop" Value="False"/>
 			<Setter Property="Focusable" Value="False"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+			<Setter Property="MinHeight" Value="18"/>
+			<Setter Property="Padding" Value="6,1"/>
+			<Setter Property="FontSize" Value="12"/>
 		</Style>
 		
 		<Style Selector="TextBox">
@@ -136,6 +153,44 @@
             <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Height" Value="30"/>
             <Setter Property="Margin" Value="5"/>
+        </Style>
+        <Style Selector="WrapPanel.header StackPanel">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="WrapPanel.header StackPanel > TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="WrapPanel.header StackPanel > TextBox">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="WrapPanel.header StackPanel > CheckBox">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="TextBox.report-period-date">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="MaxWidth" Value="100"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="inputBehaviors:ReportPeriodDateInput.IsEnabled" Value="True"/>
+            <Setter Property="inputBehaviors:OrgFormValidationPresentation.IsEnabled" Value="True"/>
+        </Style>
+        <Style Selector="MaskedTextBox.report-period-date">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="MaxWidth" Value="100"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="inputBehaviors:ReportPeriodDateInput.IsEnabled" Value="True"/>
+            <Setter Property="inputBehaviors:OrgFormValidationPresentation.IsEnabled" Value="True"/>
+        </Style>
+        <Style Selector="TextBox.report-period-date /template/ DataValidationErrors">
+            <Setter Property="IsVisible" Value="False"/>
+            <Setter Property="IsHitTestVisible" Value="False"/>
+        </Style>
+        <Style Selector="MaskedTextBox.report-period-date /template/ DataValidationErrors">
+            <Setter Property="IsVisible" Value="False"/>
+            <Setter Property="IsHitTestVisible" Value="False"/>
         </Style>
         <!--Org form windows 1.0, 2.0, 4.0, 5.0-->
         <Style Selector="Window.orgForm TextBlock.org-label">
@@ -340,13 +395,16 @@
         <Style Selector="Grid.tableHeader Border.frozenOperationHeader TextBlock">
             <Setter Property="TextWrapping" Value="NoWrap"/>
         </Style>
+        <Style Selector="Grid.tableHeader Border.header-rowspan-bottom">
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
         <!--Table-->
         <Style Selector="DataGrid.table">
             <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="CanUserResizeColumns" Value="True"/>
             <Setter Property="RowBackground" Value="White"/>
             <Setter Property="Background" Value="White"/>
-            <Setter Property="Margin" Value="5,-5,5,5"/>
+            <Setter Property="Margin" Value="6,-5,5,5"/>
             <Setter Property="SelectionMode" Value="Extended"/>
             <Setter Property="GridLinesVisibility" Value="All"/>
             <Setter Property="CanUserSortColumns" Value="False"/>
@@ -369,20 +427,44 @@
             <Setter Property="Padding" Value="0"/>
             <Setter Property="BorderBrush" Value="#CCCCCC"/>
             <Setter Property="BorderThickness" Value="0,1,1,1"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        <Style Selector="DataGrid.table DataGridColumnHeader">
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        <Style Selector="DataGrid.table DataGridColumnHeader Border.headerTemplate TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="Black"/>
         </Style>
         <Style Selector="DataGrid.main-list-grid">
             <Setter Property="CanUserResizeColumns" Value="True"/>
             <Setter Property="CanUserReorderColumns" Value="False"/>
             <Setter Property="MinColumnWidth" Value="48"/>
+            <Setter Property="GridLinesVisibility" Value="All"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="#FFB0B0B0"/>
+            <Setter Property="VerticalGridLinesBrush" Value="#FFB0B0B0"/>
         </Style>
         <Style Selector="DataGrid.main-list-grid DataGridColumnHeader">
             <Setter Property="MinHeight" Value="30"/>
+            <Setter Property="BorderThickness" Value="1,1,1,1"/>
+            <Setter Property="BorderBrush" Value="#FFB0B0B0"/>
+            <Setter Property="Padding" Value="4,0,10,0"/>
+        </Style>
+        <Style Selector="DataGrid.main-list-grid DataGridColumnHeader:first-child">
+            <Setter Property="BorderThickness" Value="1,1,1,1"/>
         </Style>
         <Style Selector="DataGrid.main-list-grid DataGridColumnHeader /template/ Thumb">
             <Setter Property="Width" Value="8"/>
             <Setter Property="MinWidth" Value="8"/>
             <Setter Property="MaxWidth" Value="8"/>
             <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Opacity" Value="0.35"/>
+        </Style>
+        <Style Selector="DataGrid.main-list-grid DataGridCell">
+            <Setter Property="BorderBrush" Value="#FFB0B0B0"/>
         </Style>
 
 		<Style Selector="DataGridColumnHeader:first-child">
@@ -440,13 +522,39 @@
 		</Style>
 		
         <Style Selector="DataGrid.table TextBox">
-            <Setter Property="Margin" Value="-1,-1,-1,-1"/>
+            <Setter Property="Margin" Value="0"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
-			<Setter Property="IsHitTestVisible" Value="False"/>
 		</Style>
+        <Style Selector="DataGrid.table TextBox /template/ DataValidationErrors">
+            <Setter Property="Theme" Value="{StaticResource TooltipDataValidationErrors}"/>
+        </Style>
+        <Style Selector="DataGrid.table TextBox /template/ DataValidationErrors /template/ ContentControl">
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,1,0"/>
+            <Setter Property="ZIndex" Value="2"/>
+        </Style>
+        <Style Selector="DataGrid.table AutoCompleteBox">
+            <Setter Property="IsHitTestVisible" Value="True"/>
+        </Style>
+        <Style Selector="DataGrid.table Button">
+            <Setter Property="IsHitTestVisible" Value="True"/>
+        </Style>
+        <Style Selector="DataGrid.table CalendarDatePicker">
+            <Setter Property="IsHitTestVisible" Value="True"/>
+        </Style>
+        <Style Selector="DataGrid.table appControls|RadionuclidsSelector">
+            <Setter Property="IsHitTestVisible" Value="True"/>
+        </Style>
+        <Style Selector="DataGrid.table appControls|DropDownButton">
+            <Setter Property="IsHitTestVisible" Value="True"/>
+        </Style>
+        <Style Selector="DataGrid.table ScrollBar">
+            <Setter Property="AllowAutoHide" Value="False"/>
+        </Style>
         <Style Selector="DataGrid.table CalendarDatePicker">
             <Setter Property="CornerRadius" Value="5"/>
-            <Setter Property="Margin" Value="2,-1,-1,-2"/>
+            <Setter Property="Margin" Value="2,0,0,0"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
 			<Setter Property="Watermark" Value="&lt;дд.мм.гггг&gt;"/>
@@ -464,6 +572,16 @@
 		<Style Selector="Border.pageControlContainer NumericUpDown">
 			<Setter Property="CornerRadius" Value="5"/>
 		</Style>
+		<Style Selector="Border.pageControlContainer StackPanel.form-filter-panel">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+		<Style Selector="Border.pageControlContainer StackPanel.form-filter-panel > TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+		</Style>
+		<Style Selector="Border.pageControlContainer StackPanel.form-filter-panel > StackPanel">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
 
         <Style Selector="DataGridCell:focus /template/ Grid#FocusVisual">
             <Setter Property="IsVisible" Value="False"/>
@@ -479,23 +597,21 @@
 		<Style Selector="Border.notesContainer">
 			<Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
-            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Margin" Value="3,2,3,2"/>
 		</Style>
         <Style Selector="Border.notesContainer StackPanel">
             <Setter Property="HorizontalAlignment" Value="Left"/>
         </Style>
         <Style Selector="DataGrid.notesTable">
             <Setter Property="CornerRadius" Value="5"/>
-            <Setter Property="MaxHeight" Value="210"/>
-			<Setter Property="Height" Value="210"/>
-			<Setter Property="ColumnHeaderHeight" Value="25"/>
+            <Setter Property="MaxHeight" Value="170"/>
+			<Setter Property="ColumnHeaderHeight" Value="24"/>
             <Setter Property="RowBackground" Value="White"/>
 			<Setter Property="Background" Value="LightGray"/>
 			<Setter Property="SelectionMode" Value="Extended"/>
 			<Setter Property="CanUserResizeColumns" Value="True"/>
-            
-            <Setter Property="Margin" Value="5"/>
-			<Setter Property="GridLinesVisibility" Value="All"></Setter>
+            <Setter Property="Margin" Value="3,2,3,2"/>
+			<Setter Property="GridLinesVisibility" Value="All"/>
         </Style>
 
 		<Style Selector="DataGrid.notesTable DataGridColumnHeader">
@@ -503,13 +619,12 @@
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
 	    </Style>
 		<Style Selector="DataGrid.notesTable TextBox">
-			<Setter Property="BorderThickness" Value="0.5"/>
-			<Setter Property="Margin" Value="0,0,0,0"/>
-			<Setter Property="MinHeight" Value="25"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Margin" Value="0"/>
+			<Setter Property="MinHeight" Value="24"/>
 			<Setter Property="MaxHeight" Value="100"/>
 			<Setter Property="TextWrapping" Value="Wrap"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
-			<Setter Property="IsHitTestVisible" Value="False"/>
 		</Style>
         <!--Конец стилей для окон редактирования форм-->
 		<!--Другие стили-->
@@ -553,6 +668,7 @@
 			<Setter Property="Padding" Value="2,0,14,0"/>
 			<Setter Property="TextAlignment" Value="Center"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="inputBehaviors:LegacyCellValidationPresentation.IsEnabled" Value="True"/>
 		</Style>
 		<Style Selector="TextBox.legacy-dg-cell /template/ DataValidationErrors">
 			<Setter Property="Theme" Value="{StaticResource TooltipDataValidationErrors}"/>

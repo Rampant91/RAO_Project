@@ -1,33 +1,29 @@
-<UserControl xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:controls="clr-namespace:Client_App.Views.Controls"
-             x:Class="Client_App.Views.Controls.DataGridLoadingOverlay"
-             HorizontalAlignment="Stretch"
-             VerticalAlignment="Stretch"
-             IsHitTestVisible="True">
-    <Border Background="#CCFFFFFF"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Stretch">
-        <Border HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Background="White"
-                BorderBrush="#DDDDDD"
-                BorderThickness="1"
-                CornerRadius="6"
-                Padding="20,16"
-                MinWidth="200">
-            <StackPanel Spacing="10">
-                <ProgressBar Width="220"
-                             Height="6"
-                             Minimum="0"
-                             Maximum="100"
-                             IsIndeterminate="True"
-                             HorizontalAlignment="Center" />
-                <TextBlock HorizontalAlignment="Center"
-                           FontSize="13"
-                           Foreground="#FF333333"
-                           Text="Загрузка…" />
-            </StackPanel>
-        </Border>
-    </Border>
-</UserControl>
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:controls="clr-namespace:Client_App.Views.Controls"
+             x:Class="Client_App.Views.Controls.DataGridLoadingOverlay"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             IsHitTestVisible="True">
+    <Border Background="#CCFFFFFF"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+        <Border HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="White"
+                BorderBrush="#DDDDDD"
+                BorderThickness="1"
+                CornerRadius="6"
+                Padding="20,16"
+                MinWidth="200">
+            <StackPanel Spacing="10">
+                <controls:IndeterminateMarqueeBar x:Name="Marquee"
+                                                    HorizontalAlignment="Center" />
+                <TextBlock HorizontalAlignment="Center"
+                           FontSize="13"
+                           Foreground="#FF333333"
+                           Text="Загрузка…" />
+            </StackPanel>
+        </Border>
+    </Border>
+</UserControl>

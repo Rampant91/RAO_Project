@@ -11,12 +11,9 @@ using System.Linq;
 namespace Client_App.Behaviors.DataGrid;
 
 /// <summary>
-/// Restores saved pixel widths for fixed columns. Star columns are left untouched so the grid fills available width.
-/// <para>
-/// Also calls <see cref="DataGridMaxColumnWidthGuard.TryApplyReportTableCap"/> on attach (fallback only).
-/// Primary MaxColumnWidth cap for report tables is <c>MaxColumnWidth="500"</c> on the DataGrid element in XAML,
-/// not in App.axaml style — see datagrid-report-table-width.mdc.
-/// </para>
+/// Восстанавливает сохранённые ширины колонок (в пикселях). Star-колонки не трогает — грид заполняет доступную ширину.
+/// При подключении вызывает <see cref="DataGridMaxColumnWidthGuard.TryApplyReportTableCap"/> как запасной вариант.
+/// Основной лимит MaxColumnWidth для таблиц отчётов — атрибут на DataGrid в XAML (см. datagrid-report-table-width.mdc).
 /// </summary>
 public class DataGridColumnWidthLoadBehavior : Behavior<AvaloniaDataGrid>
 {

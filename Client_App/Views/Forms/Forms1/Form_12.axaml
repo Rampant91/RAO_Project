@@ -39,7 +39,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" MinHeight="175" />
+            <RowDefinition Height="*" MinHeight="140" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -56,33 +56,31 @@
 
                 <Border Classes="borderContainer">
                     <controls:SelectReportPopup HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
+                                                VerticalAlignment="Stretch"
                                                 DataContext="{Binding SelectReportPopupVM}" />
                 </Border>
                 <Border Classes="borderContainer">
                     <Grid Margin="5" RowDefinitions="*,*,*,*,*">
 
-                        <Grid Grid.Row="0" ColumnDefinitions="*,*,*">
+                        <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto">
                             <TextBlock Grid.Column="0"
                                        Margin="5,11"
                                        Text="Дата окончания предыдущего отчетного периода:" />
                             <TextBox Grid.Column="1"
-                                     MinWidth="83"
-                                     Text="{Binding Report.StartPeriod.Value}"
-                                     Watermark="дд.мм.гггг" />
+                                     Classes="report-period-date"
+                                     Text="{Binding Report.StartPeriod.Value}" />
                             <CalendarDatePicker Grid.Column="2"
                                                 Classes="buttonOnly"
                                                 SelectedDate="{Binding Report.StartPeriod.Value, Converter={StaticResource DateConverter}}" />
                         </Grid>
 
-                        <Grid Grid.Row="1" ColumnDefinitions="*,*,*">
+                        <Grid Grid.Row="1" ColumnDefinitions="*,Auto,Auto">
                             <TextBlock Grid.Column="0"
                                        Margin="5,13"
                                        Text="Дата окончания настоящего отчетного периода:" />
                             <TextBox Grid.Column="1"
-                                     Margin="11,3,0,0"
-                                     Text="{Binding Report.EndPeriod.Value}"
-                                     Watermark="дд.мм.гггг" />
+                                     Classes="report-period-date"
+                                     Text="{Binding Report.EndPeriod.Value}" />
                             <CalendarDatePicker Grid.Column="2"
                                                 Classes="buttonOnly"
                                                 SelectedDate="{Binding Report.EndPeriod.Value, Converter={StaticResource DateConverter}}" />
@@ -420,7 +418,6 @@
                 <DataGrid x:Name="dataGrid"
                           Grid.Row="1"
                           x:CompileBindings="False"
-                          Margin="8,-5,0,0"
                           Classes="table"
                           MaxColumnWidth="500"
                           ColumnWidth="125"
@@ -923,6 +920,7 @@
                                            Grid.Column="1"
                                            Margin="5"
                                            Minimum="1"
+                                           Maximum="{Binding TotalPages}"
                                            Value="{Binding CurrentPage}" />
                 <TextBlock Grid.Row="0"
                            Grid.Column="2"

@@ -247,7 +247,6 @@
 					CanUserReorderColumns="False"
 					ItemsSource="{Binding FormList}"
 					SelectedItem="{Binding SelectedForm}"
-                    Margin="8,-5,0,0"
 					ColumnWidth="125">
 
                     <interactivity:Interaction.Behaviors>
@@ -375,6 +374,7 @@
                     Grid.Column="1"
                     Margin="5"
                     Minimum="1"
+                    Maximum="{Binding TotalPages}"
                     Value="{Binding CurrentPage}" />
                 <TextBlock
                     Grid.Row="0"

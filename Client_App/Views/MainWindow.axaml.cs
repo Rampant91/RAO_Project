@@ -13,6 +13,7 @@ using Avalonia.Interactivity;
 using ReactiveUI;
 using Client_App.Controls.DataGrid;
 using Client_App.ViewModels;
+using Client_App.Views.Controls;
 using Client_App.VisualRealization.Short_Visual;
 using MsBox.Avalonia.Models;
 using MsBox.Avalonia.Dto;
@@ -434,8 +435,17 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
     public void SetReportOpeningOverlay(bool visible)
     {
         var overlay = this.FindControl<Border>("ReportOpeningOverlay");
+        var marquee = this.FindControl<IndeterminateMarqueeBar>("ReportOpeningMarquee");
         if (overlay != null)
             overlay.IsVisible = visible;
+
+        if (marquee is null)
+            return;
+
+        if (visible)
+            marquee.Start();
+        else
+            marquee.Stop();
     }
 
     #endregion

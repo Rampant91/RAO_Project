@@ -6,6 +6,7 @@
              x:Class="Client_App.Controls.DataGrid.Cell"
              xmlns:local="clr-namespace:Client_App.Controls.DataGrid">
 	<Border BorderThickness="1"
+	        Background="{Binding ChooseColor, RelativeSource={RelativeSource AncestorType=local:Cell}}"
 	        Margin="{Binding BorderMargin, RelativeSource={RelativeSource AncestorType=local:Cell}}"
 	        BorderBrush="{Binding BorderColor, RelativeSource={RelativeSource AncestorType=local:Cell}}">
 		<Panel DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=local:DataGridRow}}">

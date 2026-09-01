@@ -188,7 +188,6 @@
                           x:CompileBindings="True"
                           x:Name="dataGrid"
                           ColumnWidth="125"
-                          Margin="8,-5,0,0"
                           ItemsSource="{Binding FormList}"
                           SelectedItem="{Binding SelectedForm}">
 
@@ -429,8 +428,9 @@
 
 				<controls:NumericLeftRight
 					Grid.Row="0" Grid.Column="1" Margin="5"
-					Value="{Binding CurrentPage}"
-					Minimum="1"/>
+					Minimum="1"
+					Maximum="{Binding TotalPages}"
+					Value="{Binding CurrentPage}"/>
 				
 				<TextBlock Text ="Кол-во страниц:"
 					Grid.Row="0" Grid.Column="2" Margin="5"/>

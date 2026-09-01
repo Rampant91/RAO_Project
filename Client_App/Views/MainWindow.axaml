@@ -6,6 +6,7 @@
         xmlns:vm="using:Client_App.ViewModels"
         xmlns:converter="clr-namespace:Client_App.Resources.CustomConverters"
         xmlns:tabs="clr-namespace:Client_App.Views.MainWindowTabs"
+        xmlns:controls="clr-namespace:Client_App.Views.Controls"
         xmlns:behaviors="clr-namespace:Client_App.Behaviors"
         xmlns:windowSizingBehaviors="using:Client_App.Behaviors.WindowSizing"
         Title="{Binding Current_Db, Mode=OneWay}"
@@ -464,9 +465,10 @@
             <StackPanel VerticalAlignment="Center"
                         HorizontalAlignment="Center"
                         Spacing="12">
-                <ProgressBar Width="220"
-                             Height="6"
-                             IsIndeterminate="True" />
+                <controls:IndeterminateMarqueeBar x:Name="ReportOpeningMarquee"
+                                                    Fill="White"
+                                                    TrackBrush="#66FFFFFF"
+                                                    HorizontalAlignment="Center" />
                 <TextBlock HorizontalAlignment="Center"
                            FontSize="14"
                            Foreground="White"

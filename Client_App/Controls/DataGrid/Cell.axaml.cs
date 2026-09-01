@@ -10,12 +10,14 @@ public partial class Cell : UserControl
     public Cell()
     {
         BorderMargin = new Thickness(-1, 0, 0, -1);
+        ChooseColor = new SolidColorBrush(Colors.White);
         InitializeComponent();
     }
 
     public Cell(Control ctrl)
     {
         BorderMargin = new Thickness(-1, 0, 0, -1);
+        ChooseColor = new SolidColorBrush(Colors.White);
         Control = ctrl;
         InitializeComponent();
     }

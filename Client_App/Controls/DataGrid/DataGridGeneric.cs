@@ -986,6 +986,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     private StackPanel HeaderStackPanel { get; set; }
     private StackPanel CenterStackPanel { get; set; }
     private Panel? _centerPanel;
+    private ScrollViewer? _bodyScrollViewer;
     private bool _uiInitialized;
     private bool _initScheduled;
     private bool _isInitializing;
@@ -2047,7 +2048,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     VerticalAlignment = VerticalAlignment.Stretch,
                     Height = i == 2 ? 40 : 25,
                     BorderColor = new SolidColorBrush(Color.Parse("Gray")),
-                    Background = new SolidColorBrush(Color.Parse("White")),
+                    ChooseColor = new SolidColorBrush(Colors.White),
                     BorderMargin = LegacyCellBorderMargin(count == 0, false)
                 };
 
@@ -2167,7 +2168,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                     Row = i,
                     Column = column,
                     BorderColor = new SolidColorBrush(Color.Parse("Gray")),
-                    Background = new SolidColorBrush(Color.Parse("White")),
+                    ChooseColor = new SolidColorBrush(Colors.White),
                     BorderMargin = LegacyCellBorderMargin(column == 0, i == PageSize - 1)
                 };
                 if (item.ChooseLine)
@@ -2185,7 +2186,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             textBox = new TextBox
                             {
                                 [!TextBox.TextProperty] = CreateRowValueBinding(rowStackPanel, item.Binding),
-                                [!BackgroundProperty] = cell[!Cell.ChooseColorProperty]
                             };
                             ConfigureLegacyEditableTextBox((TextBox)textBox, centerCell);
                             textBox.ContextMenu = new ContextMenu { Width = 0, Height = 0 };
@@ -2200,13 +2200,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                             textBox = new TextBlock
                             {
                                 [!TextBlock.TextProperty] = CreateRowValueBinding(rowStackPanel, item.Binding, BindingMode.OneWay),
-                                [!BackgroundProperty] = cell[!Cell.ChooseColorProperty]
                             };
 
-                            if (item.Blocked)
-                            {
-                                textBox[!BackgroundProperty] = cell[!Cell.ChooseColorProperty];
-                            }
                             ConfigureLegacyReadOnlyTextBlock((TextBlock)textBox, centerCell);
                             textBox.ContextMenu = new ContextMenu { Width = 0, Height = 0 };
                         }
@@ -2216,13 +2211,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         textBox = new TextBlock
                         {
                             [!TextBlock.TextProperty] = CreateRowValueBinding(rowStackPanel, item.Binding, BindingMode.OneWay),
-                            [!BackgroundProperty] = cell[!Cell.ChooseColorProperty]
                         };
 
-                        if (item.Blocked)
-                        {
-                            textBox[!BackgroundProperty] = cell[!Cell.ChooseColorProperty];
-                        }
                         ConfigureLegacyReadOnlyTextBlock((TextBlock)textBox, centerCell);
                         textBox.ContextMenu = new ContextMenu { Width = 0, Height = 0 };
                     }
@@ -2292,7 +2282,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                         textBox = new TextBox
                         {
                             [!TextBox.TextProperty] = CreateRowValueBinding(rowStackPanel, item.Binding),
-                            [!BackgroundProperty] = cell[!Cell.ChooseColorProperty],
                             VerticalAlignment = VerticalAlignment.Stretch,
                             HorizontalAlignment = HorizontalAlignment.Stretch,
                             ContextMenu = new ContextMenu { Width = 0, Height = 0 }
@@ -2493,6 +2482,27 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             MinHeight = Sum ? 200 : 0,
         };
         centerBorder.Child = centerScrollViewer;
+        _bodyScrollViewer = centerScrollViewer;
+        var headerScrollBaseMargin = Thickness.Parse(!Sum ? "2,2,2,2" : "4,2,4,2");
+        centerScrollViewer.GetObservable(ScrollViewer.OffsetProperty).Subscribe(offset =>
+        {
+            if (HeaderStackPanel is null)
+            {
+                return;
+            }
+
+            var x = offset.X;
+            if (!double.IsFinite(x))
+            {
+                x = 0;
+            }
+
+            HeaderStackPanel.Margin = new Thickness(
+                headerScrollBaseMargin.Left - x,
+                headerScrollBaseMargin.Top,
+                headerScrollBaseMargin.Right,
+                headerScrollBaseMargin.Bottom);
+        });
         CenterStackPanel = new StackPanel
         {
             Orientation = Orientation.Vertical,

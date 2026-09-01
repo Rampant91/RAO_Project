@@ -3,27 +3,32 @@ using System.Collections;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using Client_App.Controls.DataGrid;
 
 namespace Client_App.Behaviors.Input;
 
 /// <summary>
-/// Поля org-форм: текст ошибки в tooltip при наведении на всё поле.
-/// Иконка остаётся в XAML (ContentControl у DataValidationErrors), поле растягивается и редактируется.
+/// Legacy DataGrid: красная подсветка на всю ячейку (рамка Cell), а не только на TextBox.
+/// Иконка ошибки остаётся внутри поля; фон рамки перекрывает выделение до снятия ошибки.
 /// </summary>
-public static class OrgFormValidationPresentation
+public static class LegacyCellValidationPresentation
 {
+    private static readonly SolidColorBrush ErrorBackground =
+        new(Color.Parse("#FFFFCDD2"));
+
     public static readonly AttachedProperty<bool> IsEnabledProperty =
-        AvaloniaProperty.RegisterAttached<Control, bool>("IsEnabled", typeof(OrgFormValidationPresentation));
+        AvaloniaProperty.RegisterAttached<Control, bool>("IsEnabled", typeof(LegacyCellValidationPresentation));
 
     private static readonly AttachedProperty<IDisposable?> HasErrorsSubscriptionProperty =
-        AvaloniaProperty.RegisterAttached<Control, IDisposable?>("HasErrorsSubscription", typeof(OrgFormValidationPresentation));
+        AvaloniaProperty.RegisterAttached<Control, IDisposable?>("HasErrorsSubscription", typeof(LegacyCellValidationPresentation));
 
     private static readonly AttachedProperty<IDisposable?> ErrorsSubscriptionProperty =
-        AvaloniaProperty.RegisterAttached<Control, IDisposable?>("ErrorsSubscription", typeof(OrgFormValidationPresentation));
+        AvaloniaProperty.RegisterAttached<Control, IDisposable?>("ErrorsSubscription", typeof(LegacyCellValidationPresentation));
 
-    static OrgFormValidationPresentation()
+    static LegacyCellValidationPresentation()
     {
         IsEnabledProperty.Changed.AddClassHandler<Control>(OnIsEnabledChanged);
     }
@@ -72,26 +77,26 @@ public static class OrgFormValidationPresentation
         control.AttachedToVisualTree -= OnAttachedToVisualTree;
         control.DetachedFromVisualTree -= OnDetachedFromVisualTree;
         DetachSubscriptions(control);
-        ToolTip.SetTip(control, null);
+        RestoreCellBackground(control);
     }
 
     private static void Attach(Control control)
     {
-        if (control is not TextBox and not AutoCompleteBox and not Avalonia.Controls.MaskedTextBox)
+        if (control is not TextBox)
         {
             return;
         }
 
-        Dispatcher.UIThread.Post(() => UpdateToolTip(control), DispatcherPriority.Loaded);
+        Dispatcher.UIThread.Post(() => UpdateCellBackground(control), DispatcherPriority.Loaded);
         DetachSubscriptions(control);
 
         control.SetValue(HasErrorsSubscriptionProperty, control
             .GetObservable(DataValidationErrors.HasErrorsProperty)
-            .Subscribe(_ => Dispatcher.UIThread.Post(() => UpdateToolTip(control), DispatcherPriority.Background)));
+            .Subscribe(_ => Dispatcher.UIThread.Post(() => UpdateCellBackground(control), DispatcherPriority.Background)));
 
         control.SetValue(ErrorsSubscriptionProperty, control
             .GetObservable(DataValidationErrors.ErrorsProperty)
-            .Subscribe(_ => Dispatcher.UIThread.Post(() => UpdateToolTip(control), DispatcherPriority.Background)));
+            .Subscribe(_ => Dispatcher.UIThread.Post(() => UpdateCellBackground(control), DispatcherPriority.Background)));
     }
 
     private static void DetachSubscriptions(Control control)
@@ -102,23 +107,43 @@ public static class OrgFormValidationPresentation
         control.SetValue(ErrorsSubscriptionProperty, null);
     }
 
-    private static void UpdateToolTip(Control control)
+    private static void UpdateCellBackground(Control control)
     {
-        var errors = control.GetValue(DataValidationErrors.ErrorsProperty) as IEnumerable;
-        var messages = errors?
-            .Cast<object?>()
-            .Select(ToErrorMessage)
-            .Where(static message => !string.IsNullOrWhiteSpace(message))
-            .ToArray() ?? Array.Empty<string>();
+        var border = FindCellBorder(control);
+        if (border is null)
+        {
+            return;
+        }
 
-        ToolTip.SetTip(control, messages.Length == 0 ? null : string.Join(Environment.NewLine, messages));
+        if (HasValidationErrors(control))
+        {
+            border.Background = ErrorBackground;
+            return;
+        }
+
+        border.ClearValue(Border.BackgroundProperty);
     }
 
-    private static string? ToErrorMessage(object? error) =>
-        error switch
+    private static void RestoreCellBackground(Control control)
+    {
+        var border = FindCellBorder(control);
+        border?.ClearValue(Border.BackgroundProperty);
+    }
+
+    private static bool HasValidationErrors(Control control)
+    {
+        if (control.GetValue(DataValidationErrors.HasErrorsProperty) is true)
         {
-            null => null,
-            Exception exception => exception.Message,
-            _ => error.ToString()
-        };
+            return true;
+        }
+
+        var errors = control.GetValue(DataValidationErrors.ErrorsProperty) as IEnumerable;
+        return errors?.Cast<object?>().Any(static e => e is not null) == true;
+    }
+
+    private static Border? FindCellBorder(Control control)
+    {
+        var cell = control.GetVisualAncestors().OfType<Cell>().FirstOrDefault();
+        return cell?.Content as Border;
+    }
 }
