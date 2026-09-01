@@ -11,12 +11,14 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using Client_App.Resources;
+
 namespace Client_App;
 
 public partial class AskSubjectRFMessage : Window, INotifyPropertyChanged
 {
 
-    private string _text = "Выберите субъект Российской Федерации";
+    private string _text = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ";
     public string Text 
     {
         get

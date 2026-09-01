@@ -15,14 +15,23 @@ namespace Client_App.VisualRealization.Converters
         {
             if (value is DataGridLength dataGridLength)
             {
-                // Преобразование типов ширины
+                var pixels = dataGridLength.IsAbsolute || dataGridLength.IsSizeToCells
+                    ? dataGridLength.Value
+                    : dataGridLength.DisplayValue;
+                if (!double.IsFinite(pixels) || pixels < 0)
+                {
+                    return GridLength.Auto;
+                }
+
                 return dataGridLength.UnitType switch
                 {
-                    DataGridLengthUnitType.Pixel => new GridLength(dataGridLength.Value),
-                    DataGridLengthUnitType.Auto => new GridLength(dataGridLength.DisplayValue),
-                    DataGridLengthUnitType.SizeToHeader => new GridLength(dataGridLength.DisplayValue),
-                    DataGridLengthUnitType.SizeToCells => new GridLength(dataGridLength.Value),
-                    DataGridLengthUnitType.Star => new GridLength(dataGridLength.Value, GridUnitType.Star),
+                    DataGridLengthUnitType.Pixel => new GridLength(pixels),
+                    DataGridLengthUnitType.Auto => new GridLength(pixels),
+                    DataGridLengthUnitType.SizeToHeader => new GridLength(pixels),
+                    DataGridLengthUnitType.SizeToCells => new GridLength(pixels),
+                    DataGridLengthUnitType.Star => double.IsFinite(dataGridLength.Value) && dataGridLength.Value > 0
+                        ? new GridLength(dataGridLength.Value, GridUnitType.Star)
+                        : GridLength.Auto,
                     _ => GridLength.Auto
                 };
             }

@@ -12,6 +12,8 @@ using Models.Collections;
 using Models.Interfaces;
 using System.Collections.Generic;
 
+using Client_App.Resources;
+
 namespace Client_App.Views.Controls;
 
 public partial class SelectReportPopup : UserControl
@@ -30,11 +32,11 @@ public partial class SelectReportPopup : UserControl
 
     private void ListBox_PointerReleased(object sender, PointerReleasedEventArgs e)
     {
-        // Проверяем, что клик был левой кнопкой мыши
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
         if (e.InitialPressMouseButton != MouseButton.Left)
             return;
 
-        // Находим элемент ListBoxItem, на который был произведен клик
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ ListBoxItem, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
         var listBoxItem = FindVisualParent<ListBoxItem>(e.Source as Control);
 
         if (listBoxItem == null || listBoxItem.DataContext is not Report selectedReport)
@@ -44,7 +46,7 @@ public partial class SelectReportPopup : UserControl
             new SwitchToSelectedReportAsyncCommand(vm.FormVM).AsyncExecute(selectedReport);
 
     }
-    // Вспомогательные методы для поиска в визуальном дереве
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     public static T FindVisualParent<T>(Visual visual) where T : Visual
     {
         while (visual != null && !(visual is T))

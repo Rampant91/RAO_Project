@@ -1,5 +1,6 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
+using AvaloniaDataGrid = Avalonia.Controls.DataGrid;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -15,19 +16,19 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Client_App.Behaviors.DataGridBehaviors;
+namespace Client_App.Behaviors.DataGrid;
 
-    public class DataGridSwitchToNotesBehavior : Behavior<DataGrid>
+    public class DataGridSwitchToNotesBehavior : Behavior<AvaloniaDataGrid>
     {
-        private DataGrid? _dataGrid;
+        private AvaloniaDataGrid? _dataGrid;
         private readonly Dictionary<int, IDisposable> _subscriptions = new();
         private IDisposable? _layoutSubscription;
 
-        public static readonly StyledProperty<DataGrid?> SourceDataGridProperty =
-             AvaloniaProperty.Register<DataGridSwitchToNotesBehavior, DataGrid?>(
+        public static readonly StyledProperty<AvaloniaDataGrid?> SourceDataGridProperty =
+             AvaloniaProperty.Register<DataGridSwitchToNotesBehavior, AvaloniaDataGrid?>(
                  nameof(SourceDataGrid));
 
-        public DataGrid? SourceDataGrid
+        public AvaloniaDataGrid? SourceDataGrid
         {
             get => GetValue(SourceDataGridProperty);
             set => SetValue(SourceDataGridProperty, value);
@@ -42,7 +43,7 @@ namespace Client_App.Behaviors.DataGridBehaviors;
         {
             // Используем поиск через визуальное дерево
             SourceDataGrid ??= AssociatedObject.GetVisualAncestors()
-                .OfType<DataGrid>()
+                .OfType<AvaloniaDataGrid>()
                 .FirstOrDefault();
 
             if (SourceDataGrid != null)
@@ -60,7 +61,7 @@ namespace Client_App.Behaviors.DataGridBehaviors;
 
         private void OnLostFocusSourceGrid(object? sender, RoutedEventArgs e)
         {
-            if (sender is not DataGrid sourceDataGrid) return;
+            if (sender is not AvaloniaDataGrid sourceDataGrid) return;
 
             if (AssociatedObject.ItemsSource is not ObservableCollection<Note> notes) return;
 
@@ -137,7 +138,7 @@ namespace Client_App.Behaviors.DataGridBehaviors;
             }, DispatcherPriority.Background);
         }
 
-        private DataGridCell? GetCellByColumn(DataGrid dataGrid, DataGridRow row, DataGridColumn column)
+        private DataGridCell? GetCellByColumn(AvaloniaDataGrid dataGrid, DataGridRow row, DataGridColumn column)
         {
             // Получаем все ячейки в строке
             var cells = row.GetVisualDescendants().OfType<DataGridCell>().ToList();
@@ -159,9 +160,9 @@ namespace Client_App.Behaviors.DataGridBehaviors;
             }
             _subscriptions.Clear();
         }
-        private DataGridRow? GetRowByIndex(DataGrid dataGrid, int index)
+        private DataGridRow? GetRowByIndex(AvaloniaDataGrid dataGrid, int index)
         {
-            // Ищем все строки в DataGrid
+            // Ищем все строки в AvaloniaDataGrid
             var rows = dataGrid.GetVisualDescendants().OfType<DataGridRow>().ToList();
 
             foreach (var row in rows)
@@ -172,7 +173,7 @@ namespace Client_App.Behaviors.DataGridBehaviors;
 
             return null;
         }
-        private int GetRowIndex(DataGrid dataGrid, DataGridRow row)
+        private int GetRowIndex(AvaloniaDataGrid dataGrid, DataGridRow row)
         {
             var items = dataGrid.ItemsSource?.Cast<object>().ToList();
             if (items == null) return -1;

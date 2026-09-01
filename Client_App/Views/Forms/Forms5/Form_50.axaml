@@ -10,6 +10,7 @@
         Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.75', FallbackValue='800', Mode=OneTime}"
         MinWidth="950"
         MinHeight="600"
+        Classes="orgForm"
         x:CompileBindings="True"
         x:DataType="vm:Form_50VM"
         WindowStartupLocation="CenterScreen"
@@ -21,9 +22,8 @@
 
 	<Grid>
 
-		<!--  TopTable  -->
 		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" MaxHeight="200"/>
+			<RowDefinition Height="Auto" MaxHeight="220"/>
 			<RowDefinition Height="5*" MinHeight="400"/>
 		</Grid.RowDefinitions>
 		<Border
@@ -35,41 +35,43 @@
             BorderThickness="1"
             CornerRadius="5">
 
-			<Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="330, 550">
+			<Grid RowDefinitions="Auto,Auto,Auto,Auto" ColumnDefinitions="330,*">
 				<TextBlock
 					Grid.Row="0"
 					Grid.Column="0"
-					Margin="5"
+					Classes="org-label"
 					Text="Федеральный орган исполнительной власти"/>
 				<AutoCompleteBox
 				    Grid.Row="0"
 				    Grid.Column="1"
+				    Classes="org-field"
 				    MaxDropDownHeight="300"
 				    FilterMode="Contains"
 					ItemsSource="{Binding FederalExecutiveAuthorityList}"
-				    Margin="0,5,0,3"
 					Text="{Binding Storage.Rows50[0].ExecutiveAuthority.Value}">
 				</AutoCompleteBox>
 				<TextBlock
 					Grid.Row="1"
 					Grid.Column="0"
-					Margin="5"
+					Classes="org-label"
 					Text="ВИАЦ Госкорпорации &quot;Росатом&quot;" />
 				<CheckBox
 				    Grid.Row="1"
 				    Grid.Column="1"
-				    Margin="0,0,0,3"
+				    Margin="0,6,5,3"
+				    VerticalAlignment="Center"
 					IsChecked="{Binding Storage.Rows50[0].Rosatom.Value}">
 				</CheckBox>
 				<TextBlock
 					Grid.Row="2"
 					Grid.Column="0"
-					Margin="5"
+					Classes="org-label"
 					Text="ВИАЦ &quot;Министерства обороны Российской Федерации&quot;" />
 				<CheckBox
 				    Grid.Row="2"
 				    Grid.Column="1"
-				    Margin="0,0,0,3"
+				    Margin="0,6,5,3"
+				    VerticalAlignment="Center"
 					IsChecked="{Binding Storage.Rows50[0].MinObr.Value}">
 				</CheckBox>
 				<StackPanel 
@@ -84,14 +86,13 @@
 				</StackPanel>
 			</Grid>
 		</Border>
-		<!-- ScrollData -->
 		<ScrollViewer
             Grid.Row="1"
             MinHeight="400"
             Margin="0,5,0,0"
             VerticalAlignment="Top"
             VerticalContentAlignment="Stretch"
-            VerticalScrollBarVisibility="Hidden">
+            VerticalScrollBarVisibility="Auto">
 			<StackPanel>
 				<Border
                     Margin="5,15,5,20"
@@ -101,106 +102,30 @@
                     BorderBrush="Black"
                     BorderThickness="1"
                     CornerRadius="5">
-					<Grid ColumnDefinitions="330,550" RowDefinitions="*,*">
-						<!-- Орган управления- Наименования полей -->
+					<Grid ColumnDefinitions="330,*"
+                          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
 						<TextBlock
                             Grid.Row="0"
                             Grid.Column="0"
                             Grid.ColumnSpan="2"
-                            Height="32"
-                            Margin="5,0,0,0"
-                            VerticalAlignment="Top"
-                            FontSize="18"
-                            FontWeight="Bold"
+                            Classes="org-section-title"
                             Text="Орган управления"/>
-						<StackPanel
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            Margin="0,5,0,0">
-							<TextBlock
-                                Height="32"
-                                Margin="5,8"
-                                Text="Наименование юридического лица"/>
-							<TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="Сокращенное наименование юридического лица (при наличии)"/>
-							<TextBlock
-                                Height="32"
-                                Margin="5,8"
-                                Text="Адрес ВИАЦ"/>
-							<TextBlock
-                                Height="32"
-                                Margin="5,8"
-                                Text="Должность, фамилия, имя, отчество (при наличии) руководителя ВИАЦ"/>
-							<TextBlock
-                                Height="32"
-                                Margin="5,8"
-                                Text="Должность, фамилия, имя, отчество (при наличии) ответственного исполнителя ВИАЦ"/>
-							<TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="Телефон"/>
-							<TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="Факс"/>
-							<TextBlock
-                                Height="32"
-                                Margin="5,0"
-                                Text="Адрес электронной почты (при наличии)"/>
-						</StackPanel>
-						<!-- Орган управления - Значения в базе -->
-						<StackPanel
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Top">
-							<TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextWrapping="Wrap"
-                                Text="{Binding Storage.Rows50[0].Name.Value}"/>
-							<TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding Storage.Rows50[0].ShortName.Value}"/>
-							<TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextWrapping="Wrap"
-                                Text="{Binding Storage.Rows50[0].Address.Value}"/>
-							<TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextWrapping="Wrap"
-                                Text="{Binding Storage.Rows50[0].GradeFioDirector.Value}"/>
-							<TextBox
-                                Height="42"
-                                Margin="0,3"
-                                AcceptsReturn="True"
-                                ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                TextWrapping="Wrap"
-                                Text="{Binding Storage.Rows50[0].GradeFioExecutor.Value}"/>
-							<TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding Storage.Rows50[0].Telephone.Value}"/>
-							<TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding Storage.Rows50[0].Fax.Value}"/>
-							<TextBox
-                                Height="26"
-                                Margin="0,3"
-                                Text="{Binding Storage.Rows50[0].Email.Value}"/>
-						</StackPanel>
+						<TextBlock Grid.Row="1" Grid.Column="0" Classes="org-label" Text="Наименование юридического лица"/>
+						<TextBox Grid.Row="1" Grid.Column="1" Classes="org-multiline" Text="{Binding Storage.Rows50[0].Name.Value}"/>
+						<TextBlock Grid.Row="2" Grid.Column="0" Classes="org-label" Text="Сокращенное наименование юридического лица (при наличии)"/>
+						<TextBox Grid.Row="2" Grid.Column="1" Classes="org-field" Text="{Binding Storage.Rows50[0].ShortName.Value}"/>
+						<TextBlock Grid.Row="3" Grid.Column="0" Classes="org-label" Text="Адрес ВИАЦ"/>
+						<TextBox Grid.Row="3" Grid.Column="1" Classes="org-multiline" Text="{Binding Storage.Rows50[0].Address.Value}"/>
+						<TextBlock Grid.Row="4" Grid.Column="0" Classes="org-label" Text="Должность, фамилия, имя, отчество (при наличии) руководителя ВИАЦ"/>
+						<TextBox Grid.Row="4" Grid.Column="1" Classes="org-multiline" Text="{Binding Storage.Rows50[0].GradeFioDirector.Value}"/>
+						<TextBlock Grid.Row="5" Grid.Column="0" Classes="org-label" Text="Должность, фамилия, имя, отчество (при наличии) ответственного исполнителя ВИАЦ"/>
+						<TextBox Grid.Row="5" Grid.Column="1" Classes="org-multiline" Text="{Binding Storage.Rows50[0].GradeFioExecutor.Value}"/>
+						<TextBlock Grid.Row="6" Grid.Column="0" Classes="org-label" Text="Телефон"/>
+						<TextBox Grid.Row="6" Grid.Column="1" Classes="org-field" Text="{Binding Storage.Rows50[0].Telephone.Value}"/>
+						<TextBlock Grid.Row="7" Grid.Column="0" Classes="org-label" Text="Факс"/>
+						<TextBox Grid.Row="7" Grid.Column="1" Classes="org-field" Text="{Binding Storage.Rows50[0].Fax.Value}"/>
+						<TextBlock Grid.Row="8" Grid.Column="0" Classes="org-label" Text="Адрес электронной почты (при наличии)"/>
+						<TextBox Grid.Row="8" Grid.Column="1" Classes="org-field" Text="{Binding Storage.Rows50[0].Email.Value}"/>
 					</Grid>
 				</Border>
 			</StackPanel>

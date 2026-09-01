@@ -13,6 +13,7 @@ using Client_App.ViewModels;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.Messages;
 using Client_App.ViewModels.ProgressBar;
+using Client_App.Views.Forms;
 using Client_App.Views.Messages;
 using Client_App.Views.ProgressBar;
 using MsBox.Avalonia.Dto;
@@ -64,8 +65,7 @@ public class GenerateForm57AsyncCommand(BaseFormVM formVM) : BaseGenerateForm5
     public override async Task AsyncExecute(object? parameter)
     {
 
-        owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
-            .FirstOrDefault(w => w.Name == "5.7");
+        owner = FormWindowNames.FindOpenFormWindow("5.7");
 
         if (owner == null) return;
 

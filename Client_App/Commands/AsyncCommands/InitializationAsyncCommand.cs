@@ -65,38 +65,14 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         mainWindowViewModel.OnStartProgressBar = 20;
         var dbm = StaticConfiguration.DBModel;
 
-        #region LoadTables
-
-        onStartProgressBarVm.LoadStatus = "Пропуск полной загрузки форм 1.0 (страницы из БД)";
-        mainWindowViewModel.OnStartProgressBar = 25;
-        // form_10 больше не грузим целиком: грид 1.0 берёт RegNo/Okpo/Short через
-        // MainWindowListQuery (+ Include Rows10 только для текущей страницы).
-
-        onStartProgressBarVm.LoadStatus = "Пропуск полной загрузки форм 2.0 (страницы из БД)";
-        mainWindowViewModel.OnStartProgressBar = 35;
-        // form_20: org-грид 2.0 через MainWindowListQuery.GetOrgPageForm12.
-
-        onStartProgressBarVm.LoadStatus = "Пропуск полной загрузки форм 4.0 (страницы из БД)";
-        mainWindowViewModel.OnStartProgressBar = 45;
-        // form_40: org-грид 4.0 через MainWindowListQuery.GetOrgPageForm40.
-
-        onStartProgressBarVm.LoadStatus = "Пропуск полной загрузки форм 5.0 (страницы из БД)";
-        mainWindowViewModel.OnStartProgressBar = 55;
-        // form_50: org-грид 5.0 через MainWindowListQuery.GetOrgPageForm50.
-
-        // Оболочки отчётов 1.x/2.x/... больше не грузим целиком при старте —
-        // главный экран подгружает страницы через MainWindowListQuery.
-        onStartProgressBarVm.LoadStatus = "Пропуск полной загрузки отчётов";
-        mainWindowViewModel.OnStartProgressBar = 72;
-
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
-        mainWindowViewModel.OnStartProgressBar = 74;
+        mainWindowViewModel.OnStartProgressBar = 25;
         await dbm.ReportsCollectionDbSet
             .Include(r => r.Master_DB)
             .LoadAsync();
 
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
-        mainWindowViewModel.OnStartProgressBar = 76;
+        mainWindowViewModel.OnStartProgressBar = 60;
         if (!dbm.DBObservableDbSet.Any())
         {
             dbm.DBObservableDbSet.Add(new DBObservable());
@@ -112,14 +88,12 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
 
         await dbm.DBObservableDbSet.LoadAsync();
 
-        #endregion
-
         onStartProgressBarVm.LoadStatus = "Сортировка организаций";
-        mainWindowViewModel.OnStartProgressBar = 80;
+        mainWindowViewModel.OnStartProgressBar = 70;
         await ProcessDataBaseFillEmpty(dbm);
 
         onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
-        mainWindowViewModel.OnStartProgressBar = 85;
+        mainWindowViewModel.OnStartProgressBar = 80;
         ReportsStorage.LocalReports = dbm.DBObservableDbSet.Local.First();
 
         await ProcessDataBaseFillNullOrder();

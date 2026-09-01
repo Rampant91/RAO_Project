@@ -6,8 +6,10 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
+using Client_App.Resources;
 using Client_App.ViewModels.Forms.Forms2;
 using Client_App.Views;
+using Client_App.Views.Forms;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
@@ -31,10 +33,10 @@ public partial class Form_20 : BaseWindow<Form_20VM>{
 
     public Form_20(Form_20VM vm)
     {
-        DataContext = vm;
         _vm = vm;
         AvaloniaXamlLoader.Load(this);
-        Name = "2.0";
+        FormWindowNames.SetWindowKey(this, nameof(Form_20));
+        DataContext = vm;
         Closing += OnStandardClosing;
     }
 
@@ -61,7 +63,7 @@ public partial class Form_20 : BaseWindow<Form_20VM>{
         }
 
         var db = StaticConfiguration.DBModel;
-        var window = Desktop.Windows.FirstOrDefault(x => x.Name is "2.0");
+        var window = FormWindowNames.FindOpenFormWindow("2.0") ?? this;
 
         var query = db.ReportsCollectionDbSet
             .AsNoTracking()
@@ -103,12 +105,9 @@ public partial class Form_20 : BaseWindow<Form_20VM>{
                 .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
-                    ContentTitle = "������ ��� ���������� ���������� ����� �����������",
-                    ContentHeader = "������",
-                    ContentMessage =
-                        $"�� ������� ��������� ��������� � ��������� ����� �����������, " +
-                        $"��������� ����������� � ������� ���� � ���.� ��� ���������� � ���� ������. " +
-                        $"��������� � ������������ ���������� ���� � ���.�.",
+                    ContentTitle = FormDialogTexts.OrgTitleSaveErrorTitle,
+                    ContentHeader = FormDialogTexts.ErrorHeader,
+                    ContentMessage = FormDialogTexts.OrgDuplicateSaveErrorMessage,
                     MinWidth = 400,
                     MaxWidth = 600,
                     MinHeight = 150,
@@ -129,12 +128,12 @@ public partial class Form_20 : BaseWindow<Form_20VM>{
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "��" },
-                    new ButtonDefinition { Name = "���" }
+                    FormDialogTexts.YesButton,
+                    FormDialogTexts.NoButton
                 ],
-                ContentTitle = "���������� ���������",
-                ContentHeader = "�����������",
-                ContentMessage = $"��������� ����� {vm.FormType}?",
+                ContentTitle = FormDialogTexts.SaveChangesTitle,
+                ContentHeader = FormDialogTexts.NotificationHeader,
+                ContentMessage = FormDialogTexts.SaveFormMessage(vm.FormType),
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
@@ -146,7 +145,7 @@ public partial class Form_20 : BaseWindow<Form_20VM>{
         var dbm = StaticConfiguration.DBModel;
         switch (res.Result)
         {
-            case "��":
+            case FormDialogTexts.Yes:
             {
                 try
                 {
@@ -161,7 +160,7 @@ public partial class Form_20 : BaseWindow<Form_20VM>{
                 }
                 return;
             }
-            case "���":
+            case FormDialogTexts.No:
             {
                 flag = true;
                 dbm.Restore();

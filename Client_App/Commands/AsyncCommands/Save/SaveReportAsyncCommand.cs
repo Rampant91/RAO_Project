@@ -9,6 +9,7 @@ using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
 using Client_App.ViewModels.Forms.Forms4;
 using Client_App.Views;
+using Client_App.Views.Forms;
 using MsBox.Avalonia.Dto;
 using Microsoft.EntityFrameworkCore;
 using Client_App.Services.DataAccess;
@@ -132,7 +133,7 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
         if (_formType is "1.0" or "2.0")
         {
             var dbm = StaticConfiguration.DBModel;
-            var window = Desktop.Windows.FirstOrDefault(x => x.Name == _formType);
+            var window = FormWindowNames.FindOpenFormWindow(_formType);
             try
             {
                 var query = dbm.ReportsCollectionDbSet

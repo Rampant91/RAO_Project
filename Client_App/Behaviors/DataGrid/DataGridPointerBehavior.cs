@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using AvaloniaDataGrid = Avalonia.Controls.DataGrid;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
@@ -10,12 +11,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace Client_App.Behaviors.DataGridBehaviors;
+namespace Client_App.Behaviors.DataGrid;
 /// <summary>
-/// Этот Behavior для DataGrid предназначен для объединения других Behavior-ов, использующих событие PointerMoved.
+/// Этот Behavior для AvaloniaDataGrid предназначен для объединения других Behavior-ов, использующих событие PointerMoved.
 /// Это необходимо, т.к. в Avalonia 0.10.20 PointerMoved не может вызвать несколько обработчиков событий
 /// </summary>
-public class DataGridPointerBehavior : Behavior<DataGrid>
+public class DataGridPointerBehavior : Behavior<AvaloniaDataGrid>
 {
     protected override void OnAttached()
     {

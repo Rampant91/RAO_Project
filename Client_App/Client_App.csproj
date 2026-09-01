@@ -329,11 +329,23 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Update="Views\Forms\Forms1\Form_10.axaml.cs">
+      <DependentUpon>Form_10.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms1\Form_11.axaml.cs">
+      <DependentUpon>Form_11.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\Forms\Forms1\Form_12.axaml.cs">
       <DependentUpon>Form_12.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\Forms\Forms2\Form_20.axaml.cs">
       <DependentUpon>Form_20.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms4\Form_40.axaml.cs">
+      <DependentUpon>Form_40.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Forms\Forms4\Form_41.axaml.cs">
+      <DependentUpon>Form_41.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\MainWindowTabs\Forms2TabControl.axaml.cs">
       <DependentUpon>Forms2TabControl.axaml</DependentUpon>

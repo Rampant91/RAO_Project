@@ -4,12 +4,17 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms4"
+        xmlns:items="clr-namespace:Client_App.ViewModels.Forms.Forms4.Items"
+        xmlns:appControls="clr-namespace:Client_App.Controls"
+        xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+        xmlns:inputBehaviors="using:Client_App.Behaviors.Input"
         xmlns:converterType="clr-namespace:Client_App.Resources.ConverterType"
         Title="Форма 4.0"
         Width="{Binding Source={x:Type converterType:Width}, Converter={StaticResource RatioConverter}, ConverterParameter='0.5', FallbackValue='600', Mode=OneTime}"
         Height="{Binding Source={x:Type converterType:Height}, Converter={StaticResource RatioConverter}, ConverterParameter='0.75', FallbackValue='800', Mode=OneTime}"
         MinWidth="950"
         MinHeight="600"
+        Classes="orgForm"
         x:CompileBindings="True"
         x:DataType="vm:Form_40VM"
         WindowStartupLocation="CenterScreen"
@@ -36,33 +41,73 @@
                 BorderThickness="1"
                 CornerRadius="5">
 
-			<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="330, 550">
+			<Grid RowDefinitions="Auto,Auto" ColumnDefinitions="330,*">
 				<TextBlock Grid.Row="0"
                            Grid.Column="0"
-                           Margin="5"
+                           Classes="org-label"
                            VerticalAlignment="Center"
-                           TextAlignment="Right"
                            Text="Код и субъект Российской Федерации"/>
-				<Grid Grid.Row="0"
-					  Grid.Column="1"
-				      ColumnDefinitions="40,*" 
-					  Margin="5">
-				    <TextBox Grid.Row="0"
-                             Grid.Column="0"
-                             Margin="0,0,0,3"
-                             Watermark="Код"
-                             Text="{Binding CodeOfSubjectRF, Mode=TwoWay}"
-                             MaxLength="2"/>
-				    <AutoCompleteBox Grid.Row="0"
-                                     Grid.Column="1"
-                                     MaxDropDownHeight="300"
-                                     ItemsSource="{Binding SubjectRFCollection, Mode=OneWay}"
-                                     FilterMode="Contains"
-                                     Margin="0,0,0,3"
-                                     Watermark="Субъект Российской Федерации"
-                                     Text="{Binding NameOfSubjectRF, Mode=TwoWay}">
-				    </AutoCompleteBox>
-				</Grid>
+				<Border Grid.Row="0"
+                        Grid.Column="1"
+                        Classes="org-subject-rf-frame"
+                        Margin="0,5,5,3">
+				    <Grid ColumnDefinitions="66,1,*">
+				        <Grid Grid.Column="0"
+                              ColumnDefinitions="38,24"
+                              Margin="5,0,2,0"
+                              ClipToBounds="False"
+                              VerticalAlignment="Center">
+				            <AutoCompleteBox Grid.Column="0"
+                                             Classes="org-subject-rf-code"
+                                             Width="38"
+                                             ItemsSource="{Binding SubjectRFItems, Mode=OneWay}"
+                                             Text="{Binding CodeOfSubjectRF, Mode=TwoWay}"
+                                             FilterMode="Contains"
+                                             MinimumPrefixLength="0"
+                                             IsTextCompletionEnabled="False"
+                                             MaxDropDownHeight="300"
+                                             Watermark="00">
+				                <interactivity:Interaction.Behaviors>
+				                    <inputBehaviors:AutoCompleteBoxValidationBehavior
+                                        InputPattern="{Binding SubjectRfCodePattern}"
+                                        MaxInputLength="2"
+                                        ValidCodes="{Binding ValidSubjectRfCodes}"/>
+				                    <inputBehaviors:AutoCompleteBoxSelectionChangedBehavior />
+				                </interactivity:Interaction.Behaviors>
+				                <AutoCompleteBox.ItemTemplate>
+				                    <DataTemplate x:DataType="items:SubjectRfCodeItem">
+				                        <Grid ColumnDefinitions="56,*" Margin="2,0">
+				                            <TextBlock Grid.Column="0"
+                                                       Text="{Binding Code}"
+                                                       Margin="8,0,8,0"
+                                                       Padding="0"
+                                                       HorizontalAlignment="Left"
+                                                       VerticalAlignment="Center"
+                                                       FontWeight="Bold"/>
+				                            <TextBlock Grid.Column="1"
+                                                       Text="{Binding Description}"
+                                                       Foreground="Gray"
+                                                       TextWrapping="Wrap"
+                                                       VerticalAlignment="Center"/>
+				                        </Grid>
+				                    </DataTemplate>
+				                </AutoCompleteBox.ItemTemplate>
+				            </AutoCompleteBox>
+				            <appControls:DropDownButton Grid.Column="1"
+                                                        VerticalAlignment="Center"
+                                                        HorizontalAlignment="Center"
+                                                        Margin="0" />
+				        </Grid>
+				        <Border Grid.Column="1" Background="#888888"/>
+				        <Panel Grid.Column="2">
+				            <TextBlock Classes="org-subject-rf-placeholder"
+                                       Text="Субъект Российской Федерации"
+                                       IsVisible="{Binding IsSubjectRfNameEmpty, Mode=OneWay}"/>
+				            <TextBox Classes="org-subject-rf-readonly"
+                                     Text="{Binding NameOfSubjectRF, Mode=OneWay}"/>
+				        </Panel>
+				    </Grid>
+				</Border>
 
 				<StackPanel Grid.Row="1"
                             Grid.Column="0" 
@@ -84,7 +129,7 @@
                       Margin="0,5,0,0"
                       VerticalAlignment="Top"
                       VerticalContentAlignment="Stretch"
-                      VerticalScrollBarVisibility="Hidden">
+                      VerticalScrollBarVisibility="Auto">
 			<StackPanel>
 
                 <!-- #region Орган управления -->
@@ -97,15 +142,11 @@
                         BorderThickness="1"
                         CornerRadius="5">
 
-                    <Grid ColumnDefinitions="330,550" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                    <Grid ColumnDefinitions="330,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                         <TextBlock Grid.Row="0"
                                    Grid.Column="0"
                                    Grid.ColumnSpan="2"
-                                   Height="32"
-                                   Margin="5,0,0,0"
-                                   VerticalAlignment="Top"
-                                   FontSize="18"
-                                   FontWeight="Bold"
+                                   Classes="org-section-title"
                                    Text="Орган управления"/>
 
                         <!-- #region Поля с выравниванием -->
@@ -120,12 +161,8 @@
                                    Text="Наименование органа исполнительной власти субъекта Российской Федерации"/>
                         <TextBox Grid.Row="1"
                                  Grid.Column="1"
-                                 Height="42"
-                                 Margin="0,3"
+                                 Classes="org-multiline"
                                  VerticalAlignment="Center"
-                                 AcceptsReturn="True"
-                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                 TextWrapping="Wrap"
                                  Text="{Binding Storage.Rows40[0].NameOrganUprav.Value, Mode=TwoWay}"/>
 
                         <!-- Строка 2 - Сокращённое наименование -->
@@ -138,8 +175,7 @@
                                    Text="Сокращенное наименование органа исполнительной власти субъекта Российской Федерации (при наличии)"/>
                         <TextBox Grid.Row="2"
                                  Grid.Column="1"
-                                 Height="26"
-                                 Margin="0,3"
+                                 Classes="org-field"
                                  VerticalAlignment="Center"
                                  Text="{Binding Storage.Rows40[0].ShortNameOrganUprav.Value, Mode=TwoWay}"/>
 
@@ -153,12 +189,8 @@
                                    Text="Место нахождения органа управления"/>
                         <TextBox Grid.Row="3"
                                  Grid.Column="1"
-                                 Height="42"
-                                 Margin="0,3"
+                                 Classes="org-multiline"
                                  VerticalAlignment="Center"
-                                 AcceptsReturn="True"
-                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                 TextWrapping="Wrap"
                                  Text="{Binding Storage.Rows40[0].AddressOrganUprav.Value, Mode=TwoWay}"/>
 
                         <!-- Строка 4 - Должность и ФИО руководителя -->
@@ -171,12 +203,8 @@
                                    Text="Должность, фамилия, имя, отчество (при наличии) руководителя"/>
                         <TextBox Grid.Row="4"
                                  Grid.Column="1"
-                                 Height="42"
-                                 Margin="0,3"
+                                 Classes="org-multiline"
                                  VerticalAlignment="Center"
-                                 AcceptsReturn="True"
-                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                 TextWrapping="Wrap"
                                  Text="{Binding Storage.Rows40[0].GradeFioDirectorOrganUprav.Value, Mode=TwoWay}"/>
 
                         <!-- Строка 5 - Должность и ФИО исполнителя -->
@@ -189,12 +217,8 @@
                                    Text="Должность, фамилия, имя, отчество (при наличии) ответственного исполнителя"/>
                         <TextBox Grid.Row="5"
                                  Grid.Column="1"
-                                 Height="42"
-                                 Margin="0,3"
+                                 Classes="org-multiline"
                                  VerticalAlignment="Center"
-                                 AcceptsReturn="True"
-                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                 TextWrapping="Wrap"
                                  Text="{Binding Storage.Rows40[0].GradeFioExecutorOrganUprav.Value, Mode=TwoWay}"/>
 
                         <!-- Строка 6 - Телефон -->
@@ -206,8 +230,7 @@
                                    Text="Телефон"/>
                         <TextBox Grid.Row="6"
                                  Grid.Column="1"
-                                 Height="26"
-                                 Margin="0,3"
+                                 Classes="org-field"
                                  VerticalAlignment="Center"
                                  Text="{Binding Storage.Rows40[0].TelephoneOrganUprav.Value, Mode=TwoWay}"/>
 
@@ -221,8 +244,7 @@
                                    Text="Факс"/>
                         <TextBox Grid.Row="7"
                                  Grid.Column="1"
-                                 Height="26"
-                                 Margin="0,3"
+                                 Classes="org-field"
                                  VerticalAlignment="Center"
                                  Text="{Binding Storage.Rows40[0].FaxOrganUprav.Value, Mode=TwoWay}"/>
 
@@ -237,8 +259,7 @@
                                    Text="Адрес электронной почты (при наличии)"/>
                         <TextBox Grid.Row="8"
                                  Grid.Column="1"
-                                 Height="26"
-                                 Margin="0,3"
+                                 Classes="org-field"
                                  VerticalAlignment="Center"
                                  Text="{Binding Storage.Rows40[0].EmailOrganUprav.Value, Mode=TwoWay}"/>
 
@@ -258,16 +279,12 @@
                         BorderBrush="Black"
                         BorderThickness="1"
                         CornerRadius="5">
-					<Grid ColumnDefinitions="330,550" 
+					<Grid ColumnDefinitions="330,*" 
                           RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto">
                         <TextBlock Grid.Row="0"
                                    Grid.Column="0"
                                    Grid.ColumnSpan="2"
-                                   Height="32"
-                                   Margin="5,0,0,0"
-                                   VerticalAlignment="Top"
-                                   FontSize="18"
-                                   FontWeight="Bold"
+                                   Classes="org-section-title"
                                    Text="Региональный информационно-аналитический центр"/>
 
                         <!-- Строка 1 - Наименование -->
@@ -280,8 +297,7 @@
                                    Text="Наименование организации"/>
                         <TextBox Grid.Row="1"
                                  Grid.Column="1"
-                                 Height="26"
-                                 Margin="0,0,0,3"
+                                 Classes="org-field"
                                  VerticalAlignment="Center"
                                  Text="{Binding Storage.Rows40[0].NameRiac.Value, Mode=TwoWay}"/>
 
@@ -295,12 +311,8 @@
                                    Text="Сокращенное наименование организации (при наличии)"/>
                         <TextBox Grid.Row="2"
                                  Grid.Column="1"
-                                 Height="42"
-                                 Margin="0,3"
+                                 Classes="org-multiline"
                                  VerticalAlignment="Center"
-                                 AcceptsReturn="True"
-                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                 TextWrapping="Wrap"
                                  Text="{Binding Storage.Rows40[0].ShortNameRiac.Value, Mode=TwoWay}"/>
 
                         <!-- Строка 3 - Адрес -->
@@ -313,8 +325,7 @@
                                    Text="Адрес РИАЦ"/>
                         <TextBox Grid.Row="3"
                                  Grid.Column="1"
-                                 Height="26"
-                                 Margin="0,3"
+                                 Classes="org-field"
                                  VerticalAlignment="Center"
                                  Text="{Binding Storage.Rows40[0].AddressRiac.Value, Mode=TwoWay}"/>
 
@@ -328,12 +339,8 @@
                                    Text="Должность, фамилия, имя, отчество (при наличии) руководителя"/>
                         <TextBox Grid.Row="4"
                                  Grid.Column="1"
-                                 Height="42"
-                                 Margin="0,3"
+                                 Classes="org-multiline"
                                  VerticalAlignment="Center"
-                                 AcceptsReturn="True"
-                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                 TextWrapping="Wrap"
                                  Text="{Binding Storage.Rows40[0].GradeFioDirectorRiac.Value, Mode=TwoWay}"/>
 
                         <!-- Строка 5 - Должность и ФИО исполнителя -->
@@ -346,12 +353,8 @@
                                    Text="Должность, фамилия, имя, отчество (при наличии) ответственного исполнителя"/>
                         <TextBox Grid.Row="5"
                                  Grid.Column="1"
-                                 Height="42"
-                                 Margin="0,3"
+                                 Classes="org-multiline"
                                  VerticalAlignment="Center"
-                                 AcceptsReturn="True"
-                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                 TextWrapping="Wrap"
                                  Text="{Binding Storage.Rows40[0].GradeFioExecutorRiac.Value, Mode=TwoWay}"/>
 
                         <!-- Строка 6 - Телефон -->
@@ -364,12 +367,8 @@
                                    Text="Телефон"/>
                         <TextBox Grid.Row="6"
                                  Grid.Column="1"
-                                 Height="42"
-                                 Margin="0,3"
+                                 Classes="org-multiline"
                                  VerticalAlignment="Center"
-                                 AcceptsReturn="True"
-                                 ScrollViewer.VerticalScrollBarVisibility="Hidden"
-                                 TextWrapping="Wrap"
                                  Text="{Binding Storage.Rows40[0].TelephoneRiac.Value, Mode=TwoWay}"/>
 
                         <!-- Строка 7 - Факс -->
@@ -381,8 +380,7 @@
                                    Text="Факс"/>
                         <TextBox Grid.Row="7"
                                  Grid.Column="1"
-                                 Height="26"
-                                 Margin="0,3"
+                                 Classes="org-field"
                                  VerticalAlignment="Center"
                                  Text="{Binding Storage.Rows40[0].FaxRiac.Value, Mode=TwoWay}"/>
 
@@ -396,8 +394,8 @@
                                    Text="Адрес электронной почты (при наличии)"/>
                         <TextBox Grid.Row="8"
                                  Grid.Column="1"
-                                 Height="26"
-                                 Margin="0,3"
+                                 Classes="org-field"
+                                 VerticalAlignment="Center"
                                  Text="{Binding Storage.Rows40[0].EmailOrganUprav.Value, Mode=TwoWay}"/>
                     </Grid>
                 </Border>

@@ -1,4 +1,4 @@
-﻿<Window
+<Window
     x:Class="Client_App.Views.Forms.Forms2.Form_26"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -10,7 +10,7 @@
     xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
     xmlns:local="using:Client_App.Behaviors"
     xmlns:headerBehaviors="using:Client_App.Behaviors.TableHeader"
-    xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
+    xmlns:dgBehaviors="using:Client_App.Behaviors.DataGrid"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms2"
     Title="{Binding WindowTitle}"
@@ -123,7 +123,7 @@
             </WrapPanel>
         </Expander>
 
-		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1">
 
             <Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="*">
                 <Grid.ContextMenu>
@@ -223,13 +223,13 @@
 
                 <!--#region Заголовки таблицы-->
 
-                <Grid
-                    Grid.Row="0"
-                    Width="{Binding Bounds.Width, ElementName=dataGrid}"
-                    Classes="tableHeader"
-                    ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*"
-                    RowDefinitions="Auto,Auto,Auto">
-
+                <Grid Grid.Row="0" Classes="tableHeader">
+                    <Panel ClipToBounds="True">
+                    <interactivity:Interaction.Behaviors>
+                        <headerBehaviors:FrozenHeaderScrollSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}"
+                                                                        ScrollEntireHeader="True"/>
+                    </interactivity:Interaction.Behaviors>
+                    <Grid ColumnDefinitions="*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*,*" RowDefinitions="Auto,Auto,Auto">
                     <interactivity:Interaction.Behaviors>
                         <local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid}" />
                     </interactivity:Interaction.Behaviors>
@@ -265,6 +265,8 @@
                     </Border>
 
                 </Grid>
+                    </Panel>
+                </Grid>
 
                 <!--#endregion Заголовки таблицы-->
 
@@ -274,6 +276,7 @@
                     x:Name="dataGrid"
                     Grid.Row="1"
 					Classes="table"
+					MaxColumnWidth="500"
 					x:CompileBindings="True"
 					CanUserSortColumns="True"
 					CanUserReorderColumns="False"

@@ -1,4 +1,4 @@
-﻿<Window
+<Window
     x:Class="Client_App.Views.Forms.Forms2.Form_22"
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -9,7 +9,7 @@
     xmlns:forms2="clr-namespace:Models.Forms.Form2;assembly=Models"
     xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
     xmlns:headerBehaviors="using:Client_App.Behaviors.TableHeader"
-    xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
+    xmlns:dgBehaviors="using:Client_App.Behaviors.DataGrid"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms2"
     Title="{Binding WindowTitle}"
@@ -118,7 +118,7 @@
             </WrapPanel>
         </Expander>
 
-		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1">
 
             <Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="*">
                 <Grid.ContextMenu>
@@ -219,7 +219,6 @@
                 <!--#region Заголовки таблицы-->
 
                 <Grid Grid.Row="0"
-                      Width="{Binding Bounds.Width, ElementName=dataGrid}"
                       Classes="tableHeader">
                     <Panel ClipToBounds="True">
                     <interactivity:Interaction.Behaviors>
@@ -347,6 +346,7 @@
                     x:Name="dataGrid"
                     Grid.Row="1"
 					Classes="table"
+					MaxColumnWidth="500"
 					x:CompileBindings="True"
 					CanUserSortColumns="True"
 					CanUserReorderColumns="False"

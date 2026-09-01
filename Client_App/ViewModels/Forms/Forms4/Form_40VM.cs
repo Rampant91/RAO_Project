@@ -1,6 +1,8 @@
-﻿using Client_App.Commands;
+﻿using Client_App.ViewModels.Forms.Forms4.Items;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Interfaces.Logger;
+using Client_App.Interfaces.Logger.EnumLogger;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
@@ -102,44 +104,96 @@ namespace Client_App.ViewModels.Forms.Forms4
 
         #region Properties
 
-        public ICollection<string> SubjectRFCollection
-        {
-            get
-            {
-                return Spravochniks.DictionaryOfSubjectRF.Values;
-            }
-        }
-
-        public string CodeOfSubjectRF
-        {
-            get
-            {
-                return Storage.Rows40[0].CodeSubjectRF.Value;
-            }
-            set
-            {
-                Storage.Rows40[0].CodeSubjectRF.Value = value;
-                OnPropertyChanged();
-            }
-        }
-        public string NameOfSubjectRF
-        {
-            get
-            {
-                return Storage.Rows40[0].SubjectRF.Value;
-            }
-            set
-            {
-                Storage.Rows40[0].SubjectRF.Value = value;
-                if (Spravochniks.DictionaryOfSubjectRF.ContainsValue(value))
+        public IReadOnlyList<SubjectRfCodeItem> SubjectRFItems { get; } =
+            Spravochniks.DictionaryOfSubjectRF
+                .OrderBy(x => x.Key)
+                .Select(x => new SubjectRfCodeItem
                 {
-                    string key = Spravochniks.DictionaryOfSubjectRF.FirstOrDefault(x => x.Value == value).Key.ToString();
-                    if (key.Length == 1)
-                        key = "0" + key;
-                    CodeOfSubjectRF = key;
+                    Code = FormatSubjectRfCode(x.Key),
+                    Description = x.Value
+                })
+                .ToList();
+
+        public ICollection<string> ValidSubjectRfCodes =>
+            SubjectRFItems.Select(x => x.Code).ToList();
+
+        public string SubjectRfCodePattern => @"^\d{0,2}$";
+
+        public string? CodeOfSubjectRF
+        {
+            get
+            {
+                if (!TryParseSubjectRfCode(Storage.Rows40[0].CodeSubjectRF.Value, out int code)
+                    || !Spravochniks.DictionaryOfSubjectRF.ContainsKey(code))
+                {
+                    return string.IsNullOrWhiteSpace(Storage.Rows40[0].CodeSubjectRF.Value)
+                        ? null
+                        : Storage.Rows40[0].CodeSubjectRF.Value;
                 }
 
+                return FormatSubjectRfCode(code);
+            }
+            set
+            {
+                var normalized = string.IsNullOrWhiteSpace(value)
+                    ? string.Empty
+                    : NormalizeSubjectRfCode(value);
+
+                if (string.Equals(Storage.Rows40[0].CodeSubjectRF.Value, normalized, StringComparison.Ordinal))
+                {
+                    return;
+                }
+
+                Storage.Rows40[0].CodeSubjectRF.Value = normalized;
+                ApplySubjectRfNameForCode(normalized);
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(NameOfSubjectRF));
+                OnPropertyChanged(nameof(IsSubjectRfNameEmpty));
+            }
+        }
+
+        public string NameOfSubjectRF => Storage.Rows40[0].SubjectRF.Value;
+
+        public bool IsSubjectRfNameEmpty => string.IsNullOrWhiteSpace(NameOfSubjectRF);
+
+        private static string FormatSubjectRfCode(int code) =>
+            code < 10 ? $"0{code}" : code.ToString();
+
+        private static bool TryParseSubjectRfCode(string? code, out int parsed)
+        {
+            parsed = 0;
+            if (string.IsNullOrWhiteSpace(code))
+            {
+                return false;
+            }
+
+            return int.TryParse(code.Trim(), out parsed);
+        }
+
+        private static string NormalizeSubjectRfCode(string code)
+        {
+            if (!TryParseSubjectRfCode(code, out int parsed))
+            {
+                return code.Trim();
+            }
+
+            return Spravochniks.DictionaryOfSubjectRF.ContainsKey(parsed)
+                ? FormatSubjectRfCode(parsed)
+                : code.Trim();
+        }
+
+        private void ApplySubjectRfNameForCode(string normalizedCode)
+        {
+            if (TryParseSubjectRfCode(normalizedCode, out int code)
+                && Spravochniks.DictionaryOfSubjectRF.TryGetValue(code, out var name))
+            {
+                Storage.Rows40[0].SubjectRF.Value = name;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(normalizedCode))
+            {
+                Storage.Rows40[0].SubjectRF.Value = string.Empty;
             }
         }
 
@@ -170,30 +224,46 @@ namespace Client_App.ViewModels.Forms.Forms4
 
         #region Constructor
 
-        public Form_40VM() { }
+        public Form_40VM()
+        {
+            InitializeEmptyStorage();
+        }
 
-        public Form_40VM(in DBObservable reps)
+        public Form_40VM(in DBObservable reps) : this()
+        {
+            DBO = reps;
+        }
+
+        public Form_40VM(string formNum, in Report rep)
+        {
+            if (formNum is "4.0")
+            {
+                Storage = rep;
+            }
+
+            FormType = formNum;
+            try
+            {
+                StaticConfiguration.DBModel.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                ServiceExtension.LoggerManager.Error(
+                    $"Form_40VM.SaveChanges: {ex.Message}{Environment.NewLine}{ex.StackTrace}",
+                    ErrorCodeLogger.Application);
+            }
+        }
+
+        #endregion
+
+        private void InitializeEmptyStorage()
         {
             Storage = new Report { FormNum_DB = "4.0" };
 
             var ty1 = (Form40)FormCreator.Create("4.0");
             ty1.NumberInOrder_DB = 1;
             Storage.Rows40.Add(ty1);
-            DBO = reps;
         }
-
-        public Form_40VM(string formNum, in Report rep)
-        {
-            if (rep.FormNum_DB is "4.0")
-            {
-                Storage = rep;
-            }
-
-            FormType = formNum;
-            StaticConfiguration.DBModel.SaveChanges();
-        }
-
-        #endregion
 
         #region OnPropertyChanged
 

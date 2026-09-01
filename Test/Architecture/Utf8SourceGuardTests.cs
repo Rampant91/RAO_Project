@@ -31,6 +31,8 @@ public class Utf8SourceGuardTests
     public static IEnumerable<object[]> SourceRoots =>
     [
         [Path.Combine("Client_App", "Views", "Forms")],
+        [Path.Combine("Client_App", "Views", "Passports")],
+        [Path.Combine("Client_App", "Views", "StoragePoints")],
         [Path.Combine("Client_App", "Commands")],
         [Path.Combine("Client_App", "ViewModels", "Forms")],
     ];

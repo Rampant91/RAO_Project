@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Client_App.Views.Forms;
 using Client_App.Views.Messages;
 using Spravochniki;
 
@@ -60,8 +61,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
     public override async Task AsyncExecute(object? parameter)
     {
         
-        owner = (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
-            .FirstOrDefault(w => w.Name == "4.1");
+        owner = FormWindowNames.FindOpenFormWindow("4.1");
 
         if (owner == null) return;
 

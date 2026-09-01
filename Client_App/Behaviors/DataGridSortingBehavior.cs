@@ -1,4 +1,4 @@
 namespace Client_App.Behaviors;
 
-/// <summary>Совместимость для views, ещё не переведённых на DataGridBehaviors namespace в XAML.</summary>
-public class DataGridSortingBehavior : DataGridBehaviors.DataGridSortingBehavior;
+/// <summary>пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ views, пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ DataGridBehaviors namespace пїЅ XAML.</summary>
+public class DataGridSortingBehavior : global::Client_App.Behaviors.DataGrid.DataGridSortingBehavior;

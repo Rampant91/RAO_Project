@@ -1,9 +1,12 @@
 ﻿using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Interfaces.Logger;
+using Client_App.Interfaces.Logger.EnumLogger;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form5;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -142,13 +145,22 @@ namespace Client_App.ViewModels.Forms.Forms5
 
         public Form_50VM(string formNum, in Report rep)
         {
-            if (rep.FormNum_DB is "5.0")
+            if (formNum is "5.0")
             {
                 Storage = rep;
             }
 
             FormType = formNum;
-            StaticConfiguration.DBModel.SaveChanges();
+            try
+            {
+                StaticConfiguration.DBModel.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                ServiceExtension.LoggerManager.Error(
+                    $"Form_50VM.SaveChanges: {ex.Message}{Environment.NewLine}{ex.StackTrace}",
+                    ErrorCodeLogger.Application);
+            }
         }
 
         #endregion

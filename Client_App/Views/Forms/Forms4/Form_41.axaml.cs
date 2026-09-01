@@ -1,4 +1,4 @@
-﻿using MsBox.Avalonia;
+using MsBox.Avalonia;
 
 using Avalonia;
 using Avalonia.Controls;
@@ -11,7 +11,9 @@ using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Commands.SyncCommands;
 using Client_App.Interfaces.Logger;
+using Client_App.Resources;
 using Client_App.ViewModels.Forms.Forms4;
+using Client_App.Views.Forms;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
 using MsBox.Avalonia.Models;
@@ -51,7 +53,7 @@ public partial class Form_41 : BaseWindow<Form_41VM>
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
-        Name = "4.1";
+        FormWindowNames.SetWindowKey(this, nameof(Form_41));
 #if DEBUG
         this.AttachDevTools();
 #endif
@@ -223,12 +225,12 @@ public partial class Form_41 : BaseWindow<Form_41VM>
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "��" },
-                    new ButtonDefinition { Name = "���" }
+                    FormDialogTexts.YesButton,
+                    FormDialogTexts.NoButton
                 ],
-                ContentTitle = "���������� ���������",
-                ContentHeader = "�����������",
-                ContentMessage = $"��������� ����� {vm.FormType}?",
+                ContentTitle = FormDialogTexts.SaveChangesTitle,
+                ContentHeader = FormDialogTexts.NotificationHeader,
+                ContentMessage = FormDialogTexts.SaveFormMessage(vm.FormType),
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
@@ -240,7 +242,7 @@ public partial class Form_41 : BaseWindow<Form_41VM>
         var dbm = StaticConfiguration.DBModel;
         switch (res.Result)
         {
-            case "��":
+            case FormDialogTexts.Yes:
                 {
                     //����� ��� ��� ��������� ������ ������������ ���������� ������� ������ �������
                     try
@@ -262,7 +264,7 @@ public partial class Form_41 : BaseWindow<Form_41VM>
                     }
                     return;
                 }
-            case "���":
+            case FormDialogTexts.No:
                 {
                     flag = true;
                     dbm.Restore();
@@ -354,13 +356,9 @@ public partial class Form_41 : BaseWindow<Form_41VM>
                         .GetMessageBoxStandard(new MessageBoxStandardParams()
                         {
                             ButtonDefinitions = ButtonEnum.Ok,
-                            ContentTitle = "�����������",
-                            ContentHeader = "�����������",
-                            ContentMessage = $"� ����������� {reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value} " +
-                                             $"{Environment.NewLine}������������ ����� �� ����� " +
-                                             $"{currentReport.FormNum_DB} {currentReport.StartPeriod_DB}-{currentReport.EndPeriod_DB}" +
-                                             $"{Environment.NewLine}�������������� � �������� �������� " +
-                                             $"{rep.StartPeriod_DB}-{rep.EndPeriod_DB}.",
+                            ContentTitle = FormDialogTexts.NotificationHeader,
+                            ContentHeader = FormDialogTexts.NotificationHeader,
+                            ContentMessage = FormDialogTexts.PeriodIntersectionMessage($"{reps.Master_DB.RegNoRep.Value}_{reps.Master_DB.OkpoRep.Value}", currentReport.FormNum_DB, currentReport.StartPeriod_DB, currentReport.EndPeriod_DB, rep.StartPeriod_DB, rep.EndPeriod_DB),
                             MinWidth = 450,
                             MinHeight = 170,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner,
@@ -413,14 +411,13 @@ public partial class Form_41 : BaseWindow<Form_41VM>
                 .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
-                    [
-                        new ButtonDefinition { Name = "��" },
-                        new ButtonDefinition { Name = "���" }
-                    ],
-                    ContentTitle = "���������� ���������",
-                    ContentHeader = "�����������",
-                    ContentMessage = $"� ����� {vm.FormType} ������������ ������ �������." +
-                                     $"{Environment.NewLine}�� ������ �� �������?",
+                [
+                    FormDialogTexts.YesButton,
+                    FormDialogTexts.NoButton
+                ],
+                    ContentTitle = FormDialogTexts.SaveChangesTitle,
+                    ContentHeader = FormDialogTexts.NotificationHeader,
+                    ContentMessage = FormDialogTexts.RemoveEmptyRowsMessage(vm.FormType),
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
@@ -428,7 +425,7 @@ public partial class Form_41 : BaseWindow<Form_41VM>
 
             #endregion
 
-            if (res is "��")
+            if (res is FormDialogTexts.Yes)
             {
                 await using var db = new DBModel(StaticConfiguration.DBPath);
                 foreach (var form in formToDeleteList)

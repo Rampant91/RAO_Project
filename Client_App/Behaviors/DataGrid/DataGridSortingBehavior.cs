@@ -1,12 +1,13 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
+using AvaloniaDataGrid = Avalonia.Controls.DataGrid;
 using Avalonia.Xaml.Interactivity;
 using Client_App.Resources.CustomComparers;
 using System;
 using System.Collections;
 
-namespace Client_App.Behaviors.DataGridBehaviors;
+namespace Client_App.Behaviors.DataGrid;
 
-public class DataGridSortingBehavior : Behavior<DataGrid>
+public class DataGridSortingBehavior : Behavior<AvaloniaDataGrid>
 {
     private DataGridColumn? _lastSortedColumn;
     private bool _isSortedAscending = true;

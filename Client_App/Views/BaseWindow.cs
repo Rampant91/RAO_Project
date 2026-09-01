@@ -45,6 +45,7 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost, I
     private bool _openedPositionFallbackAttached;
     private bool _fullscreenFallbackAttached;
     private bool _formContentLoadingOverlayAttached;
+    private bool _formDataGridLoadingOverlayAttached;
     private Window? _positionOwnerHint;
 
     protected BaseWindow()
@@ -55,7 +56,36 @@ public abstract class BaseWindow<T> : ReactiveWindow<BaseVM>, IFormDialogHost, I
     private void OnOpenedAttachFormContentLoadingOverlay(object? sender, EventArgs e)
     {
         Opened -= OnOpenedAttachFormContentLoadingOverlay;
-        TryAttachFormContentLoadingOverlay();
+        TryAttachFormDataGridLoadingOverlay();
+        if (!_formDataGridLoadingOverlayAttached)
+            TryAttachFormContentLoadingOverlay();
+    }
+
+    private void TryAttachFormDataGridLoadingOverlay()
+    {
+        if (_formDataGridLoadingOverlayAttached)
+            return;
+        if (DataContext is not IFormContentLoadingHost)
+            return;
+
+        var dataGrid = this.FindControl<DataGrid>("dataGrid");
+        if (dataGrid?.Parent is not Grid parentGrid)
+            return;
+
+        var overlay = new DataGridLoadingOverlay
+        {
+            ZIndex = 200,
+            IsVisible = false,
+            IsHitTestVisible = true,
+        };
+        overlay.Bind(IsVisibleProperty, new Binding(nameof(IFormContentLoadingHost.IsContentLoading)));
+
+        Grid.SetRow(overlay, Grid.GetRow(dataGrid));
+        Grid.SetColumn(overlay, Grid.GetColumn(dataGrid));
+        Grid.SetRowSpan(overlay, Grid.GetRowSpan(dataGrid));
+        Grid.SetColumnSpan(overlay, Grid.GetColumnSpan(dataGrid));
+        parentGrid.Children.Add(overlay);
+        _formDataGridLoadingOverlayAttached = true;
     }
 
     /// <summary>

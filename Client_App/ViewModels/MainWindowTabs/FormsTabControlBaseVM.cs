@@ -176,9 +176,11 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
 
     private static int NormalizePage(int page, int totalPages)
     {
+        if (totalPages <= 0)
+            return 1;
         if (page <= 0)
             return 1;
-        if (totalPages > 0 && page > totalPages)
+        if (page > totalPages)
             return totalPages;
         return page;
     }

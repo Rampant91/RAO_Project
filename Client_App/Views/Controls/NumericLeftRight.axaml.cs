@@ -100,10 +100,27 @@ public partial class NumericLeftRight : UserControl
 
     private int CoerceValue(int value)
     {
-        if (value < Minimum)
-            return Minimum;
-        if (value > Maximum)
-            return Maximum;
+        var min = Minimum;
+        var max = Maximum;
+        if (max < min)
+            max = min;
+
+        if (value < min)
+            return min;
+        if (value > max)
+            return max;
         return value;
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == MaximumProperty || change.Property == MinimumProperty)
+        {
+            var coerced = CoerceValue(Value);
+            if (coerced != Value)
+                SetCurrentValue(ValueProperty, coerced);
+        }
     }
 }

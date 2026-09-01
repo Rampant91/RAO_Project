@@ -1,4 +1,4 @@
-﻿<Window x:Class="Client_App.Views.Forms.Forms4.Form_41"
+<Window x:Class="Client_App.Views.Forms.Forms4.Form_41"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,7 +6,7 @@
         xmlns:vm="clr-namespace:Client_App.ViewModels.Forms.Forms4"
         xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
         xmlns:headerBehaviors="using:Client_App.Behaviors.TableHeader"
-        xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
+        xmlns:dgBehaviors="using:Client_App.Behaviors.DataGrid"
         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
         xmlns:forms4="clr-namespace:Models.Forms.Form4;assembly=Models"
         xmlns:controls="clr-namespace:Client_App.Views.Controls"
@@ -92,7 +92,7 @@
 			</WrapPanel>
 		</Expander>
 
-		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
+		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1">
 			<Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="*">
 				<Grid.ContextMenu>
 					<ContextMenu x:CompileBindings="True"
@@ -136,7 +136,6 @@
 					</ContextMenu>
 				</Grid.ContextMenu>
 				<Grid Grid.Row="0"
-					  Width="{Binding Bounds.Width, ElementName=dataGrid}"
 					  Classes="tableHeader">
 					<Panel ClipToBounds="True">
 					<interactivity:Interaction.Behaviors>
@@ -185,6 +184,7 @@
 
 				<DataGrid Grid.Row="1"
                           Classes="table"
+                          MaxColumnWidth="500"
                           x:CompileBindings="True"
                           x:Name="dataGrid"
                           ColumnWidth="125"

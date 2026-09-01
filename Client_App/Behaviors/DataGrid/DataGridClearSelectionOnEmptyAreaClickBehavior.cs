@@ -1,17 +1,18 @@
 using Avalonia;
 using Avalonia.Controls;
+using AvaloniaDataGrid = Avalonia.Controls.DataGrid;
 using Avalonia.Input;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 using Client_App.ViewModels.Forms;
 using Client_App.ViewModels.MainWindowTabs;
 
-namespace Client_App.Behaviors.DataGridBehaviors;
+namespace Client_App.Behaviors.DataGrid;
 
 /// <summary>
-/// Сбрасывает выделение DataGrid при клике внутри грида, но мимо строки.
+/// Сбрасывает выделение AvaloniaDataGrid при клике внутри грида, но мимо строки.
 /// </summary>
-public class DataGridClearSelectionOnEmptyAreaClickBehavior : Behavior<DataGrid>
+public class DataGridClearSelectionOnEmptyAreaClickBehavior : Behavior<AvaloniaDataGrid>
 {
     protected override void OnAttached()
     {

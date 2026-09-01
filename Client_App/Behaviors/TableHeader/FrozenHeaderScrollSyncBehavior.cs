@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using AvaloniaDataGrid = Avalonia.Controls.DataGrid;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -12,16 +13,16 @@ using System.Linq;
 namespace Client_App.Behaviors.TableHeader;
 
 /// <summary>
-/// Синхронизирует горизонтальный скролл кастомной шапки с DataGrid.
+/// Синхронизирует горизонтальный скролл кастомной шапки с AvaloniaDataGrid.
 /// Обновления координируются через TableHeaderDataGridSync (без LayoutUpdated на каждый кадр).
 /// </summary>
 public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
 {
-    public static readonly AttachedProperty<DataGrid?> SourceDataGridProperty =
-        AvaloniaProperty.RegisterAttached<FrozenHeaderScrollSyncBehavior, Panel, DataGrid?>(
+    public static readonly AttachedProperty<AvaloniaDataGrid?> SourceDataGridProperty =
+        AvaloniaProperty.RegisterAttached<FrozenHeaderScrollSyncBehavior, Panel, AvaloniaDataGrid?>(
             "SourceDataGrid");
 
-    public DataGrid? SourceDataGrid
+    public AvaloniaDataGrid? SourceDataGrid
     {
         get => GetValue(SourceDataGridProperty);
         set => SetValue(SourceDataGridProperty, value);
@@ -92,7 +93,7 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
     {
         SourceDataGrid ??= AssociatedObject?
             .GetVisualAncestors()
-            .OfType<DataGrid>()
+            .OfType<AvaloniaDataGrid>()
             .FirstOrDefault(dg => dg.Name == "dataGrid");
 
         if (SourceDataGrid is null) return;
@@ -146,9 +147,10 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
         _nppTransform.X = -scrollOffset;
 
         var w = SourceDataGrid.Columns[0].Width.DisplayValue;
-        if (w <= 0) return;
+        if (!double.IsFinite(w) || w <= 0) return;
 
         var headerWidth = TableHeaderColumnWidth.FromDataGridDisplayWidth(w, metrics, 0);
+        if (!double.IsFinite(headerWidth) || headerWidth <= 0) return;
         if (Math.Abs(_lastNppWidth - headerWidth) < 0.05) return;
 
         _lastNppWidth = headerWidth;
@@ -168,7 +170,7 @@ public class FrozenHeaderScrollSyncBehavior : Behavior<Panel>
         var datWidth = SourceDataGrid.Columns[2].Width.DisplayValue;
         var kodWidth = SourceDataGrid.Columns[1].Width.DisplayValue;
 
-        if (datWidth <= 0 || kodWidth <= 0)
+        if (!double.IsFinite(datWidth) || !double.IsFinite(kodWidth) || datWidth <= 0 || kodWidth <= 0)
         {
             ResetFixedGroupHeaderBorderIfNeeded();
             return;

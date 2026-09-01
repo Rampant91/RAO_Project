@@ -100,6 +100,19 @@ public sealed class IndeterminateMarqueeBar : Panel
         };
     }
 
+    private void AdvanceMarquee()
+    {
+        var trackW = TrackWidth > 0 ? TrackWidth : Bounds.Width;
+        if (trackW <= 0)
+            trackW = DefaultTrackWidth;
+
+        _offset += SpeedPxPerTick;
+        if (_offset > trackW)
+            _offset = -ThumbWidth;
+
+        InvalidateArrange();
+    }
+
     /// <summary>Запустить бегунок (вызывать при показе overlay).</summary>
     public void Start()
     {
@@ -164,22 +177,14 @@ public sealed class IndeterminateMarqueeBar : Panel
 
         _running = true;
         _offset = -ThumbWidth;
-        _timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(16) };
+        _timer = new DispatcherTimer(DispatcherPriority.Render)
+        {
+            Interval = TimeSpan.FromMilliseconds(16)
+        };
         _timer.Tick += OnTick;
         _timer.Start();
         InvalidateArrange();
     }
 
-    private void OnTick(object? sender, EventArgs e)
-    {
-        var trackW = TrackWidth > 0 ? TrackWidth : Bounds.Width;
-        if (trackW <= 0)
-            trackW = DefaultTrackWidth;
-
-        _offset += SpeedPxPerTick;
-        if (_offset > trackW)
-            _offset = -ThumbWidth;
-
-        InvalidateArrange();
-    }
+    private void OnTick(object? sender, EventArgs e) => AdvanceMarquee();
 }

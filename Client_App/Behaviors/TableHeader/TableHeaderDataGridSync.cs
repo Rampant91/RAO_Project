@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using AvaloniaDataGrid = Avalonia.Controls.DataGrid;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
@@ -12,24 +13,24 @@ using System.Runtime.CompilerServices;
 namespace Client_App.Behaviors.TableHeader;
 
 /// <summary>
-/// Снимок метрик layout DataGrid на один проход синхронизации кастомной шапки.
+/// Снимок метрик layout AvaloniaDataGrid на один проход синхронизации кастомной шапки.
 /// </summary>
 internal readonly struct TableHeaderLayoutMetrics
 {
-    /// <summary>Горизонтальный скроллбар DataGrid виден (контент шире области).</summary>
+    /// <summary>Горизонтальный скроллбар AvaloniaDataGrid виден (контент шире области).</summary>
     public bool HasHorizontalScroll { get; init; }
 
     /// <summary>1 / DPI экрана; вычитается из ширины col 0 для стыковки 1px-границ шапки.</summary>
     public double BorderCompensation { get; init; }
 
-    /// <summary>Текущее значение <see cref="DataGrid.FrozenColumnCount"/>.</summary>
+    /// <summary>Текущее значение <see cref="AvaloniaDataGrid.FrozenColumnCount"/>.</summary>
     public int FrozenColumnCount { get; init; }
 }
 
 /// <summary>
-/// Координатор синхронизации между <see cref="DataGrid"/> и кастомной шапкой таблицы.
+/// Координатор синхронизации между <see cref="AvaloniaDataGrid"/> и кастомной шапкой таблицы.
 /// <para>
-/// На каждый DataGrid вешается один LayoutUpdated; зарегистрированные
+/// На каждый AvaloniaDataGrid вешается один LayoutUpdated; зарегистрированные
 /// <see cref="TableHeaderColumnWidthSyncBehavior"/> и <see cref="FrozenHeaderScrollSyncBehavior"/>
 /// получают обновления через единый кэш и coalesce (без дублирования подписок на шапке).
 /// </para>
@@ -42,7 +43,7 @@ internal static class TableHeaderDataGridSync
 {
     #region Constants
 
-    /// <summary>Имя горизонтального скроллбара в визуальном дереве Avalonia DataGrid.</summary>
+    /// <summary>Имя горизонтального скроллбара в визуальном дереве Avalonia AvaloniaDataGrid.</summary>
     internal const string HScrollBarName = "PART_HorizontalScrollbar";
 
     #endregion
@@ -77,14 +78,14 @@ internal static class TableHeaderDataGridSync
         public bool IsLiveResizing => LiveResizeCount > 0;
     }
 
-    private static readonly ConditionalWeakTable<DataGrid, State> States = new();
+    private static readonly ConditionalWeakTable<AvaloniaDataGrid, State> States = new();
 
     #endregion
 
     #region Behavior registration
 
-    /// <summary>Подключает синхронизацию ширин колонок шапки к DataGrid.</summary>
-    public static void RegisterWidthBehavior(DataGrid dataGrid, TableHeaderColumnWidthSyncBehavior behavior)
+    /// <summary>Подключает синхронизацию ширин колонок шапки к AvaloniaDataGrid.</summary>
+    public static void RegisterWidthBehavior(AvaloniaDataGrid dataGrid, TableHeaderColumnWidthSyncBehavior behavior)
     {
         var state = GetOrCreateState(dataGrid);
         state.WidthBehaviors.Add(behavior);
@@ -93,15 +94,15 @@ internal static class TableHeaderDataGridSync
     }
 
     /// <summary>Отключает <see cref="TableHeaderColumnWidthSyncBehavior"/> и снимает подписки, если behaviors не осталось.</summary>
-    public static void UnregisterWidthBehavior(DataGrid dataGrid, TableHeaderColumnWidthSyncBehavior behavior)
+    public static void UnregisterWidthBehavior(AvaloniaDataGrid dataGrid, TableHeaderColumnWidthSyncBehavior behavior)
     {
         if (!States.TryGetValue(dataGrid, out var state)) return;
         state.WidthBehaviors.Remove(behavior);
         TryDetachLayoutIfEmpty(dataGrid, state);
     }
 
-    /// <summary>Подключает синхронизацию горизонтального скролла шапки к DataGrid.</summary>
-    public static void RegisterScrollBehavior(DataGrid dataGrid, FrozenHeaderScrollSyncBehavior behavior)
+    /// <summary>Подключает синхронизацию горизонтального скролла шапки к AvaloniaDataGrid.</summary>
+    public static void RegisterScrollBehavior(AvaloniaDataGrid dataGrid, FrozenHeaderScrollSyncBehavior behavior)
     {
         var state = GetOrCreateState(dataGrid);
         state.ScrollBehaviors.Add(behavior);
@@ -111,7 +112,7 @@ internal static class TableHeaderDataGridSync
     }
 
     /// <summary>Отключает <see cref="FrozenHeaderScrollSyncBehavior"/>.</summary>
-    public static void UnregisterScrollBehavior(DataGrid dataGrid, FrozenHeaderScrollSyncBehavior behavior)
+    public static void UnregisterScrollBehavior(AvaloniaDataGrid dataGrid, FrozenHeaderScrollSyncBehavior behavior)
     {
         if (!States.TryGetValue(dataGrid, out var state)) return;
         state.ScrollBehaviors.Remove(behavior);
@@ -126,7 +127,7 @@ internal static class TableHeaderDataGridSync
     /// Запланировать полную синхронизацию ширин и скролла шапки (с coalesce через Render).
     /// </summary>
     /// <param name="force">Сбросить кэш ширин и выполнить sync даже при совпадении значений.</param>
-    public static void RequestSync(DataGrid dataGrid, bool force = false)
+    public static void RequestSync(AvaloniaDataGrid dataGrid, bool force = false)
     {
         var state = GetOrCreateState(dataGrid);
         if (force)
@@ -140,9 +141,9 @@ internal static class TableHeaderDataGridSync
 
     /// <summary>
     /// Немедленно синхронизировать только скролл шапки (без coalesce).
-    /// Вызывается при прокрутке DataGrid и из <see cref="RunWidthSync"/>.
+    /// Вызывается при прокрутке AvaloniaDataGrid и из <see cref="RunWidthSync"/>.
     /// </summary>
-    public static void NotifyScrollChanged(DataGrid dataGrid)
+    public static void NotifyScrollChanged(AvaloniaDataGrid dataGrid)
     {
         if (!States.TryGetValue(dataGrid, out var state)) return;
         TryFindScrollBar(dataGrid, state);
@@ -156,9 +157,9 @@ internal static class TableHeaderDataGridSync
 
     /// <summary>
     /// Начало drag-resize колонки через кастомную шапку.
-    /// Подавляет полный sync из LayoutUpdated DataGrid на время перетаскивания.
+    /// Подавляет полный sync из LayoutUpdated AvaloniaDataGrid на время перетаскивания.
     /// </summary>
-    public static void BeginLiveColumnResize(DataGrid dataGrid, int columnIndex)
+    public static void BeginLiveColumnResize(AvaloniaDataGrid dataGrid, int columnIndex)
     {
         var state = GetOrCreateState(dataGrid);
         state.LiveResizeCount++;
@@ -168,7 +169,7 @@ internal static class TableHeaderDataGridSync
     /// <summary>
     /// Конец drag-resize. Выполняет финальный <see cref="RequestSync"/> для согласованности.
     /// </summary>
-    public static void EndLiveColumnResize(DataGrid dataGrid)
+    public static void EndLiveColumnResize(AvaloniaDataGrid dataGrid)
     {
         if (!States.TryGetValue(dataGrid, out var state)) return;
 
@@ -184,7 +185,7 @@ internal static class TableHeaderDataGridSync
     /// Синхронная точечная синхронизация шапки во время drag-resize (без очереди Render).
     /// Кэш ширин обновляется здесь — при IsLiveResizing LayoutUpdated не сканирует все колонки.
     /// </summary>
-    public static void SyncLiveColumnWidth(DataGrid dataGrid, int columnIndex, double width)
+    public static void SyncLiveColumnWidth(AvaloniaDataGrid dataGrid, int columnIndex, double width)
     {
         if (!States.TryGetValue(dataGrid, out var state)) return;
 
@@ -222,17 +223,17 @@ internal static class TableHeaderDataGridSync
 
     #region LayoutUpdated and sync scheduling
 
-    private static State GetOrCreateState(DataGrid dataGrid)
+    private static State GetOrCreateState(AvaloniaDataGrid dataGrid)
         => States.GetValue(dataGrid, _ => new State());
 
-    private static void EnsureLayoutSubscription(DataGrid dataGrid, State state)
+    private static void EnsureLayoutSubscription(AvaloniaDataGrid dataGrid, State state)
     {
         if (state.LayoutHandlerAttached) return;
         dataGrid.LayoutUpdated += OnDataGridLayoutUpdated;
         state.LayoutHandlerAttached = true;
     }
 
-    private static void TryDetachLayoutIfEmpty(DataGrid dataGrid, State state)
+    private static void TryDetachLayoutIfEmpty(AvaloniaDataGrid dataGrid, State state)
     {
         if (state.WidthBehaviors.Count > 0 || state.ScrollBehaviors.Count > 0) return;
 
@@ -251,7 +252,7 @@ internal static class TableHeaderDataGridSync
 
     private static void OnDataGridLayoutUpdated(object? sender, EventArgs e)
     {
-        if (sender is not DataGrid dataGrid) return;
+        if (sender is not AvaloniaDataGrid dataGrid) return;
 
         var state = GetOrCreateState(dataGrid);
         TryFindScrollBar(dataGrid, state);
@@ -275,7 +276,7 @@ internal static class TableHeaderDataGridSync
     /// Фильтр «шумных» LayoutUpdated: реагируем только на смену ширины грида,
     /// ширин колонок, видимости скролла или FrozenColumnCount.
     /// </summary>
-    private static bool HasRelevantLayoutChange(DataGrid dataGrid, State state)
+    private static bool HasRelevantLayoutChange(AvaloniaDataGrid dataGrid, State state)
     {
         var width = dataGrid.Bounds.Width;
         if (!double.IsNaN(state.LastGridWidth) && Math.Abs(width - state.LastGridWidth) > 0.5)
@@ -296,7 +297,7 @@ internal static class TableHeaderDataGridSync
         return hadScroll != state.HasHorizontalScroll || hadFrozen != state.CachedFrozenCount;
     }
 
-    private static bool ColumnWidthsChanged(DataGrid dataGrid, State state)
+    private static bool ColumnWidthsChanged(AvaloniaDataGrid dataGrid, State state)
     {
         var count = dataGrid.Columns.Count;
         if (state.ColumnWidths.Length != count)
@@ -319,12 +320,12 @@ internal static class TableHeaderDataGridSync
         return false;
     }
 
-    private static void ScheduleWidthSync(DataGrid dataGrid, State state, bool force = false)
+    private static void ScheduleWidthSync(AvaloniaDataGrid dataGrid, State state, bool force = false)
     {
         if (!force && state.WidthSyncPosted) return;
         state.WidthSyncPosted = true;
 
-        // Render — шапка успевает за layout DataGrid; Background давал визуальное отставание
+        // Render — шапка успевает за layout AvaloniaDataGrid; Background давал визуальное отставание
         Dispatcher.UIThread.Post(() =>
         {
             state.WidthSyncPosted = false;
@@ -333,7 +334,7 @@ internal static class TableHeaderDataGridSync
         }, DispatcherPriority.Render);
     }
 
-    private static void RunWidthSync(DataGrid dataGrid, State state, bool force)
+    private static void RunWidthSync(AvaloniaDataGrid dataGrid, State state, bool force)
     {
         TryFindScrollBar(dataGrid, state);
         RefreshScrollMode(dataGrid, state);
@@ -350,7 +351,7 @@ internal static class TableHeaderDataGridSync
 
     #region Scroll sync
 
-    private static void DispatchScrollSync(DataGrid dataGrid, State state)
+    private static void DispatchScrollSync(AvaloniaDataGrid dataGrid, State state)
     {
         var metrics = BuildMetrics(state);
         var scrollOffset = state.HScrollBar?.Value ?? 0;
@@ -359,7 +360,7 @@ internal static class TableHeaderDataGridSync
             behavior.SyncScroll(metrics, scrollOffset);
     }
 
-    private static void TryFindScrollBar(DataGrid dataGrid, State state)
+    private static void TryFindScrollBar(AvaloniaDataGrid dataGrid, State state)
     {
         if (state.HScrollBar is not null) return;
 
@@ -385,7 +386,7 @@ internal static class TableHeaderDataGridSync
 
     #region Metrics and width cache
 
-    private static void RefreshScrollMode(DataGrid dataGrid, State state)
+    private static void RefreshScrollMode(AvaloniaDataGrid dataGrid, State state)
     {
         state.HasHorizontalScroll = state.HScrollBar?.IsVisible == true;
         state.CachedFrozenCount = dataGrid.FrozenColumnCount;
@@ -407,7 +408,7 @@ internal static class TableHeaderDataGridSync
             FrozenColumnCount = state.CachedFrozenCount
         };
 
-    private static void CaptureColumnWidths(DataGrid dataGrid, State state)
+    private static void CaptureColumnWidths(AvaloniaDataGrid dataGrid, State state)
     {
         var count = dataGrid.Columns.Count;
         ResizeWidthCache(state, count);

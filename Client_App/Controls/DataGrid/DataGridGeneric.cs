@@ -22,7 +22,6 @@ using System.Text.RegularExpressions;
 using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.Interfaces;
 using Client_App.Resources;
-using Client_App.Views.Controls;
 using Client_App.VisualRealization.Converters;
 using Models.Forms;
 using Models.Forms.Form1;
@@ -996,7 +995,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     private TextBox? _searchTextBox;
     private StackPanel? _sumColumnStackPanel;
     private Border? _gridLoadingOverlay;
-    private IndeterminateMarqueeBar? _gridLoadingMarquee;
     private int _gridLoadingDepth;
     private int _updateCellsGeneration;
 
@@ -1081,19 +1079,47 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     }
 
     #region SetSelectedControls
+
+    private bool ShouldUseLineSelection()
+    {
+        if (ChooseMode == ChooseMode.Line)
+            return true;
+
+        // № п/п (column 0): select whole rows when anchor started there.
+        return FirstPressedItem[1] == 0;
+    }
+
+    private int GetMaxColumnIndex()
+    {
+        if (Rows.Count == 0)
+            return 0;
+
+        return Rows
+            .Where(r => r.IsVisible)
+            .SelectMany(r => r.Children)
+            .OfType<Cell>()
+            .Select(c => c.Column)
+            .DefaultIfEmpty(0)
+            .Max();
+    }
+
     private void SetSelectedControls()
     {
         if (Items == null || Items.Count == 0) return;
-        if (ChooseMode == ChooseMode.Cell)
+
+        if (ShouldUseLineSelection())
         {
-            if (MultilineMode == MultilineMode.Multi) SetSelectedControls_CellMulti();
-            if (MultilineMode == MultilineMode.Single) SetSelectedControls_CellSingle();
+            if (MultilineMode == MultilineMode.Multi)
+                SetSelectedControls_LineMulti();
+            else
+                SetSelectedControls_LineSingle();
+            return;
         }
-        if (ChooseMode == ChooseMode.Line)
-        {
-            if (MultilineMode == MultilineMode.Multi) SetSelectedControls_LineMulti();
-            if (MultilineMode == MultilineMode.Single) SetSelectedControls_LineSingle();
-        }
+
+        if (MultilineMode == MultilineMode.Multi)
+            SetSelectedControls_CellMulti();
+        else
+            SetSelectedControls_CellSingle();
     }
 
     private void SetSelectedControls_LineSingle()
@@ -1496,7 +1522,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         var paramRowColumn = FindMousePress([paramPos.Y, paramPos.X]);
         //if (LastPressedItem[0] != paramRowColumn[0] || LastPressedItem[1] != paramRowColumn[1])
         {
-            LastPressedItem = paramRowColumn;
+            LastPressedItem[0] = paramRowColumn[0];
+            LastPressedItem[1] = ShouldUseLineSelection() ? GetMaxColumnIndex() : paramRowColumn[1];
             //ScrollLeftRight = 0;
             SetSelectedControls();
         }
@@ -1523,7 +1550,8 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             ScrollLeftRight -= 50;
         }
-        LastPressedItem = paramRowColumn;
+        LastPressedItem[0] = paramRowColumn[0];
+        LastPressedItem[1] = ShouldUseLineSelection() ? GetMaxColumnIndex() : paramRowColumn[1];
         SetSelectedControls();
         //else
         //{
@@ -1579,7 +1607,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         {
             if (_gridLoadingOverlay != null)
                 _gridLoadingOverlay.IsVisible = true;
-            _gridLoadingMarquee?.Start();
             await PumpUiFrameAsync();
         }
 
@@ -1594,7 +1621,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             {
                 if (_gridLoadingOverlay != null)
                     _gridLoadingOverlay.IsVisible = false;
-                _gridLoadingMarquee?.Stop();
             }
         }
     }
@@ -1863,8 +1889,13 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
 
     private void ChooseAllRow(object sender, RoutedEventArgs args)
     {
+        if (sender is not Cell cell)
+            return;
+
+        FirstPressedItem[0] = cell.Row;
+        LastPressedItem[0] = cell.Row;
         FirstPressedItem[1] = 0;
-        LastPressedItem[1] = Rows[0].Children.Count;
+        LastPressedItem[1] = GetMaxColumnIndex();
         SetSelectedControls();
     }
 
@@ -1894,7 +1925,7 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 await PumpUiFrameAsync();
                 MakeHeaderRows();
                 await PumpUiFrameAsync();
-                MakeCenterRows();
+                await MakeCenterRowsAsync();
                 await PumpUiFrameAsync();
                 ApplyCenterPanelWidthIfNeeded();
                 UpdateCellsCore();
@@ -2097,7 +2128,13 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         textBox.Padding = centerContent ? new Thickness(0) : new Thickness(4, 0, 2, 0);
     }
 
-    private void MakeCenterInner(DataGridColumns ls)
+    private void MakeCenterInner(DataGridColumns ls) =>
+        MakeCenterInnerCore(ls, yieldFrames: false).GetAwaiter().GetResult();
+
+    private Task MakeCenterInnerAsync(DataGridColumns ls) =>
+        MakeCenterInnerCore(ls, yieldFrames: true);
+
+    private async Task MakeCenterInnerCore(DataGridColumns ls, bool yieldFrames)
     {
         if (ls == null) return;
 
@@ -2295,6 +2332,9 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
             rowStackPanel.IsVisible = false;
             CenterStackPanel.Children.Add(rowStackPanel);
             Rows.Add(rowStackPanel);
+
+            if (yieldFrames && (i & 1) == 1)
+                await PumpUiFrameAsync();
         }
     }
 
@@ -2308,6 +2348,12 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
     {
         var columns = Columns;
         MakeCenterInner(columns);
+    }
+
+    private async Task MakeCenterRowsAsync()
+    {
+        var columns = Columns;
+        await MakeCenterInnerAsync(columns);
     }
 
     private void MakeAll()
@@ -2652,11 +2698,6 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
         };
         gridRoot.Children.Add(mainPanel);
 
-        _gridLoadingMarquee = new IndeterminateMarqueeBar
-        {
-            TrackWidth = 180,
-            HorizontalAlignment = HorizontalAlignment.Center,
-        };
         var loadingCard = new Border
         {
             HorizontalAlignment = HorizontalAlignment.Center,
@@ -2671,7 +2712,15 @@ public class DataGrid<T> : UserControl, IDataGrid where T : class, IKey, IDataGr
                 Spacing = 10,
                 Children =
                 {
-                    _gridLoadingMarquee,
+                    new ProgressBar
+                    {
+                        Width = 180,
+                        Height = 6,
+                        Minimum = 0,
+                        Maximum = 100,
+                        IsIndeterminate = true,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                    },
                     new TextBlock
                     {
                         Text = "\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430\u2026",

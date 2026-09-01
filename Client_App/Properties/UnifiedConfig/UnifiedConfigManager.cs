@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Client_App.Behaviors.DataGrid;
 using Client_App.ViewModels;
 
 namespace Client_App.Properties.UnifiedConfig;
@@ -185,7 +186,8 @@ public static class UnifiedConfigManager
         var config = LoadConfig();
         if (config.ColumnWidths.ColumnWidthSettings.Contains(formNum))
         {
-            return config.ColumnWidths.ColumnWidthSettings[formNum] as List<double> ?? new List<double>();
+            var widths = config.ColumnWidths.ColumnWidthSettings[formNum] as List<double> ?? new List<double>();
+            return DataGridColumnWidthClamp.SanitizeSavedWidths(widths);
         }
         return new List<double>();
     }
@@ -196,7 +198,8 @@ public static class UnifiedConfigManager
     public static void SaveColumnWidths(List<double> formSettings, string formNum)
     {
         var config = LoadConfig();
-        config.ColumnWidths.ColumnWidthSettings[formNum] = formSettings;
+        config.ColumnWidths.ColumnWidthSettings[formNum] =
+            DataGridColumnWidthClamp.SanitizeSavedWidths(formSettings);
         
         // Переупорядочиваем ключи после добавления/обновления
         ReorderColumnWidths(config);

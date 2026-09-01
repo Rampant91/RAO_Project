@@ -6,7 +6,9 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
+using Client_App.Resources;
 using Client_App.ViewModels.Forms.Forms1;
+using Client_App.Views.Forms;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
@@ -31,10 +33,10 @@ public partial class Form_10 : BaseWindow<Form_10VM>
 
     public Form_10(Form_10VM vm)
     {
-        DataContext = vm;
         _vm = vm;
         AvaloniaXamlLoader.Load(this);
-        Name = "1.0";
+        FormWindowNames.SetWindowKey(this, nameof(Form_10));
+        DataContext = vm;
         Closing += OnStandardClosing;
     }
 
@@ -61,7 +63,7 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         }
 
         var db = StaticConfiguration.DBModel;
-        var window = Desktop.Windows.FirstOrDefault(x => x.Name is "1.0");
+        var window = FormWindowNames.FindOpenFormWindow("1.0") ?? this;
 
         var query = db.ReportsCollectionDbSet
             .AsNoTracking()
@@ -103,8 +105,8 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         //        .GetMessageBoxStandard(new MessageBoxStandardParams
         //        {
         //            ButtonDefinitions = ButtonEnum.Ok,
-        //            ContentTitle = "������ ��� ���������� ���������� ����� �����������",
-        //            ContentHeader = "������",
+        //            ContentTitle = FormDialogTexts.SaveChangesTitle,
+        //            ContentHeader = FormDialogTexts.NotificationHeader,
         //            ContentMessage =
         //                $"�� ������� ��������� ��������� � ��������� ����� �����������, " +
         //                $"��������� ����������� � ������� ���� � ���.� ��� ���������� � ���� ������. " +
@@ -157,22 +159,19 @@ public partial class Form_10 : BaseWindow<Form_10VM>
                 .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
-                    [
-                        new ButtonDefinition { Name = "��" },
-                        new ButtonDefinition { Name = "���" }
-                    ],
-                    ContentTitle = "����� 1.0",
-                    ContentHeader = "�����������",
-                    ContentMessage = "��� ���������� ������ ������������� ���������������� �������������, " +
-                                     $"{Environment.NewLine}����� ���������� ��������� ������ ������������ ����. " +
-                                     $"{Environment.NewLine}�� �������, ��� ������ ������� �����, " +
-                                     $"������� ������ ������������ ���� ��������������?",
+                [
+                    FormDialogTexts.YesButton,
+                    FormDialogTexts.NoButton
+                ],
+                    ContentTitle = FormDialogTexts.SaveChangesTitle,
+                    ContentHeader = FormDialogTexts.NotificationHeader,
+                    ContentMessage = FormDialogTexts.IncompleteJuridicalPersonFieldsCloseMessage,
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
                 }).ShowWindowDialogAsync(desktop.MainWindow));
 
-            if (answer is not "��")
+            if (answer is not FormDialogTexts.Yes)
             {
                 args.Cancel = true;
                 return;
@@ -188,12 +187,12 @@ public partial class Form_10 : BaseWindow<Form_10VM>
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "��" },
-                    new ButtonDefinition { Name = "���" }
+                    FormDialogTexts.YesButton,
+                    FormDialogTexts.NoButton
                 ],
-                ContentTitle = "���������� ���������",
-                ContentHeader = "�����������",
-                ContentMessage = $"��������� ����� {vm.FormType}?",
+                ContentTitle = FormDialogTexts.SaveChangesTitle,
+                ContentHeader = FormDialogTexts.NotificationHeader,
+                ContentMessage = FormDialogTexts.SaveFormMessage(vm.FormType),
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
@@ -205,7 +204,7 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         var dbm = StaticConfiguration.DBModel;
         switch (res.Result)
         {
-            case "��":
+            case FormDialogTexts.Yes:
             {
                 try
                 {
@@ -220,7 +219,7 @@ public partial class Form_10 : BaseWindow<Form_10VM>
                 }
                 return;
             }
-            case "���":
+            case FormDialogTexts.No:
             {
                 flag = true;
                 dbm.Restore();

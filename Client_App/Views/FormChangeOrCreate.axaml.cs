@@ -1,4 +1,4 @@
-﻿using MsBox.Avalonia;
+using MsBox.Avalonia;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
@@ -17,6 +17,7 @@ using Client_App.Commands.SyncCommands;
 using Client_App.Controls.DataGrid;
 using Client_App.Controls.DataGrid.DataGrids;
 using Client_App.Interfaces.Logger;
+using Client_App.Resources;
 using Client_App.VisualRealization.Long_Visual;
 using MsBox.Avalonia.Models;
 using Models.Forms;
@@ -768,14 +769,13 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
                 .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
-                    [
-                        new ButtonDefinition { Name = "Да" },
-                        new ButtonDefinition { Name = "Нет" }
-                    ],
+                [
+                    FormDialogTexts.YesButton,
+                    FormDialogTexts.NoButton
+                ],
                     ContentTitle = "Сохранение изменений",
                     ContentHeader = "Уведомление",
-                    ContentMessage = $"В форме {vm.FormType} обнаружены пустые строки." +
-                                     $"{Environment.NewLine}Вы хотите их удалить?",
+                    ContentMessage = FormDialogTexts.RemoveEmptyRowsMessage(vm.FormType),
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
@@ -783,7 +783,7 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
 
             #endregion
 
-            if (res is "Да")
+            if (res is FormDialogTexts.Yes)
             {
                 await using var db = new DBModel(StaticConfiguration.DBPath);
                 foreach (var form in formToDeleteList)
@@ -4835,8 +4835,8 @@ public FormChangeOrCreate(ChangeOrCreateVM param)
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" }
+                    FormDialogTexts.YesButton,
+                    FormDialogTexts.NoButton
                 ],
                 ContentTitle = "Сохранение изменений",
                 ContentHeader = "Уведомление",

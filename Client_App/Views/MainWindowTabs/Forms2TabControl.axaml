@@ -10,7 +10,7 @@
 			 xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
 			 xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 			 xmlns:local="using:Client_App.Behaviors"
-			 xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
+			 xmlns:dgBehaviors="using:Client_App.Behaviors.DataGrid"
 			 xmlns:vm="using:Client_App.ViewModels.MainWindowTabs"
 			 xmlns:customConverters="clr-namespace:Client_App.Resources.CustomConverters"
 			 x:DataType="vm:Forms2TabControlVM"
@@ -45,17 +45,20 @@
                          Text="{Binding SearchText, Mode=OneWayToSource}"/>
 				<Grid Grid.Row="2" Margin="5">
 				<DataGrid x:Name="ReportsDataGrid"
+                          Classes="main-list-grid"
                           ItemsSource="{Binding ReportsCollection, Mode=TwoWay}"
                           SelectionMode="Single"
                           SelectedItem="{Binding SelectedReports, Mode=OneWayToSource}"
                           RowHeight="25"
                           GridLinesVisibility="All"
                           RowBackground="White"
-                          CanUserSortColumns="False">
+                          CanUserSortColumns="False"
+                          CanUserResizeColumns="True">
 
 					<interactivity:Interaction.Behaviors>
 						<dgBehaviors:DataGridDoubleClickOpenFormBehavior />
                         <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
+						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="MainWindow.Orgs.2" />
 					</interactivity:Interaction.Behaviors>
 
 					<DataGrid.ContextMenu>
@@ -297,10 +300,10 @@
 					</DataGrid.ContextMenu>
 
 						<DataGrid.Columns>
-							<DataGridTemplateColumn Width="88" IsReadOnly="True">
+							<DataGridTemplateColumn Width="68" MinWidth="56" MaxWidth="96" IsReadOnly="True">
 							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
-									<Border Classes="headerTemplate">
+									<Border Classes="headerTemplate headerTemplate-compact">
 										<TextBlock Text="Рег. №" TextWrapping="NoWrap" HorizontalAlignment="Center"/>
 									</Border>
 								</DataTemplate>
@@ -312,7 +315,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn Width="*" IsReadOnly="True">
+							<DataGridTemplateColumn Width="*" MinWidth="100" IsReadOnly="True">
 								<DataGridTemplateColumn.HeaderTemplate>
 									<DataTemplate>
 										<Border Classes="headerTemplate">
@@ -337,7 +340,7 @@
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
 
-							<DataGridTemplateColumn Width="100" IsReadOnly="True">
+							<DataGridTemplateColumn Width="128" MinWidth="112" MaxWidth="200" IsReadOnly="True">
 								<DataGridTemplateColumn.HeaderTemplate>
 									<DataTemplate>
 										<Border Classes="headerTemplate">
@@ -372,7 +375,8 @@
                                                    Grid.Row="0" 
                                                    Grid.Column="1" 
                                                    Margin="5"
-                                                   Minimum="1"/>
+                                                   Minimum="1"
+                                                   Maximum="{Binding TotalPagesOrgs}"/>
 						<TextBlock Text="Кол-во страниц:"
                                    Grid.Row="0" 
                                    Grid.Column="2" 
@@ -654,17 +658,20 @@
 						   TextWrapping="Wrap" />
 				<Grid Grid.Row="1" Margin="5">
 				<DataGrid x:Name="ReportDataGrid"
+                          Classes="main-list-grid"
                           ItemsSource="{Binding ReportCollection}"
                           SelectionMode="Single"
                           SelectedItem="{Binding SelectedReport}"
                           RowHeight="25"
                           GridLinesVisibility="All"
                           RowBackground="White"
-                          CanUserSortColumns="False">
+                          CanUserSortColumns="False"
+                          CanUserResizeColumns="True">
 					
 					<interactivity:Interaction.Behaviors>
 						<dgBehaviors:DataGridDoubleClickOpenFormBehavior />
                         <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
+						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="MainWindow.Reports.2" />
 					</interactivity:Interaction.Behaviors>
 					
 					<DataGrid.ContextMenu>
@@ -703,6 +710,8 @@
 					<DataGrid.Columns>
 						<DataGridTextColumn x:DataType="models:Report"
                                             Width="Auto"
+                                            MinWidth="48"
+                                            MaxWidth="80"
                                             IsReadOnly="True"
                                             Binding="{Binding FormNum.Value}">
 							<DataGridTextColumn.HeaderTemplate>
@@ -718,6 +727,8 @@
 						</DataGridTextColumn>
 						<DataGridTextColumn x:DataType="models:Report"
                                             Width="*"
+                                            MinWidth="72"
+                                            MaxWidth="120"
                                             IsReadOnly="True"
                                             Binding="{Binding Year.Value}">
 							<DataGridTextColumn.HeaderTemplate>
@@ -733,6 +744,8 @@
 						</DataGridTextColumn>
 						<DataGridTextColumn x:DataType="models:Report"
                                             Width="*"
+                                            MinWidth="96"
+                                            MaxWidth="160"
                                             IsReadOnly="True"
                                             Binding="{Binding ExportDate.Value}">
 							<DataGridTextColumn.HeaderTemplate>
@@ -748,6 +761,8 @@
 						</DataGridTextColumn>
 						<DataGridTextColumn x:DataType="models:Report"
                                             Width="*"
+                                            MinWidth="80"
+                                            MaxWidth="140"
                                             IsReadOnly="True"
                                             Binding="{Binding CorrectionNumber.Value}">
 							<DataGridTextColumn.HeaderTemplate>
@@ -763,6 +778,7 @@
 						</DataGridTextColumn>
 						<DataGridTextColumn x:DataType="models:Report"
                                             Width="2*"
+                                            MinWidth="120"
                                             IsReadOnly="False"
                                             Binding="{Binding Comments.Value}">
 							<DataGridTextColumn.HeaderTemplate>
@@ -793,7 +809,8 @@
                                                    Grid.Row="0" 
                                                    Grid.Column="1" 
                                                   Margin="5"
-                                                   Minimum="1"/>
+                                                   Minimum="1"
+                                                   Maximum="{Binding TotalPagesForms}"/>
 						<TextBlock Text ="Всего страниц:"
                                    Grid.Row="0" 
                                    Grid.Column="2" 

@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using AvaloniaDataGrid = Avalonia.Controls.DataGrid;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Xaml.Interactivity;
@@ -7,9 +8,9 @@ using System.Linq;
 using Avalonia.VisualTree;
 using Avalonia.Threading;
 
-namespace Client_App.Behaviors.DataGridBehaviors;
+namespace Client_App.Behaviors.DataGrid;
 
-public class DataGridAlternateArrowsKeyBehavior : Behavior<DataGrid>
+public class DataGridAlternateArrowsKeyBehavior : Behavior<AvaloniaDataGrid>
     {
         public Control? cell { get; set; } = null;
         public static readonly StyledProperty<bool> IsEditingProperty =
@@ -182,9 +183,9 @@ public class DataGridAlternateArrowsKeyBehavior : Behavior<DataGrid>
             return cells.IndexOf(cell);
         }
 
-        private DataGridRow? GetRowByIndex(DataGrid dataGrid, int index)
+        private DataGridRow? GetRowByIndex(AvaloniaDataGrid dataGrid, int index)
         {
-            // Ищем все строки в DataGrid
+            // Ищем все строки в AvaloniaDataGrid
             var rows = dataGrid.GetVisualDescendants().OfType<DataGridRow>().ToList();
 
             foreach (var row in rows)

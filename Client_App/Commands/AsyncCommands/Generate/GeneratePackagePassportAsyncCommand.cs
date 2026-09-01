@@ -6,6 +6,7 @@ using Avalonia.Threading;
 using Client_App.ViewModels.Forms;
 using Client_App.Services.DataAccess;
 using Client_App.Views;
+using Client_App.Views.Forms;
 using DynamicData;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Models;
@@ -32,8 +33,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
     {
         Report Report => formVM.Report;
         List<Form17> Rows17 = [];
-        Window owner => (Application.Current.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows
-                    .FirstOrDefault(w => w.Name == "1.7");
+        Window? owner => FormWindowNames.FindOpenFormWindow("1.7");
 
         private Form10 reportingOrganizationInfo;
 

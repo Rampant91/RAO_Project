@@ -1,15 +1,16 @@
 using Avalonia;
 using Avalonia.Controls;
+using AvaloniaDataGrid = Avalonia.Controls.DataGrid;
 using Avalonia.Input;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 
-namespace Client_App.Behaviors.DataGridBehaviors;
+namespace Client_App.Behaviors.DataGrid;
 
 /// <summary>
-/// Сбрасывает выделение DataGrid при клике вне грида (в пределах окна).
+/// Сбрасывает выделение AvaloniaDataGrid при клике вне грида (в пределах окна).
 /// </summary>
-public class DataGridClearSelectionOnOutsideClickBehavior : Behavior<DataGrid>
+public class DataGridClearSelectionOnOutsideClickBehavior : Behavior<AvaloniaDataGrid>
 {
     private Window? _parentWindow;
     private bool _isAttached;

@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using AvaloniaDataGrid = Avalonia.Controls.DataGrid;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 using System;
@@ -10,7 +11,7 @@ using System.Reactive.Linq;
 namespace Client_App.Behaviors.TableHeader;
 
 /// <summary>
-/// Ширины кастомной шапки относительно DataGrid.
+/// Ширины кастомной шапки относительно AvaloniaDataGrid.
 /// </summary>
 public class TableHeaderColumnWidthSyncBehavior : Behavior<Grid>
 {
@@ -20,10 +21,10 @@ public class TableHeaderColumnWidthSyncBehavior : Behavior<Grid>
     private bool? _lastHasHorizontalScroll;
     private int _lastFrozenColumnCount = -1;
 
-    public static readonly AttachedProperty<DataGrid?> SourceDataGridProperty =
-        AvaloniaProperty.RegisterAttached<TableHeaderColumnWidthSyncBehavior, Grid, DataGrid?>("SourceDataGrid");
+    public static readonly AttachedProperty<AvaloniaDataGrid?> SourceDataGridProperty =
+        AvaloniaProperty.RegisterAttached<TableHeaderColumnWidthSyncBehavior, Grid, AvaloniaDataGrid?>("SourceDataGrid");
 
-    public DataGrid? SourceDataGrid
+    public AvaloniaDataGrid? SourceDataGrid
     {
         get => GetValue(SourceDataGridProperty);
         set => SetValue(SourceDataGridProperty, value);
@@ -71,7 +72,7 @@ public class TableHeaderColumnWidthSyncBehavior : Behavior<Grid>
     private void OnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
         SourceDataGrid ??= AssociatedObject.GetVisualAncestors()
-            .OfType<DataGrid>()
+            .OfType<AvaloniaDataGrid>()
             .FirstOrDefault();
 
         if (SourceDataGrid != null)
@@ -126,9 +127,10 @@ public class TableHeaderColumnWidthSyncBehavior : Behavior<Grid>
 
             var gridIndex = i - start;
             var displayWidth = SourceDataGrid.Columns[i].Width.DisplayValue;
-            if (displayWidth <= 0) continue;
+            if (!double.IsFinite(displayWidth) || displayWidth <= 0) continue;
 
             var headerWidth = TableHeaderColumnWidth.FromDataGridDisplayWidth(displayWidth, metrics, i);
+            if (!double.IsFinite(headerWidth) || headerWidth <= 0) continue;
 
             if (!force && Math.Abs(_lastAppliedWidths[gridIndex] - headerWidth) < 0.05)
                 continue;

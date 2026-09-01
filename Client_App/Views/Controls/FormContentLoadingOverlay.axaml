@@ -14,9 +14,12 @@
                 Padding="24,18"
                 MinWidth="240">
             <StackPanel Spacing="12">
-                <controls:IndeterminateMarqueeBar x:Name="Marquee"
-                                                  TrackWidth="220"
-                                                  HorizontalAlignment="Center" />
+                <ProgressBar Width="220"
+                             Height="6"
+                             Minimum="0"
+                             Maximum="100"
+                             IsIndeterminate="True"
+                             HorizontalAlignment="Center" />
                 <TextBlock HorizontalAlignment="Center"
                            FontSize="14"
                            Foreground="#FF333333"

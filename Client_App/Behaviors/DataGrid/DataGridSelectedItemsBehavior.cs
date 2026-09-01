@@ -1,16 +1,17 @@
 using Avalonia;
 using Avalonia.Controls;
+using AvaloniaDataGrid = Avalonia.Controls.DataGrid;
 using Avalonia.Xaml.Interactivity;
 using System.Collections;
 using Models.Forms.Form1;
 
-namespace Client_App.Behaviors.DataGridBehaviors;
+namespace Client_App.Behaviors.DataGrid;
 
 /// <summary>
-/// Этот Behavior используется для привязки к DataGrid нового параметра, хранящего все выделенные ячейки
+/// Этот Behavior используется для привязки к AvaloniaDataGrid нового параметра, хранящего все выделенные ячейки
 /// Без него выделение всех строк работает некорректно
 /// </summary>
-public class DataGridSelectedItemsBehavior : Behavior<DataGrid>
+public class DataGridSelectedItemsBehavior : Behavior<AvaloniaDataGrid>
 {
     public static readonly StyledProperty<IList?> SelectedItemsProperty =
         AvaloniaProperty.Register<DataGridSelectedItemsBehavior, IList?>(
@@ -56,7 +57,7 @@ public class DataGridSelectedItemsBehavior : Behavior<DataGrid>
 
             try
             {
-                // Обновляем выделение в DataGrid при изменении SelectedItems
+                // Обновляем выделение в AvaloniaDataGrid при изменении SelectedItems
                 AssociatedObject.SelectedItems.Clear();
                 foreach (var item in SelectedItems)
                 {
@@ -79,7 +80,7 @@ public class DataGridSelectedItemsBehavior : Behavior<DataGrid>
 
         try
         {
-            // Обновляем SelectedItems при изменении выделения в DataGrid
+            // Обновляем SelectedItems при изменении выделения в AvaloniaDataGrid
             SelectedItems.Clear();
             foreach (var item in AssociatedObject.SelectedItems)
             {

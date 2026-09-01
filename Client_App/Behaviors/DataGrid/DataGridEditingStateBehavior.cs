@@ -1,18 +1,19 @@
 using Avalonia;
 using Avalonia.Controls;
+using AvaloniaDataGrid = Avalonia.Controls.DataGrid;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
 using System.Linq;
 
-namespace Client_App.Behaviors.DataGridBehaviors;
+namespace Client_App.Behaviors.DataGrid;
 
 /// <summary>
-/// Behavior to expose a bindable IsEditing flag for a DataGrid based on its edit lifecycle events.
+/// Behavior to expose a bindable IsEditing flag for a AvaloniaDataGrid based on its edit lifecycle events.
 /// Works with Avalonia 0.10.x.
 /// </summary>
-public class DataGridEditingStateBehavior : Behavior<DataGrid>
+public class DataGridEditingStateBehavior : Behavior<AvaloniaDataGrid>
 {
     public static readonly StyledProperty<bool> IsEditingProperty =
         AvaloniaProperty.Register<DataGridEditingStateBehavior, bool>(nameof(IsEditing));
@@ -82,7 +83,7 @@ public class DataGridEditingStateBehavior : Behavior<DataGrid>
         if (AssociatedObject == null)
             return;
 
-        // If focus moved outside the DataGrid or no TextBox within has focus, reset
+        // If focus moved outside the AvaloniaDataGrid or no TextBox within has focus, reset
         if (!AssociatedObject.IsKeyboardFocusWithin)
         {
             IsEditing = false;
@@ -92,7 +93,7 @@ public class DataGridEditingStateBehavior : Behavior<DataGrid>
         // If still inside, check if any TextBox retains focus; if not, assume edit ended
         if (e.Source is Visual v)
         {
-            // Defer to DataGrid events when possible, but ensure fallback
+            // Defer to AvaloniaDataGrid events when possible, but ensure fallback
             // Keep true if another TextBox is focused; otherwise set false
             var focused = TopLevel.GetTopLevel(AssociatedObject!)?.FocusManager?.GetFocusedElement();
             if (focused is Visual focusedVisual && AssociatedObject is Visual gridVisual)

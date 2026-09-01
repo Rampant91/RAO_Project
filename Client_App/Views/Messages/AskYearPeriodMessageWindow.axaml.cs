@@ -2,6 +2,8 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Client_App.ViewModels.Messages;
 
+using Client_App.Resources;
+
 namespace Client_App.Views.Messages;
 
 public partial class AskYearPeriodMessageWindow : BaseWindow<AskYearPeriodMessageVM>
@@ -17,7 +19,7 @@ public partial class AskYearPeriodMessageWindow : BaseWindow<AskYearPeriodMessag
 
     private void OnCancelButtonClicked(object? sender, RoutedEventArgs e)
     {
-        Close(("Îòìåíà", 0, 0));
+        Close(("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", 0, 0));
     }
 
     private void OnOkButtonClicked(object? sender, RoutedEventArgs e)
@@ -32,8 +34,8 @@ public partial class AskYearPeriodMessageWindow : BaseWindow<AskYearPeriodMessag
         {
             maxYear = maxYearParse;
         }
-        if (minYear > maxYear) Close(("Îê", 0, 9999));
+        if (minYear > maxYear) Close(("ï¿½ï¿½", 0, 9999));
 
-        Close(("Îê", minYear, maxYear));
+        Close(("ï¿½ï¿½", minYear, maxYear));
     }
 }

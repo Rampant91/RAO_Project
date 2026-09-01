@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Services.DataAccess;
+using Client_App.Views.Forms;
 
 using MsBox.Avalonia.Enums;
 namespace Client_App.Commands.AsyncCommands.SourceTransmission;
@@ -35,7 +36,7 @@ public class SourceTransmissionAsyncCommand : SourceTransmissionBaseAsyncCommand
 
         var form = (Form1)parameter;
 
-        var formWindow = Desktop.Windows.FirstOrDefault(x => x.Name == form.FormNum_DB);
+        var formWindow = FormWindowNames.FindOpenFormWindow(form.FormNum_DB);
         var desktop = (IClassicDesktopStyleApplicationLifetime)Avalonia.Application.Current?.ApplicationLifetime!;
         var activeWindow = formWindow ?? desktop.MainWindow;
 

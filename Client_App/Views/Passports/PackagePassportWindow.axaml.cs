@@ -1,10 +1,11 @@
-﻿using MsBox.Avalonia;
+using MsBox.Avalonia;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
+using Client_App.Resources;
 using Client_App.ViewModels.Passports;
 using Client_App.Views;
 using MsBox.Avalonia.Dto;
@@ -121,13 +122,13 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "��" },
-                    new ButtonDefinition { Name = "���" },
-                    new ButtonDefinition { Name = "������" }
+                    FormDialogTexts.YesButton,
+                    FormDialogTexts.NoButton,
+                    FormDialogTexts.CancelButton
                 ],
-                ContentTitle = "���������� ���������",
-                ContentHeader = "�����������",
-                ContentMessage = $"��������� ������� �� �������� ������� ������������� �������?",
+                ContentTitle = FormDialogTexts.SaveChangesTitle,
+                ContentHeader = FormDialogTexts.NotificationHeader,
+                ContentMessage = FormDialogTexts.SavePackagePassportMessage,
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             }).ShowWindowDialogAsync(this));
@@ -137,10 +138,9 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
         var dbm = StaticConfiguration.DBModel;
         switch (res)
         {
-            case "��":
+            case FormDialogTexts.Yes:
                 {
                     _isCloseConfirmed = true;
-
 
                     try
                     {
@@ -153,12 +153,11 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
                         {
                             ButtonDefinitions =
                             [
-                                new ButtonDefinition { Name = "��" },
+                                FormDialogTexts.OkButton,
                             ],
-                            ContentTitle = "���������� ���������",
-                            ContentHeader = "������",
-                            ContentMessage = $"��������� ������ �� ����� ������� ����������:\n" +
-                                $"{ex.Message}",
+                            ContentTitle = FormDialogTexts.SaveChangesTitle,
+                            ContentHeader = FormDialogTexts.ErrorHeader,
+                            ContentMessage = FormDialogTexts.SaveErrorMessage(ex.Message),
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
                         }).ShowWindowDialogAsync(this));
@@ -175,21 +174,21 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
 
                     break;
                 }
-            case "���":
+            case FormDialogTexts.No:
                 {
                     _isCloseConfirmed = true;
                     dbm.Restore();
                     await dbm.SaveChangesAsync();
 
-
                     break;
                 }
-            case "������" or null:
+            case FormDialogTexts.Cancel or null:
                 {
                     _isCloseConfirmed = false;
                     return;
                 }
         }
+
         desktop.MainWindow.WindowState = OwnerPrevState;
 
         if (_isCloseConfirmed)      //����� �� ����������� �������

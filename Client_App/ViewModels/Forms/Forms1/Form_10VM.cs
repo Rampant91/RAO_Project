@@ -1,8 +1,11 @@
 ﻿using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Interfaces.Logger;
+using Client_App.Interfaces.Logger.EnumLogger;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
@@ -138,13 +141,22 @@ public class Form_10VM : BaseVM, INotifyPropertyChanged
 
     public Form_10VM(string formNum, in Report rep)
     {
-        if (rep.FormNum_DB is "1.0" or "2.0")
+        if (formNum is "1.0" or "2.0")
         {
             Storage = rep;
         }
 
         FormType = formNum;
-        StaticConfiguration.DBModel.SaveChanges();
+        try
+        {
+            StaticConfiguration.DBModel.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            ServiceExtension.LoggerManager.Error(
+                $"Form_10VM.SaveChanges: {ex.Message}{Environment.NewLine}{ex.StackTrace}",
+                ErrorCodeLogger.Application);
+        }
     }
 
     #endregion

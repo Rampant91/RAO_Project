@@ -9,8 +9,10 @@
         <converter:CheckReportsAnyMatchingFormNumConverter x:Key="CheckReportsAnyMatchingFormNum"/>
     </UserControl.Resources>
 
-    <Button Width="35" Height="40" Margin="0,0,2,0"
-            Padding="0"
+    <Button Width="44" Height="44" Margin="0,0,3,0"
+            Padding="4"
+            FontSize="13"
+            FontWeight="SemiBold"
             HorizontalContentAlignment="Center"
             VerticalContentAlignment="Center"
             Content="{Binding FormNum, ElementName=FormNumButtonControl}"

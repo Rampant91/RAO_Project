@@ -1,5 +1,6 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
+using AvaloniaDataGrid = Avalonia.Controls.DataGrid;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
 using Avalonia.Xaml.Interactivity;
@@ -9,9 +10,9 @@ using Client_App.ViewModels;
 using Client_App.Views;
 using Models.Collections;
 
-namespace Client_App.Behaviors.DataGridBehaviors;
+namespace Client_App.Behaviors.DataGrid;
 
-public class DataGridDoubleClickOpenFormBehavior : Behavior<DataGrid>
+public class DataGridDoubleClickOpenFormBehavior : Behavior<AvaloniaDataGrid>
 {
     protected override void OnAttached()
     {

@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
+using AvaloniaDataGrid = Avalonia.Controls.DataGrid;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -10,12 +11,12 @@ using Models.Forms.Form1;
 using System.Linq;
 using System.Reflection;
 
-namespace Client_App.Behaviors.DataGridBehaviors;
+namespace Client_App.Behaviors.DataGrid;
 
 /// <summary>
-/// Автозамена для форм 1.x на стандартном Avalonia DataGrid (не DataGridGeneric).
+/// Автозамена для форм 1.x на стандартном Avalonia AvaloniaDataGrid (не DataGridGeneric).
 /// </summary>
-public class DataGridForm1AutoReplaceBehavior : Behavior<DataGrid>
+public class DataGridForm1AutoReplaceBehavior : Behavior<AvaloniaDataGrid>
 {
     private const RoutingStrategies FocusRouting = RoutingStrategies.Tunnel | RoutingStrategies.Bubble;
 

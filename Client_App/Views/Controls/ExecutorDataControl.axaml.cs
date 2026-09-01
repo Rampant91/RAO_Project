@@ -3,6 +3,8 @@ using Avalonia.Markup.Xaml;
 using Client_App.ViewModels.Controls;
 using Models.JSON.ExecutorData;
 
+using Client_App.Resources;
+
 namespace Client_App.Views.Controls;
 
 public partial class ExecutorDataControl : UserControl
@@ -12,13 +14,13 @@ public partial class ExecutorDataControl : UserControl
         InitializeComponent();
 
 
-        //Привязка комманд из VM к кнопкам из ListBoxItem (Не получилось привязать другим способом) 
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ VM пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ ListBoxItem (пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ) 
         this.Initialized += (s, e) =>
         {
             var listBox = this.FindControl<ListBox>("ExecutorsListBox");
             if (listBox != null)
             {
-                // Обработчик для кнопок удаления
+                // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
                 listBox.AddHandler(Button.ClickEvent, (sender, args) =>
                 {
                     if (args.Source is Button button && button.DataContext is ExecutorData executor)

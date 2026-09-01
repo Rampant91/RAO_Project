@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms;
 using Models.CheckForm;
+
+using Client_App.Resources;
 
 namespace Client_App.Views.Forms;
 

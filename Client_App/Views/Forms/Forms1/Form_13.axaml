@@ -1,4 +1,4 @@
-﻿<Window x:Class="Client_App.Views.Forms.Forms1.Form_13"
+<Window x:Class="Client_App.Views.Forms.Forms1.Form_13"
         xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:appControls="clr-namespace:Client_App.Controls"
@@ -10,7 +10,7 @@
         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
         xmlns:items="clr-namespace:Client_App.ViewModels.Forms.Forms1.Items"
         xmlns:local="using:Client_App.Behaviors"
-        xmlns:dgBehaviors="using:Client_App.Behaviors.DataGridBehaviors"
+        xmlns:dgBehaviors="using:Client_App.Behaviors.DataGrid"
         xmlns:headerBehaviors="using:Client_App.Behaviors.TableHeader"
         xmlns:inputBehaviors="using:Client_App.Behaviors.Input"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -167,7 +167,7 @@
 
         <!--#region Таблица-->
 
-        <ScrollViewer Grid.Row="1" Classes="tableScrollViewer" HorizontalScrollBarVisibility="Disabled">
+        <ScrollViewer Grid.Row="1" Classes="tableScrollViewer">
             <Grid
                 x:Name="Table"
                 ColumnDefinitions="*"
@@ -238,7 +238,6 @@
                 <!--#region Заголовки таблицы-->
 
                 <Grid Grid.Row="0"
-                      Width="{Binding Bounds.Width, ElementName=dataGrid}"
                       Classes="tableHeader"
                       ColumnDefinitions="Auto,*"
                       Grid.IsSharedSizeScope="True">
@@ -427,6 +426,7 @@
                           x:CompileBindings="False"
                           Margin="8,-5,0,0"
                           Classes="table"
+                          MaxColumnWidth="500"
                           ColumnWidth="125"
                           FrozenColumnCount="{Binding FrozenColumnCount, Mode=OneWay}"
                           ItemsSource="{Binding FormList}"

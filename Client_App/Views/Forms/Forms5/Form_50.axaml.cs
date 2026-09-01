@@ -9,9 +9,10 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
+using Client_App.Resources;
 using Client_App.ViewModels.Forms.Forms5;
+using Client_App.Views.Forms;
 using MsBox.Avalonia.Dto;
-using MsBox.Avalonia.Models;
 using Models.DBRealization;
 using Models.Forms;
 
@@ -25,12 +26,12 @@ public partial class Form_50 : BaseWindow<Form_50VM>
 
     public Form_50(Form_50VM vm)
     {
-        AvaloniaXamlLoader.Load(this);
-        Name = "5.0";
         _vm = vm;
+        AvaloniaXamlLoader.Load(this);
+        FormWindowNames.SetWindowKey(this, nameof(Form_50));
+        DataContext = vm;
         Closing += OnStandardClosing;
     }
-
 
     #region OnStandartClosing
 
@@ -63,12 +64,12 @@ public partial class Form_50 : BaseWindow<Form_50VM>
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "��" },
-                    new ButtonDefinition { Name = "���" }
+                    FormDialogTexts.YesButton,
+                    FormDialogTexts.NoButton
                 ],
-                ContentTitle = "���������� ���������",
-                ContentHeader = "�����������",
-                ContentMessage = $"��������� ����� {vm.FormType}?",
+                ContentTitle = FormDialogTexts.SaveChangesTitle,
+                ContentHeader = FormDialogTexts.NotificationHeader,
+                ContentMessage = FormDialogTexts.SaveFormMessage(vm.FormType),
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
@@ -80,7 +81,7 @@ public partial class Form_50 : BaseWindow<Form_50VM>
         var dbm = StaticConfiguration.DBModel;
         switch (res.Result)
         {
-            case "��":
+            case FormDialogTexts.Yes:
                 {
                     try
                     {
@@ -95,7 +96,7 @@ public partial class Form_50 : BaseWindow<Form_50VM>
                     }
                     return;
                 }
-            case "���":
+            case FormDialogTexts.No:
                 {
                     flag = true;
                     dbm.Restore();

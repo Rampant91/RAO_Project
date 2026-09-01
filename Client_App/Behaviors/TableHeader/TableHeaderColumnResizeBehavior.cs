@@ -1,9 +1,11 @@
 using Avalonia;
 using Avalonia.Controls;
+using AvaloniaDataGrid = Avalonia.Controls.DataGrid;
 using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 using Avalonia.Xaml.Interactivity;
+using Client_App.Behaviors.DataGrid;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +13,10 @@ using System.Linq;
 namespace Client_App.Behaviors.TableHeader;
 
 /// <summary>
-/// Изменение ширины колонок <see cref="DataGrid"/> перетаскиванием границ кастомной шапки.
+/// Изменение ширины колонок <see cref="AvaloniaDataGrid"/> перетаскиванием границ кастомной шапки.
 /// <para>
 /// Вешается на <see cref="Grid"/> шапки (на Form_11 — отдельные экземпляры для scroll / fixed / npp).
-/// Ширина пишется в DataGrid.Columns[i].Width; синхронизация шапки — через
+/// Ширина пишется в AvaloniaDataGrid.Columns[i].Width; синхронизация шапки — через
 /// <see cref="TableHeaderDataGridSync.SyncLiveColumnWidth"/>.
 /// </para>
 /// </summary>
@@ -28,18 +30,18 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
     /// <summary>Допуск по вертикали при hit-test границ в многоуровневой шапке.</summary>
     private const double VerticalResizeHitThreshold = 5.0;
 
-    /// <summary>Минимальное изменение ширины (px) для записи в DataGrid и sync шапки.</summary>
+    /// <summary>Минимальное изменение ширины (px) для записи в AvaloniaDataGrid и sync шапки.</summary>
     private const double LiveResizeWidthThreshold = 1.0;
 
     #endregion
 
     #region Attached properties
 
-    public static readonly AttachedProperty<DataGrid?> SourceDataGridProperty =
-        AvaloniaProperty.RegisterAttached<TableHeaderColumnResizeBehavior, Grid, DataGrid?>("SourceDataGrid");
+    public static readonly AttachedProperty<AvaloniaDataGrid?> SourceDataGridProperty =
+        AvaloniaProperty.RegisterAttached<TableHeaderColumnResizeBehavior, Grid, AvaloniaDataGrid?>("SourceDataGrid");
 
-    /// <summary>DataGrid, колонки которого меняются при drag.</summary>
-    public DataGrid? SourceDataGrid
+    /// <summary>AvaloniaDataGrid, колонки которого меняются при drag.</summary>
+    public AvaloniaDataGrid? SourceDataGrid
     {
         get => GetValue(SourceDataGridProperty);
         set => SetValue(SourceDataGridProperty, value);
@@ -49,7 +51,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
         AvaloniaProperty.RegisterAttached<TableHeaderColumnResizeBehavior, Grid, int>("StartColumnIndex", 0);
 
     /// <summary>
-    /// Индекс первой колонки DataGrid, отображаемой в этом Grid шапки
+    /// Индекс первой колонки AvaloniaDataGrid, отображаемой в этом Grid шапки
     /// (0 — № п/п, 1 — первая скроллируемая на Form_11 и т.д.).
     /// </summary>
     public int StartColumnIndex
@@ -141,7 +143,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
 
     private void OnAttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
     {
-        SourceDataGrid ??= AssociatedObject?.GetVisualAncestors().OfType<DataGrid>().FirstOrDefault();
+        SourceDataGrid ??= AssociatedObject?.GetVisualAncestors().OfType<AvaloniaDataGrid>().FirstOrDefault();
         EnsureHitOverlay();
     }
 
@@ -207,7 +209,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
     #region Pointer handling
 
     /// <summary>
-    /// Система координат для delta при drag: DataGrid, а не локальный Grid шапки
+    /// Система координат для delta при drag: AvaloniaDataGrid, а не локальный Grid шапки
     /// (шапка сдвигается при frozen/scroll, иначе курсор «упирается»).
     /// </summary>
     private Visual? DragReferenceVisual =>
@@ -293,7 +295,7 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
     #region Hit-test
 
     /// <summary>
-    /// Индекс колонки DataGrid для resize по позиции курсора, или -1.
+    /// Индекс колонки AvaloniaDataGrid для resize по позиции курсора, или -1.
     /// </summary>
     private int FindResizeTargetColumnIndex(Point pointer)
     {
@@ -597,13 +599,14 @@ public class TableHeaderColumnResizeBehavior : Behavior<Grid>
 
     #region Utilities
 
-    private static double ClampToColumnLimits(DataGrid dataGrid, double width)
+    private static double ClampToColumnLimits(AvaloniaDataGrid dataGrid, double width)
     {
         var min = dataGrid.MinColumnWidth;
         var max = dataGrid.MaxColumnWidth;
 
-        if (double.IsNaN(min) || min <= 0) min = 20;
-        if (double.IsNaN(max) || max <= 0 || double.IsPositiveInfinity(max)) max = double.MaxValue;
+        if (double.IsNaN(min) || min <= 0) min = DataGridColumnWidthClamp.FallbackMin;
+        if (double.IsNaN(max) || max <= 0 || double.IsPositiveInfinity(max))
+            max = DataGridColumnWidthClamp.FallbackMax;
 
         return Math.Clamp(width, min, max);
     }

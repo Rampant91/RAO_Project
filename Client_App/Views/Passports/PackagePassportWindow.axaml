@@ -1120,6 +1120,7 @@
 							ItemsSource="{Binding Passport.ContentCharacteristics}"
 							SelectedItem="{Binding SelectedCharacteristic}"
 							Classes="table"
+							MaxColumnWidth="500"
                             ColumnWidth="125"
 							
 							x:Name="dataGrid2"

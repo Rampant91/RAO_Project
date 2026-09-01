@@ -1,0 +1,45 @@
+---
+description: Avalonia 11 DataGrid report tables — MaxColumnWidth, crash "value cannot be set to infinity"
+globs: "**/App.axaml,**/Form_*.axaml,**/Behaviors/DataGrid/**/*.cs,**/Behaviors/TableHeader/**/*.cs,**/DataGridReportTableLayoutGuardTests.cs"
+alwaysApply: false
+---
+
+# DataGrid отчётных форм: ширина колонок (Avalonia 11.2.6)
+
+## Симптом (исправлено 2026-03)
+
+При открытии формы отчёта (1.x, 2.x, …) — `ArgumentException: 'value cannot be set to infinity.'`
+Отладчик часто останавливается на **последней** `DataGridTemplateColumn` в XAML (например `Width="53"`).
+Это **не** баг ширины последней колонки и **не** сохранённые ширины в config.
+
+## Причина
+
+У `DataGrid.MaxColumnWidth` дефолт — `double.PositiveInfinity`.
+Стили Avalonia применяются **после** разбора `<DataGrid.Columns>`.
+Если в стиле `DataGrid.table` был `<Setter Property="MaxColumnWidth" Value="500" />`, при открытии формы
+Avalonia вызывает `OnColumnMaxWidthChanged` → `new DataGridLength(oldActualMaxWidth, …)` с `oldActualMaxWidth == Infinity`
+→ конструктор `DataGridLength` бросает *"value cannot be set to infinity"* (параметр `value`).
+
+ScrollViewer / `Bounds.Width` / clamp сохранённых ширин эту конкретную ошибку **не** устраняют.
+
+## Правильный паттерн (не ломать)
+
+1. **Не** задавать `MaxColumnWidth` в стиле `DataGrid.table` в `App.axaml`.
+2. На каждом отчётном `DataGrid` с `Classes="table"` — атрибут **`MaxColumnWidth="500"`** на самом элементе
+   (до `<DataGrid.Columns>`, порядок в XAML важен).
+3. `DataGridMaxColumnWidthGuard` — только запасной путь, если cap ещё можно выставить при пустом `Columns`;
+   **не** присваивать `MaxColumnWidth` из кода, когда `Columns.Count > 0` и текущий max — Infinity.
+4. `ScrollViewer.tableScrollViewer`: `HorizontalScrollBarVisibility=Disabled` (конечная ширина для layout).
+5. Не биндить ширину кастомной шапки на `Bounds.Width` у `dataGrid`.
+6. Не ставить `DataGrid.MaxColumnWidth` из `Bounds.Width` грида (отдельный краш на главном окне).
+
+## Регрессия
+
+`dotnet test Test/Test.csproj --filter DataGridReportTableLayoutGuardTests`
+`dotnet test Test/Test.csproj --filter DataGridMaxColumnWidthGuardTests`
+
+## Не делать снова
+
+- Вернуть `MaxColumnWidth` в `Style Selector="DataGrid.table"`.
+- «Починить» только `DataGridColumnWidthLoadBehavior` / saved widths — краш был до загрузки сохранённых ширин.
+- Путать с `GridLength` в шапке (`Invalid value`) — другой тип; текст *"value cannot be set to infinity"* — только `DataGridLength`.
