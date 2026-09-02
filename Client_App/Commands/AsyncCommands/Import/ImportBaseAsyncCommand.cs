@@ -620,6 +620,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                            // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
                            || reps.Master.Rows10[0].Okpo_DB == t.Master.Rows10[0].Okpo_DB
+                           && t.Master.Rows10[0].RegNo_DB == ""
                            && reps.Master.Rows10[0].RegNo_DB == t.Master.Rows10[1].RegNo_DB
                            && reps.Master.Rows10[1].Okpo_DB == ""
                            && t.Master.Rows10[1].Okpo_DB == ""
@@ -687,6 +688,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                            // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
                            || reps.Master.Rows20[0].Okpo_DB == t.Master.Rows20[0].Okpo_DB
+                           && t.Master.Rows20[0].RegNo_DB == ""
                            && reps.Master.Rows20[0].RegNo_DB == t.Master.Rows20[1].RegNo_DB
                            && reps.Master.Rows20[1].Okpo_DB == ""
                            && t.Master.Rows20[1].Okpo_DB == ""
@@ -753,6 +755,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
                            // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
                            || reps.Master.Rows30[0].Okpo_DB == t.Master.Rows30[0].Okpo_DB
+                           && t.Master.Rows30[0].RegNo_DB == ""
                            && reps.Master.Rows30[0].RegNo_DB == t.Master.Rows30[1].RegNo_DB
                            && reps.Master.Rows30[1].Okpo_DB == ""
                            && t.Master.Rows30[1].Okpo_DB == ""
