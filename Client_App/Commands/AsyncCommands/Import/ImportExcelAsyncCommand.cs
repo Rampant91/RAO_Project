@@ -9,11 +9,13 @@ using Client_App.Views.Messages;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using Models.Forms.Form3;
 using Models.Forms.Form4;
 using Models.Forms.Form5;
 using Models.Forms.Form5;
@@ -26,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Threading.Tasks;
+using Tmds.DBus;
 using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
 using static Client_App.ViewModels.Messages.SelectReportsMessageWindowVM;
 
@@ -127,6 +130,9 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         && Convert.ToString(worksheet0.Cells["A4"].Value)
                             is "ГОСУДАОСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ"
                             or "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ")
+                    || (worksheet0.Name == "Форма 3.0"
+                        && (Convert.ToString(worksheet0.Cells["A7"].Value) 
+                                is "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ"))
                     || (worksheet0.Name == "Форма 4.0"
                         && (Convert.ToString(worksheet0.Cells["A7"].Value) //Старый шаблон
                                 is "ГОСУДАРСТВЕННЫЙ УЧЕТ И КОНТРОЛЬ РАДИОАКТИВНЫХ ВЕЩЕСТВ И РАДИОАКТИВНЫХ ОТХОДОВ\n" +
@@ -197,7 +203,15 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 if (excelPackage.Workbook.Worksheets.Count > 1)
                     worksheet1 = excelPackage.Workbook.Worksheets[1];
 
-                var impRep = GetReportFromExcel(worksheet0, worksheet1, timeCreate);
+                Report? impRep;
+                
+                if (worksheet0.Name is "Форма 3.0")
+                // Из-за уникальной структуры третьих форм, была написана отдельная фуекция для чтения их содержимого
+                    impRep = GetReport3xFromExcel(worksheet0, worksheet1, timeCreate); 
+                else
+                    impRep = GetReportFromExcel(worksheet0, worksheet1, timeCreate);
+
+
                 if (impRep is not null)
                 {
                     ImpRepCorNum = impRep.CorrectionNumber_DB;
@@ -297,9 +311,6 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                 #endregion
 
-
-
-
                 if (baseReps is null)
                 {
 
@@ -328,6 +339,11 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                         case "2.0":
                             {
                                 await ProcessIfHasReports21(baseReps, impReps, impRepList);
+                                break;
+                            }
+                        case "форма 3.0":
+                            {
+                                await ProcessIfHasReports31(baseReps, impReps, impRepList);
                                 break;
                             }
                         case "форма 4.0":
@@ -494,7 +510,8 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                              && t.Master_DB.Rows10[1].Okpo_DB == ""
 
                              // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
-                             || excelOkpo0 == t.Master_DB.Rows10[0].Okpo_DB
+                             || excelOkpo0 == t.Master_DB.Rows10[0].Okpo_DB 
+                             && t.Master.Rows10[0].RegNo_DB == ""
                              && excelRegNo == t.Master_DB.Rows10[1].RegNo_DB
                              && excelOkpo1 == ""
                              && t.Master_DB.Rows10[1].Okpo_DB == ""
@@ -554,6 +571,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                            // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
                            || excelOkpo0 == t.Master_DB.Rows20[0].Okpo_DB
+                           && t.Master.Rows20[0].RegNo_DB == ""
                            && excelRegNo == t.Master_DB.Rows20[1].RegNo_DB
                            && excelOkpo1 == ""
                            && t.Master_DB.Rows20[1].Okpo_DB == ""
@@ -583,6 +601,67 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                            && t.Master_DB.Rows20[1].Okpo_DB != ""
                            && excelOkpo0 == t.Master_DB.Rows20[1].Okpo_DB
                            && excelRegNo == t.Master_DB.Rows20[1].RegNo_DB);
+                    break;
+                }
+            case "форма 3.0":
+                {
+                    var excelOkpo0 = Convert.ToString(worksheet0.Cells["B36"].Value);
+                    var excelOkpo1 = Convert.ToString(worksheet0.Cells["B37"].Value);
+                    var excelRegNo = Convert.ToString(worksheet0.Cells["B10"].Value);
+
+                    //Собираем список из содержимого БД
+                    //Сохраненные отчеты
+                    var form30List = dbm.ReportsCollectionDbSet
+                        .Include(reps => reps.Master_DB).ThenInclude(rep => rep.Rows30)
+                        .Where(reps => reps.Master_DB.FormNum_DB == "3.0").ToList();
+
+                    //Добавленные, но не сохраненные отчеты
+                    form30List.AddRange(StaticConfiguration.DBModel.ChangeTracker.Entries<Reports>()
+                        .Where(e => e.State == EntityState.Added)
+                        .Select(e => e.Entity)
+                        .Where(reps => reps.Master_DB.FormNum_DB == "3.0"));
+
+                    return form30List
+                        .FirstOrDefault(t =>
+
+                           // обособленные пусты и в базе и в импорте, то сверяем головное
+                           excelOkpo0 == t.Master_DB.Rows30[0].Okpo_DB
+                           && excelRegNo == t.Master_DB.Rows30[0].RegNo_DB
+                           && excelOkpo1 == ""
+                           && t.Master_DB.Rows30[1].Okpo_DB == ""
+
+                           // обособленные пусты и в базе и в импорте, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || excelOkpo0 == t.Master_DB.Rows30[0].Okpo_DB 
+                           && t.Master.Rows30[0].RegNo_DB == ""
+                           && excelRegNo == t.Master_DB.Rows30[1].RegNo_DB
+                           && excelOkpo1 == ""
+                           && t.Master_DB.Rows30[1].Okpo_DB == ""
+
+                           // обособленные не пусты, их и сверяем
+                           || excelOkpo1 == t.Master_DB.Rows30[1].Okpo_DB
+                           && excelRegNo == t.Master_DB.Rows30[1].RegNo_DB
+                           && excelOkpo1 != ""
+
+                           // обособленные не пусты, но в базе пуст рег№ юр лица, берем рег№ обособленного
+                           || excelOkpo1 == t.Master_DB.Rows30[1].Okpo_DB
+                           && excelRegNo == t.Master_DB.Rows30[0].RegNo_DB
+                           && excelOkpo1 != ""
+                           && t.Master_DB.Rows30[1].RegNo_DB == "")
+
+                   ?? form30List
+                       .FirstOrDefault(t =>
+
+                           // юр лицо в базе совпадает с обособленным в импорте
+                           excelOkpo1 != ""
+                           && t.Master_DB.Rows30[1].Okpo_DB == ""
+                           && excelOkpo1 == t.Master_DB.Rows30[0].Okpo_DB
+                           && excelRegNo == t.Master_DB.Rows30[0].RegNo_DB
+
+                           // юр лицо в импорте совпадает с обособленным в базе
+                           || excelOkpo1 == ""
+                           && t.Master_DB.Rows30[1].Okpo_DB != ""
+                           && excelOkpo0 == t.Master_DB.Rows30[1].Okpo_DB
+                           && excelRegNo == t.Master_DB.Rows30[1].RegNo_DB);
                     break;
                 }
             case "форма 4.0":
@@ -748,6 +827,50 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     newRepsFromExcel.Master_DB.Rows20[1].Okfs_DB = Convert.ToString(worksheet.Cells["I37"].Value);
                     break;
                 }
+            case "Форма 3.0":
+                {
+
+                    newRepsFromExcel.Master_DB.Rows30[0].RegNo.Value = Convert.ToString(worksheet.Cells["B10"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].OrganUprav_DB = Convert.ToString(worksheet.Cells["B15"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].SubjectRF_DB = Convert.ToString(worksheet.Cells["C16"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].JurLico_DB = Convert.ToString(worksheet.Cells["C17"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].ShortJurLico_DB = Convert.ToString(worksheet.Cells["C18"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].JurLicoAddress_DB = Convert.ToString(worksheet.Cells["C19"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].JurLicoFactAddress_DB = Convert.ToString(worksheet.Cells["C20"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].GradeFIO_DB = Convert.ToString(worksheet.Cells["C21"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].Telephone_DB = Convert.ToString(worksheet.Cells["C22"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].Fax_DB = Convert.ToString(worksheet.Cells["C23"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].Email_DB = Convert.ToString(worksheet.Cells["C24"].Value);
+
+                    newRepsFromExcel.Master_DB.Rows30[1].SubjectRF_DB = Convert.ToString(worksheet.Cells["C25"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[1].JurLico_DB = Convert.ToString(worksheet.Cells["C26"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[1].ShortJurLico_DB = Convert.ToString(worksheet.Cells["C27"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[1].JurLicoAddress_DB = Convert.ToString(worksheet.Cells["C28"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[1].JurLicoFactAddress_DB = Convert.ToString(worksheet.Cells["C28"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[1].GradeFIO_DB = Convert.ToString(worksheet.Cells["C29"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[1].Telephone_DB = Convert.ToString(worksheet.Cells["C30"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[1].Fax_DB = Convert.ToString(worksheet.Cells["C31"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[1].Email_DB = Convert.ToString(worksheet.Cells["C32"].Value);
+
+                    newRepsFromExcel.Master_DB.Rows30[0].Okpo_DB = Convert.ToString(worksheet.Cells["B36"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].Okved_DB = Convert.ToString(worksheet.Cells["C36"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].Okogu_DB = Convert.ToString(worksheet.Cells["D36"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].Oktmo_DB = Convert.ToString(worksheet.Cells["E36"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].Inn_DB = Convert.ToString(worksheet.Cells["F36"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].Kpp_DB = Convert.ToString(worksheet.Cells["G36"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].Okopf_DB = Convert.ToString(worksheet.Cells["H36"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[0].Okfs_DB = Convert.ToString(worksheet.Cells["I36"].Value);
+
+                    newRepsFromExcel.Master_DB.Rows30[1].Okpo_DB = Convert.ToString(worksheet.Cells["B37"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[1].Okved_DB = Convert.ToString(worksheet.Cells["C37"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[1].Okogu_DB = Convert.ToString(worksheet.Cells["D37"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[1].Oktmo_DB = Convert.ToString(worksheet.Cells["E37"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[1].Inn_DB = Convert.ToString(worksheet.Cells["F37"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[1].Kpp_DB = Convert.ToString(worksheet.Cells["G37"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[1].Okopf_DB = Convert.ToString(worksheet.Cells["H37"].Value);
+                    newRepsFromExcel.Master_DB.Rows30[1].Okfs_DB = Convert.ToString(worksheet.Cells["I37"].Value);
+                    break;
+                }
             case "Форма 4.0":
                 {
                     var form40 = newRepsFromExcel.Master_DB.Rows40[0];
@@ -795,13 +918,269 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
     #endregion
 
+    #region GetReport3xFromExcel
+    private Report? GetReport3xFromExcel(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1, List<string> timeCreate)
+    {
+
+        if (worksheet1 is null) return null;
+
+
+
+        var formNumber = worksheet1.Name;
+        // В некоторых шаблонах в наименовании листа Excel перед номером формы добавляется слово "Форма". Например "Форма 4.1"
+        // а в других просто пишется номер формы. Например "1.1"
+        if (formNumber.ToLower().StartsWith("форма "))
+            formNumber = formNumber.Split(' ')[1];
+
+        //Импортируем отчет
+        var impRep = GetReportWithDataFromExcel(worksheet0, worksheet1, formNumber, timeCreate);
+        impRep.ReportChangedDate = DateTime.Now;
+
+        // Объявляем вспомогательные переменные, которые будем использовать далее
+        DateOnly dateOnlyValue;
+        double doubleValue;
+        int intValue;
+        string address;
+        int index;
+
+        switch (formNumber)
+        {
+            case "3.1":
+                impRep.Rows31One.RecipientName_DB = worksheet1.Cells["C12"].Text;
+                impRep.Rows31One.RecipientJurLicoAddress_DB = worksheet1.Cells["C13"].Text;
+                impRep.Rows31One.RecipientWorkplaceAddress_DB = worksheet1.Cells["C14"].Text;
+                impRep.Rows31One.LicenseNum_DB = worksheet1.Cells["C15"].Text;
+                impRep.Rows31One.ValidityPeriod_DB = DateOnly.TryParse(worksheet1.Cells["C16"].Text, out dateOnlyValue)
+                    ? dateOnlyValue
+                    : null;
+                impRep.Rows31One.ExpectedDecisionTimeframe_DB = DateOnly.TryParse(worksheet1.Cells["C17"].Text, out dateOnlyValue)
+                    ? dateOnlyValue
+                    : null;
+                impRep.Rows31One.FinalUserName_DB = worksheet1.Cells["C19"].Text;
+                impRep.Rows31One.FinalUserJurLicoAddress_DB = worksheet1.Cells["C20"].Text;
+                impRep.Rows31One.FinalUserWorkplaceAddress_DB = worksheet1.Cells["C21"].Text;
+                impRep.Rows31One.FinalUserTelephone_DB = worksheet1.Cells["C22"].Text;
+                impRep.Rows31One.FinalUserEmail_DB = worksheet1.Cells["C23"].Text;
+                impRep.Rows31One.ApplicationScope_DB = worksheet1.Cells["C24"].Text;
+
+                impRep.Rows31One.ContractNum_DB = worksheet1.Cells["C26"].Text;
+                impRep.Rows31One.ContractDate_DB = DateOnly.TryParse(worksheet1.Cells["C27"].Text, out dateOnlyValue)
+                    ? dateOnlyValue
+                    : null;
+                impRep.Rows31One.ManufacturerOksm_DB = worksheet1.Cells["C28"].Text;
+
+
+                #region Таблица Характеристики экспортируемых ЗРИ/ОЗИИИ:
+                address = worksheet1.Cells.FirstOrDefault(cell => Convert.ToString(cell.Value).ToLower() == "характеристики экспортируемых зри/озиии:").LocalAddress;
+                address = address.Remove(0, 1);
+                int.TryParse(address, out index);
+                index += 2;
+
+                while (worksheet1.Cells[$"A{index}"].Text.Trim().ToLower() != "примечания"
+                    && (!string.IsNullOrWhiteSpace(worksheet1.Cells[$"A{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"B{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"C{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"D{index}"].Text)))
+                {
+                    var a = worksheet1.Cells[$"A{index}"].Text;
+                    var b = worksheet1.Cells[$"B{index}"].Text;
+                    var c = worksheet1.Cells[$"C{index}"].Text;
+                    var d = worksheet1.Cells[$"D{index}"].Text;
+
+                    var flag = !string.IsNullOrWhiteSpace(a)
+                    && !string.IsNullOrWhiteSpace(b)
+                    && !string.IsNullOrWhiteSpace(c)
+                    && !string.IsNullOrWhiteSpace(d);
+                    impRep.Rows31One.ExportedZriOziiiInfoCollection.Add(
+                        new Form31ExportedZriOziiiInfo()
+                        {
+                            RadionuclidComposition = worksheet1.Cells[$"B{index}"].Text,
+                            Count = int.TryParse(worksheet1.Cells[$"C{index}"].Text, out intValue)
+                                ? intValue
+                                : null,
+                            TotalActivity = double.TryParse(worksheet1.Cells[$"D{index}"].Text, out doubleValue)
+                                ? doubleValue
+                                : null,
+                        });
+
+                    index++;
+                }
+                #endregion
+
+                break;
+            case "3.2":
+
+                impRep.Rows32One.AgreementIdNum_DB = worksheet1.Cells["C12"].Text;
+                impRep.Rows32One.DeliveryDay_DB = DateOnly.TryParse(worksheet1.Cells["C13"].Text, out dateOnlyValue)
+                    ? dateOnlyValue
+                    : null;
+                impRep.Rows32One.RecipientName_DB = worksheet1.Cells["C15"].Text;
+
+                impRep.Rows32One.IsRvProduction_DB = !string.IsNullOrWhiteSpace(worksheet1.Cells["C17"].Text);
+                impRep.Rows32One.IsRvTransportation_DB = !string.IsNullOrWhiteSpace(worksheet1.Cells["C18"].Text);
+                impRep.Rows32One.IsRvExploitation_DB = !string.IsNullOrWhiteSpace(worksheet1.Cells["C19"].Text);
+                impRep.Rows32One.IsRvStoring_DB = !string.IsNullOrWhiteSpace(worksheet1.Cells["C20"].Text);
+                impRep.Rows32One.IsRvRecycling_DB = !string.IsNullOrWhiteSpace(worksheet1.Cells["C21"].Text);
+
+                impRep.Rows32One.IsRaoTransportation_DB = !string.IsNullOrWhiteSpace(worksheet1.Cells["C23"].Text);
+                impRep.Rows32One.IsRaoStoring_DB = !string.IsNullOrWhiteSpace(worksheet1.Cells["C24"].Text);
+                impRep.Rows32One.IsRaoRecycling_DB = !string.IsNullOrWhiteSpace(worksheet1.Cells["C25"].Text);
+
+                impRep.Rows32One.LicenseNumRv_DB = worksheet1.Cells["C27"].Text;
+                impRep.Rows32One.LicenseNumRao_DB = worksheet1.Cells["C28"].Text;
+
+                impRep.Rows32One.LicenseExpirationDateRv_DB = DateOnly.TryParse(worksheet1.Cells["C30"].Text, out dateOnlyValue)
+                    ? dateOnlyValue
+                    : null;
+                impRep.Rows32One.LicenseExpirationDateRao_DB = DateOnly.TryParse(worksheet1.Cells["C31"].Text, out dateOnlyValue)
+                    ? dateOnlyValue
+                    : null;
+                impRep.Rows32One.DeliveryAddress_DB = worksheet1.Cells["C32"].Text;
+                impRep.Rows32One.RadionuclidCompositionZri_DB = worksheet1.Cells["C33"].Text;
+                impRep.Rows32One.TotalActivity_DB = double.TryParse(worksheet1.Cells["C34"].Text, out doubleValue)
+                    ? doubleValue
+                    : null;
+                impRep.Rows32One.TotalCount_DB = int.TryParse(worksheet1.Cells["C35"].Text, out intValue)
+                    ? intValue
+                    : null;
+
+                #region Таблица Сведения о поставляемых ЗРИ
+                address = worksheet1.Cells.FirstOrDefault(cell => cell.Text.ToLower() == "сведения о поставляемых зри").LocalAddress;
+                address = address.Remove(0, 1);
+                int.TryParse(address, out index);
+                index += 3;
+
+                while (worksheet1.Cells[$"A{index}"].Text.Trim().ToLower() != "9"
+                    && (!string.IsNullOrWhiteSpace(worksheet1.Cells[$"A{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"B{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"C{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"D{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"E{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"F{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"G{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"H{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"I{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"J{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"K{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"L{index}"].Text)))
+                {
+                    impRep.Rows32One.ExportedZriInfoCollection.Add(
+                        new Form32ExportedZriInfo()
+                        {
+                            PassportNum = worksheet1.Cells[$"B{index}"].Text,
+                            Type = worksheet1.Cells[$"C{index}"].Text,
+                            FactoryNum = worksheet1.Cells[$"D{index}"].Text,
+                            RadionuclidComposition = worksheet1.Cells[$"E{index}"].Text,
+                            ReleaseDate = DateOnly.TryParse(worksheet1.Cells[$"F{index}"].Text, out dateOnlyValue)
+                                ? dateOnlyValue
+                                : null,
+                            ActivityOnRealeseDate = worksheet1.Cells[$"G{index}"].Text,
+                            NuclearMaterials = worksheet1.Cells[$"H{index}"].Text,
+                            Category = worksheet1.Cells[$"I{index}"].Text,
+                            ManufacturerOksm = worksheet1.Cells[$"J{index}"].Text,
+                            CertificateNum = worksheet1.Cells[$"K{index}"].Text,
+                            CertificateExpirationDate = DateOnly.TryParse(worksheet1.Cells[$"L{index}"].Text, out dateOnlyValue)
+                                ? dateOnlyValue
+                                : null,
+                        });
+
+                    index++;
+                }
+                #endregion
+
+                #region Таблица Сведения о контейнере, приборе, установке
+                address = worksheet1.Cells.FirstOrDefault(cell => cell.Text.ToLower() == "сведения о контейнере, приборе, установке").LocalAddress;//
+                address = address.Remove(0, 1);
+                int.TryParse(address, out index);
+                index += 3;
+
+                while (worksheet1.Cells[$"A{index}"].Text.Trim().ToLower() != "10"
+                    && (!string.IsNullOrWhiteSpace(worksheet1.Cells[$"A{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"B{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"C{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"D{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"E{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"F{index}"].Text)))
+                {
+                    impRep.Rows32One.ContainersInfoCollection.Add(
+                        new Form32ContainerInfo()
+                        {
+                            Name = worksheet1.Cells[$"B{index}"].Text,
+                            Type = worksheet1.Cells[$"C{index}"].Text,
+                            IdNum = worksheet1.Cells[$"D{index}"].Text,
+                            ReleaseYear = int.TryParse(worksheet1.Cells[$"E{index}"].Text, out intValue)
+                                ? intValue
+                                : null,
+                            DepletedUraniumMass = double.TryParse(worksheet1.Cells[$"F{index}"].Text, out doubleValue)
+                                ? doubleValue
+                                : null,
+                        });
+
+                    index++;
+                }
+                #endregion
+
+                #region Таблица Идентификаторы
+                address = worksheet1.Cells.FirstOrDefault(cell => cell.Text.ToLower() == "идентификаторы").LocalAddress;
+                address = address.Remove(0, 1);
+                int.TryParse(address, out index);
+                index += 3;
+
+                while (worksheet1.Cells[$"A{index}"].Text.Trim().ToLower() != "примечания"
+                    && (!string.IsNullOrWhiteSpace(worksheet1.Cells[$"A{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"B{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"C{index}"].Text)))
+                {
+                    impRep.Rows32One.IdentificatorsCollection.Add(
+                        new Form32Identificator()
+                        {
+                            IdName = worksheet1.Cells[$"B{index}"].Text,
+                            IdValue = worksheet1.Cells[$"C{index}"].Text,
+                        });
+
+                    index++;
+                }
+                #endregion
+
+                break;
+
+        }
+
+
+        // Импортируем примечания
+        #region Таблица Идентификаторы
+        address = worksheet1.Cells.FirstOrDefault(cell => Convert.ToString(cell.Value).ToLower() == "примечания").LocalAddress;
+        address = address.Remove(0, 1);
+        int.TryParse(address, out index);
+        index += 2;
+
+        while (worksheet1.Cells[$"A{index}"].Text.Trim().ToLower() != "исполнитель"
+                    && (!string.IsNullOrWhiteSpace(worksheet1.Cells[$"A{index}"].Text)
+                    || !string.IsNullOrWhiteSpace(worksheet1.Cells[$"B{index}"].Text)))
+        {
+            impRep.Notes.Add(
+                new Note()
+                {
+                    RowNumber_DB = worksheet1.Cells[$"A{index}"].Text,
+                    Comment_DB = worksheet1.Cells[$"B{index}"].Text,
+                });
+
+            index++;
+        }
+        #endregion
+
+        return impRep;
+
+    }
+    #endregion
+
+    #region GetReportFromExcelFile
     private Report? GetReportFromExcel(ExcelWorksheet worksheet0, ExcelWorksheet worksheet1, List<string> timeCreate)
     {
 
-        #region GetReportFromExcelFile
         if (worksheet1 is null) return null;
 
-        
+
 
         var formNumber = worksheet1.Name;
         // В некоторых шаблонах в наименовании листа Excel перед номером формы добавляется слово "Форма". Например "Форма 4.1"
@@ -863,9 +1242,9 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
             }
         }
         return impRep;
-        #endregion
 
     }
+    #endregion
 
     #region GetImportReps
 
@@ -903,6 +1282,16 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     ty2.NumberInOrder_DB = 2;
                     newRepsFromExcel.Master_DB.Rows20.Add(ty1);
                     newRepsFromExcel.Master_DB.Rows20.Add(ty2);
+                    break;
+                }
+            case "3.0":
+                {
+                    var ty1 = (Form30)FormCreator.Create(formNum);
+                    ty1.NumberInOrder_DB = 1;
+                    var ty2 = (Form30)FormCreator.Create(formNum);
+                    ty2.NumberInOrder_DB = 2;
+                    newRepsFromExcel.Master_DB.Rows30.Add(ty1);
+                    newRepsFromExcel.Master_DB.Rows30.Add(ty2);
                     break;
                 }
             case "4.0":
@@ -1043,6 +1432,19 @@ private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, Exce
                     }
             }
         }
+        else if (formNumber.Split('.')[0] == "3")
+        {
+            if (formNumber is "3.1")
+            {
+                impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B7"].Value);
+                impRep.StartPeriod_DB = Convert.ToString(worksheet1.Cells["B9"].Text).Replace("/", ".");
+            }
+            else if (formNumber is "3.2")
+            {
+                impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B8"].Value);
+                impRep.StartPeriod_DB = Convert.ToString(worksheet1.Cells["B10"].Text).Replace("/", ".");
+            }
+        }
         else if (formNumber.Split('.')[0] == "4")
         {
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B1"].Value);
@@ -1085,9 +1487,23 @@ private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, Exce
             impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells[$"I{worksheet1.Dimension.Rows - 1}"].Value);
             impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells[$"K{worksheet1.Dimension.Rows - 1}"].Value);
         }
+        else if (formNumber.Split('.')[0] is "3")
+        {
+            var address = worksheet1.Cells.FirstOrDefault(cell => cell.Text.ToLower() == "должность").LocalAddress;
+            address = address.Remove(0, 1);
+            int.TryParse(address, out var index);
+
+            impRep.GradeExecutor_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
+            index++;
+            impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
+            index++;
+            impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
+            index++;
+            impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells[$"B{index}"].Value);
+        }
         else if (formNumber.Split('.')[0] is "4")
         {
-            var address = worksheet1.Cells.FirstOrDefault(cell => Convert.ToString(cell.Value).ToLower() == "должность исполнителя").LocalAddress;
+            var address = worksheet1.Cells.FirstOrDefault(cell => cell.Text.ToLower() == "должность исполнителя").LocalAddress;
             address = address.Remove(0, 1);
             int.TryParse(address, out var index);
 
@@ -1101,7 +1517,7 @@ private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, Exce
         }
         else if (formNumber.Split('.')[0] is "5")
         {
-            var address = worksheet1.Cells.FirstOrDefault(cell => Convert.ToString(cell.Value).ToLower() == "должность").LocalAddress;
+            var address = worksheet1.Cells.FirstOrDefault(cell => cell.Text.ToLower() == "должность").LocalAddress;
             address = address.Remove(0, 1);
             int.TryParse(address, out var index);
 

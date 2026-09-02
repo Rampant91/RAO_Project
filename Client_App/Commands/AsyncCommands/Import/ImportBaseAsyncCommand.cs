@@ -1479,8 +1479,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
     #endregion
 
-    //TODO
-    //Изменить процесс сверки пересечений периода отчета, на сверку совпадения даты отчета
     #region ProcessIfHasReports31
     /// <summary>
     /// В случае, если в БД есть организация по форме 3.0, соответствующая импортируемой,

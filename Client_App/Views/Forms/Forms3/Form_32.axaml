@@ -987,15 +987,7 @@
 									</DataTemplate>
 								</DataGridTemplateColumn.CellTemplate>
 							</DataGridTemplateColumn>
-
-							<DataGridTemplateColumn Width="100" Header="№ графы">
-								<DataGridTemplateColumn.CellTemplate>
-									<DataTemplate x:DataType="forms:Note">
-										<TextBox Text="{Binding GraphNumber.Value, Mode=TwoWay}" />
-									</DataTemplate>
-								</DataGridTemplateColumn.CellTemplate>
-							</DataGridTemplateColumn>
-
+							
 							<DataGridTemplateColumn Width="1000" Header="Пояснения">
 								<DataGridTemplateColumn.CellTemplate>
 									<DataTemplate x:DataType="forms:Note">
