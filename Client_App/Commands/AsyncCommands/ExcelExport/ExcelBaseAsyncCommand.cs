@@ -18,6 +18,7 @@ using MessageBox.Avalonia.Models;
 using Models.Collections;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using Models.Forms.Form3;
 using Models.Forms.Form4;
 using Models.Forms.Form5;
 using OfficeOpenXml;
@@ -103,13 +104,13 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// <param name="cts">Токен.</param>
     /// <param name="progressBar">Окно прогрессбара.</param>
     /// <returns>Полный путь до файла и флаг, нужно ли открывать временную копию.</returns>
-    private protected static async Task<(string fullPath, bool openTemp)> ExcelGetFullPath(string fileName, CancellationTokenSource cts, 
+    private protected static async Task<(string fullPath, bool openTemp)> ExcelGetFullPath(string fileName, CancellationTokenSource cts,
         AnyTaskProgressBar? progressBar = null)
     {
         #region MessageSaveOrOpenTemp
 
         var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-            .GetMessageBoxCustomWindow(new MessageBoxCustomParams 
+            .GetMessageBoxCustomWindow(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
@@ -134,71 +135,71 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         switch (res)
         {
             case "Открыть временную копию":
-            {
-                DirectoryInfo tmpFolder = new(Path.Combine(BaseVM.SystemDirectory, "RAO", "temp"));
-                var count = 0;
+                {
+                    DirectoryInfo tmpFolder = new(Path.Combine(BaseVM.SystemDirectory, "RAO", "temp"));
+                    var count = 0;
 
-                fullPath = Path.Combine(tmpFolder.FullName, fileName + ".xlsx");
-                while (File.Exists(fullPath))
-                {
-                    fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{++count}.xlsx");
-                }
-
-                break;
-            }
-            case "Сохранить":
-            {
-                SaveFileDialog dial = new();
-                var filter = new FileDialogFilter
-                {
-                    Name = "Excel",
-                    Extensions = { "xlsx" }
-                };
-                dial.Filters.Add(filter);
-                dial.InitialFileName = fileName;
-                fullPath = await dial.ShowAsync(Desktop.MainWindow);
-                if (string.IsNullOrEmpty(fullPath)) await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-                if (!fullPath.EndsWith(".xlsx")) fullPath += ".xlsx"; //В проводнике Linux в имя файла не подставляется расширение из фильтра, добавляю руками если его нет
-                if (File.Exists(fullPath))
-                {
-                    try
+                    fullPath = Path.Combine(tmpFolder.FullName, fileName + ".xlsx");
+                    while (File.Exists(fullPath))
                     {
-                        File.Delete(fullPath!);
+                        fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{++count}.xlsx");
                     }
-                    catch
-                    {
-                        #region MessageFailedToSaveFile
 
-                        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в .xlsx",
-                                ContentHeader = "Ошибка",
-                                ContentMessage =
-                                    $"Не удалось сохранить файл по пути: {fullPath}" +
-                                    $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                                    $"{Environment.NewLine}и используется другим процессом.",
-                                MinWidth = 400,
-                                MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                                Topmost = true,
-                            })
-                            .ShowDialog(Desktop.MainWindow));
+                    break;
+                }
+            case "Сохранить":
+                {
+                    SaveFileDialog dial = new();
+                    var filter = new FileDialogFilter
+                    {
+                        Name = "Excel",
+                        Extensions = { "xlsx" }
+                    };
+                    dial.Filters.Add(filter);
+                    dial.InitialFileName = fileName;
+                    fullPath = await dial.ShowAsync(Desktop.MainWindow);
+                    if (string.IsNullOrEmpty(fullPath)) await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                    if (!fullPath.EndsWith(".xlsx")) fullPath += ".xlsx"; //В проводнике Linux в имя файла не подставляется расширение из фильтра, добавляю руками если его нет
+                    if (File.Exists(fullPath))
+                    {
+                        try
+                        {
+                            File.Delete(fullPath!);
+                        }
+                        catch
+                        {
+                            #region MessageFailedToSaveFile
+
+                            await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                                {
+                                    ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                                    ContentTitle = "Выгрузка в .xlsx",
+                                    ContentHeader = "Ошибка",
+                                    ContentMessage =
+                                        $"Не удалось сохранить файл по пути: {fullPath}" +
+                                        $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                        $"{Environment.NewLine}и используется другим процессом.",
+                                    MinWidth = 400,
+                                    MinHeight = 150,
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                    Topmost = true,
+                                })
+                                .ShowDialog(Desktop.MainWindow));
 
                             #endregion
 
-                        await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                        }
                     }
-                }
 
-                break;
-            }
+                    break;
+                }
             default:
-            {
-                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-                break;
-            }
+                {
+                    await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                    break;
+                }
         }
         return (fullPath, openTemp);
     }
@@ -216,14 +217,61 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// <param name="master">Головной отчёт организации.</param>
     private protected static void ExcelPrintTitleExport(string formNum, ExcelWorksheet worksheet, Report? rep, Report master)
     {
-        if (formNum.Split('.')[0] == "2")
+        if (formNum.Split('.')[0] == "1")
+        {
+            if (master.Rows10.Count < 2)
+                throw new InvalidOperationException("В титульной форме 1.0 недостаточно строк организации (ожидаются юрлицо и обособленное подразделение).");
+
+            var frmYur = master.Rows10[0];
+            var frmObosob = master.Rows10[1];
+
+            worksheet.Cells["F6"].Value = frmYur.RegNo_DB;
+            worksheet.Cells["F15"].Value = frmYur.OrganUprav_DB;
+            worksheet.Cells["F16"].Value = frmYur.SubjectRF_DB;
+            worksheet.Cells["F17"].Value = frmYur.JurLico_DB;
+            worksheet.Cells["F18"].Value = frmYur.ShortJurLico_DB;
+            worksheet.Cells["F19"].Value = frmYur.JurLicoAddress_DB;
+            worksheet.Cells["F20"].Value = frmYur.JurLicoFactAddress_DB;
+            worksheet.Cells["F21"].Value = frmYur.GradeFIO_DB;
+            worksheet.Cells["F22"].Value = frmYur.Telephone_DB;
+            worksheet.Cells["F23"].Value = frmYur.Fax_DB;
+            worksheet.Cells["F24"].Value = frmYur.Email_DB;
+
+            worksheet.Cells["F25"].Value = frmObosob.SubjectRF_DB;
+            worksheet.Cells["F26"].Value = frmObosob.JurLico_DB;
+            worksheet.Cells["F27"].Value = frmObosob.ShortJurLico_DB;
+            worksheet.Cells["F28"].Value = frmObosob.JurLicoAddress_DB;
+            worksheet.Cells["F29"].Value = frmObosob.GradeFIO_DB;
+            worksheet.Cells["F30"].Value = frmObosob.Telephone_DB;
+            worksheet.Cells["F31"].Value = frmObosob.Fax_DB;
+            worksheet.Cells["F32"].Value = frmObosob.Email_DB;
+
+            worksheet.Cells["B36"].Value = frmYur.Okpo_DB;
+            worksheet.Cells["C36"].Value = frmYur.Okved_DB;
+            worksheet.Cells["D36"].Value = frmYur.Okogu_DB;
+            worksheet.Cells["E36"].Value = frmYur.Oktmo_DB;
+            worksheet.Cells["F36"].Value = frmYur.Inn_DB;
+            worksheet.Cells["G36"].Value = frmYur.Kpp_DB;
+            worksheet.Cells["H36"].Value = frmYur.Okopf_DB;
+            worksheet.Cells["I36"].Value = frmYur.Okfs_DB;
+
+            worksheet.Cells["B37"].Value = frmObosob.Okpo_DB;
+            worksheet.Cells["C37"].Value = frmObosob.Okved_DB;
+            worksheet.Cells["D37"].Value = frmObosob.Okogu_DB;
+            worksheet.Cells["E37"].Value = frmObosob.Oktmo_DB;
+            worksheet.Cells["F37"].Value = frmObosob.Inn_DB;
+            worksheet.Cells["G37"].Value = frmObosob.Kpp_DB;
+            worksheet.Cells["H37"].Value = frmObosob.Okopf_DB;
+            worksheet.Cells["I37"].Value = frmObosob.Okfs_DB;
+        }
+        else if (formNum.Split('.')[0] == "2")
         {
             if (master.Rows20.Count < 2)
                 throw new InvalidOperationException("В титульной форме 2.0 недостаточно строк организации (ожидаются юрлицо и обособленное подразделение).");
 
             var frmYur = master.Rows20[0];
             var frmObosob = master.Rows20[1];
-            
+
             if (rep != null)
                 worksheet.Cells["G10"].Value = rep.Year_DB;
 
@@ -266,34 +314,34 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             worksheet.Cells["H37"].Value = frmObosob.Okopf_DB;
             worksheet.Cells["I37"].Value = frmObosob.Okfs_DB;
         }
-        else if (formNum.Split('.')[0] == "1")
+        else if (formNum.Split('.')[0] == "3")
         {
-            if (master.Rows10.Count < 2)
-                throw new InvalidOperationException("В титульной форме 1.0 недостаточно строк организации (ожидаются юрлицо и обособленное подразделение).");
+            if (master.Rows30.Count < 2)
+                throw new InvalidOperationException("В титульной форме 3.0 недостаточно строк организации (ожидаются юрлицо и обособленное подразделение).");
 
-            var frmYur = master.Rows10[0];
-            var frmObosob = master.Rows10[1];
+            var frmYur = master.Rows30[0];
+            var frmObosob = master.Rows30[1];
 
-            worksheet.Cells["F6"].Value = frmYur.RegNo_DB;
-            worksheet.Cells["F15"].Value = frmYur.OrganUprav_DB;
-            worksheet.Cells["F16"].Value = frmYur.SubjectRF_DB;
-            worksheet.Cells["F17"].Value = frmYur.JurLico_DB;
-            worksheet.Cells["F18"].Value = frmYur.ShortJurLico_DB;
-            worksheet.Cells["F19"].Value = frmYur.JurLicoAddress_DB;
-            worksheet.Cells["F20"].Value = frmYur.JurLicoFactAddress_DB;
-            worksheet.Cells["F21"].Value = frmYur.GradeFIO_DB;
-            worksheet.Cells["F22"].Value = frmYur.Telephone_DB;
-            worksheet.Cells["F23"].Value = frmYur.Fax_DB;
-            worksheet.Cells["F24"].Value = frmYur.Email_DB;
+            worksheet.Cells["B10"].Value = frmYur.RegNo_DB;
+            worksheet.Cells["B15"].Value = frmYur.OrganUprav_DB;
+            worksheet.Cells["C16"].Value = frmYur.SubjectRF_DB;
+            worksheet.Cells["C17"].Value = frmYur.JurLico_DB;
+            worksheet.Cells["C18"].Value = frmYur.ShortJurLico_DB;
+            worksheet.Cells["C19"].Value = frmYur.JurLicoAddress_DB;
+            worksheet.Cells["C20"].Value = frmYur.JurLicoFactAddress_DB;
+            worksheet.Cells["C21"].Value = frmYur.GradeFIO_DB;
+            worksheet.Cells["C22"].Value = frmYur.Telephone_DB;
+            worksheet.Cells["C23"].Value = frmYur.Fax_DB;
+            worksheet.Cells["C24"].Value = frmYur.Email_DB;
 
-            worksheet.Cells["F25"].Value = frmObosob.SubjectRF_DB;
-            worksheet.Cells["F26"].Value = frmObosob.JurLico_DB;
-            worksheet.Cells["F27"].Value = frmObosob.ShortJurLico_DB;
-            worksheet.Cells["F28"].Value = frmObosob.JurLicoAddress_DB;
-            worksheet.Cells["F29"].Value = frmObosob.GradeFIO_DB;
-            worksheet.Cells["F30"].Value = frmObosob.Telephone_DB;
-            worksheet.Cells["F31"].Value = frmObosob.Fax_DB;
-            worksheet.Cells["F32"].Value = frmObosob.Email_DB;
+            worksheet.Cells["C25"].Value = frmObosob.SubjectRF_DB;
+            worksheet.Cells["C26"].Value = frmObosob.JurLico_DB;
+            worksheet.Cells["C27"].Value = frmObosob.ShortJurLico_DB;
+            worksheet.Cells["C28"].Value = frmObosob.JurLicoAddress_DB;
+            worksheet.Cells["C29"].Value = frmObosob.GradeFIO_DB;
+            worksheet.Cells["C30"].Value = frmObosob.Telephone_DB;
+            worksheet.Cells["C31"].Value = frmObosob.Fax_DB;
+            worksheet.Cells["C32"].Value = frmObosob.Email_DB;
 
             worksheet.Cells["B36"].Value = frmYur.Okpo_DB;
             worksheet.Cells["C36"].Value = frmYur.Okved_DB;
@@ -356,9 +404,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 worksheet.Cells["B16"].Value = rep.Year_DB;
 
             worksheet.Cells["A9"].Value = form50.ExecutiveAuthority_DB;
-            if(form50.Rosatom_DB)
+            if (form50.Rosatom_DB)
                 worksheet.Cells["A10"].Value = form50.Rosatom_DB;
-            if(form50.MinObr_DB)
+            if (form50.MinObr_DB)
                 worksheet.Cells["A11"].Value = form50.MinObr_DB;
 
 
@@ -401,58 +449,81 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             switch (formNum)
             {
                 case "2.6":
-                {
-                    worksheet.Cells["G4"].Value = rep.CorrectionNumber_DB;
-                    worksheet.Cells["G5"].Value = rep.SourcesQuantity26_DB;
-                    break;
-                }
+                    {
+                        worksheet.Cells["G4"].Value = rep.CorrectionNumber_DB;
+                        worksheet.Cells["G5"].Value = rep.SourcesQuantity26_DB;
+                        break;
+                    }
                 case "2.7":
-                {
-                    worksheet.Cells["G3"].Value = rep.CorrectionNumber_DB;
-                    worksheet.Cells["G4"].Value = rep.PermissionNumber27_DB;
-                    worksheet.Cells["J4"].Value = rep.PermissionIssueDate27_DB;
-                    worksheet.Cells["G5"].Value = rep.ValidBegin27_DB;
-                    worksheet.Cells["J5"].Value = rep.ValidThru27_DB;
-                    worksheet.Cells["G6"].Value = rep.PermissionDocumentName27_DB;
-                    break;
-                }
+                    {
+                        worksheet.Cells["G3"].Value = rep.CorrectionNumber_DB;
+                        worksheet.Cells["G4"].Value = rep.PermissionNumber27_DB;
+                        worksheet.Cells["J4"].Value = rep.PermissionIssueDate27_DB;
+                        worksheet.Cells["G5"].Value = rep.ValidBegin27_DB;
+                        worksheet.Cells["J5"].Value = rep.ValidThru27_DB;
+                        worksheet.Cells["G6"].Value = rep.PermissionDocumentName27_DB;
+                        break;
+                    }
                 case "2.8":
-                {
-                    worksheet.Cells["G3"].Value = rep.CorrectionNumber_DB;
-                    worksheet.Cells["G4"].Value = rep.PermissionNumber_28_DB;
-                    worksheet.Cells["K5"].Value = rep.PermissionIssueDate_28_DB; 
-                    worksheet.Cells["K4"].Value = rep.ValidBegin_28_DB;
-                    worksheet.Cells["N4"].Value = rep.ValidThru_28_DB;
-                    worksheet.Cells["G5"].Value = rep.PermissionDocumentName_28_DB;
+                    {
+                        worksheet.Cells["G3"].Value = rep.CorrectionNumber_DB;
+                        worksheet.Cells["G4"].Value = rep.PermissionNumber_28_DB;
+                        worksheet.Cells["K5"].Value = rep.PermissionIssueDate_28_DB;
+                        worksheet.Cells["K4"].Value = rep.ValidBegin_28_DB;
+                        worksheet.Cells["N4"].Value = rep.ValidThru_28_DB;
+                        worksheet.Cells["G5"].Value = rep.PermissionDocumentName_28_DB;
 
-                    worksheet.Cells["G6"].Value = rep.PermissionNumber1_28_DB;
-                    worksheet.Cells["K7"].Value = rep.PermissionIssueDate1_28_DB;
-                    worksheet.Cells["K6"].Value = rep.ValidBegin1_28_DB;
-                    worksheet.Cells["N6"].Value = rep.ValidThru1_28_DB;
-                    worksheet.Cells["G7"].Value = rep.PermissionDocumentName1_28_DB;
+                        worksheet.Cells["G6"].Value = rep.PermissionNumber1_28_DB;
+                        worksheet.Cells["K7"].Value = rep.PermissionIssueDate1_28_DB;
+                        worksheet.Cells["K6"].Value = rep.ValidBegin1_28_DB;
+                        worksheet.Cells["N6"].Value = rep.ValidThru1_28_DB;
+                        worksheet.Cells["G7"].Value = rep.PermissionDocumentName1_28_DB;
 
-                    worksheet.Cells["G8"].Value = rep.ContractNumber_28_DB;
-                    worksheet.Cells["K9"].Value = rep.ContractIssueDate2_28_DB;
-                    worksheet.Cells["K8"].Value = rep.ValidBegin2_28_DB;
-                    worksheet.Cells["N8"].Value = rep.ValidThru2_28_DB;
-                    worksheet.Cells["G9"].Value = rep.OrganisationReciever_28_DB;
+                        worksheet.Cells["G8"].Value = rep.ContractNumber_28_DB;
+                        worksheet.Cells["K9"].Value = rep.ContractIssueDate2_28_DB;
+                        worksheet.Cells["K8"].Value = rep.ValidBegin2_28_DB;
+                        worksheet.Cells["N8"].Value = rep.ValidThru2_28_DB;
+                        worksheet.Cells["G9"].Value = rep.OrganisationReciever_28_DB;
 
-                    worksheet.Cells["D21"].Value = rep.GradeExecutor_DB;
-                    worksheet.Cells["F21"].Value = rep.FIOexecutor_DB;
-                    worksheet.Cells["I21"].Value = rep.ExecPhone_DB;
-                    worksheet.Cells["K21"].Value = rep.ExecEmail_DB;
-                    return;
-                }
+                        worksheet.Cells["D21"].Value = rep.GradeExecutor_DB;
+                        worksheet.Cells["F21"].Value = rep.FIOexecutor_DB;
+                        worksheet.Cells["I21"].Value = rep.ExecPhone_DB;
+                        worksheet.Cells["K21"].Value = rep.ExecEmail_DB;
+                        return;
+                    }
                 default:
-                {
-                    worksheet.Cells["G4"].Value = rep.CorrectionNumber_DB;
-                    break;
-                }
+                    {
+                        worksheet.Cells["G4"].Value = rep.CorrectionNumber_DB;
+                        break;
+                    }
             }
             worksheet.Cells["D18"].Value = rep.GradeExecutor_DB;
             worksheet.Cells["F18"].Value = rep.FIOexecutor_DB;
             worksheet.Cells["I18"].Value = rep.ExecPhone_DB;
             worksheet.Cells["K18"].Value = rep.ExecEmail_DB;
+        }
+        if (formNum.Split('.')[0] == "3")
+        {
+            if (formNum is "3.1")
+            {
+                worksheet.Cells["B7"].Value = rep.CorrectionNumber_DB;
+                worksheet.Cells["B9"].Value = rep.StartPeriod_DB;
+
+                worksheet.Cells["B40"].Value = rep.GradeExecutor_DB;
+                worksheet.Cells["B41"].Value = rep.FIOexecutor_DB;
+                worksheet.Cells["B42"].Value = rep.ExecPhone_DB;
+                worksheet.Cells["B43"].Value = rep.ExecEmail_DB;
+            }
+            else if (formNum is "3.2")
+            {
+                worksheet.Cells["B8"].Value = rep.CorrectionNumber_DB;
+                worksheet.Cells["B10"].Value = rep.StartPeriod_DB;
+
+                worksheet.Cells["B56"].Value = rep.GradeExecutor_DB;
+                worksheet.Cells["B57"].Value = rep.FIOexecutor_DB;
+                worksheet.Cells["B58"].Value = rep.ExecPhone_DB;
+                worksheet.Cells["B59"].Value = rep.ExecEmail_DB;
+            }
         }
         else if (formNum.Split('.')[0] == "4")
         {
@@ -467,7 +538,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             worksheet.Cells["B7"].Value = rep.CorrectionNumber_DB;
 
-            switch(formNum)
+            switch (formNum)
             {
                 case "5.7":
                     {
@@ -616,6 +687,12 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             case "2.8":
                 start = 18;
                 break;
+            case "3.1":
+                start = 36;
+                break;
+            case "3.2":
+                start = 52;
+                break;
             case "5.1" or "5.2" or "5.3" or "5.4" or "5.5" or "5.6" or "5.7":
                 start = 17;
                 break;
@@ -624,44 +701,22 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 break;
         }
 
-        for (var i = 0; i < rep.Notes.Count; i++)
+
+        for (int i = 0; i < rep.Notes.Count; i++)
         {
-            if (i == 0) //Костыль, чтобы у первой строки тоже высота автоматически подбиралась.
+            var note = rep.Notes[i];
+            note.ExcelRow(worksheet, start + i, 1);
+
+            if (i + 1 < rep.Notes.Count)
             {
-                worksheet.DeleteRow(start);
-            }
-            worksheet.InsertRow(start, 1, start-1);
-            var cells = worksheet.Cells[$"A{start}:B{start}"];
-            foreach (var cell in cells)
-            {
-                var btm = cell.Style.Border.Bottom;
-                var lft = cell.Style.Border.Left;
-                var rgt = cell.Style.Border.Right;
-                var top = cell.Style.Border.Top;
-                btm.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-                btm.Color.SetColor(255, 0, 0, 0);
-                lft.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-                lft.Color.SetColor(255, 0, 0, 0);
-                rgt.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-                rgt.Color.SetColor(255, 0, 0, 0);
-                top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-                top.Color.SetColor(255, 0, 0, 0);
+                worksheet.InsertRow(start + i + 1, 1, start);
+                ApplyNotesExplanationRowStyle(worksheet, formNum, start + i + 1);
             }
         }
 
-        // DeleteRow в костыле уничтожает merge первой строки шаблона — восстанавливаем для всех строк примечаний.
-        for (var row = start; row < start + rep.Notes.Count; row++)
-            ApplyNotesExplanationRowStyle(worksheet, formNum, row);
+        if (rep.Notes.Count > 0 && worksheet.Dimension is not null)
+            ApplyExcelDataRowsWrapText(worksheet, start, start + rep.Notes.Count - 1, worksheet.Dimension.End.Column);
 
-        var count = start;
-        foreach (var note in rep.Notes)
-        {
-            note.ExcelRow(worksheet, count, 1);
-            count++;
-        }
-
-        if (count > start && worksheet.Dimension is not null)
-            ApplyExcelDataRowsWrapText(worksheet, start, count - 1, worksheet.Dimension.End.Column);
     }
 
     /// <summary>
@@ -682,19 +737,6 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             // Диапазон частично пересекается с существующим merge — оставляем как есть.
         }
-
-        var btmCL = cellCL.Style.Border.Bottom;
-        var lftCL = cellCL.Style.Border.Left;
-        var rgtCL = cellCL.Style.Border.Right;
-        var topCL = cellCL.Style.Border.Top;
-        btmCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-        btmCL.Color.SetColor(255, 0, 0, 0);
-        lftCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-        lftCL.Color.SetColor(255, 0, 0, 0);
-        rgtCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-        rgtCL.Color.SetColor(255, 0, 0, 0);
-        topCL.Style = OfficeOpenXml.Style.ExcelBorderStyle.Medium;
-        topCL.Color.SetColor(255, 0, 0, 0);
     }
 
     #endregion
@@ -780,7 +822,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
         #region 2.2 with Sum
 
-        if (formNum is "2.2" && rep[formNum].ToList<Form22>().Any(form22 => form22.Sum_DB))
+        else if (formNum is "2.2" && rep[formNum].ToList<Form22>().Any(form22 => form22.Sum_DB))
         {
             var forms22 = rep[formNum]
                 .ToList<Form22>()
@@ -903,6 +945,34 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
         if (count > start && worksheet.Dimension is not null)
             ApplyExcelDataRowsWrapText(worksheet, start, count - 1, worksheet.Dimension.End.Column);
+    }
+
+    #endregion
+
+    #region ExcelPrintRows3XOneExport
+
+    /// <summary>
+    /// Выгрузка строчек в шаблон для печати .xlsx.
+    /// </summary>
+    /// <param name="formNum">Номер формы.</param>
+    /// <param name="worksheet">Лист Excel.</param>
+    /// <param name="rep">Отчёт.</param>
+    private protected static void ExcelPrintRows3XOneExport(string formNum, ExcelWorksheet worksheet, Report rep)
+    {
+        switch (formNum)
+        {
+            case "3.1":
+                var form31 = rep.Rows31One;
+                form31.ExcelRow(worksheet, 0, 1);
+
+                break;
+            case "3.2":
+                var form32 = rep.Rows32One;
+                form32.ExcelRow(worksheet, 0, 1);
+                break;
+        }
+
+
     }
 
     #endregion

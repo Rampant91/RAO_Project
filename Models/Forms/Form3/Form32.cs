@@ -947,9 +947,97 @@ namespace Models.Forms.Form3
         {
             throw new NotImplementedException();
         }
+
+        //Третьи формы представляют собой не таблицу, а единичный набор данных с другими таблицами, поэтому функция ExcelRow перезаписана не по шаблону
         public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
         {
-            throw new NotImplementedException();
+            worksheet.Cells["C12"].Value = AgreementIdNum_DB;
+            worksheet.Cells["C13"].Value = DeliveryDay_DB;
+
+            worksheet.Cells["C15"].Value = RecipientName_DB;
+
+            worksheet.Cells["C17"].Value = IsRvProduction_DB ? "*": null;
+            worksheet.Cells["C18"].Value = IsRvTransportation_DB ? "*" : null;
+            worksheet.Cells["C19"].Value = IsRvExploitation_DB ? "*" : null;
+            worksheet.Cells["C20"].Value = IsRvStoring_DB ? "*" : null;
+            worksheet.Cells["C21"].Value = IsRvRecycling_DB ? "*" : null;
+
+            worksheet.Cells["C23"].Value = IsRaoTransportation_DB ? "*" : null;
+            worksheet.Cells["C24"].Value = IsRaoStoring_DB ? "*" : null;
+            worksheet.Cells["C25"].Value = IsRaoRecycling_DB ? "*" : null;
+
+            worksheet.Cells["C27"].Value = LicenseNumRv_DB;
+            worksheet.Cells["C28"].Value = LicenseNumRao_DB;
+
+            worksheet.Cells["C30"].Value = LicenseExpirationDateRv_DB;
+            worksheet.Cells["C31"].Value = LicenseExpirationDateRao_DB;
+            worksheet.Cells["C32"].Value = DeliveryAddress_DB;
+            worksheet.Cells["C33"].Value = RadionuclidCompositionZri_DB;
+            worksheet.Cells["C34"].Value = TotalActivity_DB;
+            worksheet.Cells["C35"].Value = TotalCount_DB;
+
+            #region Идентификаторы (10)
+            int start = 47;
+            worksheet.InsertRow(start + 1, 1, start);
+            worksheet.DeleteRow(start);
+            for (int i = 0; i < IdentificatorsCollection.Count; i++)
+            {
+                var info = IdentificatorsCollection[i];
+                worksheet.Cells[$"A{start + i}"].Value = $"10.{i + 1}";
+                worksheet.Cells[$"B{start + i}"].Value = info.IdName;
+                worksheet.Cells[$"C{start + i}"].Value = info.IdValue;
+
+                if (i + 1 < IdentificatorsCollection.Count)
+                    worksheet.InsertRow(start + i + 1, 1, start);
+            }
+            #endregion
+
+            #region Сведения о контейнере, приборе, установке (9)
+            start = 43;
+            worksheet.InsertRow(start + 1, 1, start);
+            worksheet.DeleteRow(start);
+            for (int i = 0; i < ContainersInfoCollection.Count; i++)
+            {
+                var info = ContainersInfoCollection[i];
+                worksheet.Cells[$"A{start + i}"].Value = $"9.{i + 1}";
+                worksheet.Cells[$"B{start + i}"].Value = info.Name;
+                worksheet.Cells[$"C{start + i}"].Value = info.Type;
+                worksheet.Cells[$"D{start + i}"].Value = info.IdNum;
+                worksheet.Cells[$"E{start + i}"].Value = info.ReleaseYear;
+                worksheet.Cells[$"F{start + i}"].Value = info.DepletedUraniumMass;
+
+                if (i + 1 < ContainersInfoCollection.Count)
+                    worksheet.InsertRow(start + i + 1, 1, start);
+            }
+            #endregion
+
+            #region Сведения о постовляемых ЗРИ (8)
+            start = 39;
+            worksheet.InsertRow(start + 1, 1, start);
+            worksheet.DeleteRow(start);
+
+            for (int i = 0; i < ExportedZriInfoCollection.Count; i++)
+            {
+                var info = ExportedZriInfoCollection[i];
+                worksheet.Cells[$"A{start + i}"].Value = $"8.{i + 1}";
+                worksheet.Cells[$"B{start + i}"].Value = info.PassportNum;
+                worksheet.Cells[$"C{start + i}"].Value = info.Type;
+                worksheet.Cells[$"D{start + i}"].Value = info.FactoryNum;
+                worksheet.Cells[$"E{start + i}"].Value = info.RadionuclidComposition;
+                worksheet.Cells[$"F{start + i}"].Value = info.ReleaseDate;
+                worksheet.Cells[$"G{start + i}"].Value = info.ActivityOnRealeseDate;
+                worksheet.Cells[$"H{start + i}"].Value = info.NuclearMaterials;
+                worksheet.Cells[$"I{start + i}"].Value = info.Category;
+                worksheet.Cells[$"J{start + i}"].Value = info.ManufacturerOksm;
+                worksheet.Cells[$"K{start + i}"].Value = info.CertificateNum;
+                worksheet.Cells[$"L{start + i}"].Value = info.CertificateExpirationDate;
+
+                if (i + 1 < ExportedZriInfoCollection.Count)
+                    worksheet.InsertRow(start + i + 1, 1, start);
+            }
+            #endregion
+
+            return 0; //Рудимент
         }
         public override bool IsContentEqual(Form otherForm)
         {

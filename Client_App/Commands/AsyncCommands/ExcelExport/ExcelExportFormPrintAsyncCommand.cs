@@ -102,6 +102,10 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
             progressBarVM.SetProgressBar(100, "Завершение выгрузки");
         }
+        catch(Exception ex)
+        {
+            throw ex;
+        }
         finally
         {
             if (!string.IsNullOrEmpty(tmpDbPath))
@@ -225,6 +229,10 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
             {
                 progressBarVM.SetProgressBar(100, "Завершение выгрузки");
             }
+        }
+        catch(Exception ex)
+        {
+            throw ex;
         }
         finally
         {
@@ -355,12 +363,16 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
         ExcelPrintSubMainExport(rep.FormNum_DB, worksheetMain, rep);
 
-        var notesExported = (worksheetTitle.Name is "1.0" or "2.0" or "Форма 5.0")
+        var notesExported = (worksheetTitle.Name is "1.0" or "2.0" or "Форма 3.0" or "Форма 5.0")
                             && worksheetMain.Name is not "Форма 5.7";
         if (notesExported)
             ExcelPrintNotesExport(rep.FormNum_DB, worksheetMain, rep);
 
-        ExcelPrintRowsExport(rep.FormNum_DB, worksheetMain, rep);
+        //Третьи формы не попадают под общую логику, поэтому для них сделана отдеьная функция
+        if(rep.FormNum_DB.StartsWith("3")) 
+            ExcelPrintRows3XOneExport(rep.FormNum_DB, worksheetMain, rep);
+        else
+            ExcelPrintRowsExport(rep.FormNum_DB, worksheetMain, rep);
 
         ApplyExcelExecutorWrapText(rep.FormNum_DB, worksheetMain, rep, notesExported);
 
@@ -373,11 +385,11 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
     private static (string TitleName, string MainName) GetPrintWorksheetNames(string formNum)
     {
         var titleName = $"{formNum.Split('.')[0]}.0";
-        if (titleName is "4.0" or "5.0")
+        if (titleName is "3.0" or "4.0" or "5.0")
             titleName = "Форма " + titleName;
 
         var mainName = formNum;
-        if (mainName is "4.1" or "5.1" or "5.2" or "5.3" or "5.4" or "5.5" or "5.6" or "5.7")
+        if (mainName is "3.1" or "3.2" or "4.1" or "5.1" or "5.2" or "5.3" or "5.4" or "5.5" or "5.6" or "5.7")
             mainName = "Форма " + mainName;
 
         return (titleName, mainName);
@@ -431,6 +443,12 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                     fileName = $"{regNum}_{okpo}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
                     break;
                 }
+            case '3':
+                {
+                    var startPeriod = RemoveForbiddenChars(rep.StartPeriod_DB);
+                    fileName = $"{regNum}_{okpo}_{formNum}_{startPeriod}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
+                    break;
+                }
             case '4':
                 {
                     var codeSubjectRF = "";
@@ -478,6 +496,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                 .Include(rep => rep.Reports).ThenInclude(reps => reps.DBObservable)
                 .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
                 .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows20)
+                .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows30)
                 .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows40)
                 .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows50)
                 .Include(rep => rep.Rows11.OrderBy(form => form.NumberInOrder_DB))
@@ -501,6 +520,10 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                 .Include(rep => rep.Rows210.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Rows211.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Rows212.OrderBy(form => form.NumberInOrder_DB))
+                .Include(rep => rep.Rows31One).ThenInclude(form => form.ExportedZriOziiiInfoCollection)
+                .Include(rep => rep.Rows32One).ThenInclude(form => form.ExportedZriInfoCollection)
+                .Include(rep => rep.Rows32One).ThenInclude(form => form.ContainersInfoCollection)
+                .Include(rep => rep.Rows32One).ThenInclude(form => form.IdentificatorsCollection)
                 .Include(rep => rep.Rows41.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Rows51.OrderBy(form => form.NumberInOrder_DB))
                 .Include(rep => rep.Rows52.OrderBy(form => form.NumberInOrder_DB))

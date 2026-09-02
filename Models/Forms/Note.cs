@@ -197,10 +197,16 @@ public class Note : IKey, IDataGridColumn
     public string ConvertToTSVstring()
     {
         // Создаем текстовое представление (TSV - tab-separated values)
-        var str =
-            $"{RowNumber.Value}\t" +
-            $"{GraphNumber.Value}\t" +
-            $"{Comment.Value}";
+        string str;
+
+        if(Report.FormNum_DB.StartsWith("3")) // В формах 3 есть комментарии, но номер графы не указываются
+            str = $"{RowNumber.Value}\t" +
+                $"{Comment.Value}";
+        else
+            str = $"{RowNumber.Value}\t" +
+                $"{GraphNumber.Value}\t" +
+                $"{Comment.Value}";
+
         return str;
     }
     #endregion
@@ -229,25 +235,39 @@ public class Note : IKey, IDataGridColumn
 
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
-        RowNumber_DB = Convert.ToString(worksheet.Cells[row, 1].Value);
-        GraphNumber_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
-        Comment_DB = Convert.ToString(worksheet.Cells[row, 3].Value);
+        if (Report.FormNum_DB.StartsWith("3"))
+        {
+            RowNumber_DB = Convert.ToString(worksheet.Cells[row, 1].Value);
+            Comment_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
+        }
+        else
+        {
+            RowNumber_DB = Convert.ToString(worksheet.Cells[row, 1].Value);
+            GraphNumber_DB = Convert.ToString(worksheet.Cells[row, 2].Value);
+            Comment_DB = Convert.ToString(worksheet.Cells[row, 3].Value);
+        }
     }
 
     public int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
     {
-        worksheet.Cells[row + 0, column + 0].Value = RowNumber_DB;
-        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = GraphNumber_DB;
-        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = Comment_DB;
-        return 3;
+        if (Report.FormNum_DB.StartsWith("3"))
+        {
+            worksheet.Cells[row + 0, column + 0].Value = RowNumber_DB;
+            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = Comment_DB;
+            return 2;
+        }
+        else
+        {
+            worksheet.Cells[row + 0, column + 0].Value = RowNumber_DB;
+            worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = GraphNumber_DB;
+            worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = Comment_DB;
+            return 3;
+        }
     }
 
     public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true)
     {
-        worksheet.Cells[row + 0, column + 0].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Note,Models")?.GetProperty(nameof(RowNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First()!).Names[0];
-        worksheet.Cells[row + (!transpose ? 1 : 0), column + (transpose ? 1 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Note,Models")?.GetProperty(nameof(GraphNumber))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First()!).Names[0];
-        worksheet.Cells[row + (!transpose ? 2 : 0), column + (transpose ? 2 : 0)].Value = ((FormPropertyAttribute) Type.GetType("Models.Forms.Note,Models")?.GetProperty(nameof(Comment))?.GetCustomAttributes(typeof(FormPropertyAttribute), false).First()!).Names[0];
-        return 3;
+        throw new NotImplementedException();
     }
 
     #endregion

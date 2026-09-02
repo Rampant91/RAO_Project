@@ -845,16 +845,64 @@ namespace Models.Forms.Form3
         #endregion
         #endregion
 
-        #region InheritedMethods
+        #region IExcel
+
         public override void ExcelGetRow(ExcelWorksheet worksheet, int row)
         {
             throw new NotImplementedException();
         }
-        public override bool Object_Validation()
+
+        //Третьи формы представляют собой не таблицу, а единичный набор данных с другими таблицами, поэтому функция ExcelRow перезаписана не по шаблону
+        public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
+        {
+            worksheet.Cells["C12"].Value = RecipientName_DB;
+            worksheet.Cells["C13"].Value = RecipientJurLicoAddress_DB;
+            worksheet.Cells["C14"].Value = RecipientWorkplaceAddress_DB;
+            worksheet.Cells["C15"].Value = LicenseNum_DB;
+            worksheet.Cells["C16"].Value = ValidityPeriod_DB;
+            worksheet.Cells["C17"].Value = ExpectedDecisionTimeframe_DB;
+
+            worksheet.Cells["C19"].Value = FinalUserName_DB;
+            worksheet.Cells["C20"].Value = FinalUserJurLicoAddress_DB;
+            worksheet.Cells["C21"].Value = FinalUserWorkplaceAddress_DB;
+            worksheet.Cells["C22"].Value = FinalUserTelephone_DB;
+            worksheet.Cells["C23"].Value = FinalUserEmail_DB;
+            worksheet.Cells["C24"].Value = ApplicationScope_DB;
+            
+            worksheet.Cells["C26"].Value = ContractNum_DB;
+            worksheet.Cells["C27"].Value = ContractDate_DB;
+            worksheet.Cells["C28"].Value = ManufacturerOksm_DB;
+
+
+            int start = 31;
+            worksheet.InsertRow(start + 1, 1, start);
+            worksheet.DeleteRow(start);
+
+            for (int i =0; i< ExportedZriOziiiInfoCollection.Count; i++)
+            {
+                var info = ExportedZriOziiiInfoCollection[i];
+                worksheet.Cells[$"A{start + i}"].Value = $"8.{i + 1}";
+                worksheet.Cells[$"B{start + i}"].Value = info.RadionuclidComposition;
+                worksheet.Cells[$"C{start + i}"].Value = info.Count;
+                worksheet.Cells[$"D{start + i}"].Value = info.TotalActivity;
+
+                if (i + 1  < ExportedZriOziiiInfoCollection.Count)
+                worksheet.InsertRow(start + i + 1, 1, start);
+            }
+
+            return 0; //Рудимент
+        }
+
+        public static int ExcelHeader(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string id = "")
         {
             throw new NotImplementedException();
         }
-        public override int ExcelRow(ExcelWorksheet worksheet, int row, int column, bool transpose = true, string sumNumber = "")
+
+        #endregion
+
+        #region InheritedMethods
+
+        public override bool Object_Validation()
         {
             throw new NotImplementedException();
         }
