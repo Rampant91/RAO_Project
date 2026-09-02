@@ -94,6 +94,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             }
 
             Status(70, "Инициализация Excel пакета");
+            _operationDateSearchToleranceDays = pairingParams.OperationDateSearchToleranceDays;
             using var excelPackage = await InitializeExcelPackage(fullPath);
             InitializeWorkbook(excelPackage);
             AppendOrganizationToWorkbook(excelPackage, export, progressBarVM, percentBase: 75, percentSpan: 15);
@@ -160,6 +161,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             }
 
             progressBarVM.SetProgressBar(55, "Инициализация Excel пакета", "Вся БД", "Выгрузка в .xlsx");
+            _operationDateSearchToleranceDays = pairingParams.OperationDateSearchToleranceDays;
             using var excelPackage = await InitializeExcelPackage(fullPath);
             InitializeWorkbook(excelPackage);
 
@@ -465,24 +467,13 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var percentMax = Math.Min(44, percentMin + loadSpan);
             var loadProgress = new ProgressReporter(reportProgress, percentMin, percentMax);
 
-            // Сужение SQL по кол.19 только если ОКПО участвует в сверке — иначе сломаем пары/closest.
-            IReadOnlyList<string>? providerOkpoVariants = null;
-            string? ourOkpoFilter = null;
-            if (pairingParams.GetParams(descriptor.Id).CheckProviderOrRecieverOkpo)
-            {
-                providerOkpoVariants = BuildOurOkpoSqlMatchVariants(ourOkpo);
-                ourOkpoFilter = ourOkpo;
-            }
-
             counterpartOpsByForm[descriptor.Id] = await LoadFormOpsForRepsIdsAsync(
                 descriptor.Id,
                 db,
                 counterpartRepsIds,
                 orgTitles,
                 cancellationToken,
-                loadProgress,
-                providerOkpoVariants,
-                ourOkpoFilter);
+                loadProgress);
         }
 
         var counterpartSummary = string.Join(", ",
@@ -515,6 +506,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         Action<int, string>? reportProgress = null)
     {
         _currentParams = pairingParams;
+        _operationDateSearchToleranceDays = pairingParams.OperationDateSearchToleranceDays;
         var enabledForms = pairingParams.EnabledForms;
         var unpairedByForm = new Dictionary<TransferReceiveFormId, List<TransferReceiveDto>>();
         _closestByForm = new Dictionary<TransferReceiveFormId, Dictionary<int, ClosestMatchResult>>();
@@ -543,7 +535,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var matchProgress = new ProgressReporter(reportProgress, matchMin, matchMax);
             matchProgress.Status($"сопоставление формы {descriptor.FormNum}: 0 из {ourOps.Count} операций");
             var (unpaired, opsByOrgOkpo) = AnalyzeFormForOrganization(
-                ourOps, counterpartOps, ourOkpo, formOptions, repsIdsByOkpo, matchProgress);
+                ourOps, counterpartOps, ourOkpo, formOptions, pairingParams.OperationDateSearchToleranceDays, repsIdsByOkpo, matchProgress);
             unpairedByForm[descriptor.Id] = unpaired;
 
             reportProgress?.Invoke(matchMax,
@@ -553,7 +545,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             closestProgress.Status(
                 $"поиск ближайших совпадений {descriptor.FormNum}: 0 из {unpaired.Count}");
             _closestByForm[descriptor.Id] = BuildClosestMatchResults(
-                unpaired, opsByOrgOkpo, formOptions, closestProgress, layout: descriptor.Layout);
+                unpaired, opsByOrgOkpo, formOptions, pairingParams.OperationDateSearchToleranceDays, closestProgress, layout: descriptor.Layout);
         }
 
         if (unpairedByForm.Values.All(list => list.Count == 0))
@@ -576,6 +568,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<TransferReceiveFormId, SharedFormSearchIndexes>? sharedIndexes = null)
     {
         _currentParams = pairingParams;
+        _operationDateSearchToleranceDays = pairingParams.OperationDateSearchToleranceDays;
         var enabledForms = pairingParams.EnabledForms;
         var unpairedByForm = new Dictionary<TransferReceiveFormId, List<TransferReceiveDto>>();
         _closestByForm = new Dictionary<TransferReceiveFormId, Dictionary<int, ClosestMatchResult>>();
@@ -609,7 +602,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var matchProgress = new ProgressReporter(reportProgress, matchMin, matchMax);
             matchProgress.Status($"сопоставление формы {descriptor.FormNum}: 0 из {ourOps.Count} операций");
             var unpaired = ComputeUnpairedOperations(
-                ourOps, sharedPool, ourOkpo, formOptions, matchProgress, formIndexes?.Pairing);
+                ourOps, sharedPool, ourOkpo, formOptions, pairingParams.OperationDateSearchToleranceDays, matchProgress, formIndexes?.Pairing);
             unpairedByForm[descriptor.Id] = unpaired;
 
             reportProgress?.Invoke(matchMax,
@@ -622,6 +615,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 unpaired,
                 sharedPool,
                 formOptions,
+                pairingParams.OperationDateSearchToleranceDays,
                 closestProgress,
                 formIndexes?.Closest,
                 formIndexes?.Norms,
@@ -671,11 +665,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             List<TransferReceiveDto> counterpartOps,
             string ourOkpoRaw,
             TransferReceiveFormParams options,
+            int operationDateSearchToleranceDays,
             IReadOnlyDictionary<string, List<int>>? repsIdsByNormOkpo = null,
             ProgressReporter? progress = null)
     {
         var opsByOrgOkpo = BuildOpsPoolByOrgOkpo(ourOps, counterpartOps, repsIdsByNormOkpo);
-        var unpaired = ComputeUnpairedOperations(ourOps, opsByOrgOkpo, ourOkpoRaw, options, progress);
+        var unpaired = ComputeUnpairedOperations(ourOps, opsByOrgOkpo, ourOkpoRaw, options, operationDateSearchToleranceDays, progress);
         return (unpaired, opsByOrgOkpo);
     }
 
@@ -686,9 +681,11 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             List<TransferReceiveDto> counterpartOps,
             string ourOkpoRaw,
             TransferReceiveFormParams options,
+            int operationDateSearchToleranceDays,
             IReadOnlyDictionary<string, List<int>>? repsIdsByNormOkpo = null,
             ProgressReporter? progress = null) =>
-        AnalyzeFormForOrganization(ourOps, counterpartOps, ourOkpoRaw, options, repsIdsByNormOkpo, progress);
+        AnalyzeFormForOrganization(
+            ourOps, counterpartOps, ourOkpoRaw, options, operationDateSearchToleranceDays, repsIdsByNormOkpo, progress);
 
     /// <summary>
     /// Пул операций по нормализованному ОКПО.
@@ -789,6 +786,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<string, List<TransferReceiveDto>> opsByOrgOkpo,
         string ourOkpoRaw,
         TransferReceiveFormParams options,
+        int operationDateSearchToleranceDays,
         ProgressReporter? progress = null,
         PairingCandidateIndex? prebuiltIndex = null)
     {
@@ -808,7 +806,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var ourReceives = ourOps.Where(op => !op.IsTransfer).OrderBy(op => op.Id).ToList();
         var index = prebuiltIndex ?? PairingCandidateIndex.Build(opsByOrgOkpo, options);
 
-        MatchSide(ourTransfers, isSourceTransfer: true, index, usedCandidateIds, pairedOurIds, ourOkpoRaw, ourOkpoNorm, options, OnSourceDone);
+        MatchSide(ourTransfers, isSourceTransfer: true, index, usedCandidateIds, pairedOurIds, ourOkpoRaw, ourOkpoNorm, options, operationDateSearchToleranceDays, OnSourceDone);
         MatchSide(
             ourReceives.Where(op => !pairedOurIds.Contains(op.Id)).ToList(),
             isSourceTransfer: false,
@@ -818,6 +816,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             ourOkpoRaw,
             ourOkpoNorm,
             options,
+            operationDateSearchToleranceDays,
             OnSourceDone);
 
         // Операции, уже спаренные как кандидат на стороне передачи, в MatchSide receives не попадали.
@@ -836,8 +835,9 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<string, List<TransferReceiveDto>> opsByOrgOkpo,
         string ourOkpoRaw,
         TransferReceiveFormParams options,
+        int operationDateSearchToleranceDays,
         ProgressReporter? progress = null) =>
-        ComputeUnpairedOperations(ourOps, opsByOrgOkpo, ourOkpoRaw, options, progress);
+        ComputeUnpairedOperations(ourOps, opsByOrgOkpo, ourOkpoRaw, options, operationDateSearchToleranceDays, progress);
 
     private static void MatchSide(
         List<TransferReceiveDto> sources,
@@ -848,6 +848,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         string ourOkpoRaw,
         string ourOkpoNorm,
         TransferReceiveFormParams options,
+        int operationDateSearchToleranceDays,
         Action? onSourceDone = null)
     {
         var withSerial = options.AllowEmptySerialQuantityDrain
@@ -857,8 +858,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             ? sources.Where(SerialNumbersAreEmpty).ToList()
             : [];
 
-        MatchWithSerial(withSerial, isSourceTransfer, index, usedCandidateIds, pairedOurIds, ourOkpoRaw, ourOkpoNorm, options, onSourceDone);
-        MatchWithoutSerial(withoutSerial, isSourceTransfer, index, usedCandidateIds, pairedOurIds, ourOkpoRaw, ourOkpoNorm, options, onSourceDone);
+        MatchWithSerial(withSerial, isSourceTransfer, index, usedCandidateIds, pairedOurIds, ourOkpoRaw, ourOkpoNorm, options, operationDateSearchToleranceDays, onSourceDone);
+        MatchWithoutSerial(withoutSerial, isSourceTransfer, index, usedCandidateIds, pairedOurIds, ourOkpoRaw, ourOkpoNorm, options, operationDateSearchToleranceDays, onSourceDone);
     }
 
     private static void MatchWithSerial(
@@ -870,6 +871,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         string ourOkpoRaw,
         string ourOkpoNorm,
         TransferReceiveFormParams options,
+        int operationDateSearchToleranceDays,
         Action? onSourceDone = null)
     {
         foreach (var source in sources)
@@ -882,7 +884,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
             var sourceKey = BuildPairingKey(
                 source, options, includeSerial: true, includeQuantity: options.CheckQuantity);
-            var candidates = index.LookupWithSerial(source, isSourceTransfer, sourceKey, options);
+            var candidates = index.LookupWithSerial(source, isSourceTransfer, sourceKey, options, operationDateSearchToleranceDays);
             TransferReceiveDto? claimed = null;
             foreach (var (candidate, candidateKey) in candidates)
             {
@@ -930,6 +932,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         string ourOkpoRaw,
         string ourOkpoNorm,
         TransferReceiveFormParams options,
+        int operationDateSearchToleranceDays,
         Action? onSourceDone = null)
     {
         var remainingByCandidateId = new Dictionary<int, RemainingRowState>();
@@ -956,7 +959,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var remainingSourceQty = options.CheckQuantity ? GetQuantityForComparison(source) : 1;
             var sourceKey = BuildPairingKey(
                 source, options, includeSerial: false, includeQuantity: false);
-            var candidates = index.LookupWithoutSerial(source, isSourceTransfer, sourceKey, options);
+            var candidates = index.LookupWithoutSerial(source, isSourceTransfer, sourceKey, options, operationDateSearchToleranceDays);
 
             foreach (var (candidate, candidateKey) in candidates)
             {
@@ -1067,28 +1070,32 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             TransferReceiveDto source,
             bool isSourceTransfer,
             string sourcePairingKey,
-            TransferReceiveFormParams options)
+            TransferReceiveFormParams options,
+            int operationDateSearchToleranceDays)
         {
             if (!TryGetDirection(source, isSourceTransfer, out var bucket))
             {
                 return [];
             }
 
-            return bucket.LookupWithSerial(source, sourcePairingKey, options.CheckOperationDate);
+            return bucket.LookupWithSerial(
+                source, sourcePairingKey, options.CheckOperationDate, operationDateSearchToleranceDays);
         }
 
         public IEnumerable<(TransferReceiveDto Row, string PairingKey)> LookupWithoutSerial(
             TransferReceiveDto source,
             bool isSourceTransfer,
             string sourcePairingKey,
-            TransferReceiveFormParams options)
+            TransferReceiveFormParams options,
+            int operationDateSearchToleranceDays)
         {
             if (!TryGetDirection(source, isSourceTransfer, out var bucket))
             {
                 return [];
             }
 
-            return bucket.LookupWithoutSerial(source, sourcePairingKey, options.CheckOperationDate);
+            return bucket.LookupWithoutSerial(
+                source, sourcePairingKey, options.CheckOperationDate, operationDateSearchToleranceDays);
         }
 
         private bool TryGetDirection(
@@ -1147,18 +1154,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 }
             }
 
-            public IEnumerable<(TransferReceiveDto Row, string PairingKey)> LookupWithSerial(
-                TransferReceiveDto source,
-                string sourcePairingKey,
-                bool filterByDate) =>
-                Lookup(_withSerial, source, sourcePairingKey, filterByDate);
-
-            public IEnumerable<(TransferReceiveDto Row, string PairingKey)> LookupWithoutSerial(
-                TransferReceiveDto source,
-                string sourcePairingKey,
-                bool filterByDate) =>
-                Lookup(_withoutSerial, source, sourcePairingKey, filterByDate);
-
             private static void Add(
                 Dictionary<string, List<(TransferReceiveDto Row, string PairingKey)>> map,
                 TransferReceiveDto op,
@@ -1175,14 +1170,63 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 list.Add((op, pairingKey));
             }
 
+            public IEnumerable<(TransferReceiveDto Row, string PairingKey)> LookupWithSerial(
+                TransferReceiveDto source,
+                string sourcePairingKey,
+                bool filterByDate,
+                int dateSearchToleranceDays) =>
+                Lookup(_withSerial, source, sourcePairingKey, filterByDate, dateSearchToleranceDays);
+
+            public IEnumerable<(TransferReceiveDto Row, string PairingKey)> LookupWithoutSerial(
+                TransferReceiveDto source,
+                string sourcePairingKey,
+                bool filterByDate,
+                int dateSearchToleranceDays) =>
+                Lookup(_withoutSerial, source, sourcePairingKey, filterByDate, dateSearchToleranceDays);
+
             private static IEnumerable<(TransferReceiveDto Row, string PairingKey)> Lookup(
                 Dictionary<string, List<(TransferReceiveDto Row, string PairingKey)>> map,
                 TransferReceiveDto source,
                 string sourcePairingKey,
-                bool filterByDate)
+                bool filterByDate,
+                int dateSearchToleranceDays)
             {
-                var lookupKey = MakeLookupKey(sourcePairingKey, source.OpDate, filterByDate);
-                return map.TryGetValue(lookupKey, out var list) ? list : [];
+                if (!filterByDate)
+                {
+                    var lookupKey = MakeLookupKey(sourcePairingKey, source.OpDate, indexByDate: false);
+                    return map.TryGetValue(lookupKey, out var all) ? all : [];
+                }
+
+                if (!DateOnly.TryParse(source.OpDate, out var sourceDate))
+                {
+                    var lookupKey = MakeLookupKey(sourcePairingKey, source.OpDate, indexByDate: true);
+                    return map.TryGetValue(lookupKey, out var undated) ? undated : [];
+                }
+
+                var seen = new HashSet<int>();
+                var result = new List<(TransferReceiveDto Row, string PairingKey)>();
+                var centerDay = sourceDate.DayNumber;
+                for (var day = centerDay - dateSearchToleranceDays; day <= centerDay + dateSearchToleranceDays; day++)
+                {
+                    var lookupKey = string.Concat(
+                        sourcePairingKey,
+                        "\0d:",
+                        day.ToString(CultureInfo.InvariantCulture));
+                    if (!map.TryGetValue(lookupKey, out var list))
+                    {
+                        continue;
+                    }
+
+                    foreach (var item in list)
+                    {
+                        if (seen.Add(item.Row.Id))
+                        {
+                            result.Add(item);
+                        }
+                    }
+                }
+
+                return result;
             }
 
             /// <summary>

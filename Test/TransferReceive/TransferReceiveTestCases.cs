@@ -48,6 +48,7 @@ internal static partial class TransferReceiveTestCases
             .Concat(NormalizationCases())
             .Concat(ParamsCases())
             .Concat(OkpoCases())
+            .Concat(OkpoClosestCases())
             .Concat(ClosestMatchCases())
             .Concat(SoftClosestCases())
             .Concat(Form12Cases())

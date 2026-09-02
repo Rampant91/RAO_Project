@@ -1,6 +1,9 @@
 using System;
 using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing;
 
 namespace Client_App.ViewModels.Messages;
 
@@ -897,6 +900,80 @@ public class GetTransferReceiveParamsVM : INotifyPropertyChanged
         CheckAll16 = all ? true : none ? false : null;
         _syncingAll16 = false;
     }
+
+    #region Search window (date)
+
+    private int _operationDateSearchToleranceDays =
+        ExcelExportCheckTransferReceiveAsyncCommand.DefaultOperationDateSearchToleranceDays;
+
+    private string _operationDateSearchToleranceDaysText =
+        ExcelExportCheckTransferReceiveAsyncCommand.DefaultOperationDateSearchToleranceDays
+            .ToString(CultureInfo.InvariantCulture);
+
+    /// <summary>Текст поля «± дней» — только цифры; пустое значение нормализуется при потере фокуса / Ок.</summary>
+    public string OperationDateSearchToleranceDaysText
+    {
+        get => _operationDateSearchToleranceDaysText;
+        set
+        {
+            var sanitized = string.IsNullOrEmpty(value)
+                ? string.Empty
+                : new string(value.Where(char.IsDigit).ToArray());
+            if (_operationDateSearchToleranceDaysText == sanitized)
+            {
+                return;
+            }
+
+            _operationDateSearchToleranceDaysText = sanitized;
+            OnPropertyChanged();
+
+            if (int.TryParse(sanitized, NumberStyles.None, CultureInfo.InvariantCulture, out var parsed))
+            {
+                SetOperationDateSearchToleranceDays(parsed, syncText: false);
+            }
+        }
+    }
+
+    /// <summary>Окно поиска парной/похожей операции по дате (±N дней).</summary>
+    public int OperationDateSearchToleranceDays
+    {
+        get => _operationDateSearchToleranceDays;
+        set => SetOperationDateSearchToleranceDays(value, syncText: true);
+    }
+
+    /// <summary>Применяет clamp и подставляет значение по умолчанию, если поле пустое или нечисловое.</summary>
+    public void CommitOperationDateSearchToleranceDays()
+    {
+        if (!int.TryParse(_operationDateSearchToleranceDaysText, NumberStyles.None, CultureInfo.InvariantCulture, out var parsed))
+        {
+            parsed = ExcelExportCheckTransferReceiveAsyncCommand.DefaultOperationDateSearchToleranceDays;
+        }
+
+        SetOperationDateSearchToleranceDays(parsed, syncText: true);
+    }
+
+    private void SetOperationDateSearchToleranceDays(int value, bool syncText)
+    {
+        var clamped = ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveParamsSet
+            .ClampOperationDateSearchToleranceDays(value);
+        var text = clamped.ToString(CultureInfo.InvariantCulture);
+        if (_operationDateSearchToleranceDays == clamped
+            && (!syncText || _operationDateSearchToleranceDaysText == text))
+        {
+            return;
+        }
+
+        _operationDateSearchToleranceDays = clamped;
+        OnPropertyChanged(nameof(OperationDateSearchToleranceDays));
+
+        if (syncText)
+        {
+            _operationDateSearchToleranceDaysText = text;
+            OnPropertyChanged(nameof(OperationDateSearchToleranceDaysText));
+        }
+    }
+
+    #endregion
 
     private void OnPropertyChanged([CallerMemberName] string prop = "") =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));

@@ -252,4 +252,37 @@ public class TransferReceiveParamsVmTests
         Assert.True(p.CheckTransuraniumActivity);
         Assert.False(p.AllowEmptySerialQuantityDrain);
     }
+
+    [Fact]
+    public void OperationDateSearchToleranceDays_DefaultsTo15()
+    {
+        var vm = new GetTransferReceiveParamsVM();
+        Assert.Equal(ExcelExportCheckTransferReceiveAsyncCommand.DefaultOperationDateSearchToleranceDays, vm.OperationDateSearchToleranceDays);
+    }
+
+    [Fact]
+    public void OperationDateSearchToleranceDaysText_AcceptsDigitsOnly_AndCommitNormalizesEmpty()
+    {
+        var vm = new GetTransferReceiveParamsVM();
+        vm.OperationDateSearchToleranceDaysText = "12a3";
+        Assert.Equal("123", vm.OperationDateSearchToleranceDaysText);
+        Assert.Equal(123, vm.OperationDateSearchToleranceDays);
+
+        vm.OperationDateSearchToleranceDaysText = string.Empty;
+        vm.CommitOperationDateSearchToleranceDays();
+        Assert.Equal("15", vm.OperationDateSearchToleranceDaysText);
+        Assert.Equal(15, vm.OperationDateSearchToleranceDays);
+    }
+
+    [Fact]
+    public void MapParamsFromDialogVm_MapsOperationDateSearchToleranceDays_AndClamps()
+    {
+        var vm = new GetTransferReceiveParamsVM { OperationDateSearchToleranceDays = 30 };
+        var set = TransferReceiveTestAccess.MapParamsFromDialogVmForTests(vm);
+        Assert.Equal(30, set.OperationDateSearchToleranceDays);
+
+        vm.OperationDateSearchToleranceDays = 999;
+        set = TransferReceiveTestAccess.MapParamsFromDialogVmForTests(vm);
+        Assert.Equal(ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveParamsSet.MaxOperationDateSearchToleranceDays, set.OperationDateSearchToleranceDays);
+    }
 }

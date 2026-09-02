@@ -166,7 +166,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             ? date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
             : NormalizeNumber(value);
 
-    private static bool DateWithinTolerance(string? left, string? right, int days = OperationDateToleranceDays)
+    private static bool DateWithinTolerance(string? left, string? right, int days = DefaultOperationDateSearchToleranceDays)
     {
         if (DateOnly.TryParse(left, out var leftDate) && DateOnly.TryParse(right, out var rightDate))
         {
@@ -497,14 +497,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             _ => throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет загрузчика для формы.")
         };
 
-    /// <summary>Диспетчер загрузки ops контрагентов.</summary>
-    /// <param name="providerOkpoRawVariants">
-    /// Если задан — в SQL оставляем только строки, где кол.19 ∈ variants
-    /// (org-режим при включённом CheckProviderOrRecieverOkpo). Не использовать при выключенной проверке ОКПО.
-    /// </param>
-    /// <param name="ourOkpoFilter">
-    /// Доп. отсев в памяти: кол.19 указывает на наш ОКПО (полное совпадение или 8 ↔ голова 8_5).
-    /// </param>
+    /// <summary>Диспетчер загрузки ops контрагентов (все операции org, без фильтра по кол.19).</summary>
     private static Task<List<TransferReceiveDto>> LoadFormOpsForRepsIdsAsync(
         TransferReceiveFormId formId,
         DBModel db,
@@ -512,30 +505,22 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
-        IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "контрагентов") =>
         formId switch
         {
             TransferReceiveFormId.Form11 => LoadForm11TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
-                chunkSize, progressEntityLabel),
+                db, repsIds, orgTitles, cancellationToken, progress, chunkSize, progressEntityLabel),
             TransferReceiveFormId.Form12 => LoadForm12TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
-                chunkSize, progressEntityLabel),
+                db, repsIds, orgTitles, cancellationToken, progress, chunkSize, progressEntityLabel),
             TransferReceiveFormId.Form13 => LoadForm13TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
-                chunkSize, progressEntityLabel),
+                db, repsIds, orgTitles, cancellationToken, progress, chunkSize, progressEntityLabel),
             TransferReceiveFormId.Form14 => LoadForm14TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
-                chunkSize, progressEntityLabel),
+                db, repsIds, orgTitles, cancellationToken, progress, chunkSize, progressEntityLabel),
             TransferReceiveFormId.Form15 => LoadForm15TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
-                chunkSize, progressEntityLabel),
+                db, repsIds, orgTitles, cancellationToken, progress, chunkSize, progressEntityLabel),
             TransferReceiveFormId.Form16 => LoadForm16TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
-                chunkSize, progressEntityLabel),
+                db, repsIds, orgTitles, cancellationToken, progress, chunkSize, progressEntityLabel),
             _ => throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет загрузчика для формы.")
         };
 
@@ -1072,8 +1057,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
     /// <summary>
     /// Сырые варианты нашего ОКПО для SQL IN: как в титуле, нормализованный, с ведущими нулями.
-    /// Не покрывает lookalike-буквы — для ОКПО обычно цифры; пары после NormalizeNumber всё равно
-    /// дополнительно отсекаются <c>ourOkpoFilter</c> в памяти.
+    /// Не покрывает lookalike-буквы — для ОКПО обычно цифры.
     /// </summary>
     private static List<string> BuildOurOkpoSqlMatchVariants(string ourOkpoRaw)
     {
@@ -1561,8 +1545,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitlesByRepsId,
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
-        IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "контрагентов")
     {
@@ -1576,7 +1558,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var result = new List<TransferReceiveDto>();
         var totalOrgs = repsIds.Count;
         var orgsDone = 0;
-        var filterByProvider = providerOkpoRawVariants is { Count: > 0 };
         var effectiveChunk = chunkSize > 0 ? chunkSize : CounterpartOpsLoadChunkSize;
         progress?.ReportNow(0, totalOrgs, $"загрузка операций {progressEntityLabel}: 0 из {totalOrgs} орг.");
 
@@ -1596,12 +1577,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                && idChunk.Contains(form.Report.Reports.Id)
                                && form.OperationCode_DB != null
                                && codes.Contains(form.OperationCode_DB));
-            if (filterByProvider)
-            {
-                query = query.Where(form => form.ProviderOrRecieverOKPO_DB != null
-                                           && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
-            }
-
             var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
             var lastRowId = 0;
             while (true)
@@ -1642,12 +1617,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 foreach (var row in rows)
                 {
                     if (!IsTransferOrReceiveCodeForm11(row.OpCode))
-                    {
-                        continue;
-                    }
-
-                    if (ourOkpoFilter is { Length: > 0 }
-                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
                     {
                         continue;
                     }
@@ -1767,8 +1736,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitlesByRepsId,
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
-        IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "1.2 контрагентов")
     {
@@ -1782,7 +1749,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var result = new List<TransferReceiveDto>();
         var totalOrgs = repsIds.Count;
         var orgsDone = 0;
-        var filterByProvider = providerOkpoRawVariants is { Count: > 0 };
         var effectiveChunk = chunkSize > 0 ? chunkSize : CounterpartOpsLoadChunkSize;
         progress?.ReportNow(0, totalOrgs, $"загрузка операций {progressEntityLabel}: 0 из {totalOrgs} орг.");
 
@@ -1802,12 +1768,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                && idChunk.Contains(form.Report.Reports.Id)
                                && form.OperationCode_DB != null
                                && codes.Contains(form.OperationCode_DB));
-            if (filterByProvider)
-            {
-                query = query.Where(form => form.ProviderOrRecieverOKPO_DB != null
-                                           && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
-            }
-
             var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
             var lastRowId = 0;
             while (true)
@@ -1847,12 +1807,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 foreach (var row in rows)
                 {
                     if (!IsTransferOrReceiveCodeForm11(row.OpCode))
-                    {
-                        continue;
-                    }
-
-                    if (ourOkpoFilter is { Length: > 0 }
-                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
                     {
                         continue;
                     }
@@ -1974,8 +1928,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitlesByRepsId,
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
-        IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "1.3 контрагентов")
     {
@@ -1989,7 +1941,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var result = new List<TransferReceiveDto>();
         var totalOrgs = repsIds.Count;
         var orgsDone = 0;
-        var filterByProvider = providerOkpoRawVariants is { Count: > 0 };
         var effectiveChunk = chunkSize > 0 ? chunkSize : CounterpartOpsLoadChunkSize;
         progress?.ReportNow(0, totalOrgs, $"загрузка операций {progressEntityLabel}: 0 из {totalOrgs} орг.");
 
@@ -2009,12 +1960,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                && idChunk.Contains(form.Report.Reports.Id)
                                && form.OperationCode_DB != null
                                && codes.Contains(form.OperationCode_DB));
-            if (filterByProvider)
-            {
-                query = query.Where(form => form.ProviderOrRecieverOKPO_DB != null
-                                           && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
-            }
-
             var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
             var lastRowId = 0;
             while (true)
@@ -2055,12 +2000,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 foreach (var row in rows)
                 {
                     if (!IsTransferOrReceiveCodeForm11(row.OpCode))
-                    {
-                        continue;
-                    }
-
-                    if (ourOkpoFilter is { Length: > 0 }
-                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
                     {
                         continue;
                     }
@@ -2166,8 +2105,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitlesByRepsId,
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
-        IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "1.4 контрагентов")
     {
@@ -2181,7 +2118,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var result = new List<TransferReceiveDto>();
         var totalOrgs = repsIds.Count;
         var orgsDone = 0;
-        var filterByProvider = providerOkpoRawVariants is { Count: > 0 };
         var effectiveChunk = chunkSize > 0 ? chunkSize : CounterpartOpsLoadChunkSize;
         progress?.ReportNow(0, totalOrgs, $"загрузка операций {progressEntityLabel}: 0 из {totalOrgs} орг.");
 
@@ -2201,12 +2137,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                && idChunk.Contains(form.Report.Reports.Id)
                                && form.OperationCode_DB != null
                                && codes.Contains(form.OperationCode_DB));
-            if (filterByProvider)
-            {
-                query = query.Where(form => form.ProviderOrRecieverOKPO_DB != null
-                                           && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
-            }
-
             var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
             var lastRowId = 0;
             while (true)
@@ -2248,12 +2178,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 foreach (var row in rows)
                 {
                     if (!IsTransferOrReceiveCodeForm11(row.OpCode))
-                    {
-                        continue;
-                    }
-
-                    if (ourOkpoFilter is { Length: > 0 }
-                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
                     {
                         continue;
                     }
@@ -2513,8 +2437,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitlesByRepsId,
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
-        IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "1.5 контрагентов")
     {
@@ -2528,7 +2450,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var result = new List<TransferReceiveDto>();
         var totalOrgs = repsIds.Count;
         var orgsDone = 0;
-        var filterByProvider = providerOkpoRawVariants is { Count: > 0 };
         var effectiveChunk = chunkSize > 0 ? chunkSize : CounterpartOpsLoadChunkSize;
         progress?.ReportNow(0, totalOrgs, $"загрузка операций {progressEntityLabel}: 0 из {totalOrgs} орг.");
 
@@ -2548,12 +2469,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                && idChunk.Contains(form.Report.Reports.Id)
                                && form.OperationCode_DB != null
                                && codes.Contains(form.OperationCode_DB));
-            if (filterByProvider)
-            {
-                query = query.Where(form => form.ProviderOrRecieverOKPO_DB != null
-                                           && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
-            }
-
             var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
             var lastRowId = 0;
             while (true)
@@ -2598,12 +2513,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 foreach (var row in rows)
                 {
                     if (!IsTransferOrReceiveCodeForm11(row.OpCode))
-                    {
-                        continue;
-                    }
-
-                    if (ourOkpoFilter is { Length: > 0 }
-                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
                     {
                         continue;
                     }
@@ -2820,8 +2729,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitlesByRepsId,
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
-        IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "1.6 контрагентов")
     {
@@ -2835,7 +2742,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var result = new List<TransferReceiveDto>();
         var totalOrgs = repsIds.Count;
         var orgsDone = 0;
-        var filterByProvider = providerOkpoRawVariants is { Count: > 0 };
         var effectiveChunk = chunkSize > 0 ? chunkSize : CounterpartOpsLoadChunkSize;
         progress?.ReportNow(0, totalOrgs, $"загрузка операций {progressEntityLabel}: 0 из {totalOrgs} орг.");
 
@@ -2855,12 +2761,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                && idChunk.Contains(form.Report.Reports.Id)
                                && form.OperationCode_DB != null
                                && codes.Contains(form.OperationCode_DB));
-            if (filterByProvider)
-            {
-                query = query.Where(form => form.ProviderOrRecieverOKPO_DB != null
-                                           && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
-            }
-
             var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
             var lastRowId = 0;
             while (true)
@@ -2907,12 +2807,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 foreach (var row in rows)
                 {
                     if (!IsTransferOrReceiveCodeForm11(row.OpCode))
-                    {
-                        continue;
-                    }
-
-                    if (ourOkpoFilter is { Length: > 0 }
-                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
                     {
                         continue;
                     }

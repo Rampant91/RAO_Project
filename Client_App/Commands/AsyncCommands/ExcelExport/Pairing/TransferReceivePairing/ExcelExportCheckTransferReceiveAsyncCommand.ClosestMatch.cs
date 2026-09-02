@@ -27,6 +27,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         List<TransferReceiveDto> unpaired,
         IReadOnlyDictionary<string, List<TransferReceiveDto>> opsByOrgOkpo,
         TransferReceiveFormParams options,
+        int operationDateSearchToleranceDays,
         ProgressReporter? progress = null,
         ClosestCandidateIndex? prebuiltCandidateIndex = null,
         ConcurrentDictionary<int, TransferReceiveNorm>? prebuiltNorms = null,
@@ -100,7 +101,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 }
 
                 return FieldSimilarityOf(
-                    source, candidate, sourceNorm, candidateNorm, field, source.OrgOkpo);
+                    source, candidate, sourceNorm, candidateNorm, field, source.OrgOkpo, operationDateSearchToleranceDays);
             },
             (source, candidate) =>
             {
@@ -120,7 +121,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                     sourceNorm, candidateNorm, source.OpDate, candidate.OpDate);
             },
             filterByDate,
-            OperationDateToleranceDays,
+            operationDateSearchToleranceDays,
             applyBonus: (source, _, levels) =>
             {
                 if (layout == TransferReceiveSheetLayout.Form16)
@@ -164,7 +165,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 }
 
                 return !DatesWithinToleranceCached(
-                    sourceNorm, candidateNorm, source.OpDate, candidate.OpDate);
+                    sourceNorm, candidateNorm, source.OpDate, candidate.OpDate, operationDateSearchToleranceDays);
             },
             onProgress: (done, count) =>
                 progress?.Report(done, count, $"поиск ближайших совпадений: {done} из {count}"));
@@ -225,14 +226,15 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         TransferReceiveNorm left,
         TransferReceiveNorm right,
         string? leftRaw,
-        string? rightRaw)
+        string? rightRaw,
+        int toleranceDays)
     {
         if (left.OpDateDayNumber is int leftDay && right.OpDateDayNumber is int rightDay)
         {
-            return Math.Abs(leftDay - rightDay) <= OperationDateToleranceDays;
+            return Math.Abs(leftDay - rightDay) <= toleranceDays;
         }
 
-        return DateWithinTolerance(leftRaw, rightRaw);
+        return DateWithinTolerance(leftRaw, rightRaw, toleranceDays);
     }
 
     private static int OperationDateDayDeltaCached(
