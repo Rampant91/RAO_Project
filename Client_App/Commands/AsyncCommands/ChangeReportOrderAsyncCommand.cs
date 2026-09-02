@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
+using Client_App.ViewModels.Forms.Forms2;
+using Client_App.ViewModels.Forms.Forms3;
 using Models.Collections;
 
 namespace Client_App.Commands.AsyncCommands;
@@ -22,6 +24,14 @@ public class ChangeReportOrderAsyncCommand : BaseAsyncCommand
         {
             _vm = form10VM;
         }
+        else if (vm is Form_20VM form20VM)
+        {
+            _vm = form20VM;
+        }
+        else if (vm is Form_30VM form30VM)
+        {
+            _vm = form30VM;
+        }
     }
 
 
@@ -37,13 +47,21 @@ public class ChangeReportOrderAsyncCommand : BaseAsyncCommand
             Storage.Rows10[1].SetOrder(tmp);
             await Storage.Rows10.QuickSortAsync();
         }
-        if (Storage.FormNum.Value == "2.0")
+        else if (Storage.FormNum.Value == "2.0")
         {
             Storage.Rows20.Sorted = false;
             var tmp = Storage.Rows20[0].Order;
             Storage.Rows20[0].SetOrder(Storage.Rows20[1].Order);
             Storage.Rows20[1].SetOrder(tmp);
             await Storage.Rows20.QuickSortAsync();
+        }
+        else if (Storage.FormNum.Value == "3.0")
+        {
+            Storage.Rows30.Sorted = false;
+            var tmp = Storage.Rows30[0].Order;
+            Storage.Rows30[0].SetOrder(Storage.Rows30[1].Order);
+            Storage.Rows30[1].SetOrder(tmp);
+            await Storage.Rows30.QuickSortAsync();
         }
     }
 }
