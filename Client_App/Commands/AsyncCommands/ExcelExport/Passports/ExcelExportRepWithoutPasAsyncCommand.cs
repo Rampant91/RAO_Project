@@ -39,82 +39,78 @@ public partial class ExcelExportRepWithoutPasAsyncCommand : ExcelBaseAsyncComman
 
         progressBarVM.SetProgressBar(10, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-
-        progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-        Worksheet = excelPackage.Workbook.Worksheets.Add("Список отчётов без файла паспорта");
-
-        #region FillHeaders
-
-        Worksheet.Cells[1, 1].Value = "Рег. №";
-        Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
-        Worksheet.Cells[1, 3].Value = "ОКПО";
-        Worksheet.Cells[1, 4].Value = "Форма";
-        Worksheet.Cells[1, 5].Value = "Дата начала периода";
-        Worksheet.Cells[1, 6].Value = "Дата конца периода";
-        Worksheet.Cells[1, 7].Value = "Номер корректировки";
-        Worksheet.Cells[1, 8].Value = "Количество строк";
-        Worksheet.Cells[1, 9].Value = "№ п/п";
-        Worksheet.Cells[1, 10].Value = "код";
-        Worksheet.Cells[1, 11].Value = "дата";
-        Worksheet.Cells[1, 12].Value = "номер паспорта (сертификата)";
-        Worksheet.Cells[1, 13].Value = "тип";
-        Worksheet.Cells[1, 14].Value = "радионуклиды";
-        Worksheet.Cells[1, 15].Value = "номер";
-        Worksheet.Cells[1, 16].Value = "количество, шт";
-        Worksheet.Cells[1, 17].Value = "суммарная активность, Бк";
-        Worksheet.Cells[1, 18].Value = "код ОКПО изготовителя";
-        Worksheet.Cells[1, 19].Value = "дата выпуска";
-        Worksheet.Cells[1, 20].Value = "категория";
-        Worksheet.Cells[1, 21].Value = "НСС, мес";
-        Worksheet.Cells[1, 22].Value = "код формы собственности";
-        Worksheet.Cells[1, 23].Value = "код ОКПО правообладателя";
-        Worksheet.Cells[1, 24].Value = "вид";
-        Worksheet.Cells[1, 25].Value = "номер";
-        Worksheet.Cells[1, 26].Value = "дата";
-        Worksheet.Cells[1, 27].Value = "поставщика или получателя";
-        Worksheet.Cells[1, 28].Value = "перевозчика";
-        Worksheet.Cells[1, 29].Value = "наименование";
-        Worksheet.Cells[1, 30].Value = "тип";
-        Worksheet.Cells[1, 31].Value = "номер";
-
-        if (OperatingSystem.IsWindows()) // Под Astra Linux эта команда крашит программу без GDI дров
-        {
-            Worksheet.Cells.AutoFitColumns();
-        }
-        Worksheet.View.FreezePanes(2, 1);
-
-        #endregion
-
-        progressBarVM.SetProgressBar(20, "Формирование списка форм 1.1");
-        List<string[]> pasUniqParam = [];
-        var dtoList = await GetFilteredForms(tmpDbPath, files, pasUniqParam, cts);
-
-        progressBarVM.SetProgressBar(40, "Поиск совпадений");
-        ConcurrentBag<Form11ShortDTO> dtoToExcelThreadSafe = [];
-        await FindFilesWithOutReport(pasUniqParam, dtoList, dtoToExcelThreadSafe, progressBarVM, cts);
-
-        progressBarVM.SetProgressBar(60, "Загрузка совпавших форм");
-        var matchedFormsList = await LoadMatchedForms([.. dtoToExcelThreadSafe], tmpDbPath, progressBarVM, cts);
-
-        progressBarVM.SetProgressBar(90, "Экспорт данных в .xlsx");
-        await Task.Run(async () => await ExportToExcel(matchedFormsList), cts.Token);
-
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-
-        progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
         {
-            File.Delete(tmpDbPath);
-        }
-        catch
-        {
-            // ignored
-        }
+            progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(fullPath);
+            Worksheet = excelPackage.Workbook.Worksheets.Add("Список отчётов без файла паспорта");
 
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-        await progressBar.CloseAsync();
+            #region FillHeaders
+
+            Worksheet.Cells[1, 1].Value = "Рег. №";
+            Worksheet.Cells[1, 2].Value = "Сокращенное наименование";
+            Worksheet.Cells[1, 3].Value = "ОКПО";
+            Worksheet.Cells[1, 4].Value = "Форма";
+            Worksheet.Cells[1, 5].Value = "Дата начала периода";
+            Worksheet.Cells[1, 6].Value = "Дата конца периода";
+            Worksheet.Cells[1, 7].Value = "Номер корректировки";
+            Worksheet.Cells[1, 8].Value = "Количество строк";
+            Worksheet.Cells[1, 9].Value = "№ п/п";
+            Worksheet.Cells[1, 10].Value = "код";
+            Worksheet.Cells[1, 11].Value = "дата";
+            Worksheet.Cells[1, 12].Value = "номер паспорта (сертификата)";
+            Worksheet.Cells[1, 13].Value = "тип";
+            Worksheet.Cells[1, 14].Value = "радионуклиды";
+            Worksheet.Cells[1, 15].Value = "номер";
+            Worksheet.Cells[1, 16].Value = "количество, шт";
+            Worksheet.Cells[1, 17].Value = "суммарная активность, Бк";
+            Worksheet.Cells[1, 18].Value = "код ОКПО изготовителя";
+            Worksheet.Cells[1, 19].Value = "дата выпуска";
+            Worksheet.Cells[1, 20].Value = "категория";
+            Worksheet.Cells[1, 21].Value = "НСС, мес";
+            Worksheet.Cells[1, 22].Value = "код формы собственности";
+            Worksheet.Cells[1, 23].Value = "код ОКПО правообладателя";
+            Worksheet.Cells[1, 24].Value = "вид";
+            Worksheet.Cells[1, 25].Value = "номер";
+            Worksheet.Cells[1, 26].Value = "дата";
+            Worksheet.Cells[1, 27].Value = "поставщика или получателя";
+            Worksheet.Cells[1, 28].Value = "перевозчика";
+            Worksheet.Cells[1, 29].Value = "наименование";
+            Worksheet.Cells[1, 30].Value = "тип";
+            Worksheet.Cells[1, 31].Value = "номер";
+
+            if (OperatingSystem.IsWindows()) // Под Astra Linux эта команда крашит программу без GDI дров
+            {
+                Worksheet.Cells.AutoFitColumns();
+            }
+            Worksheet.View.FreezePanes(2, 1);
+
+            #endregion
+
+            progressBarVM.SetProgressBar(20, "Формирование списка форм 1.1");
+            List<string[]> pasUniqParam = [];
+            var dtoList = await GetFilteredForms(tmpDbPath, files, pasUniqParam, cts);
+
+            progressBarVM.SetProgressBar(40, "Поиск совпадений");
+            ConcurrentBag<Form11ShortDTO> dtoToExcelThreadSafe = [];
+            await FindFilesWithOutReport(pasUniqParam, dtoList, dtoToExcelThreadSafe, progressBarVM, cts);
+
+            progressBarVM.SetProgressBar(60, "Загрузка совпавших форм");
+            var matchedFormsList = await LoadMatchedForms([.. dtoToExcelThreadSafe], tmpDbPath, progressBarVM, cts);
+
+            progressBarVM.SetProgressBar(90, "Экспорт данных в .xlsx");
+            await Task.Run(async () => await ExportToExcel(matchedFormsList), cts.Token);
+
+            progressBarVM.SetProgressBar(95, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            await progressBar.CloseAsync();
+        }
+        finally
+        {
+            TryDeleteTempDataBase(tmpDbPath);
+        }
     }
 
     #region FindFilesWithOutReport

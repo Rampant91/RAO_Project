@@ -63,6 +63,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
         var importSummaryShown = false;
         try
         {
+            SkipNewOrg = false;
             SkipInter = false;
             SkipReplace = false;
             HasMultipleReport = false;
@@ -256,36 +257,108 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     }
                     else if (baseReps11 == null && baseReps21 == null && baseReps31 == null && baseReps41 == null && baseReps51 == null)
                     {
-                        ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
-                        AtLeastOneImportDone = true;
+                        #region AddNewOrg
 
-                        #region LoggerImport
-
-                        var sortedRepList = impReps.Report_Collection
-                            .OrderBy(x => x.FormNum_DB)
-                            .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
-                            .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
-                            .ToList();
-                        foreach (var rep in sortedRepList)
+                        var an = "Добавить";
+                        if (!SkipNewOrg)
                         {
-                            ImpRepCorNum = rep.CorrectionNumber_DB;
-                            if(rep.Rows!=null)
-                                ImpRepFormCount = rep.Rows.Count;
-                            ImpRepFormNum = rep.FormNum_DB;
-                            ImpRepStartPeriod = rep.StartPeriod_DB;
-                            ImpRepEndPeriod = rep.EndPeriod_DB;
-                            Act = "\t\t\t";
-                            LoggerImportDTO = new LoggerImportDTO
+                            if (answer.Length > 1 || repsList.Count > 1)
                             {
-                                Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
-                                FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
-                                Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
-                                ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
-                            };
-                            ServiceExtension.LoggerManager.Import(LoggerImportDTO);
-                            RecordImportedReport(impReps);
-                            IsFirstLogLine = false;
-                            CurrentLogLine++;
+                                #region MessageNewOrg
+
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                    {
+                                        ButtonDefinitions =
+                                        [
+                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                            new ButtonDefinition { Name = "Да для всех" },
+                                            new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                        ],
+                                        ContentTitle = "Импорт из .raodb",
+                                        ContentHeader = "Уведомление",
+                                        ContentMessage =
+                                            $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
+                                            $"{Environment.NewLine}" +
+                                            $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                                            $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                            $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                            $"{Environment.NewLine}" +
+                                            $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
+                                            $"{Environment.NewLine}импортировать все новые организации.",
+                                        MinWidth = 400,
+                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    })
+                                    .ShowDialog(Desktop.MainWindow));
+
+                                #endregion
+
+                                if (an is "Да для всех") SkipNewOrg = true;
+                            }
+                            else
+                            {
+                                #region MessageNewOrg
+
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                    {
+                                        ButtonDefinitions =
+                                        [
+                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                            new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                        ],
+                                        ContentTitle = "Импорт из .raodb",
+                                        ContentHeader = "Уведомление",
+                                        ContentMessage =
+                                            $"Будет добавлена новая организация ({ImpRepFormNum}) содержащая {ImpRepFormCount} форм отчетности." +
+                                            $"{Environment.NewLine}" +
+                                            $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                                            $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                            $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
+                                        MinWidth = 400,
+                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    })
+                                    .ShowDialog(Desktop.MainWindow));
+
+                                #endregion
+                            }
+                        }
+
+                        if (an is "Добавить" or "Да для всех")
+                        {
+                            ReportsStorage.LocalReports.Reports_Collection.Add(impReps);
+                            AtLeastOneImportDone = true;
+
+                            #region LoggerImport
+
+                            var sortedRepList = impReps.Report_Collection
+                                .OrderBy(x => x.FormNum_DB)
+                                .ThenBy(x => DateOnly.TryParse(x.StartPeriod_DB, out var stDate) ? stDate : DateOnly.MaxValue)
+                                .ThenBy(x => DateOnly.TryParse(x.EndPeriod_DB, out var endDate) ? endDate : DateOnly.MaxValue)
+                                .ToList();
+                            foreach (var rep in sortedRepList)
+                            {
+                                ImpRepCorNum = rep.CorrectionNumber_DB;
+                                if(rep.Rows!=null)
+                                    ImpRepFormCount = rep.Rows.Count;
+                                ImpRepFormNum = rep.FormNum_DB;
+                                ImpRepStartPeriod = rep.StartPeriod_DB;
+                                ImpRepEndPeriod = rep.EndPeriod_DB;
+                                Act = "\t\t\t";
+                                LoggerImportDTO = new LoggerImportDTO
+                                {
+                                    Act = Act, CorNum = ImpRepCorNum, CurrentLogLine = CurrentLogLine, EndPeriod = ImpRepEndPeriod,
+                                    FormCount = ImpRepFormCount, FormNum = ImpRepFormNum, StartPeriod = ImpRepStartPeriod,
+                                    Okpo = BaseRepsOkpo, OperationDate = OperationDate, RegNum = BaseRepsRegNum,
+                                    ShortName = BaseRepsShortName, SourceFileFullPath = SourceFile!.FullName, Year = ImpRepYear
+                                };
+                                ServiceExtension.LoggerManager.Import(LoggerImportDTO);
+                                RecordImportedReport(impReps);
+                                IsFirstLogLine = false;
+                                CurrentLogLine++;
+                            }
+
+                            #endregion
                         }
 
                         #endregion
@@ -472,8 +545,133 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
             }
         }
 
+        // LoadTables/fixup не всегда наполняет Rows у отчёта — без строк сравнение
+        // содержимого при импорте даёт ложную «Полную копию».
+        foreach (var reps in reports)
+        {
+            foreach (var key in reps.Report_Collection)
+            {
+                await EnsureImportReportRowsLoadedAsync(db, (Report)key);
+            }
+        }
+
         await InitializationAsyncCommand.ProcessDataBaseFillEmpty(db);
         return reports;
+    }
+
+    /// <summary>
+    /// Явно подгружает строки формы и примечания отчёта из открытого контекста .raodb.
+    /// </summary>
+    private static async Task EnsureImportReportRowsLoadedAsync(DBModel db, Report report)
+    {
+        if (report.Rows.Count == 0)
+        {
+            switch (report.FormNum_DB)
+            {
+                case "1.0":
+                    await db.Entry(report).Collection(x => x.Rows10).LoadAsync();
+                    break;
+                case "1.1":
+                    await db.Entry(report).Collection(x => x.Rows11).LoadAsync();
+                    break;
+                case "1.2":
+                    await db.Entry(report).Collection(x => x.Rows12).LoadAsync();
+                    break;
+                case "1.3":
+                    await db.Entry(report).Collection(x => x.Rows13).LoadAsync();
+                    break;
+                case "1.4":
+                    await db.Entry(report).Collection(x => x.Rows14).LoadAsync();
+                    break;
+                case "1.5":
+                    await db.Entry(report).Collection(x => x.Rows15).LoadAsync();
+                    break;
+                case "1.6":
+                    await db.Entry(report).Collection(x => x.Rows16).LoadAsync();
+                    break;
+                case "1.7":
+                    await db.Entry(report).Collection(x => x.Rows17).LoadAsync();
+                    break;
+                case "1.8":
+                    await db.Entry(report).Collection(x => x.Rows18).LoadAsync();
+                    break;
+                case "1.9":
+                    await db.Entry(report).Collection(x => x.Rows19).LoadAsync();
+                    break;
+                case "2.0":
+                    await db.Entry(report).Collection(x => x.Rows20).LoadAsync();
+                    break;
+                case "2.1":
+                    await db.Entry(report).Collection(x => x.Rows21).LoadAsync();
+                    break;
+                case "2.2":
+                    await db.Entry(report).Collection(x => x.Rows22).LoadAsync();
+                    break;
+                case "2.3":
+                    await db.Entry(report).Collection(x => x.Rows23).LoadAsync();
+                    break;
+                case "2.4":
+                    await db.Entry(report).Collection(x => x.Rows24).LoadAsync();
+                    break;
+                case "2.5":
+                    await db.Entry(report).Collection(x => x.Rows25).LoadAsync();
+                    break;
+                case "2.6":
+                    await db.Entry(report).Collection(x => x.Rows26).LoadAsync();
+                    break;
+                case "2.7":
+                    await db.Entry(report).Collection(x => x.Rows27).LoadAsync();
+                    break;
+                case "2.8":
+                    await db.Entry(report).Collection(x => x.Rows28).LoadAsync();
+                    break;
+                case "2.9":
+                    await db.Entry(report).Collection(x => x.Rows29).LoadAsync();
+                    break;
+                case "2.10":
+                    await db.Entry(report).Collection(x => x.Rows210).LoadAsync();
+                    break;
+                case "2.11":
+                    await db.Entry(report).Collection(x => x.Rows211).LoadAsync();
+                    break;
+                case "2.12":
+                    await db.Entry(report).Collection(x => x.Rows212).LoadAsync();
+                    break;
+                case "4.0":
+                    await db.Entry(report).Collection(x => x.Rows40).LoadAsync();
+                    break;
+                case "4.1":
+                    await db.Entry(report).Collection(x => x.Rows41).LoadAsync();
+                    break;
+                case "5.0":
+                    await db.Entry(report).Collection(x => x.Rows50).LoadAsync();
+                    break;
+                case "5.1":
+                    await db.Entry(report).Collection(x => x.Rows51).LoadAsync();
+                    break;
+                case "5.2":
+                    await db.Entry(report).Collection(x => x.Rows52).LoadAsync();
+                    break;
+                case "5.3":
+                    await db.Entry(report).Collection(x => x.Rows53).LoadAsync();
+                    break;
+                case "5.4":
+                    await db.Entry(report).Collection(x => x.Rows54).LoadAsync();
+                    break;
+                case "5.5":
+                    await db.Entry(report).Collection(x => x.Rows55).LoadAsync();
+                    break;
+                case "5.6":
+                    await db.Entry(report).Collection(x => x.Rows56).LoadAsync();
+                    break;
+                case "5.7":
+                    await db.Entry(report).Collection(x => x.Rows57).LoadAsync();
+                    break;
+            }
+        }
+
+        if (report.Notes.Count == 0)
+            await db.Entry(report).Collection(x => x.Notes).LoadAsync();
     }
 
     #endregion

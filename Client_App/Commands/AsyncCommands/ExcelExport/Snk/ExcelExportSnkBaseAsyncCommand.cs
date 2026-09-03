@@ -2219,8 +2219,12 @@ public abstract partial class ExcelExportSnkBaseAsyncCommand : ExcelBaseAsyncCom
         [
             "",
             "-",
+            "нд",
+            "нетданных",
             AutoReplaceSimilarChars("бн"),
             AutoReplaceSimilarChars("без номера"),
+            AutoReplaceSimilarChars("нд"),
+            AutoReplaceSimilarChars("нет данных"),
             AutoReplaceSimilarChars("прим"),
             AutoReplaceSimilarChars("примечание"),
         ];

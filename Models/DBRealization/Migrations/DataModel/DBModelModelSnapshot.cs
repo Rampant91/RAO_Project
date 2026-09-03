@@ -146,8 +146,8 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<string>("ValidThru_28_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 
-                    b.Property<string>("Year_DB")
-                        .HasColumnType("BLOB SUB_TYPE TEXT");
+                    b.Property<int?>("Year_DB")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 

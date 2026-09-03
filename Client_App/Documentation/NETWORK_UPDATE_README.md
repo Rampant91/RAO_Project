@@ -67,10 +67,14 @@ data\
   …
 .mpzf-update\
   state.json      ← какая версия установлена / previous
-  prefs.json      ← LastUpdateCheck, пропуски (на эту копию)
+  prefs.json      ← LastUpdateCheck, LastNotifiedReleaseId, пропуски (на эту копию)
   previous\
   staging\
 ```
+
+Автодиалог при старте: новый `releaseId` в `latest.json` показывается сразу (даже если сегодня уже проверяли).
+«Напомнить позже» откладывает **только тот же** `releaseId` примерно на сутки.
+«Пропустить версию» пишет `SkippedReleaseId` и больше не предлагает этот релиз.
 
 При первом запуске с пустым `state.json`: если `Client_App.dll` (размер и время записи) совпадает с релизом из `latest.json`, версия **фиксируется без диалога**. Иначе в UI: «локальная установка (версия ещё не зафиксирована)».
 
@@ -78,10 +82,11 @@ data\
 
 1. Publish **Client_App** через профиль VS (`win-x64` / `win-x86` / `Astra_Linux_1.7-1.8` / `Astra_Linux_1.6`).
 2. Автоматически копируются:
-   - репозиторная `data\` (Spravochniki, Excel, …) без чужих платформ REDDB и без `Updater`;
+   - репозиторная `data\` (Spravochniki, Excel, …) без чужих платформ REDDB, без `Updater` и без `AstraLegacy`;
    - `data\REDDB\{win-x64|win-x32|linux-x64}` под RID профиля  
      (для `Astra_Linux_1.6` источник — `linux-x64_astra_1.6`, в дистрибутиве всё равно `linux-x64`);
-   - `data\Updater\` с актуальным `MpzfUpdater.*`.
+   - `data\Updater\` с актуальным `MpzfUpdater.*`;
+   - для профиля `Astra_Linux_1.6` (`AstraLegacy=true`): `data\AstraLegacy\libtommath0.deb` → корень дистрибутива (рядом с исполняемым).
 
 Ручное копирование `data` после publish больше не нужно.
 

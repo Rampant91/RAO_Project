@@ -65,7 +65,21 @@ public static class ReportsStorage
             if (newRep is not null)
             {
                 db.Set<Report>().Attach(newRep);
+                var stubInCollection = reps?.Report_Collection
+                    .OfType<Report>()
+                    .FirstOrDefault(r => r.Id == newRep.Id);
+                if (stubInCollection is not null && !ReferenceEquals(stubInCollection, newRep))
+                    reps!.Report_Collection.Replace(stubInCollection, newRep);
             }
+        }
+        else if (newRep is not null && reps is not null)
+        {
+            // Local уже со строками, а в коллекции мог остаться другой экземпляр без строк.
+            var stubInCollection = reps.Report_Collection
+                .OfType<Report>()
+                .FirstOrDefault(r => r.Id == newRep.Id);
+            if (stubInCollection is not null && !ReferenceEquals(stubInCollection, newRep))
+                reps.Report_Collection.Replace(stubInCollection, newRep);
         }
 
         if (newRep is not null && reps is not null && newRep.Reports is null)

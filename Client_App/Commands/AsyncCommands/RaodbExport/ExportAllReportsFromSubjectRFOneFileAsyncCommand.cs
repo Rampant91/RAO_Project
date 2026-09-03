@@ -61,7 +61,8 @@ public partial class ExportAllReportsFromSubjectRFOneFileAsyncCommand : ExportRa
         #endregion
 
         var dbReadOnlyPath = await CreateTempDataBase(progressBar, cts);
-
+        try
+        {
         #region Progress = 7
 
         loadStatus = "Загрузка данных организаций";
@@ -276,6 +277,11 @@ public partial class ExportAllReportsFromSubjectRFOneFileAsyncCommand : ExportRa
             }
         }
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+        }
+        finally
+        {
+            TryDeleteTempDataBase(dbReadOnlyPath);
+        }
     }
 
     #region RestoreReportsOrders

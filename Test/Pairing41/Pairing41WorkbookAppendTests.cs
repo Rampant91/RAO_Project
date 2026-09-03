@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41;
-using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.Testing;
 using Client_App.Resources;
 using OfficeOpenXml;
 using Xunit;
-using static Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
 
 namespace Test.Pairing41;
 
@@ -174,6 +174,21 @@ public sealed class RaoCodeHelperTests
         Assert.False(RaoCodeHelper.AggregateStateMatchesCodeRao(null, "1_anything"));
         Assert.False(RaoCodeHelper.AggregateStateMatchesCodeRao(1, ""));
         Assert.False(RaoCodeHelper.AggregateStateMatchesCodeRao(1, null));
+    }
+
+    [Fact]
+    public void CalculatedCodeRaoMatchesFull_IgnoresUnderscorePositions()
+    {
+        Assert.True(RaoCodeHelper.CalculatedCodeRaoMatchesFull("1_3_5__", "1134567890"));
+        Assert.False(RaoCodeHelper.CalculatedCodeRaoMatchesFull("1_3_5__", "2134567890"));
+    }
+
+    [Fact]
+    public void CalculatedCodeRaoMatchesFull_ReturnsFalse_WhenInputMissing()
+    {
+        Assert.False(RaoCodeHelper.CalculatedCodeRaoMatchesFull(null, "123"));
+        Assert.False(RaoCodeHelper.CalculatedCodeRaoMatchesFull("1_2_", null));
+        Assert.False(RaoCodeHelper.CalculatedCodeRaoMatchesFull("", "123"));
     }
 
     [Fact]

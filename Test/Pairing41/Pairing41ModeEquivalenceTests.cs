@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.Testing;
 using Xunit;
 
 namespace Test.Pairing41;
@@ -81,5 +81,16 @@ public class Pairing41ModeEquivalenceTests
 
         var actual = Pairing41ScenarioRunner.Run(testCase);
         Pairing41Assertions.EqualScenario(testCase, actual);
+    }
+
+    [Theory]
+    [MemberData(nameof(Pairing41TestCases.ClosestMatchOnly), MemberType = typeof(Pairing41TestCases))]
+    public void SharedClosestPipeline_IsDeterministic(string name, Pairing41TestCase testCase)
+    {
+        Assert.Equal(name, testCase.Name);
+        var first = Pairing41ScenarioRunner.RunClosestMatches(testCase);
+        var second = Pairing41ScenarioRunner.RunClosestMatches(testCase);
+        Pairing41Assertions.EqualClosestMatches(testCase, first);
+        Pairing41Assertions.EqualClosestMatches(testCase, second);
     }
 }

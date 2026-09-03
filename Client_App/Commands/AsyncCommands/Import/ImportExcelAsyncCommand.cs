@@ -325,6 +325,36 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     continue;
                 }
 
+                // Импортируем примечания
+                // У форм 4.X нет примечаний
+                if (repNumber is "1.0" or "2.0" or "5.0" && formNumber is not "5.7")
+                {
+                    if (Convert.ToString(value)?.ToLower() is "примечание:" or "примечания:")
+                    {
+                        start += 2;
+
+                        while (worksheet1.Cells[$"A{start}"].Value != null ||
+                               worksheet1.Cells[$"B{start}"].Value != null ||
+                               worksheet1.Cells[$"C{start}"].Value != null)
+                        {
+                            Note newNote = new();
+                            newNote.ExcelGetRow(worksheet1, start);
+                            impRep.Notes.Add(newNote);
+                            start++;
+                        }
+                    }
+                }
+
+                ImpRepCorNum = impRep.CorrectionNumber_DB;
+                ImpRepEndPeriod = impRep.EndPeriod_DB;
+                ImpRepFormCount = impRep.Rows.Count;
+                ImpRepFormNum = impRep.FormNum_DB;
+                ImpRepStartPeriod = impRep.StartPeriod_DB;
+                ImpRepYear = impRep.Year_DB?.ToString() ?? "";
+
+                //SkipNewOrg = SkipInter = SkipLess = SkipNew = SkipReplace = AtLeastOneImportDone = false;
+                HasMultipleReport = answer.Length > 1;
+
                 // Проверяем есть ли в БД, импортируемые отчеты
                 var impRepList = new List<Report> { impRep };
                 if (!ExcelImportNewReps && impRepList.Count>0)
@@ -352,17 +382,144 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                 break;
                             }
                         case "форма 5.0":
-                            {
-                                await ProcessIfHasReports51(baseReps, impReps, impRepList);
-                                break;
-                            }
+                        {
+                            await ProcessIfHasReports51(baseReps, impReps, impRepList);
+                            break;
+                        }
 
                     }
                 }
                 else
                 {
-                    await CheckAnswer("Добавить", baseReps, impReps, null, impRep);
-                    
+                    #region AddNewOrg
+
+                    var an = "Добавить";
+                    if (!SkipNewOrg)
+                    {
+                        if (answer.Length > 1)
+                        {
+                            if (worksheet0.Name is "1.0" or "2.0")
+                            {
+                                #region MessageNewOrg 1.0 or 2.0
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                    {
+                                        ButtonDefinitions =
+                                        [
+                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                            new ButtonDefinition { Name = "Да для всех" },
+                                            new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                        ],
+                                        ContentTitle = "Импорт из .xlsx",
+                                        ContentHeader = "Уведомление",
+                                        ContentMessage =
+                                            $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
+                                            $"{Environment.NewLine}" +
+                                            $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                                            $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                            $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                            $"{Environment.NewLine}" +
+                                            $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
+                                            $"{Environment.NewLine}импортировать все новые организации.",
+                                        MinWidth = 400,
+                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    })
+                                    .ShowDialog(Desktop.MainWindow));
+
+                                #endregion
+                            }
+                            else if (worksheet0.Name.ToLower() is "форма 4.0" or "форма 5.0")
+                            {
+                                #region MessageNewOrg 4.0 5.0
+
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                    {
+                                        ButtonDefinitions =
+                                        [
+                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                            new ButtonDefinition { Name = "Да для всех" },
+                                            new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                        ],
+                                        ContentTitle = "Импорт из .xlsx",
+                                        ContentHeader = "Уведомление",
+                                        ContentMessage =
+                                            $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
+                                            $"{Environment.NewLine}" +
+                                            $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                            $"{Environment.NewLine}" +
+                                            $"{Environment.NewLine}Кнопка \"Да для всех\" позволяет без уведомлений " +
+                                            $"{Environment.NewLine}импортировать все новые организации.",
+                                        MinWidth = 400,
+                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    })
+                                    .ShowDialog(Desktop.MainWindow));
+
+                                #endregion
+                            }
+
+                            if (an is "Да для всех") SkipNewOrg = true;
+                        }
+                        else
+                        {
+                            if (worksheet0.Name is "1.0" or "2.0")
+                            {
+                                #region MessageNewOrg
+
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                    {
+                                        ButtonDefinitions =
+                                        [
+                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                            new ButtonDefinition { Name = "Отменить импорт формы", IsCancel = true }
+                                        ],
+                                        ContentTitle = "Импорт из .xlsx",
+                                        ContentHeader = "Уведомление",
+                                        ContentMessage = $"Будет добавлена новая организация ({repNumber})." +
+                                                         $"{Environment.NewLine}" +
+                                                         $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
+                                                         $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
+                                                         $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}",
+                                        MinWidth = 400,
+                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    })
+                                    .ShowDialog(Desktop.MainWindow));
+
+                                #endregion
+                            }
+                            else if (worksheet0.Name.ToLower() is "форма 4.0" or "форма 5.0")
+                            {
+                                #region MessageNewOrg 4.0 5.0
+
+                                an = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                                    .GetMessageBoxCustomWindow(new MessageBoxCustomParams
+                                    {
+                                        ButtonDefinitions =
+                                        [
+                                            new ButtonDefinition { Name = "Добавить", IsDefault = true },
+                                            new ButtonDefinition { Name = "Отменить импорт", IsCancel = true }
+                                        ],
+                                        ContentTitle = "Импорт из .xlsx",
+                                        ContentHeader = "Уведомление",
+                                        ContentMessage =
+                                            $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
+                                            $"{Environment.NewLine}" +
+                                            $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
+                                            $"{Environment.NewLine}",
+                                        MinWidth = 400,
+                                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                                    })
+                                    .ShowDialog(Desktop.MainWindow));
+
+                                #endregion
+                            }
+                        }
+                    }
+
+                    await CheckAnswer(an, baseReps, impReps, null, impRep);
+
+                    #endregion
                 }
             }
 
@@ -1362,9 +1519,9 @@ private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, Exce
                     {
                         #region BindData_26
 
-                        impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
-                        impRep.SourcesQuantity26_DB = Convert.ToInt32(worksheet1.Cells["G5"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
+                    impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
+                    impRep.SourcesQuantity26_DB = Convert.ToInt32(worksheet1.Cells["G5"].Value);
+                    impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Value);
 
                         #endregion
 
@@ -1374,13 +1531,13 @@ private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, Exce
                     {
                         #region BindData_27
 
-                        impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
-                        impRep.PermissionNumber27_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
-                        impRep.PermissionIssueDate27_DB = Convert.ToString(worksheet1.Cells["J4"].Value);
-                        impRep.ValidBegin27_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
-                        impRep.ValidThru27_DB = Convert.ToString(worksheet1.Cells["J5"].Value);
-                        impRep.PermissionDocumentName27_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
+                    impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G3"].Value);
+                    impRep.PermissionNumber27_DB = Convert.ToString(worksheet1.Cells["G4"].Value);
+                    impRep.PermissionIssueDate27_DB = Convert.ToString(worksheet1.Cells["J4"].Value);
+                    impRep.ValidBegin27_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
+                    impRep.ValidThru27_DB = Convert.ToString(worksheet1.Cells["J5"].Value);
+                    impRep.PermissionDocumentName27_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
+                    impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Value);
 
                         #endregion
 
@@ -1409,11 +1566,11 @@ private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, Exce
                         impRep.ValidThru2_28_DB = Convert.ToString(worksheet1.Cells["N8"].Value);
                         impRep.OrganisationReciever_28_DB = Convert.ToString(worksheet1.Cells["G9"].Value);
 
-                        impRep.GradeExecutor_DB = Convert.ToString(worksheet1.Cells["D21"].Value);
-                        impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells["F21"].Value);
-                        impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells["I21"].Value);
-                        impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells["K21"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Value);
+                    impRep.GradeExecutor_DB = Convert.ToString(worksheet1.Cells["D21"].Value);
+                    impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells["F21"].Value);
+                    impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells["I21"].Value);
+                    impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells["K21"].Value);
+                    impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Value);
 
                         #endregion
 
@@ -1424,7 +1581,7 @@ private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, Exce
                         #region BindData_2.x
 
                         impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
-                        impRep.Year_DB = Convert.ToString(worksheet0.Cells["G10"].Text);
+                        impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Text);
 
                         #endregion
 
@@ -1448,34 +1605,12 @@ private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, Exce
         else if (formNumber.Split('.')[0] == "4")
         {
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B1"].Value);
-            impRep.Year_DB = Convert.ToString(worksheet0.Cells["B15"].Text).Trim();
-            //Отсекаем мусор из ячейки
-            if (!impRep.Year_DB.All(c => char.IsDigit(c)))
-            {
-                var digits = "";
-                foreach (var c in impRep.Year_DB)
-                {
-                    if (char.IsDigit(c))
-                        digits += c;
-                }
-                impRep.Year_DB = digits;
-            }
+            impRep.Year_DB = Report.ParseYearFromText(Convert.ToString(worksheet.Cells["B15"].Text).Trim());
         }
         else if (formNumber.Split('.')[0] == "5")
         {
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B7"].Value);
-            impRep.Year_DB = Convert.ToString(worksheet0.Cells["B16"].Text).Trim();
-            //Отсекаем мусор из ячейки
-            if (!impRep.Year_DB.All(c => char.IsDigit(c)))
-            {
-                var digits = "";
-                foreach (var c in impRep.Year_DB)
-                {
-                    if (char.IsDigit(c))
-                        digits += c;
-                }
-                impRep.Year_DB = digits;
-            }
+            impRep.Year_DB = Report.ParseYearFromText(Convert.ToString(worksheet.Cells["B16"].Text).Trim());
         }
 
         #region BindCommonData

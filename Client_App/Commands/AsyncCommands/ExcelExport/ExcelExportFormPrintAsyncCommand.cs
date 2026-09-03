@@ -2,6 +2,7 @@
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Properties;
+using Client_App.Services;
 using Client_App.ViewModels;
 using Client_App.ViewModels.MainWindowTabs;
 using Client_App.ViewModels.ProgressBar;
@@ -72,7 +73,15 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         ExportType = "Для_печати";
         var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
         var progressBarVM = progressBar.AnyTaskProgressBarVM;
-        string? tmpDbPath = null;
+
+        var organizationId = ReportExportLock.ResolveOrganizationId(repParam!, _formsTabControlVM.SelectedReports);
+        if (organizationId <= 0)
+        {
+            await progressBar.CloseAsync();
+            return;
+        }
+
+        using var exportLock = ReportExportLock.Acquire(repId, organizationId);
 
         try
         {
@@ -82,11 +91,8 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
             progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
             var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
 
-            progressBarVM.SetProgressBar(15, "Создание временной БД", "Выгрузка отчёта для печати", ExportType);
-            tmpDbPath = await CreateTempDataBase(progressBar, cts);
-
-            progressBarVM.SetProgressBar(30, "Загрузка отчёта");
-            var rep = await GetReportWithRows(repId, tmpDbPath, cts);
+            progressBarVM.SetProgressBar(15, "Загрузка отчёта", "Выгрузка отчёта для печати", ExportType);
+            var rep = await GetReportWithRows(repId, cts);
 
             progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
             using var excelPackage = await InitializeExcelPackage(fullPath, rep);
@@ -108,18 +114,6 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         }
         finally
         {
-            if (!string.IsNullOrEmpty(tmpDbPath))
-            {
-                try
-                {
-                    File.Delete(tmpDbPath);
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-
             GC.Collect();
             try
             {
@@ -153,13 +147,19 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
             progressBarVM.SetProgressBar(5, "Определение имени файла");
         }
 
+        var organizationId = ReportExportLock.ResolveOrganizationId(report, _formsTabControlVM.SelectedReports);
+        IDisposable? exportLock = null;
+        if (organizationId > 0)
+        {
+            exportLock = ReportExportLock.Acquire(report.Id, organizationId);
+        }
+
         try
         {
             var fileName = await GetFileName(report, progressBar, cts);
             var fullPath = Path.Combine(destinationFolder, fileName + ".xlsx");
 
             // Проверяем существование файла и генерируем уникальное имя при необходимости
-            var originalFullPath = fullPath;
             var counter = 1;
             while (File.Exists(fullPath))
             {
@@ -175,15 +175,9 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
             if (!suppressDialogs && progressBarVM != null)
             {
-                progressBarVM.SetProgressBar(15, "Создание временной БД", "Выгрузка отчёта для печати", ExportType);
+                progressBarVM.SetProgressBar(15, "Загрузка отчёта", "Выгрузка отчёта для печати", ExportType);
             }
-            var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-
-            if (!suppressDialogs && progressBarVM != null)
-            {
-                progressBarVM.SetProgressBar(30, "Загрузка отчёта");
-            }
-            var rep = await GetReportWithRows(report.Id, tmpDbPath, cts);
+            var rep = await GetReportWithRows(report.Id, cts);
 
             if (!suppressDialogs && progressBarVM != null)
             {
@@ -215,16 +209,6 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
             // Для пакетной обработки не показываем финальный диалог
             await ExcelSaveAndOpen(excelPackage, fullPath, openTemp: false, cts, progressBar, isBackground: suppressDialogs);
 
-            // Очистка временных данных
-            try
-            {
-                File.Delete(tmpDbPath);
-            }
-            catch
-            {
-                // ignored
-            }
-
             if (!suppressDialogs && progressBarVM != null)
             {
                 progressBarVM.SetProgressBar(100, "Завершение выгрузки");
@@ -236,6 +220,8 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         }
         finally
         {
+            exportLock?.Dispose();
+
             if (!suppressDialogs && progressBar != null)
             {
                 await progressBar.CloseAsync();
@@ -439,7 +425,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                 }
             case '2':
                 {
-                    var year = RemoveForbiddenChars(rep.Year_DB);
+                    var year = RemoveForbiddenChars(rep.Year_DB?.ToString());
                     fileName = $"{regNum}_{okpo}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
                     break;
                 }
@@ -455,13 +441,13 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
                     var row40 = rep.Reports?.Master_DB?.Rows40?.FirstOrDefault();
                     if (row40?.CodeSubjectRF?.Value != null)
                         codeSubjectRF = RemoveForbiddenChars(row40.CodeSubjectRF.Value);
-                    var year = RemoveForbiddenChars(rep.Year_DB);
+                    var year = RemoveForbiddenChars(rep.Year_DB?.ToString());
                     fileName = $"{codeSubjectRF}_{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
                     break;
                 }
             case '5':
                 {
-                    var year = RemoveForbiddenChars(rep.Year_DB);
+                    var year = RemoveForbiddenChars(rep.Year_DB?.ToString());
                     fileName = $"{formNum}_{year}_{corNum}_{Assembly.GetExecutingAssembly().GetName().Version}_{ExportType}";
                     break;
                 }
@@ -480,15 +466,14 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
     #region GetReportWithRows
 
     /// <summary>
-    /// Получение отчёта вместе со строчками из БД.
+    /// Получение отчёта вместе со строчками из основной БД (снимок AsNoTracking в память).
     /// </summary>
     /// <param name="repId">Id отчёта.</param>
-    /// <param name="dbPath">Полный путь к временной БД.</param>
     /// <param name="cts">Токен.</param>
     /// <returns>Отчёт вместе со строчками.</returns>
-    private static async Task<Report> GetReportWithRows(int repId, string dbPath, CancellationTokenSource cts)
+    private static async Task<Report> GetReportWithRows(int repId, CancellationTokenSource cts)
     {
-        await using var db = new DBModel(dbPath);
+        await using var db = new DBModel(StaticConfiguration.DBPath);
         var rep = await db.ReportCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()

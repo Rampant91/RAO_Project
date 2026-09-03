@@ -1,11 +1,14 @@
 using System;
 using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing;
 
 namespace Client_App.ViewModels.Messages;
 
 /// <summary>
-/// Параметры сопоставления операций приёма-передачи (формы 1.1–1.4).
+/// Параметры сопоставления операций приёма-передачи (формы 1.1–1.6).
 /// </summary>
 public class GetTransferReceiveParamsVM : INotifyPropertyChanged
 {
@@ -14,6 +17,8 @@ public class GetTransferReceiveParamsVM : INotifyPropertyChanged
     private bool _syncingAll12;
     private bool _syncingAll13;
     private bool _syncingAll14;
+    private bool _syncingAll15;
+    private bool _syncingAll16;
 
     #region Form 1.1
 
@@ -395,6 +400,266 @@ public class GetTransferReceiveParamsVM : INotifyPropertyChanged
 
     #endregion
 
+    #region Form 1.5
+
+    private bool? _checkAll15 = true;
+    public bool? CheckAll15
+    {
+        get => _checkAll15;
+        set => SetAllValue(ref _checkAll15, value, ref _syncingAll15, ApplyAll15);
+    }
+
+    private bool _checkOperationCode15 = true;
+    public bool CheckOperationCode15
+    {
+        get => _checkOperationCode15;
+        set => SetField(ref _checkOperationCode15, value, ref _syncingAll15, UpdateCheckAll15);
+    }
+
+    private bool _checkOperationDate15 = true;
+    public bool CheckOperationDate15
+    {
+        get => _checkOperationDate15;
+        set => SetField(ref _checkOperationDate15, value, ref _syncingAll15, UpdateCheckAll15);
+    }
+
+    private bool _checkPassportNumber15 = true;
+    public bool CheckPassportNumber15
+    {
+        get => _checkPassportNumber15;
+        set => SetField(ref _checkPassportNumber15, value, ref _syncingAll15, UpdateCheckAll15);
+    }
+
+    private bool _checkType15 = true;
+    public bool CheckType15
+    {
+        get => _checkType15;
+        set => SetField(ref _checkType15, value, ref _syncingAll15, UpdateCheckAll15);
+    }
+
+    private bool _checkRadionuclids15 = true;
+    public bool CheckRadionuclids15
+    {
+        get => _checkRadionuclids15;
+        set => SetField(ref _checkRadionuclids15, value, ref _syncingAll15, UpdateCheckAll15);
+    }
+
+    private bool _checkFactoryNumber15 = true;
+    public bool CheckFactoryNumber15
+    {
+        get => _checkFactoryNumber15;
+        set => SetField(ref _checkFactoryNumber15, value, ref _syncingAll15, UpdateCheckAll15);
+    }
+
+    private bool _checkQuantity15 = true;
+    public bool CheckQuantity15
+    {
+        get => _checkQuantity15;
+        set => SetField(ref _checkQuantity15, value, ref _syncingAll15, UpdateCheckAll15);
+    }
+
+    private bool _checkActivity15 = true;
+    public bool CheckActivity15
+    {
+        get => _checkActivity15;
+        set => SetField(ref _checkActivity15, value, ref _syncingAll15, UpdateCheckAll15);
+    }
+
+    private bool _checkCreationDate15 = true;
+    public bool CheckCreationDate15
+    {
+        get => _checkCreationDate15;
+        set => SetField(ref _checkCreationDate15, value, ref _syncingAll15, UpdateCheckAll15);
+    }
+
+    private bool _checkStatusRao15 = true;
+    public bool CheckStatusRao15
+    {
+        get => _checkStatusRao15;
+        set => SetField(ref _checkStatusRao15, value, ref _syncingAll15, UpdateCheckAll15);
+    }
+
+    private bool _checkProviderOrRecieverOkpo15 = true;
+    public bool CheckProviderOrRecieverOkpo15
+    {
+        get => _checkProviderOrRecieverOkpo15;
+        set => SetField(ref _checkProviderOrRecieverOkpo15, value, ref _syncingAll15, UpdateCheckAll15);
+    }
+
+    private bool _checkPackName15 = true;
+    public bool CheckPackName15
+    {
+        get => _checkPackName15;
+        set => SetField(ref _checkPackName15, value, ref _syncingAll15, UpdateCheckAll15);
+    }
+
+    private bool _checkPackType15 = true;
+    public bool CheckPackType15
+    {
+        get => _checkPackType15;
+        set => SetField(ref _checkPackType15, value, ref _syncingAll15, UpdateCheckAll15);
+    }
+
+    private bool _checkPackNumber15 = true;
+    public bool CheckPackNumber15
+    {
+        get => _checkPackNumber15;
+        set => SetField(ref _checkPackNumber15, value, ref _syncingAll15, UpdateCheckAll15);
+    }
+
+    private bool _checkSubsidy15 = true;
+    public bool CheckSubsidy15
+    {
+        get => _checkSubsidy15;
+        set => SetField(ref _checkSubsidy15, value, ref _syncingAll15, UpdateCheckAll15);
+    }
+
+    private bool _checkFcpNumber15 = true;
+    public bool CheckFcpNumber15
+    {
+        get => _checkFcpNumber15;
+        set => SetField(ref _checkFcpNumber15, value, ref _syncingAll15, UpdateCheckAll15);
+    }
+
+    #endregion
+
+    #region Form 1.6
+
+    private bool? _checkAll16 = true;
+    public bool? CheckAll16
+    {
+        get => _checkAll16;
+        set => SetAllValue(ref _checkAll16, value, ref _syncingAll16, ApplyAll16);
+    }
+
+    private bool _checkOperationCode16 = true;
+    public bool CheckOperationCode16
+    {
+        get => _checkOperationCode16;
+        set => SetField(ref _checkOperationCode16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkOperationDate16 = true;
+    public bool CheckOperationDate16
+    {
+        get => _checkOperationDate16;
+        set => SetField(ref _checkOperationDate16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkCodeRao16 = true;
+    public bool CheckCodeRao16
+    {
+        get => _checkCodeRao16;
+        set => SetField(ref _checkCodeRao16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkStatusRao16 = true;
+    public bool CheckStatusRao16
+    {
+        get => _checkStatusRao16;
+        set => SetField(ref _checkStatusRao16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkVolume16 = true;
+    public bool CheckVolume16
+    {
+        get => _checkVolume16;
+        set => SetField(ref _checkVolume16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkMass16 = true;
+    public bool CheckMass16
+    {
+        get => _checkMass16;
+        set => SetField(ref _checkMass16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkQuantity16 = true;
+    public bool CheckQuantity16
+    {
+        get => _checkQuantity16;
+        set => SetField(ref _checkQuantity16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkRadionuclids16 = true;
+    public bool CheckRadionuclids16
+    {
+        get => _checkRadionuclids16;
+        set => SetField(ref _checkRadionuclids16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkTritiumActivity16 = true;
+    public bool CheckTritiumActivity16
+    {
+        get => _checkTritiumActivity16;
+        set => SetField(ref _checkTritiumActivity16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkBetaGammaActivity16 = true;
+    public bool CheckBetaGammaActivity16
+    {
+        get => _checkBetaGammaActivity16;
+        set => SetField(ref _checkBetaGammaActivity16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkAlphaActivity16 = true;
+    public bool CheckAlphaActivity16
+    {
+        get => _checkAlphaActivity16;
+        set => SetField(ref _checkAlphaActivity16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkTransuraniumActivity16 = true;
+    public bool CheckTransuraniumActivity16
+    {
+        get => _checkTransuraniumActivity16;
+        set => SetField(ref _checkTransuraniumActivity16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkActivityMeasurementDate16 = true;
+    public bool CheckActivityMeasurementDate16
+    {
+        get => _checkActivityMeasurementDate16;
+        set => SetField(ref _checkActivityMeasurementDate16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkProviderOrRecieverOkpo16 = true;
+    public bool CheckProviderOrRecieverOkpo16
+    {
+        get => _checkProviderOrRecieverOkpo16;
+        set => SetField(ref _checkProviderOrRecieverOkpo16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkPackType16 = true;
+    public bool CheckPackType16
+    {
+        get => _checkPackType16;
+        set => SetField(ref _checkPackType16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkPackNumber16 = true;
+    public bool CheckPackNumber16
+    {
+        get => _checkPackNumber16;
+        set => SetField(ref _checkPackNumber16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkSubsidy16 = true;
+    public bool CheckSubsidy16
+    {
+        get => _checkSubsidy16;
+        set => SetField(ref _checkSubsidy16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    private bool _checkFcpNumber16 = true;
+    public bool CheckFcpNumber16
+    {
+        get => _checkFcpNumber16;
+        set => SetField(ref _checkFcpNumber16, value, ref _syncingAll16, UpdateCheckAll16);
+    }
+
+    #endregion
+
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private void SetField(ref bool field, bool value, ref bool syncFlag, Action updateAll, [CallerMemberName] string prop = "")
@@ -549,6 +814,166 @@ public class GetTransferReceiveParamsVM : INotifyPropertyChanged
         CheckAll14 = all ? true : none ? false : null;
         _syncingAll14 = false;
     }
+
+    private void ApplyAll15(bool allChecked)
+    {
+        _syncingAll15 = true;
+        CheckOperationCode15 = allChecked;
+        CheckOperationDate15 = allChecked;
+        CheckPassportNumber15 = allChecked;
+        CheckType15 = allChecked;
+        CheckRadionuclids15 = allChecked;
+        CheckFactoryNumber15 = allChecked;
+        CheckQuantity15 = allChecked;
+        CheckActivity15 = allChecked;
+        CheckCreationDate15 = allChecked;
+        CheckStatusRao15 = allChecked;
+        CheckProviderOrRecieverOkpo15 = allChecked;
+        CheckPackName15 = allChecked;
+        CheckPackType15 = allChecked;
+        CheckPackNumber15 = allChecked;
+        CheckSubsidy15 = allChecked;
+        CheckFcpNumber15 = allChecked;
+        _syncingAll15 = false;
+        UpdateCheckAll15();
+    }
+
+    private void UpdateCheckAll15()
+    {
+        var all = CheckOperationCode15 && CheckOperationDate15 && CheckPassportNumber15 && CheckType15
+                  && CheckRadionuclids15 && CheckFactoryNumber15 && CheckQuantity15 && CheckActivity15
+                  && CheckCreationDate15 && CheckStatusRao15 && CheckProviderOrRecieverOkpo15
+                  && CheckPackName15 && CheckPackType15 && CheckPackNumber15
+                  && CheckSubsidy15 && CheckFcpNumber15;
+        var none = !CheckOperationCode15 && !CheckOperationDate15 && !CheckPassportNumber15 && !CheckType15
+                   && !CheckRadionuclids15 && !CheckFactoryNumber15 && !CheckQuantity15 && !CheckActivity15
+                   && !CheckCreationDate15 && !CheckStatusRao15 && !CheckProviderOrRecieverOkpo15
+                   && !CheckPackName15 && !CheckPackType15 && !CheckPackNumber15
+                   && !CheckSubsidy15 && !CheckFcpNumber15;
+
+        _syncingAll15 = true;
+        CheckAll15 = all ? true : none ? false : null;
+        _syncingAll15 = false;
+    }
+
+    private void ApplyAll16(bool allChecked)
+    {
+        _syncingAll16 = true;
+        CheckOperationCode16 = allChecked;
+        CheckOperationDate16 = allChecked;
+        CheckCodeRao16 = allChecked;
+        CheckStatusRao16 = allChecked;
+        CheckVolume16 = allChecked;
+        CheckMass16 = allChecked;
+        CheckQuantity16 = allChecked;
+        CheckRadionuclids16 = allChecked;
+        CheckTritiumActivity16 = allChecked;
+        CheckBetaGammaActivity16 = allChecked;
+        CheckAlphaActivity16 = allChecked;
+        CheckTransuraniumActivity16 = allChecked;
+        CheckActivityMeasurementDate16 = allChecked;
+        CheckProviderOrRecieverOkpo16 = allChecked;
+        CheckPackType16 = allChecked;
+        CheckPackNumber16 = allChecked;
+        CheckSubsidy16 = allChecked;
+        CheckFcpNumber16 = allChecked;
+        _syncingAll16 = false;
+        UpdateCheckAll16();
+    }
+
+    private void UpdateCheckAll16()
+    {
+        var all = CheckOperationCode16 && CheckOperationDate16 && CheckCodeRao16 && CheckStatusRao16
+                  && CheckVolume16 && CheckMass16 && CheckQuantity16 && CheckRadionuclids16
+                  && CheckTritiumActivity16 && CheckBetaGammaActivity16 && CheckAlphaActivity16
+                  && CheckTransuraniumActivity16 && CheckActivityMeasurementDate16
+                  && CheckProviderOrRecieverOkpo16 && CheckPackType16 && CheckPackNumber16
+                  && CheckSubsidy16 && CheckFcpNumber16;
+        var none = !CheckOperationCode16 && !CheckOperationDate16 && !CheckCodeRao16 && !CheckStatusRao16
+                   && !CheckVolume16 && !CheckMass16 && !CheckQuantity16 && !CheckRadionuclids16
+                   && !CheckTritiumActivity16 && !CheckBetaGammaActivity16 && !CheckAlphaActivity16
+                   && !CheckTransuraniumActivity16 && !CheckActivityMeasurementDate16
+                   && !CheckProviderOrRecieverOkpo16 && !CheckPackType16 && !CheckPackNumber16
+                   && !CheckSubsidy16 && !CheckFcpNumber16;
+
+        _syncingAll16 = true;
+        CheckAll16 = all ? true : none ? false : null;
+        _syncingAll16 = false;
+    }
+
+    #region Search window (date)
+
+    private int _operationDateSearchToleranceDays =
+        ExcelExportCheckTransferReceiveAsyncCommand.DefaultOperationDateSearchToleranceDays;
+
+    private string _operationDateSearchToleranceDaysText =
+        ExcelExportCheckTransferReceiveAsyncCommand.DefaultOperationDateSearchToleranceDays
+            .ToString(CultureInfo.InvariantCulture);
+
+    /// <summary>Текст поля «± дней» — только цифры; пустое значение нормализуется при потере фокуса / Ок.</summary>
+    public string OperationDateSearchToleranceDaysText
+    {
+        get => _operationDateSearchToleranceDaysText;
+        set
+        {
+            var sanitized = string.IsNullOrEmpty(value)
+                ? string.Empty
+                : new string(value.Where(char.IsDigit).ToArray());
+            if (_operationDateSearchToleranceDaysText == sanitized)
+            {
+                return;
+            }
+
+            _operationDateSearchToleranceDaysText = sanitized;
+            OnPropertyChanged();
+
+            if (int.TryParse(sanitized, NumberStyles.None, CultureInfo.InvariantCulture, out var parsed))
+            {
+                SetOperationDateSearchToleranceDays(parsed, syncText: false);
+            }
+        }
+    }
+
+    /// <summary>Окно поиска парной/похожей операции по дате (±N дней).</summary>
+    public int OperationDateSearchToleranceDays
+    {
+        get => _operationDateSearchToleranceDays;
+        set => SetOperationDateSearchToleranceDays(value, syncText: true);
+    }
+
+    /// <summary>Применяет clamp и подставляет значение по умолчанию, если поле пустое или нечисловое.</summary>
+    public void CommitOperationDateSearchToleranceDays()
+    {
+        if (!int.TryParse(_operationDateSearchToleranceDaysText, NumberStyles.None, CultureInfo.InvariantCulture, out var parsed))
+        {
+            parsed = ExcelExportCheckTransferReceiveAsyncCommand.DefaultOperationDateSearchToleranceDays;
+        }
+
+        SetOperationDateSearchToleranceDays(parsed, syncText: true);
+    }
+
+    private void SetOperationDateSearchToleranceDays(int value, bool syncText)
+    {
+        var clamped = ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveParamsSet
+            .ClampOperationDateSearchToleranceDays(value);
+        var text = clamped.ToString(CultureInfo.InvariantCulture);
+        if (_operationDateSearchToleranceDays == clamped
+            && (!syncText || _operationDateSearchToleranceDaysText == text))
+        {
+            return;
+        }
+
+        _operationDateSearchToleranceDays = clamped;
+        OnPropertyChanged(nameof(OperationDateSearchToleranceDays));
+
+        if (syncText)
+        {
+            _operationDateSearchToleranceDaysText = text;
+            OnPropertyChanged(nameof(OperationDateSearchToleranceDaysText));
+        }
+    }
+
+    #endregion
 
     private void OnPropertyChanged([CallerMemberName] string prop = "") =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));

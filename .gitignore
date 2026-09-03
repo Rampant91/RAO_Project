@@ -363,4 +363,5 @@ FodyWeavers.xsd
 
 # Temporary agent build/test output (alternate -o when bin/ is locked by running app).
 # Single folder for all such runs; contents should be deleted after the run.
+_testbuild/
 _agent_build/

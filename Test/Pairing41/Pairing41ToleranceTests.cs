@@ -1,4 +1,4 @@
-using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.Testing;
 using Xunit;
 
 namespace Test.Pairing41;
@@ -16,6 +16,9 @@ public class Pairing41ToleranceTests
     [InlineData("1.0e+06", "1.05e+06")]
     [InlineData("0", "0")]
     [InlineData("0.0", "0")]
+    [InlineData("0", "-")]
+    [InlineData("0", "")]
+    [InlineData("0.0", "-")]
     public void NumericWithTolerance_ReturnsTrue_WhenWithinOrEqual(string left, string right)
     {
         Assert.True(Pairing41ScenarioRunner.NumericWithTolerance(left, right));

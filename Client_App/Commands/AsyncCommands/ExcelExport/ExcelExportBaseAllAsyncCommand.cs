@@ -18,6 +18,9 @@ public abstract class ExcelExportBaseAllAsyncCommand : ExcelBaseAsyncCommand
 {
     private protected const int Form1SheetRowSplitThreshold = 500_000;
 
+    /// <summary>Временно выключено для выпуска; код разбиения сохранён.</summary>
+    private protected const bool Form1SheetSplitEnabled = false;
+
     /// <summary>Конец периода ≤ этой даты → бакет _22-24.</summary>
     private protected static readonly DateOnly Form1SplitCutoffInclusive = new(2024, 12, 31);
 

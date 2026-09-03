@@ -63,38 +63,34 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
 
             progressBarVM.SetProgressBar(15, "Создание временной БД", "Выгрузка отчёта для печати", ExportType);
             var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-
-            progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
-            using var excelPackage = await InitializePassportExcelPackage(fullPath);
-
-            progressBarVM.SetProgressBar(80, "Выгрузка данных");
-            await FillHeader(excelPackage, passport);
-
-            progressBarVM.SetProgressBar(82, "Выгрузка данных");
-            await FillTable1(excelPackage, passport);
-
-            progressBarVM.SetProgressBar(85, "Выгрузка данных");
-            await FillFooter(excelPackage, passport);
-
-            progressBarVM.SetProgressBar(88, "Выгрузка данных");
-            await FillTable2(excelPackage, passport);
-
-            progressBarVM.SetProgressBar(90, "Сохранение");
-            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-
-            progressBarVM.SetProgressBar(95, "Очистка временных данных");
             try
             {
-                File.Delete(tmpDbPath);
-            }
-            catch
-            {
-                // ignored
-            }
+                progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
+                using var excelPackage = await InitializePassportExcelPackage(fullPath);
 
-            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-            GC.Collect();
-            await progressBar.CloseAsync();
+                progressBarVM.SetProgressBar(80, "Выгрузка данных");
+                await FillHeader(excelPackage, passport);
+
+                progressBarVM.SetProgressBar(82, "Выгрузка данных");
+                await FillTable1(excelPackage, passport);
+
+                progressBarVM.SetProgressBar(85, "Выгрузка данных");
+                await FillFooter(excelPackage, passport);
+
+                progressBarVM.SetProgressBar(88, "Выгрузка данных");
+                await FillTable2(excelPackage, passport);
+
+                progressBarVM.SetProgressBar(90, "Сохранение");
+                await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+
+                progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+                GC.Collect();
+                await progressBar.CloseAsync();
+            }
+            finally
+            {
+                TryDeleteTempDataBase(tmpDbPath);
+            }
         }
 
 

@@ -104,10 +104,14 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
         Report.Reports.Master_DB.Rows40[0].CodeSubjectRF_DB = codeSubjectRF;
         Report.Reports.Master_DB.Rows40[0].SubjectRF_DB = Spravochniks.DictionaryOfSubjectRF[intCode];
 
-        if (!int.TryParse(Report.Year_DB, out year))
+        if (!Report.Year_DB.HasValue)
         {
             year = await Dispatcher.UIThread.InvokeAsync(async () => await ShowAskYearMessage(owner));
-            Report.Year_DB = year.ToString();
+            Report.Year_DB = year;
+        }
+        else
+        {
+            year = Report.Year_DB.Value;
         }
 
         #endregion
@@ -652,7 +656,7 @@ public class GenerateForm41AsyncCommand (BaseFormVM formVM) : BaseAsyncCommand
                     .AsQueryable()
                     .Include(report => report.Reports)
                     .Where(report => report.Reports.Id == organization20.Id)
-                    .Where(report => report.Year_DB == year.ToString())
+                    .Where(report => report.Year_DB == year)
                     .Where(report => report.FormNum_DB == "2.12")
                     .CountAsync(cancellationToken);
         }

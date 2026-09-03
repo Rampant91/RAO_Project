@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
-using static Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.Testing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.ExcelExportCheckPairingOfCode41AsyncCommand;
 
 namespace Test.Pairing41;
 
@@ -157,6 +158,16 @@ internal static partial class Pairing41TestCases
                 [Pairing11To15Field.PassportNumber] = true,
                 [Pairing11To15Field.DocumentNumber] = true,
                 [Pairing11To15Field.Type] = true
+            }
+        },
+        ExpectedClosest11Levels = new Dictionary<int, IReadOnlyDictionary<Pairing11To15Field, FieldMatchLevel>>
+        {
+            [1] = new Dictionary<Pairing11To15Field, FieldMatchLevel>
+            {
+                [Pairing11To15Field.OperationCode] = FieldMatchLevel.Near,
+                [Pairing11To15Field.PassportNumber] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.DocumentNumber] = FieldMatchLevel.Exact,
+                [Pairing11To15Field.Type] = FieldMatchLevel.Exact
             }
         }
     };

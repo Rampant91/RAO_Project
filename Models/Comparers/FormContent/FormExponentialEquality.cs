@@ -12,8 +12,36 @@ public static class FormExponentialEquality
         | NumberStyles.AllowExponent
         | NumberStyles.AllowLeadingSign;
 
+    /// <summary>
+    /// Пусто, «-», «прим.» или числовой ноль (в т.ч. 0, 0.0, 0e+0).
+    /// </summary>
+    public static bool IsAbsentOrZero(string? value)
+    {
+        if (FormStringHelper.IsNullOrWhiteSpace(value))
+        {
+            return true;
+        }
+
+        var tmp = FormStringHelper.TrimEdges(value)
+            .ToLowerInvariant()
+            .Replace('е', 'e');
+        tmp = FormContentRegex.UnicodeDashes().Replace(tmp, "-");
+
+        if (tmp == "-")
+        {
+            return true;
+        }
+
+        return TryParse(value, out var parsed) && Math.Abs(parsed) <= double.Epsilon;
+    }
+
     public static bool Equals(string? a, string? b)
     {
+        if (IsAbsentOrZero(a) && IsAbsentOrZero(b))
+        {
+            return true;
+        }
+
         var hasA = TryParse(a, out var valueA);
         var hasB = TryParse(b, out var valueB);
 

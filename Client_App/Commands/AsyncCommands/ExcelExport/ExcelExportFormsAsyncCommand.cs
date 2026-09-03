@@ -50,83 +50,80 @@ public partial class ExcelExportFormsAsyncCommand(MainWindowVM mainWindowVM) : E
 
         progressBarVM.SetProgressBar(10, "Создание временной БД", "Выгрузка форм", ExportType);
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-        await using var db = new DBModel(tmpDbPath);
-
-        progressBarVM.SetProgressBar(15, "Проверка наличия отчётов");
-        await CheckRepsAndRepPresence(db, formNum, forSelectedOrg, selectedReports, progressBar, cts);
-
-        progressBarVM.SetProgressBar(17, "Запрос пути сохранения");
-        var (chosenPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
-        var directory = Path.GetDirectoryName(chosenPath);
-        if (string.IsNullOrEmpty(directory))
-            directory = Environment.CurrentDirectory;
-        var chosenBaseName = Path.GetFileNameWithoutExtension(chosenPath);
-
-        var needSplit = false;
-        if (!forSelectedOrg && IsForm1Number(formNum))
-        {
-            progressBarVM.SetProgressBar(16, "Подсчёт строк формы");
-            needSplit = await CountForm1RowsAsync(db, formNum, selectedReportsId: null, cts.Token)
-                        > Form1SheetRowSplitThreshold;
-        }
-
-        progressBarVM.SetProgressBar(22, "Получение списка организаций");
-        var repsList = await GetReportsList(db, forSelectedOrg, selectedReports!, formNum, cts);
-
-        if (!needSplit)
-        {
-            progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
-            using var excelPackage = await InitializeExcelPackage(chosenPath, formNum, progressBar, cts);
-
-            progressBarVM.SetProgressBar(20, "Заполнение заголовков");
-            await FillExcelHeaders(formNum);
-
-            progressBarVM.SetProgressBar(25, "Загрузка форм");
-            await GetReportRowsAndFillExcel(repsList, db, progressBarVM, formNum, cts);
-
-            progressBarVM.SetProgressBar(95, "Сохранение");
-            await ExcelSaveAndOpen(excelPackage, chosenPath, openTemp, cts, progressBar);
-        }
-        else
-        {
-            var beforeSuffix = Form1SplitFileSuffix(Form1DateSplitMode.Period22_24);
-            var afterSuffix = Form1SplitFileSuffix(Form1DateSplitMode.Period25_27);
-
-            var pathBefore = ResolveUniqueFilePath(
-                Path.Combine(directory, $"{chosenBaseName}{beforeSuffix}.xlsx"),
-                directory);
-            var pathAfter = ResolveUniqueFilePath(
-                Path.Combine(directory, $"{chosenBaseName}{afterSuffix}.xlsx"),
-                directory);
-
-            progressBarVM.SetProgressBar(18, "Инициализация Excel пакетов");
-            using var excelPackageBefore = await InitializeExcelPackage(pathBefore, formNum, progressBar, cts);
-            await FillExcelHeaders(formNum);
-
-            using var excelPackageAfter = await InitializeExcelPackage(pathAfter, formNum, progressBar, cts);
-            await FillExcelHeaders(formNum);
-
-            progressBarVM.SetProgressBar(25, "Загрузка форм");
-            await GetReportRowsAndFillExcelSplit(
-                repsList, db, progressBarVM, formNum, excelPackageBefore, excelPackageAfter, cts);
-
-            progressBarVM.SetProgressBar(95, "Сохранение");
-            await SaveSplitExcelPackagesAndOpen(
-                excelPackageBefore, pathBefore, excelPackageAfter, pathAfter, openTemp, cts, progressBar);
-        }
-
-        progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
         {
-            File.Delete(tmpDbPath);
-        }
-        catch
-        {
-            // ignored
-        }
+            await using var db = new DBModel(tmpDbPath);
 
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-        await progressBar.CloseAsync();
+            progressBarVM.SetProgressBar(15, "Проверка наличия отчётов");
+            await CheckRepsAndRepPresence(db, formNum, forSelectedOrg, selectedReports, progressBar, cts);
+
+            progressBarVM.SetProgressBar(17, "Запрос пути сохранения");
+            var (chosenPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+            var directory = Path.GetDirectoryName(chosenPath);
+            if (string.IsNullOrEmpty(directory))
+                directory = Environment.CurrentDirectory;
+            var chosenBaseName = Path.GetFileNameWithoutExtension(chosenPath);
+
+            var needSplit = false;
+            if (Form1SheetSplitEnabled && !forSelectedOrg && IsForm1Number(formNum))
+            {
+                progressBarVM.SetProgressBar(16, "Подсчёт строк формы");
+                needSplit = await CountForm1RowsAsync(db, formNum, selectedReportsId: null, cts.Token)
+                            > Form1SheetRowSplitThreshold;
+            }
+
+            progressBarVM.SetProgressBar(22, "Получение списка организаций");
+            var repsList = await GetReportsList(db, forSelectedOrg, selectedReports!, formNum, cts);
+
+            if (!needSplit)
+            {
+                progressBarVM.SetProgressBar(18, "Инициализация Excel пакета");
+                using var excelPackage = await InitializeExcelPackage(chosenPath, formNum, progressBar, cts);
+
+                progressBarVM.SetProgressBar(20, "Заполнение заголовков");
+                await FillExcelHeaders(formNum);
+
+                progressBarVM.SetProgressBar(25, "Загрузка форм");
+                await GetReportRowsAndFillExcel(repsList, db, progressBarVM, formNum, cts);
+
+                progressBarVM.SetProgressBar(95, "Сохранение");
+                await ExcelSaveAndOpen(excelPackage, chosenPath, openTemp, cts, progressBar);
+            }
+            else
+            {
+                var beforeSuffix = Form1SplitFileSuffix(Form1DateSplitMode.Period22_24);
+                var afterSuffix = Form1SplitFileSuffix(Form1DateSplitMode.Period25_27);
+
+                var pathBefore = ResolveUniqueFilePath(
+                    Path.Combine(directory, $"{chosenBaseName}{beforeSuffix}.xlsx"),
+                    directory);
+                var pathAfter = ResolveUniqueFilePath(
+                    Path.Combine(directory, $"{chosenBaseName}{afterSuffix}.xlsx"),
+                    directory);
+
+                progressBarVM.SetProgressBar(18, "Инициализация Excel пакетов");
+                using var excelPackageBefore = await InitializeExcelPackage(pathBefore, formNum, progressBar, cts);
+                await FillExcelHeaders(formNum);
+
+                using var excelPackageAfter = await InitializeExcelPackage(pathAfter, formNum, progressBar, cts);
+                await FillExcelHeaders(formNum);
+
+                progressBarVM.SetProgressBar(25, "Загрузка форм");
+                await GetReportRowsAndFillExcelSplit(
+                    repsList, db, progressBarVM, formNum, excelPackageBefore, excelPackageAfter, cts);
+
+                progressBarVM.SetProgressBar(95, "Сохранение");
+                await SaveSplitExcelPackagesAndOpen(
+                    excelPackageBefore, pathBefore, excelPackageAfter, pathAfter, openTemp, cts, progressBar);
+            }
+
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            await progressBar.CloseAsync();
+        }
+        finally
+        {
+            TryDeleteTempDataBase(tmpDbPath);
+        }
     }
 
     #region CheckRepsAndRepPresence

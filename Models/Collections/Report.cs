@@ -270,8 +270,7 @@ public class Report : IKey, IDataGridColumn
                     return Convert.ToInt64(frm);
                 }
 
-                var year = Convert.ToInt32(Year_DB);
-                if (Year_DB != null && year != 0)
+                if (Year_DB is { } year and not 0)
                 {
                     frm += (int)(1.0 / year * 10000000);
                     frm += cor < 10 ? $"0{cor}" : cor;
@@ -2355,7 +2354,7 @@ public class Report : IKey, IDataGridColumn
 
     #region Year
 
-    public string Year_DB { get; set; }
+    public int? Year_DB { get; set; }
 
     [NotMapped]
     [FormProperty(true, "Отчетный год")]
@@ -2365,17 +2364,17 @@ public class Report : IKey, IDataGridColumn
         {
             if (Dictionary.TryGetValue(nameof(Year), out var value))
             {
-                ((RamAccess<string>)value).Value = Year_DB;
+                ((RamAccess<string>)value).Value = FormatYearForUi(Year_DB);
                 return (RamAccess<string>)value;
             }
-            var rm = new RamAccess<string>(Year_Validation, Year_DB);
+            var rm = new RamAccess<string>(Year_Validation, FormatYearForUi(Year_DB));
             rm.PropertyChanged += YearValueChanged;
             Dictionary.Add(nameof(Year), rm);
             return (RamAccess<string>)Dictionary[nameof(Year)];
         }
         set
         {
-            Year_DB = value.Value;
+            Year_DB = ParseYearFromText(value.Value);
             OnPropertyChanged();
         }
     }
@@ -2383,8 +2382,44 @@ public class Report : IKey, IDataGridColumn
     private void YearValueChanged(object value, PropertyChangedEventArgs args)
     {
         if (args.PropertyName != "Value") return;
-        var k = ((RamAccess<string>)value).Value;
-        Year_DB = string.IsNullOrEmpty(k) ? null : string.Concat(k.Where(char.IsDigit));
+        Year_DB = ParseYearFromText(((RamAccess<string>)value).Value);
+    }
+
+    private static string FormatYearForUi(int? year) => year?.ToString() ?? "";
+
+    /// <summary>
+    /// Извлекает год из текста UI/импорта: только цифры, без пробелов.
+    /// </summary>
+    public static int? ParseYearFromText(string? text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return null;
+        }
+
+        var digits = string.Concat(text.Where(char.IsDigit));
+        return digits.Length == 0 || !int.TryParse(digits, out var year) ? null : year;
+    }
+
+    /// <summary>
+    /// Парсит год из ячейки Excel/JSON (число или текст).
+    /// </summary>
+    public static int? ParseYearFromImport(object? value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        return value switch
+        {
+            int i => i,
+            short s => s,
+            long l when l is >= int.MinValue and <= int.MaxValue => (int)l,
+            double d when d is >= 2010 and <= 2060 => (int)d,
+            float f when f is >= 2010 and <= 2060 => (int)f,
+            _ => ParseYearFromText(Convert.ToString(value)?.Trim())
+        };
     }
 
     private static bool Year_Validation(RamAccess<string> value)

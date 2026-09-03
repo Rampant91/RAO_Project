@@ -112,7 +112,7 @@ public class CheckF22 : CheckBase
         var form20RegNo = regNum ?? rep!.Reports.Master_DB.RegNoRep.Value;
         var form20Okpo = rep!.Reports.Master_DB.OkpoRep.Value;
 
-        var repYear = rep.Year_DB;
+        var repYearText = rep.Year_DB?.ToString() ?? "";
         var repFormNum = rep.FormNum_DB;
         ObservableCollectionWithItemPropertyChanged<Form22> repRows22 = rep.Rows22;
 
@@ -211,9 +211,9 @@ public class CheckF22 : CheckBase
                 .Where(report =>
                     (report.FormNum_DB == "1.5" || report.FormNum_DB == "1.6" || report.FormNum_DB == "1.7" || report.FormNum_DB == "1.8")
                     && ((report.StartPeriod_DB.Length >= 4
-                         && report.StartPeriod_DB.Substring(report.StartPeriod_DB.Length - 4) == repYear)
+                         && report.StartPeriod_DB.Substring(report.StartPeriod_DB.Length - 4) == repYearText)
                         || (report.EndPeriod_DB.Length >= 4
-                            && report.EndPeriod_DB.Substring(report.EndPeriod_DB.Length - 4) == repYear))))
+                            && report.EndPeriod_DB.Substring(report.EndPeriod_DB.Length - 4) == repYearText))))
             .ThenInclude(x => x.Rows15)
             .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows16)
             .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows17)
@@ -299,8 +299,9 @@ public class CheckF22 : CheckBase
 
         progressBarVM.SetProgressBar(9, "Получение данных формы 2.2 за предыдущий год");
 
-        int.TryParse(repYear, out var yearRealCurrent);
-        var yearPrevious = (yearRealCurrent - 1).ToString();
+        var yearRealCurrent = rep.Year_DB ?? 0;
+        var yearPrevious = yearRealCurrent - 1;
+        var yearPreviousText = yearPrevious.ToString();
 
         var repsWithForm2 = await db2.ReportsCollectionDbSet
             .AsNoTracking()
@@ -372,7 +373,7 @@ public class CheckF22 : CheckBase
                     foreach (var key1 in report.Rows15)
                     {
                         var form = (Form15)key1;
-                        form22New = FormConvert(form, repYear);
+                        form22New = FormConvert(form, repYearText);
                         if (form22New != null)
                         {
                             forms22MetadataBase.Add((form22New.FormNum_DB, $"{report.StartPeriod_DB} - {report.EndPeriod_DB}", form22New.NumberInOrder_DB.ToString()));
@@ -388,7 +389,7 @@ public class CheckF22 : CheckBase
                     foreach (var key1 in report.Rows16)
                     {
                         var form = (Form16)key1;
-                        form22New = FormConvert(form, repYear);
+                        form22New = FormConvert(form, repYearText);
                         if (form22New != null)
                         {
                             //if (report.StartPeriod_DB == "28.06.2024" && form22New.NumberInOrder_DB == 3 && form22New.CodeRAO_DB == "20412200592") form22New.CodeRAO_DB = "21412200592";
@@ -406,7 +407,7 @@ public class CheckF22 : CheckBase
                     {
                         var form = (Form17)key1;
                         if (!DashStringHelper.IsNullOrWhiteSpaceOrDash(form.OperationCode_DB)) formHeader17 = form;
-                        form22New = FormConvert(form, formHeader17, repYear);
+                        form22New = FormConvert(form, formHeader17, repYearText);
                         if (form22New != null)
                         {
                             forms22MetadataBase.Add((form22New.FormNum_DB, $"{report.StartPeriod_DB} - {report.EndPeriod_DB}", form22New.NumberInOrder_DB.ToString()));
@@ -423,7 +424,7 @@ public class CheckF22 : CheckBase
                     {
                         var form = (Form18)key1;
                         if (!DashStringHelper.IsNullOrWhiteSpaceOrDash(form.OperationCode_DB)) formHeader18 = form;
-                        form22New = FormConvert(form, formHeader18, repYear);
+                        form22New = FormConvert(form, formHeader18, repYearText);
                         if (form22New != null)
                         {
                             forms22MetadataBase.Add((form22New.FormNum_DB, $"{report.StartPeriod_DB} - {report.EndPeriod_DB}", form22New.NumberInOrder_DB.ToString()));
@@ -454,10 +455,10 @@ public class CheckF22 : CheckBase
                 foreach (var key1 in report.Rows22)
                 {
                     var form = (Form22)key1;
-                    var form22New = FormConvert(form, repYear);
+                    var form22New = FormConvert(form, repYearText);
                     if (form22New != null)
                     {
-                        forms22MetadataBase.Add((form22New.FormNum_DB, yearPrevious, form22New.NumberInOrder_DB.ToString()));
+                        forms22MetadataBase.Add((form22New.FormNum_DB, yearPreviousText, form22New.NumberInOrder_DB.ToString()));
                         forms22ExpectedBase.Add(form22New);
                     }
                 }
@@ -688,7 +689,7 @@ public class CheckF22 : CheckBase
                 var periods = forms22MetadataDict[key][keyForm].Keys.ToList();
                 if (keyForm == "2.2")
                 {
-                    periods = new List<string>([yearPrevious]);
+                    periods = new List<string>([yearPreviousText]);
                 }
                 else
                 {
@@ -772,7 +773,7 @@ public class CheckF22 : CheckBase
                     form22RealPure, 
                     $"форм{(form22Expected.Item3.Contains(',') ? "ы" : "а")} " + 
                     $"{form22Expected.Item3}" + 
-                    $"{(form22Expected.Item3 == "2.2" ? " (" + yearPrevious + ")" : "")}", 
+                    $"{(form22Expected.Item3 == "2.2" ? " (" + yearPreviousText + ")" : "")}", 
                     $"форма 2.2 ({yearRealCurrent})", form22Expected.Item1.CodeRAO_DB == Form15Plug);
 
                 if (mismatches == null)
@@ -829,7 +830,7 @@ public class CheckF22 : CheckBase
                         form22RealPure, 
                         $"форм{(forms22Expected[i].Item3.Contains(',') ? "ы" : "а")} " +
                         $"{form22Expected.Item3}" +
-                        $"{(form22Expected.Item3 == "2.2" ? " (" + yearPrevious + ")" : "")}", 
+                        $"{(form22Expected.Item3 == "2.2" ? " (" + yearPreviousText + ")" : "")}", 
                         $"форма 2.2 ({yearRealCurrent})", 
                         form22Expected.Item1.CodeRAO_DB == Form15Plug, 
                         true);
@@ -870,7 +871,7 @@ public class CheckF22 : CheckBase
                     Row = form22RealPure.NumberInOrder_DB.ToString(),
                     Column = "-",
                     Value = ItemName(form22RealPure),
-                    Message = $"В форме 2.2 ({yearPrevious}) и в формах 1.5 - 1.8 ({yearRealCurrent}) " +
+                    Message = $"В форме 2.2 ({yearPreviousText}) и в формах 1.5 - 1.8 ({yearRealCurrent}) " +
                               $"не найдена информация об указанных РАО."
                 });
             }
@@ -1003,7 +1004,7 @@ public class CheckF22 : CheckBase
             var f221Real = forms22RealSubDict.Where(x => x.Key.Item5 == "1").Select(x => x.Value).ToList();
             var f22SubExpected = forms22ExpectedSubDict.Values.ToList();
             var f22SubReal = forms22RealSubDict.Values.ToList();
-            await Check22ExportSummary(form20RegNo, f22Expected, f22Real, f221Expected, f221Real, f22SubExpected, f22SubReal, yearPrevious, yearRealCurrent.ToString());
+            await Check22ExportSummary(form20RegNo, f22Expected, f22Real, f221Expected, f221Real, f22SubExpected, f22SubReal, yearPreviousText, yearRealCurrent.ToString());
         }
 
         #endregion

@@ -41,6 +41,8 @@ public partial class SnkNumberEqualityComparer : IEqualityComparer<string>
             "бн",
             "безномера",
             "нет",
+            "нетданных",
+            "нд",
             "отсутствует",
             "прим",
             "примечание"

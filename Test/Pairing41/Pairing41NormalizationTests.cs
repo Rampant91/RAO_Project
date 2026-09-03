@@ -1,4 +1,4 @@
-using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.Testing;
 using Xunit;
 
 namespace Test.Pairing41;
@@ -48,6 +48,12 @@ public class Pairing41NormalizationTests
     [InlineData("Б.Н.")]
     [InlineData("без номера")]
     [InlineData("без номера.")]
+    [InlineData("без ном.")]
+    [InlineData("н.д.")]
+    [InlineData("н/д")]
+    [InlineData("Н/Д")]
+    [InlineData("нет данных")]
+    [InlineData("Нет данных")]
     [InlineData("прим")]
     [InlineData("примечание")]
     [InlineData("-")]
@@ -59,8 +65,11 @@ public class Pairing41NormalizationTests
 
     [Theory]
     [InlineData("б.н.", "без номера")]
+    [InlineData("без ном.", "бн")]
     [InlineData("-", "бн")]
     [InlineData("", "прим.")]
+    [InlineData("н.д.", "н/д")]
+    [InlineData("нет данных", "н.д.")]
     public void SerialNumbersAreEmpty_WhenBothSidesAreMarkers(string pasNum, string facNum)
     {
         Assert.True(Pairing41ScenarioRunner.SerialNumbersAreEmpty(pasNum, facNum));

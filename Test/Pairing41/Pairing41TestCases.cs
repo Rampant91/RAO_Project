@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using Client_App.Commands.AsyncCommands.ExcelExport.PairingOfCode41.Testing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.PairingOfCode41.Testing;
+using Client_App.Resources;
 
 namespace Test.Pairing41;
 
@@ -16,7 +17,8 @@ namespace Test.Pairing41;
 /// <item><b>D</b> — 1.4 ↔ 1.6 (ОРИ-прочие);</item>
 /// <item><b>F</b> — сторона 1.6 (общий пул 1.6, приоритет 12→13→14, симметрия);</item>
 /// <item><b>P</b> — опции диалога (Check* = false снимает поле из ключа);</item>
-/// <item><b>H</b> — карты closest-match для непарных.</item>
+/// <item><b>H</b> — карты closest-match для непарных;</item>
+/// <item><b>S</b> — soft closest: уровни Near, выбор кандидата, tie-break 1.6.</item>
 /// </list>
 /// </para>
 /// <para>
@@ -61,10 +63,37 @@ internal static partial class Pairing41TestCases
             .Concat(Form16Cases())
             .Concat(ParamsCases())
             .Concat(ClosestMatchCases())
+            .Concat(SoftClosestCases())
             .Select(testCase => new object[] { testCase.Name, testCase });
 
     public static IEnumerable<object[]> ClosestMatchOnly() =>
         ClosestMatchCases()
+            .Concat(SoftClosestCases())
+            .Where(testCase => testCase.ExpectedClosest11 is not null
+                               || testCase.ExpectedClosest15 is not null
+                               || testCase.ExpectedClosest12 is not null
+                               || testCase.ExpectedClosest13 is not null
+                               || testCase.ExpectedClosest14 is not null
+                               || testCase.ExpectedClosest16 is not null
+                               || testCase.ExpectedClosest11Levels is not null
+                               || testCase.ExpectedClosest15Levels is not null
+                               || testCase.ExpectedClosest12Levels is not null
+                               || testCase.ExpectedClosest13Levels is not null
+                               || testCase.ExpectedClosest14Levels is not null
+                               || testCase.ExpectedClosestCandidate11 is not null
+                               || testCase.ExpectedClosestCandidate15 is not null
+                               || testCase.ExpectedClosestCandidate12 is not null
+                               || testCase.ExpectedClosestCandidate13 is not null
+                               || testCase.ExpectedClosestCandidate14 is not null
+                               || testCase.ExpectedClosestCandidate16 is not null
+                               || testCase.ExpectedAggregateStateMatch13 is not null
+                               || testCase.ExpectedAggregateStateMatch14 is not null
+                               || testCase.ExpectedConfidenceMinPercent11 is not null
+                               || testCase.ExpectedConfidenceMinPercent15 is not null
+                               || testCase.ExpectedConfidenceMinPercent12 is not null
+                               || testCase.ExpectedConfidenceMinPercent13 is not null
+                               || testCase.ExpectedConfidenceMinPercent14 is not null
+                               || testCase.ExpectedConfidenceMinPercent16 is not null)
             .Select(testCase => new object[] { testCase.Name, testCase });
 
     /// <summary>Базовая строка 1.1/1.5 с серийными номерами.</summary>
@@ -112,6 +141,12 @@ internal static partial class Pairing41TestCases
 
     internal static Pairing41Row CreateRow16From12ForScale(int id, string massTon) =>
         Row16From12(id, massTon: massTon);
+
+    internal static string ExpandedCodeRaoFrom13(string mainRads = "кобальт-60", byte? aggregateState = null) =>
+        RaoCodeHelper.ExpandCalculatedTemplateToFull(RaoCodeHelper.ComputeCodeRaoFromForm13(mainRads, aggregateState));
+
+    internal static string ExpandedCodeRaoFrom14(string mainRads = "цезий-137", byte? aggregateState = null) =>
+        RaoCodeHelper.ExpandCalculatedTemplateToFull(RaoCodeHelper.ComputeCodeRaoFromForm14(mainRads, aggregateState));
 
     private static Pairing41Row Row12(
         int id,
@@ -169,7 +204,7 @@ internal static partial class Pairing41TestCases
             PackType = "ТипУКТ",
             PackNumber = packNumber,
             MainRadionuclids = "уран-238; торий-234; протактиний-234м; уран-234",
-            CodeRao = codeRao
+            CodeRao = string.IsNullOrEmpty(codeRao) ? RaoCodeHelper.Form12CodeRao : codeRao
         };
 
     /// <summary>Строка 1.3 после расчёта активностей по типу нуклида (как LoadForm13).</summary>
@@ -223,7 +258,8 @@ internal static partial class Pairing41TestCases
         string documentNumber = "DOC-13",
         string documentDate = Form13OpDate,
         string packNumber = "УКТ-13",
-        string codeRao = "") =>
+        string codeRao = "",
+        byte? aggregateState = null) =>
         new()
         {
             Id = id,
@@ -240,7 +276,10 @@ internal static partial class Pairing41TestCases
             PackName = "Упаковка",
             PackType = "ТипУКТ",
             PackNumber = packNumber,
-            CodeRao = codeRao
+            CodeRao = string.IsNullOrEmpty(codeRao)
+                ? RaoCodeHelper.ExpandCalculatedTemplateToFull(
+                    RaoCodeHelper.ComputeCodeRaoFromForm13(mainRads, aggregateState))
+                : codeRao
         };
 
     /// <summary>Строка 1.4 после ToMassTon и расчёта активностей (как LoadForm14).</summary>
@@ -296,7 +335,8 @@ internal static partial class Pairing41TestCases
         string activityMeasurementDate = "2024-03-15",
         string documentNumber = "DOC-14",
         string packNumber = "УКТ-14",
-        string codeRao = "") =>
+        string codeRao = "",
+        byte? aggregateState = null) =>
         new()
         {
             Id = id,
@@ -315,6 +355,9 @@ internal static partial class Pairing41TestCases
             PackName = "Упаковка",
             PackType = "ТипУКТ",
             PackNumber = packNumber,
-            CodeRao = codeRao
+            CodeRao = string.IsNullOrEmpty(codeRao)
+                ? RaoCodeHelper.ExpandCalculatedTemplateToFull(
+                    RaoCodeHelper.ComputeCodeRaoFromForm14(mainRads, aggregateState))
+                : codeRao
         };
 }

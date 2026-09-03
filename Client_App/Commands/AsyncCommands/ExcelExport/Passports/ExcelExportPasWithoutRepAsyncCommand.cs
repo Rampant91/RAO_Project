@@ -46,40 +46,36 @@ public partial class ExcelExportPasWithoutRepAsyncCommand : ExcelBaseAsyncComman
 
         progressBarVM.SetProgressBar(10, "Создание временной БД");
         var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-
-        progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
-        using var excelPackage = await InitializeExcelPackage(fullPath);
-
-        progressBarVM.SetProgressBar(17, "Заполнение заголовков");
-        await FillExcelHeaders(excelPackage);
-
-        progressBarVM.SetProgressBar(18, "Заполнение дубликатов");
-        await FillExcelDuplicates(files, excelPackage);
-
-        progressBarVM.SetProgressBar(20, "Формирование списка форм 1.1");
-        var filteredForm11DtoArray = await GetFilteredForms(tmpDbPath, categories, cts);
-
-        progressBarVM.SetProgressBar(50, "Поиск совпадений");
-        await FindFilesWithOutReport(files, filteredForm11DtoArray, progressBarVM, cts);
-
-        progressBarVM.SetProgressBar(90, "Экспорт данных в .xlsx");
-        await FillRows(files);
-
-        progressBarVM.SetProgressBar(95, "Сохранение");
-        await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-
-        progressBarVM.SetProgressBar(98, "Очистка временных данных");
         try
         {
-            File.Delete(tmpDbPath);
-        }
-        catch
-        {
-            // ignored
-        }
+            progressBarVM.SetProgressBar(15, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(fullPath);
 
-        progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-        await progressBar.CloseAsync();
+            progressBarVM.SetProgressBar(17, "Заполнение заголовков");
+            await FillExcelHeaders(excelPackage);
+
+            progressBarVM.SetProgressBar(18, "Заполнение дубликатов");
+            await FillExcelDuplicates(files, excelPackage);
+
+            progressBarVM.SetProgressBar(20, "Формирование списка форм 1.1");
+            var filteredForm11DtoArray = await GetFilteredForms(tmpDbPath, categories, cts);
+
+            progressBarVM.SetProgressBar(50, "Поиск совпадений");
+            await FindFilesWithOutReport(files, filteredForm11DtoArray, progressBarVM, cts);
+
+            progressBarVM.SetProgressBar(90, "Экспорт данных в .xlsx");
+            await FillRows(files);
+
+            progressBarVM.SetProgressBar(95, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            await progressBar.CloseAsync();
+        }
+        finally
+        {
+            TryDeleteTempDataBase(tmpDbPath);
+        }
     }
 
     #region FillExcelDuplicates

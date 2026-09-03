@@ -1,0 +1,19 @@
+---
+description: Короткие паттерны для Excel-выгрузок и compare-команд
+globs: "**/ExcelExport/**/*.cs"
+alwaysApply: false
+---
+
+# Excel-команды
+
+При работе в `ExcelExport/`:
+
+- Опирайся на ближайшие аналоги и `ExcelExportBaseAllAsyncCommand`
+- Нетривиальная команда: папка фичи + partial по слоям; простую однофайловую не дробить без нужды
+- UI/исполнение: меню или контекст + VM, прогресс, `CancellationToken`, cleanup temp в `finally`
+- Для нетривиальной логики: короткий README + smoke в `Client_App/Documentation/`
+
+Только для compare/парности (не для любой выгрузки):
+
+- Переиспользовать `SoftSimilarityCore` / lookalike / уровни подсветки
+- Легенда, сводка, dual-block и статусы identical / no-pair

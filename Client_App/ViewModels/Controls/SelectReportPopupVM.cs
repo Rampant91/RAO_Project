@@ -186,8 +186,7 @@ public class SelectReportPopupVM : INotifyPropertyChanged
             {
                 if (YearMode)
                     result = result.FindAll(x =>
-                        int.TryParse(x.Year_DB, out _)
-                        && int.Parse(x.Year_DB) == year);
+                        x.Year_DB == year);
                         
                 else
                     result = result

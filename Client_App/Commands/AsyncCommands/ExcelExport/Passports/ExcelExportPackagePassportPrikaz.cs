@@ -67,40 +67,57 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
 
             progressBarVM.SetProgressBar(15, "Создание временной БД", "Выгрузка отчёта для печати", ExportType);
             var tmpDbPath = await CreateTempDataBase(progressBar, cts);
-
-            progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
-            using var excelPackage = await InitializePassportExcelPackage(fullPath);
-
-            progressBarVM.SetProgressBar(80, "Выгрузка данных");
-            await FillHeader(excelPackage, passport);
-
-            progressBarVM.SetProgressBar(82, "Выгрузка данных");
-            await FillFooter(excelPackage, passport);
-
-            progressBarVM.SetProgressBar(85, "Выгрузка данных");
-            await FillTable1(excelPackage, passport);
-
-            progressBarVM.SetProgressBar(88, "Выгрузка данных");
-            await FillTable2(excelPackage, passport);
-
-            SetRowsHeightInWorksheet(excelPackage.Workbook.Worksheets[0]);
-
-            progressBarVM.SetProgressBar(90, "Сохранение");
-            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-
-            progressBarVM.SetProgressBar(95, "Очистка временных данных");
             try
             {
-                File.Delete(tmpDbPath);
-            }
-            catch
-            {
-                // ignored
-            }
+                progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
+                using var excelPackage = await InitializePassportExcelPackage(fullPath);
 
-            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
-            GC.Collect();
-            await progressBar.CloseAsync();
+                progressBarVM.SetProgressBar(80, "Выгрузка данных");
+                await FillHeader(excelPackage, passport);
+
+                progressBarVM.SetProgressBar(82, "Выгрузка данных");
+                await FillFooter(excelPackage, passport);
+
+                progressBarVM.SetProgressBar(85, "Выгрузка данных");
+                await FillTable1(excelPackage, passport);
+
+                progressBarVM.SetProgressBar(88, "Выгрузка данных");
+                await FillTable2(excelPackage, passport);
+
+                SetRowsHeightInWorksheet(excelPackage.Workbook.Worksheets[0]);
+
+                progressBarVM.SetProgressBar(90, "Сохранение");
+                await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+                progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+                GC.Collect();
+                await progressBar.CloseAsync();
+            }
+            catch(Exception ex)
+            {
+                #region MessageFailedExportExcel
+
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
+                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
+                        CanResize = true,
+                        ContentTitle = "Выгрузка в .xlsx",
+                        ContentHeader = "Ошибка",
+                        ContentMessage = "Не удалось сохранить файл по указанному пути:" +
+                                         $"{Environment.NewLine}{fullPath}",
+                        MinWidth = 400,
+                        MinHeight = 175,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
+                    })
+                    .ShowDialog(Desktop.MainWindow));
+
+                #endregion
+            }
+            finally
+            {
+                TryDeleteTempDataBase(tmpDbPath);
+            }
         }
 
 
@@ -210,6 +227,15 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
         private Task FillHeader(ExcelPackage excelPackage, PackagePassport passport)
         {
             var worksheet = excelPackage.Workbook.Worksheets[0];
+            worksheet.Cells["G1:M1"].Merge = true;
+            worksheet.Cells["G1:M1"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            worksheet.Cells["G1:M1"].Style.Font.Bold = true;
+            worksheet.Cells["G1:M1"].Value = "П  А  С  П  О  Р  Т";
+
+            worksheet.Cells["G2:M2"].Merge = true;
+            worksheet.Cells["G2:M2"].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            worksheet.Cells["G2:M2"].Style.Font.Bold = true;
+            worksheet.Cells["G2:M2"].Value = "на упаковку твердых радиоактивных отходов";
 
             worksheet.Cells["H3"].Value = passport.PassportNum;
             worksheet.Cells["H3"].Style.WrapText = true;

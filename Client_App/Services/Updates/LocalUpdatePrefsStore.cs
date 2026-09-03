@@ -52,12 +52,36 @@ public class LocalUpdatePrefsStore
         Save(prefs);
     }
 
+    /// <summary>
+    /// Зафиксировать, что пользователю уже предлагали этот сетевой релиз (автодиалог / «напомнить позже»).
+    /// </summary>
+    public void MarkNetworkReleaseNotified(string releaseId)
+    {
+        var prefs = Load();
+        prefs.LastNotifiedReleaseId = releaseId ?? string.Empty;
+        prefs.LastUpdateCheck = DateTime.Now;
+        Save(prefs);
+    }
+
+    /// <summary>
+    /// Зафиксировать, что пользователю уже предлагали эту версию с сайта.
+    /// </summary>
+    public void MarkWebsiteVersionNotified(string version)
+    {
+        var prefs = Load();
+        prefs.LastNotifiedVersion = version ?? string.Empty;
+        prefs.LastUpdateCheck = DateTime.Now;
+        Save(prefs);
+    }
+
     public void ResetCheckThrottleForDebug()
     {
         var prefs = Load();
         prefs.LastUpdateCheck = DateTime.MinValue;
         prefs.SkippedReleaseId = string.Empty;
         prefs.SkippedVersion = string.Empty;
+        prefs.LastNotifiedReleaseId = string.Empty;
+        prefs.LastNotifiedVersion = string.Empty;
         Save(prefs);
     }
 
@@ -72,6 +96,18 @@ public class LocalUpdatePrefsStore
         var prefs = Load();
         prefs.SkippedReleaseId = releaseId ?? string.Empty;
         Save(prefs);
+    }
+
+    public string? GetLastNotifiedReleaseId()
+    {
+        var notified = Load().LastNotifiedReleaseId?.Trim();
+        return string.IsNullOrWhiteSpace(notified) ? null : notified;
+    }
+
+    public string? GetLastNotifiedWebsiteVersion()
+    {
+        var notified = Load().LastNotifiedVersion?.Trim();
+        return string.IsNullOrWhiteSpace(notified) ? null : notified;
     }
 
     public Version? GetSkippedWebsiteVersion()

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.Testing;
-using static Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.Shared;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.Testing;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
 
 namespace Test.TransferReceive;
 
@@ -57,10 +58,10 @@ internal static partial class TransferReceiveTestCases
         ExpectedConfidenceMinPercent = new Dictionary<int, int> { [1] = 80 }
     };
 
-    /// <summary>H12. УКТ «39 (38)» ↔ «38 (39)» — Near.</summary>
+    /// <summary>H12. УКТ «39 (38)» ↔ «38 (39)» — Exact (тот же набор).</summary>
     private static TransferReceiveTestCase H12_PackNumberVariants_Near() => new()
     {
-        Name = "H12. Soft: УКТ 39(38) ↔ 38(39) — Near.",
+        Name = "H12. Soft: УКТ 39(38) ↔ 38(39) — Exact.",
         OurOkpo = DefaultOurOkpo,
         OurOps = [RowTransfer(1, pack: "39 (38)", pasNum: "P-H12")],
         CounterpartOps = [RowReceive(101, pack: "38 (39)", pasNum: "P-H12")],
@@ -69,7 +70,7 @@ internal static partial class TransferReceiveTestCases
         {
             [1] = new Dictionary<TransferReceiveField, FieldMatchLevel>
             {
-                [TransferReceiveField.PackNumber] = FieldMatchLevel.Near
+                [TransferReceiveField.PackNumber] = FieldMatchLevel.Exact
             }
         }
     };

@@ -45,6 +45,8 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         #endregion
 
         var dbReadOnlyPath = await CreateTempDataBase(progressBar, cts);
+        try
+        {
         await using var dbReadOnly = new DBModel(dbReadOnlyPath);
         var countReports = await dbReadOnly.ReportsCollectionDbSet
             .AsNoTracking()
@@ -279,6 +281,11 @@ public partial class ExportAllReportsAsyncCommand : ExportRaodbBaseAsyncCommand
             }
         }
         await Dispatcher.UIThread.InvokeAsync(() => progressBar.Close());
+        }
+        finally
+        {
+            TryDeleteTempDataBase(dbReadOnlyPath);
+        }
     }
 
     #region InsertIndexInFilePath

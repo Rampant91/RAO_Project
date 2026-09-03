@@ -1,4 +1,5 @@
-﻿using Client_App.ViewModels.Forms.Forms1;
+﻿using Client_App.Services;
+using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
 using Client_App.ViewModels.Forms.Forms3;
 using Client_App.ViewModels.Forms.Forms4;
@@ -73,6 +74,10 @@ public class NewChangeReportAsyncCommand : BaseAsyncCommand
     {
         if (parameter is Report report)
         {
+            if (await ReportExportLock.TryBlockReportAccessAsync(report.Id))
+            {
+                return;
+            }
 
             var t = Desktop.MainWindow as MainWindow;
 

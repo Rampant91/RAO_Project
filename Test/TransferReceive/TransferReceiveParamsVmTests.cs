@@ -1,7 +1,7 @@
-using Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing;
 using Client_App.ViewModels.Messages;
 using Xunit;
-using static Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
+using static Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.ExcelExportCheckTransferReceiveAsyncCommand;
 
 namespace Test.TransferReceive;
 
@@ -158,6 +158,10 @@ public class TransferReceiveParamsVmTests
         Assert.True(set.Form14.CheckMass);
         Assert.False(set.Form14.CheckFactoryNumber);
         Assert.False(set.Form14.CheckQuantity);
+        Assert.True(set.Form15.CheckQuantity);
+        Assert.True(set.Form15.CheckActivity);
+        Assert.False(set.Form15.CheckCreatorOkpo);
+        Assert.True(set.Form15.CheckCreationDate);
     }
 
     [Fact]
@@ -187,5 +191,98 @@ public class TransferReceiveParamsVmTests
         Assert.True(p.CheckMass);
         Assert.True(p.CheckAggregateState);
         Assert.True(p.CheckType);
+    }
+
+    [Fact]
+    public void CheckAll15_DefaultsToTrue_AndUncheckingOneField_MakesIndeterminate()
+    {
+        var vm = new GetTransferReceiveParamsVM();
+        Assert.True(vm.CheckAll15);
+        Assert.True(vm.CheckQuantity15);
+
+        vm.CheckType15 = false;
+        Assert.Null(vm.CheckAll15);
+    }
+
+    [Fact]
+    public void DefaultForm15Params_IsEnabled_AndDisablesCreatorOkpo()
+    {
+        var p = ExcelExportCheckTransferReceiveAsyncCommand.DefaultForm15Params();
+        Assert.True(ExcelExportCheckTransferReceiveAsyncCommand.IsFormCheckEnabled(p));
+        Assert.True(p.CheckQuantity);
+        Assert.True(p.CheckActivity);
+        Assert.True(p.CheckFactoryNumber);
+        Assert.False(p.CheckCreatorOkpo);
+        Assert.True(p.CheckCreationDate);
+        Assert.True(p.CheckStatusRao);
+        Assert.True(p.CheckPackName);
+        Assert.True(p.CheckPackType);
+        Assert.True(p.CheckPackNumber);
+        Assert.True(p.CheckSubsidy);
+        Assert.True(p.CheckFcpNumber);
+    }
+
+    [Fact]
+    public void CheckAll16_DefaultsToTrue_AndUncheckingOneField_MakesIndeterminate()
+    {
+        var vm = new GetTransferReceiveParamsVM();
+        Assert.True(vm.CheckAll16);
+        Assert.True(vm.CheckCodeRao16);
+
+        vm.CheckVolume16 = false;
+        Assert.Null(vm.CheckAll16);
+    }
+
+    [Fact]
+    public void DefaultForm16Params_IsEnabled_AndDisablesPassportTypeFactory()
+    {
+        var p = ExcelExportCheckTransferReceiveAsyncCommand.DefaultForm16Params();
+        Assert.True(ExcelExportCheckTransferReceiveAsyncCommand.IsFormCheckEnabled(p));
+        Assert.False(p.CheckPassportNumber);
+        Assert.False(p.CheckType);
+        Assert.False(p.CheckFactoryNumber);
+        Assert.False(p.CheckActivity);
+        Assert.False(p.CheckCreatorOkpo);
+        Assert.False(p.CheckCreationDate);
+        Assert.False(p.CheckPackName);
+        Assert.True(p.CheckCodeRao);
+        Assert.True(p.CheckTritiumActivity);
+        Assert.True(p.CheckBetaGammaActivity);
+        Assert.True(p.CheckAlphaActivity);
+        Assert.True(p.CheckTransuraniumActivity);
+        Assert.False(p.AllowEmptySerialQuantityDrain);
+    }
+
+    [Fact]
+    public void OperationDateSearchToleranceDays_DefaultsTo15()
+    {
+        var vm = new GetTransferReceiveParamsVM();
+        Assert.Equal(ExcelExportCheckTransferReceiveAsyncCommand.DefaultOperationDateSearchToleranceDays, vm.OperationDateSearchToleranceDays);
+    }
+
+    [Fact]
+    public void OperationDateSearchToleranceDaysText_AcceptsDigitsOnly_AndCommitNormalizesEmpty()
+    {
+        var vm = new GetTransferReceiveParamsVM();
+        vm.OperationDateSearchToleranceDaysText = "12a3";
+        Assert.Equal("123", vm.OperationDateSearchToleranceDaysText);
+        Assert.Equal(123, vm.OperationDateSearchToleranceDays);
+
+        vm.OperationDateSearchToleranceDaysText = string.Empty;
+        vm.CommitOperationDateSearchToleranceDays();
+        Assert.Equal("15", vm.OperationDateSearchToleranceDaysText);
+        Assert.Equal(15, vm.OperationDateSearchToleranceDays);
+    }
+
+    [Fact]
+    public void MapParamsFromDialogVm_MapsOperationDateSearchToleranceDays_AndClamps()
+    {
+        var vm = new GetTransferReceiveParamsVM { OperationDateSearchToleranceDays = 30 };
+        var set = TransferReceiveTestAccess.MapParamsFromDialogVmForTests(vm);
+        Assert.Equal(30, set.OperationDateSearchToleranceDays);
+
+        vm.OperationDateSearchToleranceDays = 999;
+        set = TransferReceiveTestAccess.MapParamsFromDialogVmForTests(vm);
+        Assert.Equal(ExcelExportCheckTransferReceiveAsyncCommand.TransferReceiveParamsSet.MaxOperationDateSearchToleranceDays, set.OperationDateSearchToleranceDays);
     }
 }

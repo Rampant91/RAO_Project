@@ -2,6 +2,7 @@
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
+using Client_App.Services;
 using Client_App.ViewModels;
 using Client_App.Views;
 using MessageBox.Avalonia.DTO;
@@ -42,6 +43,20 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
     public override async Task AsyncExecute(object? parameter)
     {
+        Reports reps;
+        if (parameter is IEnumerable enumerable)
+            reps = enumerable!.Cast<Reports>().First();
+        else if (parameter is Reports reports)
+            reps = reports;
+        else if (_mainWindowVM.SelectedReports is not null)
+            reps = _mainWindowVM.SelectedReports;
+        else return;
+
+        if (await ReportExportLock.TryBlockOrganizationAccessAsync(reps.Id))
+        {
+            return;
+        }
+
         #region MessageDeleteReports
 
         var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
@@ -67,13 +82,6 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
         try
         {
-            Reports reps;
-            if (parameter is IEnumerable enumerable)
-                reps = enumerable!.Cast<Reports>().First();
-            else if (parameter is Reports reports)
-                reps = reports;
-            else return;
-
             var masterRep = reps.Master_DB;
 
             var db = StaticConfiguration.DBModel;

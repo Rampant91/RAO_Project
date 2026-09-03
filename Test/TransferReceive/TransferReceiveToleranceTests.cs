@@ -1,4 +1,4 @@
-using Client_App.Commands.AsyncCommands.ExcelExport.TransferReceivePairing.Testing;
+using Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceivePairing.Testing;
 using Xunit;
 
 namespace Test.TransferReceive;
@@ -14,6 +14,14 @@ public class TransferReceiveToleranceTests
     [InlineData("100", "90")]
     [InlineData("1.0e+6", "1.05e+6")]
     [InlineData("1,5", "1.5")]
+    [InlineData("1000", "1e+3")]
+    [InlineData("1000", "1E+3")]
+    [InlineData("1000", "1е+3")]
+    [InlineData("(1.5e+3)", "1500")]
+    [InlineData("0", "-")]
+    [InlineData("0", "")]
+    [InlineData("0.0", "-")]
+    [InlineData("0e+0", "-")]
     public void ActivityMatches_WithinTenPercent(string left, string right)
     {
         Assert.True(TransferReceiveScenarioRunner.ActivityMatches(left, right));
@@ -26,6 +34,33 @@ public class TransferReceiveToleranceTests
     public void ActivityMatches_OutsideTenPercent(string left, string right)
     {
         Assert.False(TransferReceiveScenarioRunner.ActivityMatches(left, right));
+    }
+
+    [Theory]
+    [InlineData("0", "-")]
+    [InlineData("0", "")]
+    [InlineData("0.0", "-")]
+    public void MassMatches_ZeroEqualsDashOrEmpty(string left, string right)
+    {
+        Assert.True(TransferReceiveScenarioRunner.MassMatches(left, right));
+    }
+
+    [Theory]
+    [InlineData("0", "-")]
+    [InlineData("0", "")]
+    [InlineData("0.0", "-")]
+    public void VolumeMatches_ZeroEqualsDashOrEmpty(string left, string right)
+    {
+        Assert.True(TransferReceiveScenarioRunner.VolumeMatches(left, right));
+    }
+
+    [Theory]
+    [InlineData("0", "-")]
+    [InlineData("0", "")]
+    [InlineData("-", "")]
+    public void SubsidyMatches_ZeroEqualsDashOrEmpty(string left, string right)
+    {
+        Assert.True(TransferReceiveScenarioRunner.SubsidyMatches(left, right));
     }
 
     [Fact]
@@ -46,6 +81,7 @@ public class TransferReceiveToleranceTests
     [InlineData("21", "31")]
     [InlineData("22", "32")]
     [InlineData("25", "37")]
+    [InlineData("26", "36")]
     [InlineData("27", "35")]
     [InlineData("28", "38")]
     [InlineData("29", "39")]

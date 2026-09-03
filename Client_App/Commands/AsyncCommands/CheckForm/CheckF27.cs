@@ -53,18 +53,13 @@ public class CheckF27 : CheckBase
         string form20RegNo = rep!.Reports.Master_DB.RegNoRep.Value;
         string form20Okpo = rep!.Reports.Master_DB.OkpoRep.Value;
 
-        string repYear = rep.Year_DB;
-        string repFormNum = rep.FormNum_DB;
-
         if (string.IsNullOrWhiteSpace(form20RegNo))
         {
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
 
-
-        int yearRealCurrent;
-        int.TryParse(repYear, out yearRealCurrent);
-        string yearPrevious = (yearRealCurrent - 1).ToString();
+        var yearRealCurrent = rep.Year_DB ?? 0;
+        var yearPrevious = yearRealCurrent - 1;
 
         Reports? reps27Prev = null;
         foreach (var _ in db2.ReportsCollectionDbSet
@@ -126,8 +121,8 @@ public class CheckF27 : CheckBase
     private static void Check_HeaderExpirationDate(List<CheckError> errorList, Report rep)
     {
         if (DateTime.TryParse(rep.ValidThru27_DB, out var validThru27)
-            && int.TryParse(rep.Year_DB, out var Year)
-            && validThru27 < new DateTime(Year, 12, DateTime.DaysInMonth(Year, 12)))
+            && rep.Year_DB is { } year
+            && validThru27 < new DateTime(year, 12, DateTime.DaysInMonth(year, 12)))
         {
             errorList.Add(new CheckError
             {

@@ -1,4 +1,5 @@
-﻿using Client_App.ViewModels;
+﻿using Client_App.Services;
+using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
 using Client_App.ViewModels.Forms.Forms3;
@@ -43,6 +44,11 @@ public class NewChangeReportsAsyncCommand : BaseAsyncCommand
         var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
 
         if (mainWindowVM.SelectedReports is null) return;
+
+        if (await ReportExportLock.TryBlockOrganizationAccessAsync(mainWindowVM.SelectedReports.Id))
+        {
+            return;
+        }
 
         var report = mainWindowVM.SelectedReports.Master;
         var formNum = report.FormNum.Value;
