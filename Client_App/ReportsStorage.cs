@@ -251,6 +251,16 @@ public static class ReportsStorage
                 .SelectMany(x => x.Rows212)
                 .CountAsync(),
 
+            "3.0" => await query.Include(x => x.Rows30)
+                .SelectMany(x => x.Rows30)
+                .CountAsync(),
+
+            "3.1" => query.Include(x => x.Rows31One)
+                .Select(x => x.Rows31One) is not null? 1 : 0,
+
+            "3.2" => query.Include(x => x.Rows32One)
+                .Select(x => x.Rows31One) is not null ? 1 : 0,
+
             "4.0" => await query.Include(x => x.Rows40)
                 .SelectMany(x => x.Rows40)
                 .CountAsync(),
