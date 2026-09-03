@@ -73,7 +73,7 @@ public sealed class SkippedIdenticalReportsMessageWindowVM
                 .OrderBy(r => r.OrgColumn1)
                 .ThenBy(r => r.OrgColumn2)
                 .ThenBy(r => r.FormNum)
-                .ThenByDescending(r => ParseYear(r.Year)),
+                .ThenByDescending(r => r.Year),
             ImportSummaryFormGroup.Form3 => reports
                 .OrderBy(r => r.OrgColumn1)
                 .ThenBy(r => r.OrgColumn2)
@@ -82,11 +82,11 @@ public sealed class SkippedIdenticalReportsMessageWindowVM
             ImportSummaryFormGroup.Form4 => reports
                 .OrderBy(r => r.OrgColumn1)
                 .ThenBy(r => r.FormNum)
-                .ThenByDescending(r => ParseYear(r.Year)),
+                .ThenByDescending(r => r.Year),
             ImportSummaryFormGroup.Form5 => reports
                 .OrderBy(r => r.OrgColumn1)
                 .ThenBy(r => r.FormNum)
-                .ThenByDescending(r => ParseYear(r.Year)),
+                .ThenByDescending(r => r.Year),
             _ => reports
         };
 

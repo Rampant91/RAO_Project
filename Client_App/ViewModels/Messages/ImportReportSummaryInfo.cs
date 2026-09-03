@@ -21,7 +21,7 @@ public sealed class ImportReportSummaryInfo
     public string OrgColumn1 { get; init; } = "";
     public string OrgColumn2 { get; init; } = "";
     public string FormNum { get; init; } = "";
-    public string Year { get; init; } = "";
+    public int? Year { get; init; } = null;
     public string StartPeriod { get; init; } = "";
     public string EndPeriod { get; init; } = "";
     public string Reason { get; init; } = "";

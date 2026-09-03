@@ -25,16 +25,16 @@ public static class ReportDeletionLogger
             var logEntry = new
             {
                 DeletionTime = DateTime.Now,
-                RegNum = report.FormNum_DB is "1.0" or "2.0" 
+                RegNum = report.FormNum_DB is "1.0" or "2.0" or "3.0"
                     ? report.RegNoRep.Value
                     : report.Reports.Master_DB.RegNoRep.Value,
-                Okpo = report.FormNum_DB is "1.0" or "2.0"
+                Okpo = report.FormNum_DB is "1.0" or "2.0" or "3.0"
                     ? report.OkpoRep.Value
                     : report.Reports.Master_DB.OkpoRep.Value,
                 FormNum = report.FormNum_DB,
                 StartPeriod = report.StartPeriod_DB,
                 EndPeriod = report.EndPeriod_DB,
-                RowsCount = report.FormNum_DB is "1.0" or "2.0" 
+                RowsCount = report.FormNum_DB is "1.0" or "2.0" or "3.0"
                     ? 2 
                     : await ReportsStorage.GetReportRowsCount(report)
             };

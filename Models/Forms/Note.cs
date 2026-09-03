@@ -235,7 +235,7 @@ public class Note : IKey, IDataGridColumn
 
     public void ExcelGetRow(ExcelWorksheet worksheet, int row)
     {
-        if (Report.FormNum_DB.StartsWith("3"))
+        if (worksheet.Name.StartsWith("3"))
         {
             RowNumber_DB = Convert.ToString(worksheet.Cells[row, 1].Value);
             Comment_DB = Convert.ToString(worksheet.Cells[row, 2].Value);

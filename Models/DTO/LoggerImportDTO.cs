@@ -10,12 +10,12 @@ public class LoggerImportDTO
     public int FormCount { get; set; }
     public string FormNum { get; set; }
     public string Period => $"{StartPeriod} - {EndPeriod}";
-    public string PeriodOrYear => FormNum[0] is '1' ? Period : Year;
+    public string PeriodOrYear => FormNum[0] is '1' ? Period : Year.ToString();
     public string StartPeriod { get; set; }
     public string Okpo { get; set; }
     public string OperationDate { get; set; }
     public string RegNum { get; set; }
     public string ShortName { get; set; }
     public string SourceFileFullPath { get; set; }
-    public string Year { get; set; }
+    public int? Year { get; set; }
 }

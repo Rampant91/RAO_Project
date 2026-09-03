@@ -219,7 +219,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     ImpRepFormCount = impRep.Rows.Count;
                     ImpRepFormNum = impRep.FormNum_DB;
                     ImpRepStartPeriod = impRep.StartPeriod_DB;
-                    ImpRepYear = impRep.Year_DB ?? "";
+                    ImpRepYear = impRep.Year_DB;
 
                     impReps.Report_Collection.Add(impRep);
 
@@ -294,6 +294,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
                 #endregion
 
+
                 #region FindBaseReport
 
                 //Report? baseRep = null;
@@ -325,32 +326,12 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                     continue;
                 }
 
-                // Импортируем примечания
-                // У форм 4.X нет примечаний
-                if (repNumber is "1.0" or "2.0" or "5.0" && formNumber is not "5.7")
-                {
-                    if (Convert.ToString(value)?.ToLower() is "примечание:" or "примечания:")
-                    {
-                        start += 2;
-
-                        while (worksheet1.Cells[$"A{start}"].Value != null ||
-                               worksheet1.Cells[$"B{start}"].Value != null ||
-                               worksheet1.Cells[$"C{start}"].Value != null)
-                        {
-                            Note newNote = new();
-                            newNote.ExcelGetRow(worksheet1, start);
-                            impRep.Notes.Add(newNote);
-                            start++;
-                        }
-                    }
-                }
-
                 ImpRepCorNum = impRep.CorrectionNumber_DB;
                 ImpRepEndPeriod = impRep.EndPeriod_DB;
                 ImpRepFormCount = impRep.Rows.Count;
                 ImpRepFormNum = impRep.FormNum_DB;
                 ImpRepStartPeriod = impRep.StartPeriod_DB;
-                ImpRepYear = impRep.Year_DB?.ToString() ?? "";
+                ImpRepYear = impRep.Year_DB;
 
                 //SkipNewOrg = SkipInter = SkipLess = SkipNew = SkipReplace = AtLeastOneImportDone = false;
                 HasMultipleReport = answer.Length > 1;
@@ -413,7 +394,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                         ContentTitle = "Импорт из .xlsx",
                                         ContentHeader = "Уведомление",
                                         ContentMessage =
-                                            $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
+                                            $"Будет добавлена новая организация ({titleListNum}), содержащая отчет по форме {ImpRepFormNum}." +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
                                             $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
@@ -444,7 +425,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                         ContentTitle = "Импорт из .xlsx",
                                         ContentHeader = "Уведомление",
                                         ContentMessage =
-                                            $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
+                                            $"Будет добавлена новая организация ({titleListNum}), содержащая отчет по форме {ImpRepFormNum}." +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
                                             $"{Environment.NewLine}" +
@@ -476,7 +457,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                         ],
                                         ContentTitle = "Импорт из .xlsx",
                                         ContentHeader = "Уведомление",
-                                        ContentMessage = $"Будет добавлена новая организация ({repNumber})." +
+                                        ContentMessage = $"Будет добавлена новая организация ({titleListNum})." +
                                                          $"{Environment.NewLine}" +
                                                          $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
                                                          $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
@@ -503,7 +484,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                         ContentTitle = "Импорт из .xlsx",
                                         ContentHeader = "Уведомление",
                                         ContentMessage =
-                                            $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
+                                            $"Будет добавлена новая организация ({titleListNum}), содержащая отчет по форме {ImpRepFormNum}." +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
                                             $"{Environment.NewLine}",
@@ -1521,7 +1502,7 @@ private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, Exce
 
                     impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
                     impRep.SourcesQuantity26_DB = Convert.ToInt32(worksheet1.Cells["G5"].Value);
-                    impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Value);
+                    impRep.Year_DB = Report.ParseYearFromImport(worksheet0.Cells["G10"].Value);
 
                         #endregion
 
@@ -1537,7 +1518,7 @@ private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, Exce
                     impRep.ValidBegin27_DB = Convert.ToString(worksheet1.Cells["G5"].Value);
                     impRep.ValidThru27_DB = Convert.ToString(worksheet1.Cells["J5"].Value);
                     impRep.PermissionDocumentName27_DB = Convert.ToString(worksheet1.Cells["G6"].Value);
-                    impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Value);
+                    impRep.Year_DB = Report.ParseYearFromImport(worksheet0.Cells["G10"].Value);
 
                         #endregion
 
@@ -1570,7 +1551,7 @@ private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, Exce
                     impRep.FIOexecutor_DB = Convert.ToString(worksheet1.Cells["F21"].Value);
                     impRep.ExecPhone_DB = Convert.ToString(worksheet1.Cells["I21"].Value);
                     impRep.ExecEmail_DB = Convert.ToString(worksheet1.Cells["K21"].Value);
-                    impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Value);
+                    impRep.Year_DB = Report.ParseYearFromImport(worksheet0.Cells["G10"].Value);
 
                         #endregion
 
@@ -1581,7 +1562,7 @@ private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, Exce
                         #region BindData_2.x
 
                         impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["G4"].Value);
-                        impRep.Year_DB = Report.ParseYearFromImport(worksheet.Cells["G10"].Text);
+                        impRep.Year_DB = Report.ParseYearFromImport(worksheet0.Cells["G10"].Text);
 
                         #endregion
 
@@ -1605,12 +1586,12 @@ private static Report GetReportWithDataFromExcel(ExcelWorksheet worksheet0, Exce
         else if (formNumber.Split('.')[0] == "4")
         {
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B1"].Value);
-            impRep.Year_DB = Report.ParseYearFromText(Convert.ToString(worksheet.Cells["B15"].Text).Trim());
+            impRep.Year_DB = Report.ParseYearFromText(Convert.ToString(worksheet0.Cells["B15"].Text).Trim());
         }
         else if (formNumber.Split('.')[0] == "5")
         {
             impRep.CorrectionNumber_DB = Convert.ToByte(worksheet1.Cells["B7"].Value);
-            impRep.Year_DB = Report.ParseYearFromText(Convert.ToString(worksheet.Cells["B16"].Text).Trim());
+            impRep.Year_DB = Report.ParseYearFromText(Convert.ToString(worksheet0.Cells["B16"].Text).Trim());
         }
 
         #region BindCommonData
