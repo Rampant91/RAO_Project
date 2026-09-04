@@ -103,7 +103,7 @@ public class ExportTitleListAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #region Progress = 10
 
-        if (exportOrg.Master_DB.FormNum_DB.Split('.')[0] is "1" or "2")
+        if (exportOrg.Master_DB.FormNum_DB.Split('.')[0] is "1" or "2" or "3")
         {
             progressBarVM.ExportName = $"Выгрузка организации {exportOrg.Master_DB.RegNoRep.Value}_{exportOrg.Master_DB.OkpoRep.Value}";
         }
@@ -126,6 +126,7 @@ public class ExportTitleListAsyncCommand : ExportRaodbBaseAsyncCommand
             .AsQueryable()
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
+            .Include(x => x.Master_DB).ThenInclude(x => x.Rows30)
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows40)
             .Include(x => x.Master_DB).ThenInclude(x => x.Rows50)
             .Include(reports => reports.Report_Collection)
@@ -139,7 +140,7 @@ public class ExportTitleListAsyncCommand : ExportRaodbBaseAsyncCommand
 
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");
         string? filename = "";
-        if (exportOrg.Master_DB.FormNum_DB.Split('.')[0] is "1" or "2")
+        if (exportOrg.Master_DB.FormNum_DB.Split('.')[0] is "1" or "2" or "3")
         {
             filename = $"titleList_{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.RegNoRep.Value)}" +
                        $"_{StaticStringMethods.RemoveForbiddenChars(exportOrg.Master.OkpoRep.Value)}" +

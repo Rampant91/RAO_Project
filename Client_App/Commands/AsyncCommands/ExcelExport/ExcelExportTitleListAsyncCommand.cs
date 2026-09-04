@@ -384,7 +384,7 @@ public class ExcelExportTitleListAsyncCommand : ExcelBaseAsyncCommand
         ExcelPackage excelPackage = new(new FileInfo(fullPath), new FileInfo(appFolderPath));
 
         var strTitle = $"{rep.FormNum_DB.Split('.')[0]}.0";
-        if (strTitle is "4.0" or "5.0")
+        if (strTitle is "3.0" or "4.0" or "5.0")
             strTitle = "Форма " + $"{strTitle}";
         var worksheetTitle = excelPackage.Workbook.Worksheets[strTitle];
         worksheetTitle.Cells.Style.ShrinkToFit = true;
