@@ -125,10 +125,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             return FieldSimilarity.Exact;
         }
 
-        if (OkpoIsEightPrefixOfExtended(candidateProviderRaw, sourceOrgRaw)
-            || OkpoIsEightPrefixOfExtended(candidateProviderRaw, sourceOrgOkpoRaw)
-            || OkpoIsEightPrefixOfExtended(sourceOrgRaw, candidateProviderRaw)
-            || OkpoIsEightPrefixOfExtended(sourceOrgOkpoRaw, candidateProviderRaw))
+        if (OkpoSharesHead8(candidateProviderRaw, sourceOrgRaw)
+            || OkpoSharesHead8(candidateProviderRaw, sourceOrgOkpoRaw))
         {
             return FieldSimilarity.Near(0.99);
         }

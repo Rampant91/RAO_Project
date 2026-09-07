@@ -125,4 +125,76 @@ public sealed class TransferReceiveOkpoHelperTests
         Assert.Contains(7, map[TransferReceiveTestAccess.NormalizeNumberForTests("08624243")]);
         Assert.Contains(7, map[TransferReceiveTestAccess.NormalizeNumberForTests("08624243_40044")]);
     }
+
+    [Fact]
+    public void BuildOurOkpoSqlMatchVariants_IncludesEightDigitHeadOfFourteen()
+    {
+        var variants = TransferReceiveTestAccess.BuildOurOkpoSqlMatchVariantsForTests("12345678901234");
+        Assert.Contains("12345678901234", variants);
+        Assert.Contains("12345678", variants);
+    }
+
+    [Fact]
+    public void OkpoIndexKeys_FourteenDigit_IncludesHead8()
+    {
+        var keys = TransferReceiveTestAccess.OkpoIndexKeysForTests("12345678901234");
+        Assert.Contains("12345678", keys);
+        Assert.Contains(TransferReceiveTestAccess.NormalizeNumberForTests("12345678901234"), keys);
+    }
+
+    [Fact]
+    public void OkpoReferencesMatch_EightVsFourteen_IsMatch()
+    {
+        Assert.True(TransferReceiveTestAccess.OkpoReferencesMatchForTests(
+            "12345678", "12345678901234"));
+        Assert.True(TransferReceiveTestAccess.OkpoReferencesMatchForTests(
+            "12345678901234", "12345678"));
+        Assert.False(TransferReceiveTestAccess.OkpoReferencesMatchForTests(
+            "12345678901234", "12345678909999"));
+    }
+
+    [Fact]
+    public void OkpoClaimMatchesTitle_LegalOrBranch_FullOrHead8()
+    {
+        Assert.True(TransferReceiveTestAccess.OkpoClaimMatchesTitleForTests(
+            "11111111", legalOkpo: "11111111", branchOkpo: "22222222"));
+        Assert.True(TransferReceiveTestAccess.OkpoClaimMatchesTitleForTests(
+            "22222222", legalOkpo: "11111111", branchOkpo: "22222222"));
+        Assert.True(TransferReceiveTestAccess.OkpoClaimMatchesTitleForTests(
+            "11111111", legalOkpo: "11111111_40044", branchOkpo: ""));
+        Assert.True(TransferReceiveTestAccess.OkpoClaimMatchesTitleForTests(
+            "12345678", legalOkpo: "12345678901234", branchOkpo: "-"));
+        Assert.False(TransferReceiveTestAccess.OkpoClaimMatchesTitleForTests(
+            "99999999", legalOkpo: "11111111", branchOkpo: "22222222"));
+        // Одна голова 8_5 — для отбора org (не для reverse-ссылки пары).
+        Assert.True(TransferReceiveTestAccess.OkpoClaimMatchesTitleForTests(
+            "11111111_99999", legalOkpo: "11111111_40044", branchOkpo: ""));
+    }
+
+    [Fact]
+    public void SeedOkpoAliasMapFromTitles_IndexesLegalAndBranch()
+    {
+        var map = TransferReceiveTestAccess.SeedOkpoAliasMapFromTitlesForTests(
+            new Dictionary<int, (string Legal, string Branch)>
+            {
+                [5] = ("11111111", "22222222_12345")
+            });
+
+        Assert.Contains(5, map[TransferReceiveTestAccess.NormalizeNumberForTests("11111111")]);
+        Assert.Contains(5, map["22222222"]);
+        Assert.Contains(5, map[TransferReceiveTestAccess.NormalizeNumberForTests("22222222_12345")]);
+    }
+
+    [Fact]
+    public void TryGetOkpoHead8_SupportsAllThreeFormats()
+    {
+        Assert.True(TransferReceiveTestAccess.TryGetOkpoHead8ForTests("12345678", out var h1));
+        Assert.Equal("12345678", h1);
+        Assert.True(TransferReceiveTestAccess.TryGetOkpoHead8ForTests("12345678_99999", out var h2));
+        Assert.Equal("12345678", h2);
+        Assert.True(TransferReceiveTestAccess.TryGetOkpoHead8ForTests("12345678901234", out var h3));
+        Assert.Equal("12345678", h3);
+        Assert.False(TransferReceiveTestAccess.TryGetOkpoHead8ForTests("-", out _));
+        Assert.False(TransferReceiveTestAccess.TryGetOkpoHead8ForTests("123", out _));
+    }
 }

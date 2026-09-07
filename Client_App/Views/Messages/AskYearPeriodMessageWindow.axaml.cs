@@ -17,7 +17,7 @@ public partial class AskYearPeriodMessageWindow : BaseWindow<AskYearPeriodMessag
 
     private void OnCancelButtonClicked(object? sender, RoutedEventArgs e)
     {
-        Close(("ŒÚÏÂÌ‡", 0, 0));
+        Close(("–û—Ç–º–µ–Ω–∞", 0, 0));
     }
 
     private void OnOkButtonClicked(object? sender, RoutedEventArgs e)
@@ -32,8 +32,8 @@ public partial class AskYearPeriodMessageWindow : BaseWindow<AskYearPeriodMessag
         {
             maxYear = maxYearParse;
         }
-        if (minYear > maxYear) Close(("ŒÍ", 0, 9999));
+        if (minYear > maxYear) Close(("–û–∫", 0, 9999));
 
-        Close(("ŒÍ", minYear, maxYear));
+        Close(("–û–∫", minYear, maxYear));
     }
 }

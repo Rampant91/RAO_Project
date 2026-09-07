@@ -10,7 +10,7 @@ namespace Client_App.Views.Controls;
 public partial class NumericLeftRight : UserControl
 {
     #region Property
-    // Определение StyledProperty для Value
+    // РћРїСЂРµРґРµР»РµРЅРёРµ StyledProperty РґР»СЏ Value
     public static readonly StyledProperty<int> ValueProperty =
         AvaloniaProperty.Register<NumericLeftRight, int>(
             nameof(Value),
@@ -23,7 +23,7 @@ public partial class NumericLeftRight : UserControl
         set => SetValue(ValueProperty, CoerceValue(value));
     }
 
-    // Свойство Minimum
+    // РЎРІРѕР№СЃС‚РІРѕ Minimum
     public static readonly StyledProperty<int> MinimumProperty =
         AvaloniaProperty.Register<NumericLeftRight, int>(
             nameof(Minimum),
@@ -36,7 +36,7 @@ public partial class NumericLeftRight : UserControl
         set => SetValue(MinimumProperty, value);
     }
 
-    // Свойство Maximum
+    // РЎРІРѕР№СЃС‚РІРѕ Maximum
     public static readonly StyledProperty<int> MaximumProperty =
         AvaloniaProperty.Register<NumericLeftRight, int>(
             nameof(Maximum),
@@ -49,7 +49,7 @@ public partial class NumericLeftRight : UserControl
         set => SetValue(MaximumProperty, value);
     }
 
-    // Свойство Increment
+    // РЎРІРѕР№СЃС‚РІРѕ Increment
     public static readonly StyledProperty<int> IncrementProperty =
         AvaloniaProperty.Register<NumericLeftRight, int>(
             nameof(Increment),
@@ -88,7 +88,7 @@ public partial class NumericLeftRight : UserControl
         AvaloniaXamlLoader.Load(this);
 
     }
-    // Метод для ограничения значения в пределах Minimum/Maximum
+    // РњРµС‚РѕРґ РґР»СЏ РѕРіСЂР°РЅРёС‡РµРЅРёСЏ Р·РЅР°С‡РµРЅРёСЏ РІ РїСЂРµРґРµР»Р°С… Minimum/Maximum
     private int CoerceValue(int value)
     {
         if (value < Minimum)

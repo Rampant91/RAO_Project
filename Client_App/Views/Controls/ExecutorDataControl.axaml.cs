@@ -12,13 +12,13 @@ public partial class ExecutorDataControl : UserControl
         InitializeComponent();
 
 
-        //Ïðèâÿçêà êîììàíä èç VM ê êíîïêàì èç ListBoxItem (Íå ïîëó÷èëîñü ïðèâÿçàòü äðóãèì ñïîñîáîì) 
+        //ÐŸÑ€Ð¸Ð²ÑÐ·ÐºÐ° ÐºÐ¾Ð¼Ð¼Ð°Ð½Ð´ Ð¸Ð· VM Ðº ÐºÐ½Ð¾Ð¿ÐºÐ°Ð¼ Ð¸Ð· ListBoxItem (ÐÐµ Ð¿Ð¾Ð»ÑƒÑ‡Ð¸Ð»Ð¾ÑÑŒ Ð¿Ñ€Ð¸Ð²ÑÐ·Ð°Ñ‚ÑŒ Ð´Ñ€ÑƒÐ³Ð¸Ð¼ ÑÐ¿Ð¾ÑÐ¾Ð±Ð¾Ð¼) 
         this.Initialized += (s, e) =>
         {
             var listBox = this.FindControl<ListBox>("ExecutorsListBox");
             if (listBox != null)
             {
-                // Îáðàáîò÷èê äëÿ êíîïîê óäàëåíèÿ
+                // ÐžÐ±Ñ€Ð°Ð±Ð¾Ñ‚Ñ‡Ð¸Ðº Ð´Ð»Ñ ÐºÐ½Ð¾Ð¿Ð¾Ðº ÑƒÐ´Ð°Ð»ÐµÐ½Ð¸Ñ
                 listBox.AddHandler(Button.ClickEvent, (sender, args) =>
                 {
                     if (args.Source is Button button && button.DataContext is ExecutorData executor)

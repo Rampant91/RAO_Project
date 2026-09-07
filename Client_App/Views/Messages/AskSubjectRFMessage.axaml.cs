@@ -16,7 +16,7 @@ namespace Client_App;
 public partial class AskSubjectRFMessage : Window, INotifyPropertyChanged
 {
 
-    private string _text = "Выберите субъект Российской Федерации";
+    private string _text = "Р’С‹Р±РµСЂРёС‚Рµ СЃСѓР±СЉРµРєС‚ Р РѕСЃСЃРёР№СЃРєРѕР№ Р¤РµРґРµСЂР°С†РёРё";
     public string Text 
     {
         get

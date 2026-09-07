@@ -99,12 +99,12 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         //        .GetMessageBoxStandardWindow(new MessageBoxStandardParams
         //        {
         //            ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-        //            ContentTitle = "Ошибка при сохранении титульного листа организации",
-        //            ContentHeader = "Ошибка",
+        //            ContentTitle = "РћС€РёР±РєР° РїСЂРё СЃРѕС…СЂР°РЅРµРЅРёРё С‚РёС‚СѓР»СЊРЅРѕРіРѕ Р»РёСЃС‚Р° РѕСЂРіР°РЅРёР·Р°С†РёРё",
+        //            ContentHeader = "РћС€РёР±РєР°",
         //            ContentMessage =
-        //                $"Не удалось сохранить изменения в титульном листе организации, " +
-        //                $"поскольку организация с данными ОКПО и рег.№ уже существует в базе данных. " +
-        //                $"Убедитесь в правильности заполнения ОКПО и рег.№.",
+        //                $"РќРµ СѓРґР°Р»РѕСЃСЊ СЃРѕС…СЂР°РЅРёС‚СЊ РёР·РјРµРЅРµРЅРёСЏ РІ С‚РёС‚СѓР»СЊРЅРѕРј Р»РёСЃС‚Рµ РѕСЂРіР°РЅРёР·Р°С†РёРё, " +
+        //                $"РїРѕСЃРєРѕР»СЊРєСѓ РѕСЂРіР°РЅРёР·Р°С†РёСЏ СЃ РґР°РЅРЅС‹РјРё РћРљРџРћ Рё СЂРµРі.в„– СѓР¶Рµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ РІ Р±Р°Р·Рµ РґР°РЅРЅС‹С…. " +
+        //                $"РЈР±РµРґРёС‚РµСЃСЊ РІ РїСЂР°РІРёР»СЊРЅРѕСЃС‚Рё Р·Р°РїРѕР»РЅРµРЅРёСЏ РћРљРџРћ Рё СЂРµРі.в„–.",
         //            MinWidth = 400,
         //            MaxWidth = 600,
         //            MinHeight = 150,
@@ -154,22 +154,22 @@ public partial class Form_10 : BaseWindow<Form_10VM>
                 {
                     ButtonDefinitions =
                     [
-                        new ButtonDefinition { Name = "Да" },
-                        new ButtonDefinition { Name = "Нет" }
+                        new ButtonDefinition { Name = "Р”Р°" },
+                        new ButtonDefinition { Name = "РќРµС‚" }
                     ],
-                    ContentTitle = "Форма 1.0",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = "При заполнении данных обособленного территориального подразделения, " +
-                                     $"{Environment.NewLine}также необходимо заполнить данные юридического лица. " +
-                                     $"{Environment.NewLine}Вы уверены, что хотите закрыть форму, " +
-                                     $"оставив данные юридического лица незаполненными?",
+                    ContentTitle = "Р¤РѕСЂРјР° 1.0",
+                    ContentHeader = "РЈРІРµРґРѕРјР»РµРЅРёРµ",
+                    ContentMessage = "РџСЂРё Р·Р°РїРѕР»РЅРµРЅРёРё РґР°РЅРЅС‹С… РѕР±РѕСЃРѕР±Р»РµРЅРЅРѕРіРѕ С‚РµСЂСЂРёС‚РѕСЂРёР°Р»СЊРЅРѕРіРѕ РїРѕРґСЂР°Р·РґРµР»РµРЅРёСЏ, " +
+                                     $"{Environment.NewLine}С‚Р°РєР¶Рµ РЅРµРѕР±С…РѕРґРёРјРѕ Р·Р°РїРѕР»РЅРёС‚СЊ РґР°РЅРЅС‹Рµ СЋСЂРёРґРёС‡РµСЃРєРѕРіРѕ Р»РёС†Р°. " +
+                                     $"{Environment.NewLine}Р’С‹ СѓРІРµСЂРµРЅС‹, С‡С‚Рѕ С…РѕС‚РёС‚Рµ Р·Р°РєСЂС‹С‚СЊ С„РѕСЂРјСѓ, " +
+                                     $"РѕСЃС‚Р°РІРёРІ РґР°РЅРЅС‹Рµ СЋСЂРёРґРёС‡РµСЃРєРѕРіРѕ Р»РёС†Р° РЅРµР·Р°РїРѕР»РЅРµРЅРЅС‹РјРё?",
                     MinWidth = 400,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner,
                     Topmost = true,
                 })
                 .ShowDialog(desktop.MainWindow));
 
-            if (answer is not "Да")
+            if (answer is not "Р”Р°")
             {
                 args.Cancel = true;
                 return;
@@ -185,12 +185,12 @@ public partial class Form_10 : BaseWindow<Form_10VM>
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" }
+                    new ButtonDefinition { Name = "Р”Р°" },
+                    new ButtonDefinition { Name = "РќРµС‚" }
                 ],
-                ContentTitle = "Сохранение изменений",
-                ContentHeader = "Уведомление",
-                ContentMessage = $"Сохранить форму {vm.FormType}?",
+                ContentTitle = "РЎРѕС…СЂР°РЅРµРЅРёРµ РёР·РјРµРЅРµРЅРёР№",
+                ContentHeader = "РЈРІРµРґРѕРјР»РµРЅРёРµ",
+                ContentMessage = $"РЎРѕС…СЂР°РЅРёС‚СЊ С„РѕСЂРјСѓ {vm.FormType}?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
@@ -203,7 +203,7 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         var dbm = StaticConfiguration.DBModel;
         switch (res.Result)
         {
-            case "Да":
+            case "Р”Р°":
             {
                 try
                 {
@@ -218,7 +218,7 @@ public partial class Form_10 : BaseWindow<Form_10VM>
                 }
                 return;
             }
-            case "Нет":
+            case "РќРµС‚":
             {
                 flag = true;
                 dbm.Restore();

@@ -57,13 +57,59 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         {
             var titles = repsIdToOkpo.ToDictionary(
                 kv => kv.Key,
-                kv => new OrgTitleInfo(RegNo: string.Empty, Okpo: kv.Value, ShortName: string.Empty));
+                kv => new OrgTitleInfo(
+                    RegNo: string.Empty,
+                    Okpo: kv.Value,
+                    ShortName: string.Empty,
+                    LegalOkpo: kv.Value,
+                    BranchOkpo: string.Empty));
             return SeedOkpoAliasMapFromTitles(titles)
                 .ToDictionary(
                     kv => kv.Key,
                     kv => (IReadOnlyList<int>)kv.Value,
                     StringComparer.Ordinal);
         }
+
+        public static IReadOnlyDictionary<string, IReadOnlyList<int>> SeedOkpoAliasMapFromTitlesForTests(
+            IReadOnlyDictionary<int, (string Legal, string Branch)> repsIdToOkpos)
+        {
+            var titles = repsIdToOkpos.ToDictionary(
+                kv => kv.Key,
+                kv =>
+                {
+                    var display = IsOkpoValuePresent(kv.Value.Branch) ? kv.Value.Branch : kv.Value.Legal;
+                    return new OrgTitleInfo(
+                        RegNo: string.Empty,
+                        Okpo: display,
+                        ShortName: string.Empty,
+                        LegalOkpo: kv.Value.Legal,
+                        BranchOkpo: kv.Value.Branch);
+                });
+            return SeedOkpoAliasMapFromTitles(titles)
+                .ToDictionary(
+                    kv => kv.Key,
+                    kv => (IReadOnlyList<int>)kv.Value,
+                    StringComparer.Ordinal);
+        }
+
+        public static bool OkpoClaimMatchesTitleForTests(
+            string? claimRaw,
+            string legalOkpo,
+            string branchOkpo) =>
+            OkpoClaimMatchesTitle(
+                claimRaw,
+                new OrgTitleInfo(
+                    RegNo: string.Empty,
+                    Okpo: IsOkpoValuePresent(branchOkpo) ? branchOkpo : legalOkpo,
+                    ShortName: string.Empty,
+                    LegalOkpo: legalOkpo,
+                    BranchOkpo: branchOkpo));
+
+        public static IReadOnlyList<string> OkpoIndexKeysForTests(string? okpoRaw) =>
+            OkpoIndexKeys(okpoRaw).ToList();
+
+        public static bool TryGetOkpoHead8ForTests(string? raw, out string head8) =>
+            TryGetOkpoHead8(raw, out head8);
 
         public static string NormalizeNumberForTests(string? value) => NormalizeNumber(value);
 
@@ -515,6 +561,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 RepsId = row.RepsId,
                 ReportId = row.ReportId,
                 OrgOkpo = orgOkpo,
+                OrgLegalOkpo = orgOkpo,
+                OrgBranchOkpo = string.Empty,
                 OpCode = row.OpCode,
                 OpDate = row.OpDate,
                 PasNum = row.PasNum,

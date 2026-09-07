@@ -15,6 +15,8 @@ internal static partial class TransferReceiveTestCases
         yield return O03_EmptyProviderOkpo_InReport_NoClosest();
         yield return O04_EightDigitPrefixOfExtended_Paired();
         yield return O05_ExtendedVsEightDigitProvider_Paired();
+        yield return O07_EightVsFourteenDigit_Paired();
+        yield return O08_ClaimMatchesLegalWhileDisplayIsBranch_Paired();
     }
 
     /// <summary>O01. Candidate.ProviderOkpo не указывает на нас → unpaired.</summary>
@@ -98,6 +100,48 @@ internal static partial class TransferReceiveTestCases
             [
                 RowReceive(101, orgOkpo: counterpartHead, providerOkpo: DefaultOurOkpo)
             ],
+            ExpectedUnpairedIds = []
+        };
+    }
+
+    /// <summary>O07. Кол.19 = 8 цифр, титул контрагента — 14 с той же головой → пара.</summary>
+    private static TransferReceiveTestCase O07_EightVsFourteenDigit_Paired()
+    {
+        const string counterpartFourteen = "20000002123456";
+        const string counterpartHead = "20000002";
+        return new TransferReceiveTestCase
+        {
+            Name = "O07. Кол.19 = 8 цифр, титул контрагента 14 — пара.",
+            OurOkpo = DefaultOurOkpo,
+            OurOps = [RowTransfer(1, providerOkpo: counterpartHead)],
+            CounterpartOps =
+            [
+                RowReceive(101, orgOkpo: counterpartFourteen, providerOkpo: DefaultOurOkpo)
+            ],
+            ExpectedUnpairedIds = []
+        };
+    }
+
+    /// <summary>
+    /// O08. Display/OrgOkpo = филиал; кол.19 указывает на юрлицо — пул через Legal + алиас.
+    /// </summary>
+    private static TransferReceiveTestCase O08_ClaimMatchesLegalWhileDisplayIsBranch_Paired()
+    {
+        const string legalOkpo = "20000002";
+        const string branchOkpo = "30000003";
+        return new TransferReceiveTestCase
+        {
+            Name = "O08. Кол.19 = юрлицо, display = филиал — пара через LegalOkpo.",
+            OurOkpo = DefaultOurOkpo,
+            OurOps = [RowTransfer(1, providerOkpo: legalOkpo)],
+            CounterpartOps =
+            [
+                RowReceive(101, orgOkpo: branchOkpo, providerOkpo: DefaultOurOkpo)
+            ],
+            OkpoAliases = new Dictionary<string, IReadOnlyList<int>>
+            {
+                [NormalizeNumber(legalOkpo)] = [CounterpartRepsId]
+            },
             ExpectedUnpairedIds = []
         };
     }

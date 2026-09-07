@@ -55,8 +55,8 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
         WindowState = WindowState.Maximized;
 
 
-        //Костыль
-        //Без этого содержимое таблицы не отображается 
+        //РљРѕСЃС‚С‹Р»СЊ
+        //Р‘РµР· СЌС‚РѕРіРѕ СЃРѕРґРµСЂР¶РёРјРѕРµ С‚Р°Р±Р»РёС†С‹ РЅРµ РѕС‚РѕР±СЂР°Р¶Р°РµС‚СЃСЏ 
         Dispatcher.UIThread.InvokeAsync(() =>
         {
             var dataGrid2 = this.FindControl<DataGrid>("dataGrid2");
@@ -72,12 +72,12 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
 
     private async void OnStandardClosing(object? sender, CancelEventArgs args)
     {
-        args.Cancel = true; // Сразу запрещаем закрытие окна, т.к. из-за асинхроности окно может закрыться в любой момент
+        args.Cancel = true; // РЎСЂР°Р·Сѓ Р·Р°РїСЂРµС‰Р°РµРј Р·Р°РєСЂС‹С‚РёРµ РѕРєРЅР°, С‚.Рє. РёР·-Р·Р° Р°СЃРёРЅС…СЂРѕРЅРѕСЃС‚Рё РѕРєРЅРѕ РјРѕР¶РµС‚ Р·Р°РєСЂС‹С‚СЊСЃСЏ РІ Р»СЋР±РѕР№ РјРѕРјРµРЅС‚
 
 
-        _isCloseConfirmed = true; // перед выходом из обработчика события стоит проверка на _isCloseConfirmed,
-                                  // если true, то окно закроется,
-                                  // если false, то не закроется
+        _isCloseConfirmed = true; // РїРµСЂРµРґ РІС‹С…РѕРґРѕРј РёР· РѕР±СЂР°Р±РѕС‚С‡РёРєР° СЃРѕР±С‹С‚РёСЏ СЃС‚РѕРёС‚ РїСЂРѕРІРµСЂРєР° РЅР° _isCloseConfirmed,
+                                  // РµСЃР»Рё true, С‚Рѕ РѕРєРЅРѕ Р·Р°РєСЂРѕРµС‚СЃСЏ,
+                                  // РµСЃР»Рё false, С‚Рѕ РЅРµ Р·Р°РєСЂРѕРµС‚СЃСЏ
         if (DataContext is not PackagePassportWindowVM vm) return;
 
 
@@ -95,7 +95,7 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
                 if (vm.SkipChangeTracking) vm.SkipChangeTracking = false;
                 desktop.MainWindow.WindowState = OwnerPrevState;
 
-                if (_isCloseConfirmed) //выход из обработчика события
+                if (_isCloseConfirmed) //РІС‹С…РѕРґ РёР· РѕР±СЂР°Р±РѕС‚С‡РёРєР° СЃРѕР±С‹С‚РёСЏ
                 {
                     Closing -= OnStandardClosing;
                     Close();
@@ -120,13 +120,13 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" },
-                    new ButtonDefinition { Name = "Отмена" }
+                    new ButtonDefinition { Name = "Р”Р°" },
+                    new ButtonDefinition { Name = "РќРµС‚" },
+                    new ButtonDefinition { Name = "РћС‚РјРµРЅР°" }
                 ],
-                ContentTitle = "Сохранение изменений",
-                ContentHeader = "Уведомление",
-                ContentMessage = $"Сохранить паспорт на упаковку твердых радиоактивных отходов?",
+                ContentTitle = "РЎРѕС…СЂР°РЅРµРЅРёРµ РёР·РјРµРЅРµРЅРёР№",
+                ContentHeader = "РЈРІРµРґРѕРјР»РµРЅРёРµ",
+                ContentMessage = $"РЎРѕС…СЂР°РЅРёС‚СЊ РїР°СЃРїРѕСЂС‚ РЅР° СѓРїР°РєРѕРІРєСѓ С‚РІРµСЂРґС‹С… СЂР°РґРёРѕР°РєС‚РёРІРЅС‹С… РѕС‚С…РѕРґРѕРІ?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner
             })
@@ -137,7 +137,7 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
         var dbm = StaticConfiguration.DBModel;
         switch (res)
         {
-            case "Да":
+            case "Р”Р°":
                 {
                     _isCloseConfirmed = true;
 
@@ -153,11 +153,11 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
                         {
                             ButtonDefinitions =
                             [
-                                new ButtonDefinition { Name = "Ок" },
+                                new ButtonDefinition { Name = "РћРє" },
                             ],
-                            ContentTitle = "Сохранение изменений",
-                            ContentHeader = "Ошибка",
-                            ContentMessage = $"Произошла ошибка во время попытки сохранения:\n" +
+                            ContentTitle = "РЎРѕС…СЂР°РЅРµРЅРёРµ РёР·РјРµРЅРµРЅРёР№",
+                            ContentHeader = "РћС€РёР±РєР°",
+                            ContentMessage = $"РџСЂРѕРёР·РѕС€Р»Р° РѕС€РёР±РєР° РІРѕ РІСЂРµРјСЏ РїРѕРїС‹С‚РєРё СЃРѕС…СЂР°РЅРµРЅРёСЏ:\n" +
                                 $"{ex.Message}",
                             MinWidth = 400,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -176,7 +176,7 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
 
                     break;
                 }
-            case "Нет":
+            case "РќРµС‚":
                 {
                     _isCloseConfirmed = true;
                     dbm.Restore();
@@ -185,7 +185,7 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
 
                     break;
                 }
-            case "Отмена" or null:
+            case "РћС‚РјРµРЅР°" or null:
                 {
                     _isCloseConfirmed = false;
                     return;
@@ -193,7 +193,7 @@ public partial class PackagePassportWindow : BaseWindow<PackagePassportWindowVM>
         }
         desktop.MainWindow.WindowState = OwnerPrevState;
 
-        if (_isCloseConfirmed)      //выход из обработчика события
+        if (_isCloseConfirmed)      //РІС‹С…РѕРґ РёР· РѕР±СЂР°Р±РѕС‚С‡РёРєР° СЃРѕР±С‹С‚РёСЏ
         {
             Closing -= OnStandardClosing;
             Close();

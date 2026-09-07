@@ -376,10 +376,37 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 continue;
             }
 
-            op.OrgOkpo = title.Okpo;
-            op.OrgRegNo = title.RegNo;
-            op.OrgShortName = title.ShortName;
+            ApplyOrgTitleToOp(op, title);
         }
+    }
+
+    private static void ApplyOrgTitleToOp(TransferReceiveDto op, OrgTitleInfo title)
+    {
+        op.OrgOkpo = title.Okpo;
+        op.OrgLegalOkpo = title.LegalOkpo;
+        op.OrgBranchOkpo = title.BranchOkpo;
+        op.OrgRegNo = title.RegNo;
+        op.OrgShortName = title.ShortName;
+    }
+
+    /// <summary>Титул из уже загруженного Master.Rows10 (режим выбранной org).</summary>
+    private static OrgTitleInfo? ResolveTitleFromMasterRows10(Models.Collections.Report? master)
+    {
+        if (master?.Rows10 is null || master.Rows10.Count == 0)
+        {
+            return null;
+        }
+
+        var rows = master.Rows10
+            .OrderBy(r => r.NumberInOrder_DB)
+            .Select(r => (
+                MasterReportId: master.Id,
+                NumberInOrder: r.NumberInOrder_DB,
+                RegNo: r.RegNo_DB ?? string.Empty,
+                Okpo: r.Okpo_DB ?? string.Empty,
+                ShortName: r.ShortJurLico_DB ?? string.Empty))
+            .ToList();
+        return rows.Count == 0 ? null : ResolveOrgTitle(rows);
     }
 
     #endregion
@@ -426,20 +453,21 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             return null;
         }
 
+        var ourTitle = ResolveTitleFromMasterRows10(selectedReports.Master_DB)
+                       ?? new OrgTitleInfo(ourRegNo, ourOkpo, ourShortName, ourOkpo, string.Empty);
+
         foreach (var ops in ourOpsByForm.Values)
         {
             foreach (var op in ops)
             {
-                op.OrgRegNo = ourRegNo;
-                op.OrgShortName = ourShortName;
-                op.OrgOkpo = ourOkpo;
+                ApplyOrgTitleToOp(op, ourTitle);
             }
         }
 
         var counterpartRawOkpos = ourOpsByForm.Values
             .SelectMany(ops => ops)
             .Select(op => op.ProviderOrRecieverOkpo?.Trim() ?? string.Empty)
-            .Where(okpo => okpo.Length > 0 && okpo != "-")
+            .Where(IsOkpoValuePresent)
             .Distinct(StringComparer.Ordinal)
             .ToList();
 
@@ -734,7 +762,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
         foreach (var op in allOps)
         {
-            foreach (var key in OkpoIndexKeys(op.OrgOkpo))
+            foreach (var key in OkpoIndexKeysForOrgDto(op))
             {
                 if (!result.TryGetValue(key, out var list))
                 {
@@ -779,6 +807,22 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         }
 
         return result;
+    }
+
+    /// <summary>Ключи пула: display + юрлицо + филиал (full и голова из 8).</summary>
+    private static IEnumerable<string> OkpoIndexKeysForOrgDto(TransferReceiveDto op)
+    {
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var raw in new[] { op.OrgOkpo, op.OrgLegalOkpo, op.OrgBranchOkpo })
+        {
+            foreach (var key in OkpoIndexKeys(raw))
+            {
+                if (seen.Add(key))
+                {
+                    yield return key;
+                }
+            }
+        }
     }
 
     private static List<TransferReceiveDto> ComputeUnpairedOperations(

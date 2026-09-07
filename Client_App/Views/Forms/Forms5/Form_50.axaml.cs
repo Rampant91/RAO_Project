@@ -61,12 +61,12 @@ public partial class Form_50 : BaseWindow<Form_50VM>
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" }
+                    new ButtonDefinition { Name = "Р”Р°" },
+                    new ButtonDefinition { Name = "РќРµС‚" }
                 ],
-                ContentTitle = "Сохранение изменений",
-                ContentHeader = "Уведомление",
-                ContentMessage = $"Сохранить форму {vm.FormType}?",
+                ContentTitle = "РЎРѕС…СЂР°РЅРµРЅРёРµ РёР·РјРµРЅРµРЅРёР№",
+                ContentHeader = "РЈРІРµРґРѕРјР»РµРЅРёРµ",
+                ContentMessage = $"РЎРѕС…СЂР°РЅРёС‚СЊ С„РѕСЂРјСѓ {vm.FormType}?",
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
@@ -79,7 +79,7 @@ public partial class Form_50 : BaseWindow<Form_50VM>
         var dbm = StaticConfiguration.DBModel;
         switch (res.Result)
         {
-            case "Да":
+            case "Р”Р°":
                 {
                     try
                     {
@@ -94,7 +94,7 @@ public partial class Form_50 : BaseWindow<Form_50VM>
                     }
                     return;
                 }
-            case "Нет":
+            case "РќРµС‚":
                 {
                     flag = true;
                     dbm.Restore();

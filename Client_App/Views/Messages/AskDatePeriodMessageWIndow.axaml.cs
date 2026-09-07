@@ -7,7 +7,7 @@ using System;
 namespace Client_App.Views.Messages;
 
 /// <summary>
-/// Окно, запрашивающее у пользователя начальную и конечную даты при использовании "Аналитика -> Список форм 1".
+/// РћРєРЅРѕ, Р·Р°РїСЂР°С€РёРІР°СЋС‰РµРµ Сѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅР°С‡Р°Р»СЊРЅСѓСЋ Рё РєРѕРЅРµС‡РЅСѓСЋ РґР°С‚С‹ РїСЂРё РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРё "РђРЅР°Р»РёС‚РёРєР° -> РЎРїРёСЃРѕРє С„РѕСЂРј 1".
 /// </summary>
 public partial class AskDatePeriodMessageWindow : BaseWindow<AskDatePeriodMessageVM>
 {
@@ -29,14 +29,14 @@ public partial class AskDatePeriodMessageWindow : BaseWindow<AskDatePeriodMessag
     #region OnCancelButtonClicked
 
     /// <summary>
-    /// Ивент при нажатии кнопки "Отмена".
+    /// РРІРµРЅС‚ РїСЂРё РЅР°Р¶Р°С‚РёРё РєРЅРѕРїРєРё "РћС‚РјРµРЅР°".
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
     [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     private void OnCancelButtonClicked(object? sender, RoutedEventArgs e)
     {
-        Close(("Отмена", DateOnly.MinValue, DateOnly.MaxValue));
+        Close(("РћС‚РјРµРЅР°", DateOnly.MinValue, DateOnly.MaxValue));
     }
 
     #endregion
@@ -44,7 +44,7 @@ public partial class AskDatePeriodMessageWindow : BaseWindow<AskDatePeriodMessag
     #region OnOkButtonClicked
 
     /// <summary>
-    /// Ивент при нажатии кнопки "Ок". Возвращает кортеж из введённой пользователем начальной/конечной даты.
+    /// РРІРµРЅС‚ РїСЂРё РЅР°Р¶Р°С‚РёРё РєРЅРѕРїРєРё "РћРє". Р’РѕР·РІСЂР°С‰Р°РµС‚ РєРѕСЂС‚РµР¶ РёР· РІРІРµРґС‘РЅРЅРѕР№ РїРѕР»СЊР·РѕРІР°С‚РµР»РµРј РЅР°С‡Р°Р»СЊРЅРѕР№/РєРѕРЅРµС‡РЅРѕР№ РґР°С‚С‹.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -54,7 +54,7 @@ public partial class AskDatePeriodMessageWindow : BaseWindow<AskDatePeriodMessag
         if (!DateOnly.TryParse(_askDatePeriodMessageVM.InitialDate, out var initialDateOnly)) initialDateOnly = DateOnly.MinValue;
         if (!DateOnly.TryParse(_askDatePeriodMessageVM.ResidualDate, out var residualDateOnly)) residualDateOnly = DateOnly.MaxValue;
 
-        Close(("Ок", initialDateOnly, residualDateOnly));
+        Close(("РћРє", initialDateOnly, residualDateOnly));
     }
 
     #endregion 
