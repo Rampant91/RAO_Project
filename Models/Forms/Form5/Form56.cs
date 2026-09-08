@@ -295,5 +295,16 @@ namespace Models.Forms.Form5
                    && Quantity_DB == formToCompare.Quantity_DB
                    && Mass_DB == formToCompare.Mass_DB;
         }
+
+        /// <summary>
+        /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+        /// </summary>
+        public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+        {
+            sink.AddRaw(nameof(NumberInOrder_DB), NumberInOrder_DB);
+            sink.AddRaw(nameof(Name_DB), Name_DB);
+            sink.AddRaw(nameof(Quantity_DB), Quantity_DB);
+            sink.AddRaw(nameof(Mass_DB), Mass_DB);
+        }
     }
 }

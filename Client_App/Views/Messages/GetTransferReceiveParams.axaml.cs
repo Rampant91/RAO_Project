@@ -20,8 +20,12 @@ public partial class GetTransferReceiveParams : BaseWindow<GetTransferReceivePar
         Vm = (DataContext as GetTransferReceiveParamsVM)!;
     }
 
+    private void OnToleranceDaysLostFocus(object? sender, RoutedEventArgs e) =>
+        Vm.CommitOperationDateSearchToleranceDays();
+
     private void OnOkButtonClicked(object? sender, RoutedEventArgs e)
     {
+        Vm.CommitOperationDateSearchToleranceDays();
         Vm.Ok = true;
         Close();
     }

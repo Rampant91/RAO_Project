@@ -17,6 +17,8 @@ public static class NetworkUpdatePaths
     public const string StagingFolderName = "staging";
     public const string PreviousFolderName = "previous";
     public const string PendingFileName = "pending.json";
+    public const string LastErrorFileName = "last-error.txt";
+    public const string UpdaterLogFileName = "updater.log";
     public const string LatestFileName = "latest.json";
     public const string RootOverrideFileName = "mpzf-update-root.txt";
     /// <summary>
@@ -52,6 +54,10 @@ public static class NetworkUpdatePaths
     public static string PreviousDirectory => Path.Combine(UpdateMetaDirectory, PreviousFolderName);
 
     public static string PendingFilePath => Path.Combine(UpdateMetaDirectory, PendingFileName);
+
+    public static string LastErrorFilePath => Path.Combine(UpdateMetaDirectory, LastErrorFileName);
+
+    public static string UpdaterLogFilePath => Path.Combine(UpdateMetaDirectory, UpdaterLogFileName);
 
     public static string UpdaterDirectory =>
         Path.Combine(AppDirectory, DataFolderName, UpdaterFolderName);

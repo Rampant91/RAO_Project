@@ -14,12 +14,13 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         TransferReceiveNorm sourceNorm,
         TransferReceiveNorm candidateNorm,
         TransferReceiveField field,
-        string sourceOrgOkpo) =>
+        string sourceOrgOkpo,
+        int operationDateSearchToleranceDays) =>
         field switch
         {
             TransferReceiveField.OperationCode => SimilarityOperationCode(sourceNorm.OpCode, candidateNorm.OpCode),
             TransferReceiveField.OperationDate => SimilarityOperationDate(
-                sourceNorm.OpDateRaw, candidateNorm.OpDateRaw, OperationDateToleranceDays, NormalizeDate),
+                sourceNorm.OpDateRaw, candidateNorm.OpDateRaw, operationDateSearchToleranceDays, NormalizeDate),
             TransferReceiveField.PassportNumber => SimilarityPassportOrFactory(
                 source.PasNum, candidate.PasNum, isFactory: false),
             TransferReceiveField.FactoryNumber => SimilarityPassportOrFactory(
@@ -124,10 +125,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             return FieldSimilarity.Exact;
         }
 
-        if (OkpoIsEightPrefixOfExtended(candidateProviderRaw, sourceOrgRaw)
-            || OkpoIsEightPrefixOfExtended(candidateProviderRaw, sourceOrgOkpoRaw)
-            || OkpoIsEightPrefixOfExtended(sourceOrgRaw, candidateProviderRaw)
-            || OkpoIsEightPrefixOfExtended(sourceOrgOkpoRaw, candidateProviderRaw))
+        if (OkpoSharesHead8(candidateProviderRaw, sourceOrgRaw)
+            || OkpoSharesHead8(candidateProviderRaw, sourceOrgOkpoRaw))
         {
             return FieldSimilarity.Near(0.99);
         }
@@ -225,7 +224,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 TransferReceiveField.PackNumber => 8.0,
                 TransferReceiveField.CodeRao => 6.0,
                 TransferReceiveField.Radionuclids => 6.0,
-                TransferReceiveField.ProviderOrRecieverOkpo => 5.0,
+                TransferReceiveField.ProviderOrRecieverOkpo => 5.5,
                 TransferReceiveField.Volume => 3.5,
                 TransferReceiveField.Mass => 3.5,
                 TransferReceiveField.TritiumActivity => 3.0,
@@ -257,7 +256,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 TransferReceiveField.Activity => 2.5,
                 TransferReceiveField.CreationDate => 2.0,
                 TransferReceiveField.StatusRao => 3.0,
-                TransferReceiveField.ProviderOrRecieverOkpo => 4.0,
+                TransferReceiveField.ProviderOrRecieverOkpo => 5.5,
                 TransferReceiveField.PackName => 2.0,
                 TransferReceiveField.PackType => 2.0,
                 TransferReceiveField.PackNumber => 2.0,
@@ -282,7 +281,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             TransferReceiveField.Volume => 2.5,
             TransferReceiveField.CreatorOkpo => 4.0,
             TransferReceiveField.CreationDate => 3.0,
-            TransferReceiveField.ProviderOrRecieverOkpo => 4.0,
+            TransferReceiveField.ProviderOrRecieverOkpo => 5.5,
             TransferReceiveField.PackType => 6.5,
             TransferReceiveField.PackNumber => 3.5,
             TransferReceiveField.Quantity => 2.0,

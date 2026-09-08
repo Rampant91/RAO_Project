@@ -77,6 +77,13 @@ namespace Models.DBRealization.Migrations.DataModel
                     b.Property<bool>("IsCorrection_DB")
                         .HasColumnType("BOOLEAN");
 
+                    b.Property<short?>("LastExportedCorrectionNumber_DB")
+                        .HasColumnType("SMALLINT");
+
+                    b.Property<string>("LastExportedFingerprint_DB")
+                        .HasMaxLength(64)
+                        .HasColumnType("VARCHAR(64)");
+
                     b.Property<string>("NumberInOrder_DB")
                         .HasColumnType("BLOB SUB_TYPE TEXT");
 

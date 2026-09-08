@@ -85,6 +85,10 @@ public sealed class TransferReceiveTestCase
 
     /// <summary>Минимальная «Схожесть, %» для unpaired Id (частично).</summary>
     public IReadOnlyDictionary<int, int>? ExpectedConfidenceMinPercent { get; init; }
+
+    /// <summary>Окно поиска по дате операции (±N дней); по умолчанию 15.</summary>
+    public int OperationDateSearchToleranceDays { get; init; } =
+        TransferReceiveParamsSet.DefaultOperationDateSearchToleranceDays;
 }
 
 public sealed record TransferReceiveScenarioResult(IReadOnlyList<int> UnpairedIds);

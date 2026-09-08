@@ -574,4 +574,18 @@ public class Form26 : Form2
                && FormRadionuclidsEquality.Equals(RadionuclidName_DB, formToCompare.RadionuclidName_DB)
                && FormExponentialEquality.Equals(AverageYearConcentration_DB, formToCompare.AverageYearConcentration_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(ObservedSourceNumber_DB), ObservedSourceNumber_DB);
+        sink.AddText(nameof(ControlledAreaName_DB), ControlledAreaName_DB);
+        sink.AddText(nameof(SupposedWasteSource_DB), SupposedWasteSource_DB);
+        sink.AddExponential(nameof(DistanceToWasteSource_DB), DistanceToWasteSource_DB);
+        sink.AddExponential(nameof(TestDepth_DB), TestDepth_DB);
+        sink.AddRadionuclids(nameof(RadionuclidName_DB), RadionuclidName_DB);
+        sink.AddExponential(nameof(AverageYearConcentration_DB), AverageYearConcentration_DB);
+    }
 }

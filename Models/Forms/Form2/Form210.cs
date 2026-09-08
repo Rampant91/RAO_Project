@@ -772,4 +772,21 @@ public partial class Form210 : Form2
                && FormExponentialEquality.Equals(WasteDensityBeta_DB, formToCompare.WasteDensityBeta_DB)
                && FormTextEquality.Equals(FcpNumber_DB, formToCompare.FcpNumber_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(IndicatorName_DB), IndicatorName_DB);
+        sink.AddText(nameof(PlotName_DB), PlotName_DB);
+        sink.AddText(nameof(PlotKadastrNumber_DB), PlotKadastrNumber_DB);
+        sink.AddText(nameof(PlotCode_DB), PlotCode_DB);
+        sink.AddExponential(nameof(InfectedArea_DB), InfectedArea_DB);
+        sink.AddExponential(nameof(AvgGammaRaysDosePower_DB), AvgGammaRaysDosePower_DB);
+        sink.AddExponential(nameof(MaxGammaRaysDosePower_DB), MaxGammaRaysDosePower_DB);
+        sink.AddExponential(nameof(WasteDensityAlpha_DB), WasteDensityAlpha_DB);
+        sink.AddExponential(nameof(WasteDensityBeta_DB), WasteDensityBeta_DB);
+        sink.AddText(nameof(FcpNumber_DB), FcpNumber_DB);
+    }
 }

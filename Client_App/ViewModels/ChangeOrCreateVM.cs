@@ -290,8 +290,12 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged, IFormContentLoad
         {
             var id = rep.Id;
             StaticConfiguration.WaitForDatabaseFileAvailable();
-            Task myTask = Task.Factory.StartNew(() => ReportsStorage.GetReportAsync(id, this));  //при открытии формы загружаем все формы из БД
-            myTask.Wait();
+            // StartNew + Wait without Unwrap only waited for Task start, not GetReportAsync/EnsureSnapshot.
+            Task.Factory
+                .StartNew(() => ReportsStorage.GetReportAsync(id, this))
+                .Unwrap()
+                .GetAwaiter()
+                .GetResult();
         }
         
         FormType = formNum;

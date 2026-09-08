@@ -130,13 +130,20 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     /// </summary>
     public sealed class TransferReceiveParamsSet
     {
+        /// <summary>Окно поиска кандидатов по дате операции (дней в обе стороны), по умолчанию.</summary>
+        public const int DefaultOperationDateSearchToleranceDays = 15;
+
+        /// <summary>Максимум дней для окна поиска по дате операции.</summary>
+        public const int MaxOperationDateSearchToleranceDays = 365;
+
         public TransferReceiveParamsSet(
             TransferReceiveFormParams form11,
             TransferReceiveFormParams form12,
             TransferReceiveFormParams form13,
             TransferReceiveFormParams? form14 = null,
             TransferReceiveFormParams? form15 = null,
-            TransferReceiveFormParams? form16 = null)
+            TransferReceiveFormParams? form16 = null,
+            int operationDateSearchToleranceDays = DefaultOperationDateSearchToleranceDays)
         {
             Form11 = form11;
             Form12 = form12;
@@ -144,7 +151,16 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             Form14 = form14 ?? DisabledFormParams();
             Form15 = form15 ?? DisabledFormParams();
             Form16 = form16 ?? DisabledFormParams();
+            OperationDateSearchToleranceDays = ClampOperationDateSearchToleranceDays(operationDateSearchToleranceDays);
         }
+
+        /// <summary>
+        /// Окно поиска парной/похожей операции по дате (±N дней). Не ослабляет критерий пары: дата — exact.
+        /// </summary>
+        public int OperationDateSearchToleranceDays { get; }
+
+        public static int ClampOperationDateSearchToleranceDays(int days) =>
+            Math.Clamp(days, 0, MaxOperationDateSearchToleranceDays);
 
         /// <summary>Фабрика с явным порядком форм 1.1 → 1.2 → 1.3 → 1.4 → 1.5 → 1.6.</summary>
         public static TransferReceiveParamsSet Create(
@@ -153,8 +169,9 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             TransferReceiveFormParams form13,
             TransferReceiveFormParams form14,
             TransferReceiveFormParams form15,
-            TransferReceiveFormParams? form16 = null) =>
-            new(form11, form12, form13, form14, form15, form16);
+            TransferReceiveFormParams? form16 = null,
+            int operationDateSearchToleranceDays = DefaultOperationDateSearchToleranceDays) =>
+            new(form11, form12, form13, form14, form15, form16, operationDateSearchToleranceDays);
 
         /// <summary>Обратная совместимость: слоты 1.2, 1.4, 1.5 и 1.6 выключены.</summary>
         public static TransferReceiveParamsSet Form11And13(

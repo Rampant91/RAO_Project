@@ -59,27 +59,11 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
         string formNum;
         if (parameter is ObservableCollectionWithItemPropertyChanged<IKey> param)
         {
-            foreach (var item in param)
-            {
-                var a = DateTime.Now.Date;
-                var aDay = a.Day.ToString();
-                var aMonth = a.Month.ToString();
-                if (aDay.Length < 2) aDay = $"0{aDay}";
-                if (aMonth.Length < 2) aMonth = $"0{aMonth}";
-                ((Report)item).ExportDate.Value = $"{aDay}.{aMonth}.{a.Year}";
-            }
             repId = param.First().Id;
             formNum = ((Report)param.First()).FormNum.Value;
         }
         else if (parameter is Report report)
         {
-            var a = DateTime.Now.Date;
-            var aDay = a.Day.ToString();
-            var aMonth = a.Month.ToString();
-            if (aDay.Length < 2) aDay = $"0{aDay}";
-            if (aMonth.Length < 2) aMonth = $"0{aMonth}";
-            report.ExportDate.Value = $"{aDay}.{aMonth}.{a.Year}";
-
             repId = report.Id;
             formNum = report.FormNum.Value;
         }
@@ -236,6 +220,33 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #endregion
 
+        #region CorrectionNumberReminder
+
+        // Для Evaluate используем актуальный N с UI (мог измениться без отдельного save).
+        exportReport.CorrectionNumber_DB = selectedReport.CorrectionNumber_DB;
+        exportReport.LastExportedCorrectionNumber_DB = selectedReport.LastExportedCorrectionNumber_DB;
+        exportReport.LastExportedFingerprint_DB = selectedReport.LastExportedFingerprint_DB;
+        // Дата прошлой выгрузки для текста диалога — с tracked (ещё не перезаписывали).
+        exportReport.ExportDate_DB = selectedReport.ExportDate_DB;
+
+        if (ReportExportSnapshotService.Evaluate(exportReport))
+        {
+            var decision = await ReportExportSnapshotService.PromptAsync(exportReport);
+            if (decision == ReportExportSnapshotDecision.Cancel)
+            {
+                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+            }
+
+            if (decision == ReportExportSnapshotDecision.RaiseAndExport)
+            {
+                var raised = (byte)(selectedReport.CorrectionNumber_DB + 1);
+                selectedReport.CorrectionNumber.Value = raised;
+                exportReport.CorrectionNumber_DB = raised;
+            }
+        }
+
+        #endregion
+
         #region Progress = 25
 
         loadStatus = "Обновление даты выгрузки";
@@ -248,9 +259,9 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
         var dtMonth = dt.Month.ToString();
         if (dtDay.Length < 2) dtDay = $"0{dtDay}";
         if (dtMonth.Length < 2) dtMonth = $"0{dtMonth}";
-        exportReport.ExportDate.Value = $"{dtDay}.{dtMonth}.{dt.Year}";
-
-        await StaticConfiguration.DBModel.SaveChangesAsync(cts.Token);
+        var exportDateText = $"{dtDay}.{dtMonth}.{dt.Year}";
+        selectedReport.ExportDate.Value = exportDateText;
+        exportReport.ExportDate.Value = exportDateText;
 
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");
 
@@ -340,6 +351,8 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
             }
         }
 
+        ReportExportSnapshotService.WriteSnapshotOntoExportCopy(exportReport);
+
         await using var tempDb = new DBModel(fullPathTmp);
 
         #region Progress = 30
@@ -418,6 +431,11 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
 
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
+
+        // Слепок и ExportDate/N в локальной БД — только после успешного копирования файла.
+        selectedReport.LastExportedCorrectionNumber_DB = exportReport.LastExportedCorrectionNumber_DB;
+        selectedReport.LastExportedFingerprint_DB = exportReport.LastExportedFingerprint_DB;
+        await StaticConfiguration.DBModel.SaveChangesAsync(cts.Token);
 
         //Создаёт .zip архив рядом с файлом выгрузки.
 

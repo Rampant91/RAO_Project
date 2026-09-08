@@ -595,4 +595,19 @@ public partial class Form41 : Form
                && NumOfForms212_DB == formToCompare.NumOfForms212_DB
                && FormTextEquality.Equals(Note_DB, formToCompare.Note_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(RegNo_DB), RegNo_DB);
+        sink.AddText(nameof(Okpo_DB), Okpo_DB);
+        sink.AddText(nameof(OrganizationName_DB), OrganizationName_DB);
+        sink.AddText(nameof(LicenseOrRegistrationInfo_DB), LicenseOrRegistrationInfo_DB);
+        sink.AddRaw(nameof(NumOfFormsWithInventarizationInfo_DB), NumOfFormsWithInventarizationInfo_DB);
+        sink.AddRaw(nameof(NumOfFormsWithoutInventarizationInfo_DB), NumOfFormsWithoutInventarizationInfo_DB);
+        sink.AddRaw(nameof(NumOfForms212_DB), NumOfForms212_DB);
+        sink.AddText(nameof(Note_DB), Note_DB);
+    }
 }

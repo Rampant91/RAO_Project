@@ -88,7 +88,9 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     }
 
     /// <summary>
-    /// Совпадение ОКПО: точное (после NormalizeNumber) или «8 цифр» ↔ голова формата 8_5.
+    /// Совпадение ссылки ОКПО (кол. 19 → org): полное после NormalizeNumber
+    /// или «ровно 8 цифр» ↔ голова расширенного (8_5 / 14+).
+    /// Два разных полных 8_5/14 с одной головой — не совпадение ссылки.
     /// </summary>
     private static bool OkpoReferencesMatch(string? claimedRaw, string? targetRaw)
     {
@@ -104,16 +106,100 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     }
 
     /// <summary>
-    /// true, если left — ровно 8 цифр, а right — формат 8_5 с той же головой
-    /// (контрагент указал только первые 8 цифр полного ОКПО).
+    /// true, если у обоих значений извлекается одна и та же голова из 8 цифр
+    /// (plain 8, голова 8_5 или префикс 14+). Для отбора org / индексации пула.
     /// </summary>
-    private static bool OkpoIsEightPrefixOfExtended(string? eightRaw, string? extendedRaw) =>
-        TryParseOkpoPlainEight(eightRaw, out var eight)
-        && TryParseOkpoEightUnderscoreFive(extendedRaw, out var head8, out _)
-        && eight == head8;
+    private static bool OkpoSharesHead8(string? leftRaw, string? rightRaw) =>
+        TryGetOkpoHead8(leftRaw, out var leftHead)
+        && TryGetOkpoHead8(rightRaw, out var rightHead)
+        && (leftHead == rightHead
+            || string.Equals(NormalizeNumber(leftHead), NormalizeNumber(rightHead), StringComparison.Ordinal));
 
     /// <summary>
-    /// Ключи для индекса/поиска пула по ОКПО: полная нормализация + голова 8_5 (сырая и norm).
+    /// true, если left — ровно 8 цифр, а right — расширенный ОКПО (8_5 или 14+) с той же головой.
+    /// </summary>
+    private static bool OkpoIsEightPrefixOfExtended(string? eightRaw, string? extendedRaw)
+    {
+        if (!TryParseOkpoPlainEight(eightRaw, out var eight)
+            || !TryGetOkpoHead8(extendedRaw, out var head8))
+        {
+            return false;
+        }
+
+        // Расширенный: 8_5 или ≥9 цифр (не plain 8).
+        if (TryParseOkpoPlainEight(extendedRaw, out _))
+        {
+            return false;
+        }
+
+        return eight == head8
+               || string.Equals(NormalizeNumber(eight), NormalizeNumber(head8), StringComparison.Ordinal);
+    }
+
+    /// <summary>Claim кол. 19 ↔ ОКПО титула для отбора org: full или общие первые 8.</summary>
+    private static bool OkpoClaimMatchesOrgOkpo(string? claimRaw, string? orgOkpoRaw) =>
+        OkpoReferencesMatch(claimRaw, orgOkpoRaw) || OkpoSharesHead8(claimRaw, orgOkpoRaw);
+
+    /// <summary>
+    /// Голова из 8 цифр: plain 8, голова формата 8_5 или первые 8 цифр длинного номера.
+    /// </summary>
+    private static bool TryGetOkpoHead8(string? raw, out string head8)
+    {
+        head8 = string.Empty;
+        if (!IsOkpoValuePresent(raw))
+        {
+            return false;
+        }
+
+        if (TryParseOkpoEightUnderscoreFive(raw, out var fromExtended, out _))
+        {
+            head8 = fromExtended;
+            return true;
+        }
+
+        if (TryParseOkpoPlainEight(raw, out var eight))
+        {
+            head8 = eight;
+            return true;
+        }
+
+        var digits = ExtractOkpoDigits(raw);
+        if (digits.Length < 8)
+        {
+            return false;
+        }
+
+        head8 = digits[..8];
+        return true;
+    }
+
+    /// <summary>Только цифры из сырого ОКПО (без нормализации lookalike / ведущих нулей).</summary>
+    private static string ExtractOkpoDigits(string? raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw))
+        {
+            return string.Empty;
+        }
+
+        var trimmed = raw.Trim();
+        var buffer = new char[trimmed.Length];
+        var n = 0;
+        foreach (var ch in trimmed)
+        {
+            if (char.IsDigit(ch))
+            {
+                buffer[n++] = ch;
+            }
+        }
+
+        return n == 0 ? string.Empty : new string(buffer, 0, n);
+    }
+
+    private static bool IsOkpoValuePresent(string? raw) =>
+        !string.IsNullOrWhiteSpace(raw) && raw.Trim() != "-";
+
+    /// <summary>
+    /// Ключи для индекса/поиска пула по ОКПО: полная нормализация + голова из 8 (сырая и norm).
     /// </summary>
     private static IEnumerable<string> OkpoIndexKeys(string? okpoRaw)
     {
@@ -125,24 +211,77 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             yield return norm;
         }
 
-        if (TryParseOkpoPlainEight(okpoRaw, out var eight) && seen.Add(eight))
+        if (!TryGetOkpoHead8(okpoRaw, out var head8))
         {
-            yield return eight;
+            yield break;
         }
 
-        if (TryParseOkpoEightUnderscoreFive(okpoRaw, out var head8, out _))
+        if (seen.Add(head8))
         {
-            if (seen.Add(head8))
-            {
-                yield return head8;
-            }
+            yield return head8;
+        }
 
-            var headNorm = NormalizeNumber(head8);
-            if (headNorm.Length > 0 && seen.Add(headNorm))
+        var headNorm = NormalizeNumber(head8);
+        if (headNorm.Length > 0 && seen.Add(headNorm))
+        {
+            yield return headNorm;
+        }
+    }
+
+    /// <summary>Все ключи индекса для юрлица и обособленного подразделения.</summary>
+    private static IEnumerable<string> OkpoIndexKeysForTitle(OrgTitleInfo title)
+    {
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var raw in TitleOkpoValues(title))
+        {
+            foreach (var key in OkpoIndexKeys(raw))
             {
-                yield return headNorm;
+                if (seen.Add(key))
+                {
+                    yield return key;
+                }
             }
         }
+    }
+
+    private static IEnumerable<string> TitleOkpoValues(OrgTitleInfo title)
+    {
+        if (IsOkpoValuePresent(title.LegalOkpo))
+        {
+            yield return title.LegalOkpo.Trim();
+        }
+
+        if (IsOkpoValuePresent(title.BranchOkpo))
+        {
+            yield return title.BranchOkpo.Trim();
+        }
+
+        // Display на случай старых вызовов / тестов, где Legal/Branch не заполнены.
+        if (IsOkpoValuePresent(title.Okpo)
+            && !string.Equals(title.Okpo.Trim(), title.LegalOkpo.Trim(), StringComparison.Ordinal)
+            && !string.Equals(title.Okpo.Trim(), title.BranchOkpo.Trim(), StringComparison.Ordinal))
+        {
+            yield return title.Okpo.Trim();
+        }
+    }
+
+    /// <summary>Claim из кол. 19 подходит к любому ОКПО титула (юрлицо / филиал).</summary>
+    private static bool OkpoClaimMatchesTitle(string? claimRaw, OrgTitleInfo title)
+    {
+        if (!IsOkpoValuePresent(claimRaw))
+        {
+            return false;
+        }
+
+        foreach (var orgOkpo in TitleOkpoValues(title))
+        {
+            if (OkpoClaimMatchesOrgOkpo(claimRaw, orgOkpo))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static string NormalizeRads(string? value)
@@ -166,7 +305,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             ? date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)
             : NormalizeNumber(value);
 
-    private static bool DateWithinTolerance(string? left, string? right, int days = OperationDateToleranceDays)
+    private static bool DateWithinTolerance(string? left, string? right, int days = DefaultOperationDateSearchToleranceDays)
     {
         if (DateOnly.TryParse(left, out var leftDate) && DateOnly.TryParse(right, out var rightDate))
         {
@@ -430,15 +569,32 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
         if (options.CheckProviderOrRecieverOkpo)
         {
-            // Кол.19 контрагента должна указывать на нас: полное совпадение или 8 ↔ голова 8_5.
-            if (!OkpoReferencesMatch(candidate.ProviderOrRecieverOkpo, ourOkpoRaw)
-                && !OkpoReferencesMatch(candidate.ProviderOrRecieverOkpo, source.OrgOkpo))
+            // Кол.19 контрагента → на нас: display / юрлицо / филиал (full или общие первые 8).
+            if (!OkpoReferencesMatchAny(
+                    candidate.ProviderOrRecieverOkpo,
+                    ourOkpoRaw,
+                    source.OrgOkpo,
+                    source.OrgLegalOkpo,
+                    source.OrgBranchOkpo))
             {
                 return false;
             }
         }
 
         return true;
+    }
+
+    private static bool OkpoReferencesMatchAny(string? claimedRaw, params string?[] targets)
+    {
+        foreach (var target in targets)
+        {
+            if (OkpoReferencesMatch(claimedRaw, target))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     #endregion
@@ -497,14 +653,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             _ => throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет загрузчика для формы.")
         };
 
-    /// <summary>Диспетчер загрузки ops контрагентов.</summary>
-    /// <param name="providerOkpoRawVariants">
-    /// Если задан — в SQL оставляем только строки, где кол.19 ∈ variants
-    /// (org-режим при включённом CheckProviderOrRecieverOkpo). Не использовать при выключенной проверке ОКПО.
-    /// </param>
-    /// <param name="ourOkpoFilter">
-    /// Доп. отсев в памяти: кол.19 указывает на наш ОКПО (полное совпадение или 8 ↔ голова 8_5).
-    /// </param>
+    /// <summary>Диспетчер загрузки ops контрагентов (все операции org, без фильтра по кол.19).</summary>
     private static Task<List<TransferReceiveDto>> LoadFormOpsForRepsIdsAsync(
         TransferReceiveFormId formId,
         DBModel db,
@@ -512,30 +661,22 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitles,
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
-        IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "контрагентов") =>
         formId switch
         {
             TransferReceiveFormId.Form11 => LoadForm11TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
-                chunkSize, progressEntityLabel),
+                db, repsIds, orgTitles, cancellationToken, progress, chunkSize, progressEntityLabel),
             TransferReceiveFormId.Form12 => LoadForm12TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
-                chunkSize, progressEntityLabel),
+                db, repsIds, orgTitles, cancellationToken, progress, chunkSize, progressEntityLabel),
             TransferReceiveFormId.Form13 => LoadForm13TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
-                chunkSize, progressEntityLabel),
+                db, repsIds, orgTitles, cancellationToken, progress, chunkSize, progressEntityLabel),
             TransferReceiveFormId.Form14 => LoadForm14TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
-                chunkSize, progressEntityLabel),
+                db, repsIds, orgTitles, cancellationToken, progress, chunkSize, progressEntityLabel),
             TransferReceiveFormId.Form15 => LoadForm15TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
-                chunkSize, progressEntityLabel),
+                db, repsIds, orgTitles, cancellationToken, progress, chunkSize, progressEntityLabel),
             TransferReceiveFormId.Form16 => LoadForm16TransferReceiveForRepsIdsAsync(
-                db, repsIds, orgTitles, cancellationToken, progress, providerOkpoRawVariants, ourOkpoFilter,
-                chunkSize, progressEntityLabel),
+                db, repsIds, orgTitles, cancellationToken, progress, chunkSize, progressEntityLabel),
             _ => throw new ArgumentOutOfRangeException(nameof(formId), formId, "Нет загрузчика для формы.")
         };
 
@@ -1072,8 +1213,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
     /// <summary>
     /// Сырые варианты нашего ОКПО для SQL IN: как в титуле, нормализованный, с ведущими нулями.
-    /// Не покрывает lookalike-буквы — для ОКПО обычно цифры; пары после NormalizeNumber всё равно
-    /// дополнительно отсекаются <c>ourOkpoFilter</c> в памяти.
+    /// Не покрывает lookalike-буквы — для ОКПО обычно цифры.
     /// </summary>
     private static List<string> BuildOurOkpoSqlMatchVariants(string ourOkpoRaw)
     {
@@ -1103,10 +1243,27 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         }
 
         AddWithLeadingZeroPads(ourOkpoRaw);
-        // Контрагент может указать только первые 8 цифр формата 8_5.
-        if (TryParseOkpoEightUnderscoreFive(ourOkpoRaw, out var head8, out _))
+        // Контрагент может указать только первые 8 цифр (голова 8_5 / префикс 14+).
+        if (TryGetOkpoHead8(ourOkpoRaw, out var head8))
         {
             AddWithLeadingZeroPads(head8);
+        }
+
+        return result.ToList();
+    }
+
+    /// <summary>
+    /// Сырые варианты claim кол. 19 для SQL IN: full + head8 + pads (без lookalike).
+    /// </summary>
+    private static List<string> BuildClaimOkpoSqlMatchVariants(IReadOnlyList<string> rawOkpos)
+    {
+        var result = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var raw in rawOkpos)
+        {
+            foreach (var variant in BuildOurOkpoSqlMatchVariants(raw))
+            {
+                result.Add(variant);
+            }
         }
 
         return result.ToList();
@@ -1169,6 +1326,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 ReportId = row.ReportId,
                 NumberInOrder = row.NumberInOrder,
                 OrgOkpo = title?.Okpo ?? string.Empty,
+                OrgLegalOkpo = title?.LegalOkpo ?? string.Empty,
+                OrgBranchOkpo = title?.BranchOkpo ?? string.Empty,
                 OrgRegNo = title?.RegNo ?? string.Empty,
                 OrgShortName = title?.ShortName ?? string.Empty,
                 OpCode = row.OpCode ?? string.Empty,
@@ -1246,6 +1405,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 ReportId = row.ReportId,
                 NumberInOrder = row.NumberInOrder,
                 OrgOkpo = title?.Okpo ?? string.Empty,
+                OrgLegalOkpo = title?.LegalOkpo ?? string.Empty,
+                OrgBranchOkpo = title?.BranchOkpo ?? string.Empty,
                 OrgRegNo = title?.RegNo ?? string.Empty,
                 OrgShortName = title?.ShortName ?? string.Empty,
                 OpCode = row.OpCode ?? string.Empty,
@@ -1323,6 +1484,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 ReportId = row.ReportId,
                 NumberInOrder = row.NumberInOrder,
                 OrgOkpo = title?.Okpo ?? string.Empty,
+                OrgLegalOkpo = title?.LegalOkpo ?? string.Empty,
+                OrgBranchOkpo = title?.BranchOkpo ?? string.Empty,
                 OrgRegNo = title?.RegNo ?? string.Empty,
                 OrgShortName = title?.ShortName ?? string.Empty,
                 OpCode = row.OpCode ?? string.Empty,
@@ -1393,20 +1556,20 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             }
 
             orgTitles.TryGetValue(row.RepsId, out var title);
-            result.Add(MapForm14Row(
+            result.Add(WithOrgTitleOkpos(MapForm14Row(
                 row.Id, row.RepsId, row.ReportId, row.NumberInOrder,
                 title?.Okpo ?? string.Empty, title?.RegNo ?? string.Empty, title?.ShortName ?? string.Empty,
                 row.OpCode, row.OpDate, row.PasNum, row.Name, row.Sort, row.Radionuclids,
                 row.Activity, row.ActivityMeasurementDate, row.Volume, row.Mass, row.AggregateState,
-                row.PackNumber, row.ProviderOrRecieverOkpo, row.StartPeriod, row.EndPeriod));
+                row.PackNumber, row.ProviderOrRecieverOkpo, row.StartPeriod, row.EndPeriod), title));
         }
 
         return result.OrderBy(row => row.Id).ToList();
     }
 
     /// <summary>
-    /// Whole-DB ОКПО-карта: сначала все загруженные титулы (в т.ч. контрагенты с ops);
-    /// <see cref="LoadRepsIdsByOkpoAsync"/> — только для сырых ОКПО кол. 19, которых ещё нет после нормализации.
+    /// Whole-DB ОКПО-карта: сначала все загруженные титулы (юрлицо + филиал);
+    /// <see cref="LoadRepsIdsByOkpoAsync"/> — только для claim кол. 19 без пересечения ключей.
     /// </summary>
     private static async Task<Dictionary<string, List<int>>> BuildOkpoAliasMapForWholeDbAsync(
         DBModel db,
@@ -1419,16 +1582,12 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
 
         var counterpartRawOkpos = allOps
             .Select(op => op.ProviderOrRecieverOkpo?.Trim() ?? string.Empty)
-            .Where(okpo => okpo.Length > 0 && okpo != "-")
+            .Where(IsOkpoValuePresent)
             .Distinct(StringComparer.Ordinal)
             .ToList();
 
         var missingRaw = counterpartRawOkpos
-            .Where(raw =>
-            {
-                var norm = NormalizeNumber(raw);
-                return norm.Length > 0 && !byNorm.ContainsKey(norm);
-            })
+            .Where(raw => !OkpoIndexKeys(raw).Any(byNorm.ContainsKey))
             .ToList();
 
         if (missingRaw.Count == 0)
@@ -1460,29 +1619,42 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         return byNorm;
     }
 
-    /// <summary>ОКПО титула → RepsId (без SQL); 8_5 также под головой из 8 цифр.</summary>
+    /// <summary>ОКПО титула (юрлицо + филиал) → RepsId; ключи full + голова из 8.</summary>
     private static Dictionary<string, List<int>> SeedOkpoAliasMapFromTitles(
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitles)
     {
         var byNorm = new Dictionary<string, List<int>>(StringComparer.Ordinal);
         foreach (var (repsId, title) in orgTitles)
         {
-            foreach (var key in OkpoIndexKeys(title.Okpo))
-            {
-                if (!byNorm.TryGetValue(key, out var list))
-                {
-                    list = [];
-                    byNorm[key] = list;
-                }
-
-                if (!list.Contains(repsId))
-                {
-                    list.Add(repsId);
-                }
-            }
+            IndexRepsUnderOkpoKeys(byNorm, repsId, OkpoIndexKeysForTitle(title));
         }
 
         return byNorm;
+    }
+
+    private static void IndexRepsUnderOkpoKeys(
+        Dictionary<string, List<int>> byNorm,
+        int repsId,
+        IEnumerable<string> keys)
+    {
+        foreach (var key in keys)
+        {
+            if (key.Length == 0)
+            {
+                continue;
+            }
+
+            if (!byNorm.TryGetValue(key, out var list))
+            {
+                list = [];
+                byNorm[key] = list;
+            }
+
+            if (!list.Contains(repsId))
+            {
+                list.Add(repsId);
+            }
+        }
     }
 
     private static async Task<List<TransferReceiveDto>> LoadForm11TransferReceiveForRepsAsync(
@@ -1561,8 +1733,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitlesByRepsId,
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
-        IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "контрагентов")
     {
@@ -1576,7 +1746,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var result = new List<TransferReceiveDto>();
         var totalOrgs = repsIds.Count;
         var orgsDone = 0;
-        var filterByProvider = providerOkpoRawVariants is { Count: > 0 };
         var effectiveChunk = chunkSize > 0 ? chunkSize : CounterpartOpsLoadChunkSize;
         progress?.ReportNow(0, totalOrgs, $"загрузка операций {progressEntityLabel}: 0 из {totalOrgs} орг.");
 
@@ -1596,12 +1765,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                && idChunk.Contains(form.Report.Reports.Id)
                                && form.OperationCode_DB != null
                                && codes.Contains(form.OperationCode_DB));
-            if (filterByProvider)
-            {
-                query = query.Where(form => form.ProviderOrRecieverOKPO_DB != null
-                                           && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
-            }
-
             var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
             var lastRowId = 0;
             while (true)
@@ -1646,12 +1809,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                         continue;
                     }
 
-                    if (ourOkpoFilter is { Length: > 0 }
-                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
-                    {
-                        continue;
-                    }
-
                     orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
                     result.Add(new TransferReceiveDto
                     {
@@ -1660,6 +1817,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                         ReportId = row.ReportId,
                         NumberInOrder = row.NumberInOrder,
                         OrgOkpo = title?.Okpo ?? string.Empty,
+                        OrgLegalOkpo = title?.LegalOkpo ?? string.Empty,
+                        OrgBranchOkpo = title?.BranchOkpo ?? string.Empty,
                         OrgRegNo = title?.RegNo ?? string.Empty,
                         OrgShortName = title?.ShortName ?? string.Empty,
                         OpCode = row.OpCode ?? string.Empty,
@@ -1767,8 +1926,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitlesByRepsId,
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
-        IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "1.2 контрагентов")
     {
@@ -1782,7 +1939,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var result = new List<TransferReceiveDto>();
         var totalOrgs = repsIds.Count;
         var orgsDone = 0;
-        var filterByProvider = providerOkpoRawVariants is { Count: > 0 };
         var effectiveChunk = chunkSize > 0 ? chunkSize : CounterpartOpsLoadChunkSize;
         progress?.ReportNow(0, totalOrgs, $"загрузка операций {progressEntityLabel}: 0 из {totalOrgs} орг.");
 
@@ -1802,12 +1958,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                && idChunk.Contains(form.Report.Reports.Id)
                                && form.OperationCode_DB != null
                                && codes.Contains(form.OperationCode_DB));
-            if (filterByProvider)
-            {
-                query = query.Where(form => form.ProviderOrRecieverOKPO_DB != null
-                                           && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
-            }
-
             var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
             var lastRowId = 0;
             while (true)
@@ -1851,12 +2001,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                         continue;
                     }
 
-                    if (ourOkpoFilter is { Length: > 0 }
-                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
-                    {
-                        continue;
-                    }
-
                     orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
                     result.Add(new TransferReceiveDto
                     {
@@ -1865,6 +2009,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                         ReportId = row.ReportId,
                         NumberInOrder = row.NumberInOrder,
                         OrgOkpo = title?.Okpo ?? string.Empty,
+                        OrgLegalOkpo = title?.LegalOkpo ?? string.Empty,
+                        OrgBranchOkpo = title?.BranchOkpo ?? string.Empty,
                         OrgRegNo = title?.RegNo ?? string.Empty,
                         OrgShortName = title?.ShortName ?? string.Empty,
                         OpCode = row.OpCode ?? string.Empty,
@@ -1974,8 +2120,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitlesByRepsId,
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
-        IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "1.3 контрагентов")
     {
@@ -1989,7 +2133,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var result = new List<TransferReceiveDto>();
         var totalOrgs = repsIds.Count;
         var orgsDone = 0;
-        var filterByProvider = providerOkpoRawVariants is { Count: > 0 };
         var effectiveChunk = chunkSize > 0 ? chunkSize : CounterpartOpsLoadChunkSize;
         progress?.ReportNow(0, totalOrgs, $"загрузка операций {progressEntityLabel}: 0 из {totalOrgs} орг.");
 
@@ -2009,12 +2152,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                && idChunk.Contains(form.Report.Reports.Id)
                                && form.OperationCode_DB != null
                                && codes.Contains(form.OperationCode_DB));
-            if (filterByProvider)
-            {
-                query = query.Where(form => form.ProviderOrRecieverOKPO_DB != null
-                                           && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
-            }
-
             var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
             var lastRowId = 0;
             while (true)
@@ -2059,12 +2196,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                         continue;
                     }
 
-                    if (ourOkpoFilter is { Length: > 0 }
-                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
-                    {
-                        continue;
-                    }
-
                     orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
                     result.Add(new TransferReceiveDto
                     {
@@ -2073,6 +2204,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                         ReportId = row.ReportId,
                         NumberInOrder = row.NumberInOrder,
                         OrgOkpo = title?.Okpo ?? string.Empty,
+                        OrgLegalOkpo = title?.LegalOkpo ?? string.Empty,
+                        OrgBranchOkpo = title?.BranchOkpo ?? string.Empty,
                         OrgRegNo = title?.RegNo ?? string.Empty,
                         OrgShortName = title?.ShortName ?? string.Empty,
                         OpCode = row.OpCode ?? string.Empty,
@@ -2166,8 +2299,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitlesByRepsId,
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
-        IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "1.4 контрагентов")
     {
@@ -2181,7 +2312,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var result = new List<TransferReceiveDto>();
         var totalOrgs = repsIds.Count;
         var orgsDone = 0;
-        var filterByProvider = providerOkpoRawVariants is { Count: > 0 };
         var effectiveChunk = chunkSize > 0 ? chunkSize : CounterpartOpsLoadChunkSize;
         progress?.ReportNow(0, totalOrgs, $"загрузка операций {progressEntityLabel}: 0 из {totalOrgs} орг.");
 
@@ -2201,12 +2331,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                && idChunk.Contains(form.Report.Reports.Id)
                                && form.OperationCode_DB != null
                                && codes.Contains(form.OperationCode_DB));
-            if (filterByProvider)
-            {
-                query = query.Where(form => form.ProviderOrRecieverOKPO_DB != null
-                                           && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
-            }
-
             var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
             var lastRowId = 0;
             while (true)
@@ -2252,19 +2376,13 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                         continue;
                     }
 
-                    if (ourOkpoFilter is { Length: > 0 }
-                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
-                    {
-                        continue;
-                    }
-
                     orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
-                    result.Add(MapForm14Row(
+                    result.Add(WithOrgTitleOkpos(MapForm14Row(
                         row.Id, row.RepsId, row.ReportId, row.NumberInOrder,
                         title?.Okpo ?? string.Empty, title?.RegNo ?? string.Empty, title?.ShortName ?? string.Empty,
                         row.OpCode, row.OpDate, row.PasNum, row.Name, row.Sort, row.Radionuclids,
                         row.Activity, row.ActivityMeasurementDate, row.Volume, row.Mass, row.AggregateState,
-                        row.PackNumber, row.ProviderOrRecieverOkpo, row.StartPeriod, row.EndPeriod));
+                        row.PackNumber, row.ProviderOrRecieverOkpo, row.StartPeriod, row.EndPeriod), title));
                 }
 
                 lastRowId = rows[^1].Id;
@@ -2282,6 +2400,27 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         }
 
         return result.OrderBy(row => row.Id).ToList();
+    }
+
+    /// <summary>Дописывает Legal/Branch с титула (Map* уже поставил display Okpo).</summary>
+    private static TransferReceiveDto WithOrgTitleOkpos(TransferReceiveDto dto, OrgTitleInfo? title)
+    {
+        if (title is null)
+        {
+            if (string.IsNullOrEmpty(dto.OrgLegalOkpo))
+            {
+                dto.OrgLegalOkpo = dto.OrgOkpo;
+            }
+
+            return dto;
+        }
+
+        dto.OrgOkpo = title.Okpo;
+        dto.OrgLegalOkpo = title.LegalOkpo;
+        dto.OrgBranchOkpo = title.BranchOkpo;
+        dto.OrgRegNo = title.RegNo;
+        dto.OrgShortName = title.ShortName;
+        return dto;
     }
 
     private static TransferReceiveDto MapForm14Row(
@@ -2314,6 +2453,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             ReportId = reportId,
             NumberInOrder = numberInOrder,
             OrgOkpo = orgOkpo,
+            OrgLegalOkpo = orgOkpo,
+            OrgBranchOkpo = string.Empty,
             OrgRegNo = orgRegNo,
             OrgShortName = orgShortName,
             OpCode = opCode ?? string.Empty,
@@ -2371,6 +2512,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             ReportId = reportId,
             NumberInOrder = numberInOrder,
             OrgOkpo = orgOkpo,
+            OrgLegalOkpo = orgOkpo,
+            OrgBranchOkpo = string.Empty,
             OrgRegNo = orgRegNo,
             OrgShortName = orgShortName,
             OpCode = opCode ?? string.Empty,
@@ -2442,13 +2585,13 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             }
 
             orgTitles.TryGetValue(row.RepsId, out var title);
-            result.Add(MapForm15Row(
+            result.Add(WithOrgTitleOkpos(MapForm15Row(
                 row.Id, row.RepsId, row.ReportId, row.NumberInOrder,
                 title?.Okpo ?? string.Empty, title?.RegNo ?? string.Empty, title?.ShortName ?? string.Empty,
                 row.OpCode, row.OpDate, row.PasNum, row.FacNum, row.Type, row.Radionuclids,
                 row.StatusRao, row.PackName, row.PackType, row.PackNumber, row.Subsidy, row.FcpNumber,
                 row.ProviderOrRecieverOkpo, row.Quantity, row.Activity, row.CreationDate,
-                row.StartPeriod, row.EndPeriod));
+                row.StartPeriod, row.EndPeriod), title));
         }
 
         return result.OrderBy(row => row.Id).ToList();
@@ -2513,8 +2656,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitlesByRepsId,
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
-        IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "1.5 контрагентов")
     {
@@ -2528,7 +2669,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var result = new List<TransferReceiveDto>();
         var totalOrgs = repsIds.Count;
         var orgsDone = 0;
-        var filterByProvider = providerOkpoRawVariants is { Count: > 0 };
         var effectiveChunk = chunkSize > 0 ? chunkSize : CounterpartOpsLoadChunkSize;
         progress?.ReportNow(0, totalOrgs, $"загрузка операций {progressEntityLabel}: 0 из {totalOrgs} орг.");
 
@@ -2548,12 +2688,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                && idChunk.Contains(form.Report.Reports.Id)
                                && form.OperationCode_DB != null
                                && codes.Contains(form.OperationCode_DB));
-            if (filterByProvider)
-            {
-                query = query.Where(form => form.ProviderOrRecieverOKPO_DB != null
-                                           && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
-            }
-
             var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
             var lastRowId = 0;
             while (true)
@@ -2602,20 +2736,14 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                         continue;
                     }
 
-                    if (ourOkpoFilter is { Length: > 0 }
-                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
-                    {
-                        continue;
-                    }
-
                     orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
-                    result.Add(MapForm15Row(
+                    result.Add(WithOrgTitleOkpos(MapForm15Row(
                         row.Id, row.RepsId, row.ReportId, row.NumberInOrder,
                         title?.Okpo ?? string.Empty, title?.RegNo ?? string.Empty, title?.ShortName ?? string.Empty,
                         row.OpCode, row.OpDate, row.PasNum, row.FacNum, row.Type, row.Radionuclids,
                         row.StatusRao, row.PackName, row.PackType, row.PackNumber, row.Subsidy, row.FcpNumber,
                         row.ProviderOrRecieverOkpo, row.Quantity, row.Activity, row.CreationDate,
-                        row.StartPeriod, row.EndPeriod));
+                        row.StartPeriod, row.EndPeriod), title));
                 }
 
                 lastRowId = rows[^1].Id;
@@ -2670,6 +2798,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             ReportId = reportId,
             NumberInOrder = numberInOrder,
             OrgOkpo = orgOkpo,
+            OrgLegalOkpo = orgOkpo,
+            OrgBranchOkpo = string.Empty,
             OrgRegNo = orgRegNo,
             OrgShortName = orgShortName,
             OpCode = opCode ?? string.Empty,
@@ -2745,14 +2875,14 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             }
 
             orgTitles.TryGetValue(row.RepsId, out var title);
-            result.Add(MapForm16Row(
+            result.Add(WithOrgTitleOkpos(MapForm16Row(
                 row.Id, row.RepsId, row.ReportId, row.NumberInOrder,
                 title?.Okpo ?? string.Empty, title?.RegNo ?? string.Empty, title?.ShortName ?? string.Empty,
                 row.OpCode, row.OpDate, row.CodeRao, row.StatusRao, row.Volume, row.Mass, row.QuantityOziii,
                 row.Radionuclids, row.TritiumActivity, row.BetaGammaActivity, row.AlphaActivity,
                 row.TransuraniumActivity, row.ActivityMeasurementDate, row.ProviderOrRecieverOkpo,
                 row.PackType, row.PackNumber, row.Subsidy, row.FcpNumber,
-                row.StartPeriod, row.EndPeriod));
+                row.StartPeriod, row.EndPeriod), title));
         }
 
         return result.OrderBy(row => row.Id).ToList();
@@ -2820,8 +2950,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         IReadOnlyDictionary<int, OrgTitleInfo> orgTitlesByRepsId,
         CancellationToken cancellationToken,
         ProgressReporter? progress = null,
-        IReadOnlyList<string>? providerOkpoRawVariants = null,
-        string? ourOkpoFilter = null,
         int chunkSize = CounterpartOpsLoadChunkSize,
         string progressEntityLabel = "1.6 контрагентов")
     {
@@ -2835,7 +2963,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         var result = new List<TransferReceiveDto>();
         var totalOrgs = repsIds.Count;
         var orgsDone = 0;
-        var filterByProvider = providerOkpoRawVariants is { Count: > 0 };
         var effectiveChunk = chunkSize > 0 ? chunkSize : CounterpartOpsLoadChunkSize;
         progress?.ReportNow(0, totalOrgs, $"загрузка операций {progressEntityLabel}: 0 из {totalOrgs} орг.");
 
@@ -2855,12 +2982,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                                && idChunk.Contains(form.Report.Reports.Id)
                                && form.OperationCode_DB != null
                                && codes.Contains(form.OperationCode_DB));
-            if (filterByProvider)
-            {
-                query = query.Where(form => form.ProviderOrRecieverOKPO_DB != null
-                                           && providerOkpoRawVariants!.Contains(form.ProviderOrRecieverOKPO_DB));
-            }
-
             var pageSize = SelectedOrgOpsPageSize > 0 ? SelectedOrgOpsPageSize : 2500;
             var lastRowId = 0;
             while (true)
@@ -2911,21 +3032,15 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                         continue;
                     }
 
-                    if (ourOkpoFilter is { Length: > 0 }
-                        && !CounterpartProviderPointsToUs(row.ProviderOrRecieverOkpo, ourOkpoFilter))
-                    {
-                        continue;
-                    }
-
                     orgTitlesByRepsId.TryGetValue(row.RepsId, out var title);
-                    result.Add(MapForm16Row(
+                    result.Add(WithOrgTitleOkpos(MapForm16Row(
                         row.Id, row.RepsId, row.ReportId, row.NumberInOrder,
                         title?.Okpo ?? string.Empty, title?.RegNo ?? string.Empty, title?.ShortName ?? string.Empty,
                         row.OpCode, row.OpDate, row.CodeRao, row.StatusRao, row.Volume, row.Mass, row.QuantityOziii,
                         row.Radionuclids, row.TritiumActivity, row.BetaGammaActivity, row.AlphaActivity,
                         row.TransuraniumActivity, row.ActivityMeasurementDate, row.ProviderOrRecieverOkpo,
                         row.PackType, row.PackNumber, row.Subsidy, row.FcpNumber,
-                        row.StartPeriod, row.EndPeriod));
+                        row.StartPeriod, row.EndPeriod), title));
                 }
 
                 lastRowId = rows[^1].Id;
@@ -3044,9 +3159,9 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     }
 
     /// <summary>
-    /// Карта нормализованный ОКПО → Id организаций + титулы (рег/ОКПО/имя).
-    /// 1) быстрый exact match по сырым ОКПО;
-    /// 2) при «хвосте» — один лёгкий проход по form_10 (без N пакетов и без OkpoRep).
+    /// Карта ключ ОКПО → Id организаций + титулы (рег / display ОКПО / юрлицо / филиал).
+    /// 1) быстрый Okpo_DB IN (claim + head8 + pads);
+    /// 2) при хвосте — титулы активных org, матч full∨head8 по Rows10[0] и Rows10[1].
     /// </summary>
     private static async Task<(Dictionary<string, List<int>> ByNormOkpo, Dictionary<int, OrgTitleInfo> OrgTitles)>
         LoadRepsIdsByOkpoAsync(
@@ -3057,50 +3172,50 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
     {
         var byNorm = new Dictionary<string, List<int>>(StringComparer.Ordinal);
         var orgTitles = new Dictionary<int, OrgTitleInfo>();
-        if (rawOkpos.Count == 0)
-        {
-            return (byNorm, orgTitles);
-        }
-
-        var neededNorms = rawOkpos
-            .Select(NormalizeNumber)
-            .Where(norm => norm.Length > 0)
-            .ToHashSet(StringComparer.Ordinal);
-
-        if (neededNorms.Count == 0)
-        {
-            return (byNorm, orgTitles);
-        }
-
-        // Фаза 1: точное совпадение Okpo_DB IN (...)
-        var exactRaw = rawOkpos
-            .Where(okpo => okpo.Length > 0)
+        var claims = rawOkpos
+            .Where(IsOkpoValuePresent)
+            .Select(okpo => okpo.Trim())
             .Distinct(StringComparer.Ordinal)
             .ToList();
+        if (claims.Count == 0)
+        {
+            return (byNorm, orgTitles);
+        }
 
+        var neededKeys = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var claim in claims)
+        {
+            foreach (var key in OkpoIndexKeys(claim))
+            {
+                neededKeys.Add(key);
+            }
+        }
+
+        if (neededKeys.Count == 0)
+        {
+            return (byNorm, orgTitles);
+        }
+
+        // Фаза 1: Okpo_DB IN (сырые claim + головы + pads).
+        var sqlVariants = BuildClaimOkpoSqlMatchVariants(claims);
         var exactMasterIds = new HashSet<int>();
-        var exactTitleHits = new List<(int MasterReportId, string? Okpo)>();
         var okpoDone = 0;
-        var okpoTotal = exactRaw.Count;
+        var okpoTotal = Math.Max(1, sqlVariants.Count);
 
-        foreach (var okpoChunk in ChunkStrings(exactRaw))
+        foreach (var okpoChunk in ChunkStrings(sqlVariants))
         {
             var hits = await db.form_10
                 .AsNoTracking()
                 .Where(f => f.ReportId != null
                             && f.Okpo_DB != null
                             && okpoChunk.Contains(f.Okpo_DB))
-                .Select(f => new
-                {
-                    MasterReportId = f.ReportId!.Value,
-                    f.Okpo_DB
-                })
+                .Select(f => f.ReportId!.Value)
+                .Distinct()
                 .ToListAsync(cancellationToken);
 
-            foreach (var hit in hits)
+            foreach (var masterId in hits)
             {
-                exactMasterIds.Add(hit.MasterReportId);
-                exactTitleHits.Add((hit.MasterReportId, hit.Okpo_DB));
+                exactMasterIds.Add(masterId);
             }
 
             okpoDone += okpoChunk.Count;
@@ -3110,34 +3225,28 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 $"поиск контрагентов по ОКПО: {okpoDone} из {okpoTotal}");
         }
 
+        Dictionary<int, int> masterToRepsId = new();
+        List<(int MasterReportId, int NumberInOrder, string RegNo, string Okpo, string ShortName)> titleRows = [];
+
         if (exactMasterIds.Count > 0)
         {
-            var masterToRepsExact = await LoadMasterReportIdToRepsIdMapAsync(
+            progress?.Status("загрузка титулов найденных контрагентов…");
+            masterToRepsId = await LoadMasterReportIdToRepsIdMapAsync(
                 db, exactMasterIds.ToList(), formNum: "1.0", cancellationToken);
-
-            foreach (var (masterReportId, okpo) in exactTitleHits)
-            {
-                if (!masterToRepsExact.TryGetValue(masterReportId, out var repsId))
-                {
-                    continue;
-                }
-
-                AddOkpoHit(okpo, repsId, neededNorms, byNorm);
-            }
+            titleRows = await LoadForm10TitleRowsForMastersAsync(
+                db, masterToRepsId.Keys.ToList(), cancellationToken, progress);
+            RegisterTitleMatches(claims, neededKeys, masterToRepsId, titleRows, byNorm, orgTitles);
         }
 
-        var missingNorms = neededNorms
-            .Where(norm => !byNorm.ContainsKey(norm))
-            .ToHashSet(StringComparer.Ordinal);
+        var missingClaims = claims
+            .Where(claim => !OkpoIndexKeys(claim).Any(byNorm.ContainsKey))
+            .ToList();
 
-        // Фаза 2 (только если есть ненайденные после нормализации): один проход form_10 + карта Master→Reps.
-        Dictionary<int, int> masterToRepsId;
-        List<(int MasterReportId, int NumberInOrder, string RegNo, string Okpo, string ShortName)> titleRows;
-
-        if (missingNorms.Count > 0)
+        // Фаза 2: незакрытые claim — все активные org, матч Legal∨Branch / full∨head8.
+        if (missingClaims.Count > 0)
         {
             progress?.Status(
-                $"догрузка титулов по нормализации ОКПО (осталось {missingNorms.Count} из {neededNorms.Count})…");
+                $"догрузка титулов по нормализации ОКПО (осталось {missingClaims.Count} из {claims.Count})…");
 
             var orgRows = await db.ReportsCollectionDbSet
                 .AsNoTracking()
@@ -3155,8 +3264,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             }
 
             progress?.Status("чтение form_10 для сопоставления ОКПО…");
-
-            // Один запрос вместо пакетов по всем MasterId.
             titleRows = (await db.form_10
                     .AsNoTracking()
                     .Where(f => f.ReportId != null)
@@ -3177,77 +3284,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                     f.ShortJurLico_DB ?? string.Empty))
                 .ToList();
 
-            foreach (var row in titleRows)
-            {
-                if (!masterToRepsId.TryGetValue(row.MasterReportId, out var repsId))
-                {
-                    continue;
-                }
-
-                AddOkpoHit(row.Okpo, repsId, missingNorms, byNorm);
-            }
-        }
-        else
-        {
-            // Титулы только для найденных в фазе 1 — точечная догрузка.
-            progress?.Status("загрузка титулов найденных контрагентов…");
-            masterToRepsId = await LoadMasterReportIdToRepsIdMapAsync(
-                db, exactMasterIds.ToList(), formNum: "1.0", cancellationToken);
-            var masterIds = masterToRepsId.Keys.ToList();
-            titleRows = [];
-            var mastersDone = 0;
-            foreach (var idChunk in ChunkIds(masterIds))
-            {
-                var batch = await db.form_10
-                    .AsNoTracking()
-                    .Where(f => f.ReportId != null && idChunk.Contains(f.ReportId.Value))
-                    .Select(f => new
-                    {
-                        MasterReportId = f.ReportId!.Value,
-                        f.NumberInOrder_DB,
-                        f.RegNo_DB,
-                        f.Okpo_DB,
-                        f.ShortJurLico_DB
-                    })
-                    .ToListAsync(cancellationToken);
-                titleRows.AddRange(batch.Select(f => (
-                    f.MasterReportId,
-                    f.NumberInOrder_DB,
-                    f.RegNo_DB ?? string.Empty,
-                    f.Okpo_DB ?? string.Empty,
-                    f.ShortJurLico_DB ?? string.Empty)));
-
-                mastersDone += idChunk.Count;
-                progress?.Report(
-                    mastersDone,
-                    masterIds.Count,
-                    $"загрузка титулов контрагентов: {mastersDone} из {masterIds.Count}");
-            }
+            RegisterTitleMatches(missingClaims, neededKeys, masterToRepsId, titleRows, byNorm, orgTitles);
         }
 
-        // Собрать представительные титулы для всех RepsId, попавших в byNorm.
         var neededRepsIds = byNorm.Values.SelectMany(ids => ids).ToHashSet();
-        var titlesByMaster = titleRows
-            .GroupBy(t => t.MasterReportId)
-            .ToDictionary(g => g.Key, g => g.OrderBy(x => x.NumberInOrder).ToList());
-
-        foreach (var (masterId, repsId) in masterToRepsId)
-        {
-            if (!neededRepsIds.Contains(repsId) || orgTitles.ContainsKey(repsId))
-            {
-                continue;
-            }
-
-            if (!titlesByMaster.TryGetValue(masterId, out var rows) || rows.Count == 0)
-            {
-                continue;
-            }
-
-            orgTitles[repsId] = ResolveOrgTitle(rows);
-        }
-
-        // Если фаза 1 нашла org, а titleRows для фазы «только exact» уже загружены — ok.
-        // Если каких-то repsId всё ещё нет в orgTitles (фаза 1 без полных титулов) — догрузить.
         var missingTitleReps = neededRepsIds.Where(id => !orgTitles.ContainsKey(id)).ToList();
         if (missingTitleReps.Count > 0)
         {
@@ -3258,33 +3298,159 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         progress?.Report(
             neededRepsIds.Count,
             neededRepsIds.Count,
-            $"контрагенты по ОКПО: найдено {neededRepsIds.Count} орг. из {neededNorms.Count} ОКПО");
+            $"контрагенты по ОКПО: найдено {neededRepsIds.Count} орг. из {claims.Count} ОКПО");
 
         return (byNorm, orgTitles);
+    }
+
+    private static async Task<List<(int MasterReportId, int NumberInOrder, string RegNo, string Okpo, string ShortName)>>
+        LoadForm10TitleRowsForMastersAsync(
+            DBModel db,
+            IReadOnlyList<int> masterIds,
+            CancellationToken cancellationToken,
+            ProgressReporter? progress = null)
+    {
+        var titleRows =
+            new List<(int MasterReportId, int NumberInOrder, string RegNo, string Okpo, string ShortName)>();
+        if (masterIds.Count == 0)
+        {
+            return titleRows;
+        }
+
+        var mastersDone = 0;
+        foreach (var idChunk in ChunkIds(masterIds))
+        {
+            var batch = await db.form_10
+                .AsNoTracking()
+                .Where(f => f.ReportId != null && idChunk.Contains(f.ReportId.Value))
+                .Select(f => new
+                {
+                    MasterReportId = f.ReportId!.Value,
+                    f.NumberInOrder_DB,
+                    f.RegNo_DB,
+                    f.Okpo_DB,
+                    f.ShortJurLico_DB
+                })
+                .ToListAsync(cancellationToken);
+            titleRows.AddRange(batch.Select(f => (
+                f.MasterReportId,
+                f.NumberInOrder_DB,
+                f.RegNo_DB ?? string.Empty,
+                f.Okpo_DB ?? string.Empty,
+                f.ShortJurLico_DB ?? string.Empty)));
+
+            mastersDone += idChunk.Count;
+            progress?.Report(
+                mastersDone,
+                masterIds.Count,
+                $"загрузка титулов контрагентов: {mastersDone} из {masterIds.Count}");
+        }
+
+        return titleRows;
+    }
+
+    /// <summary>
+    /// Для каждого Master строит титул (Legal+Branch) и при матче с claim
+    /// индексирует RepsId под всеми ключами claim и титула из neededKeys.
+    /// </summary>
+    private static void RegisterTitleMatches(
+        IReadOnlyList<string> claims,
+        HashSet<string> neededKeys,
+        IReadOnlyDictionary<int, int> masterToRepsId,
+        IReadOnlyList<(int MasterReportId, int NumberInOrder, string RegNo, string Okpo, string ShortName)> titleRows,
+        Dictionary<string, List<int>> byNorm,
+        Dictionary<int, OrgTitleInfo> orgTitles)
+    {
+        var titlesByMaster = titleRows
+            .GroupBy(t => t.MasterReportId)
+            .ToDictionary(g => g.Key, g => g.OrderBy(x => x.NumberInOrder).ToList());
+
+        foreach (var (masterId, repsId) in masterToRepsId)
+        {
+            if (!titlesByMaster.TryGetValue(masterId, out var rows) || rows.Count == 0)
+            {
+                continue;
+            }
+
+            var title = ResolveOrgTitle(rows);
+            orgTitles.TryAdd(repsId, title);
+
+            var matched = false;
+            foreach (var claim in claims)
+            {
+                if (!OkpoClaimMatchesTitle(claim, title))
+                {
+                    continue;
+                }
+
+                matched = true;
+                IndexRepsUnderOkpoKeys(byNorm, repsId, OkpoIndexKeys(claim));
+            }
+
+            if (matched)
+            {
+                IndexRepsUnderOkpoKeys(
+                    byNorm,
+                    repsId,
+                    OkpoIndexKeysForTitle(title).Where(neededKeys.Contains));
+            }
+        }
     }
 
     private static OrgTitleInfo ResolveOrgTitle(
         IReadOnlyList<(int MasterReportId, int NumberInOrder, string RegNo, string Okpo, string ShortName)> rows)
     {
         var head = rows[0];
+        var legalOkpoRaw = head.Okpo?.Trim() ?? string.Empty;
+        var legalOkpo = NormalizeOkpoField(legalOkpoRaw);
+        var legalReg = head.RegNo.Trim();
+        var legalName = head.ShortName.Trim();
+
+        var branchOkpo = string.Empty;
+        var branchOkpoRaw = string.Empty;
+        var branchReg = string.Empty;
+        var branchName = string.Empty;
+        var useBranchForDisplay = false;
+
         if (rows.Count > 1)
         {
             var branch = rows[1];
-            var branchOkpo = branch.Okpo.Trim();
-            var branchReg = branch.RegNo.Trim();
-            if ((branchReg.Length > 0 || branch.Okpo == "-") && branchOkpo.Length > 0)
-            {
-                return new OrgTitleInfo(
-                    branchReg,
-                    branchOkpo,
-                    branch.ShortName.Trim());
-            }
+            branchOkpoRaw = branch.Okpo?.Trim() ?? string.Empty;
+            branchOkpo = NormalizeOkpoField(branchOkpoRaw);
+            branchReg = branch.RegNo.Trim();
+            branchName = branch.ShortName.Trim();
+            // Как OkpoRep/RegNoRep: филиал для display, если ОКПО не пуст и (есть рег.№ или ОКПО «-»).
+            useBranchForDisplay = branchOkpoRaw.Length > 0
+                                  && (branchReg.Length > 0 || branchOkpoRaw == "-");
+        }
+
+        if (useBranchForDisplay)
+        {
+            return new OrgTitleInfo(
+                RegNo: branchReg,
+                Okpo: branchOkpoRaw == "-" ? string.Empty : branchOkpoRaw,
+                ShortName: branchName,
+                LegalOkpo: legalOkpo,
+                BranchOkpo: branchOkpo);
         }
 
         return new OrgTitleInfo(
-            head.RegNo.Trim(),
-            head.Okpo.Trim(),
-            head.ShortName.Trim());
+            RegNo: legalReg,
+            Okpo: legalOkpoRaw == "-" ? string.Empty : legalOkpoRaw,
+            ShortName: legalName,
+            LegalOkpo: legalOkpo,
+            BranchOkpo: branchOkpo);
+    }
+
+    private static string NormalizeOkpoField(string? raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw))
+        {
+            return string.Empty;
+        }
+
+        var trimmed = raw.Trim();
+        return trimmed == "-" ? string.Empty : trimmed;
     }
 
     private static async Task LoadOrgTitlesForRepsIdsAsync(
@@ -3383,36 +3549,6 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         return map;
     }
 
-    private static void AddOkpoHit(
-        string? okpo,
-        int repsId,
-        HashSet<string> neededNorms,
-        Dictionary<string, List<int>> byNorm)
-    {
-        var raw = string.IsNullOrWhiteSpace(okpo) ? string.Empty : okpo.Trim();
-        if (raw.Length == 0 || raw == "-")
-        {
-            return;
-        }
-
-        var norm = NormalizeNumber(raw);
-        if (norm.Length == 0 || !neededNorms.Contains(norm))
-        {
-            return;
-        }
-
-        if (!byNorm.TryGetValue(norm, out var list))
-        {
-            list = [];
-            byNorm[norm] = list;
-        }
-
-        if (!list.Contains(repsId))
-        {
-            list.Add(repsId);
-        }
-    }
-
     private static IEnumerable<List<string>> ChunkStrings(IReadOnlyList<string> values)
     {
         for (var offset = 0; offset < values.Count; offset += FirebirdInListMaxCount)
@@ -3421,8 +3557,15 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         }
     }
 
-    /// <summary>Титул организации для Excel и индексации по ОКПО.</summary>
-    private sealed record OrgTitleInfo(string RegNo, string Okpo, string ShortName);
+    /// <summary>
+    /// Титул организации: display для Excel; Legal/Branch — для поиска пары по кол. 19.
+    /// </summary>
+    private sealed record OrgTitleInfo(
+        string RegNo,
+        string Okpo,
+        string ShortName,
+        string LegalOkpo = "",
+        string BranchOkpo = "");
 
     #endregion
 
@@ -3449,6 +3592,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         public int ReportId { get; init; }
         public int NumberInOrder { get; init; }
         public string OrgOkpo { get; set; } = string.Empty;
+        public string OrgLegalOkpo { get; set; } = string.Empty;
+        public string OrgBranchOkpo { get; set; } = string.Empty;
         public string OrgRegNo { get; set; } = string.Empty;
         public string OrgShortName { get; set; } = string.Empty;
         public string StartPeriod { get; set; } = string.Empty;

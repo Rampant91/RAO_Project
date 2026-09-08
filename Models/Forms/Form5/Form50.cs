@@ -696,4 +696,22 @@ public partial class Form50 : Form
                && FormTextEquality.Equals(Fax_DB, formToCompare.Fax_DB)
                && FormTextEquality.Equals(Email_DB, formToCompare.Email_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(ExecutiveAuthority_DB), ExecutiveAuthority_DB);
+        sink.AddRaw(nameof(Rosatom_DB), Rosatom_DB);
+        sink.AddRaw(nameof(MinObr_DB), MinObr_DB);
+        sink.AddText(nameof(Name_DB), Name_DB);
+        sink.AddText(nameof(ShortName_DB), ShortName_DB);
+        sink.AddText(nameof(Address_DB), Address_DB);
+        sink.AddText(nameof(GradeFioDirector_DB), GradeFioDirector_DB);
+        sink.AddText(nameof(GradeFioExecutor_DB), GradeFioExecutor_DB);
+        sink.AddText(nameof(Telephone_DB), Telephone_DB);
+        sink.AddText(nameof(Fax_DB), Fax_DB);
+        sink.AddText(nameof(Email_DB), Email_DB);
+    }
 }

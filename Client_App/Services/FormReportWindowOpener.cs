@@ -52,6 +52,14 @@ public static class FormReportWindowOpener
             if (window == null)
                 return;
 
+            // Full-row forms only: 1.x opens paged, fingerprint needs all rows.
+            var formNum = report.FormNum.Value;
+            if (formNum is not (
+                    "1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8" or "1.9"))
+            {
+                await ReportExportSnapshotService.EnsureSnapshotOnOpenAsync(report);
+            }
+
             if (ownerPrevState.HasValue && window is IFormOwnerStateWindow formWindow)
                 formWindow.OwnerPrevState = ownerPrevState.Value;
 

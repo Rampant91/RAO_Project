@@ -61,7 +61,17 @@ public class NetworkUpdateChecker
         }
     }
 
-    public bool IsUpdateAvailable(NetworkReleaseInfo remote, LocalUpdateState local)
+    /// <summary>
+    /// Нужно ли предлагать обновление / repair.
+    /// Если метки в state совпали с latest, но локальные файлы не совпадают с релизом на шаре —
+    /// считаем обновление нужным (частичный apply / рассинхрон).
+    /// </summary>
+    /// <param name="localAppDirectory">Для тестов; по умолчанию — каталог текущей установки.</param>
+    public bool IsUpdateAvailable(
+        NetworkReleaseInfo remote,
+        LocalUpdateState local,
+        string? networkRoot = null,
+        string? localAppDirectory = null)
     {
         // Нет учёта версии (или старый служебный id) — предлагаем обновление,
         // если bootstrap не зафиксировал совпадение с latest.
@@ -71,19 +81,40 @@ public class NetworkUpdateChecker
             return true;
         }
 
-        if (!string.IsNullOrWhiteSpace(remote.MajorVersion))
+        if (!IdsMatch(remote, local))
         {
-            var sameMajor = string.Equals(
-                remote.MajorVersion,
-                local.InstalledMajorVersion,
-                StringComparison.OrdinalIgnoreCase);
-            var sameRelease = string.Equals(
-                remote.ReleaseId,
-                local.InstalledReleaseId,
-                StringComparison.OrdinalIgnoreCase);
-            return !sameMajor || !sameRelease;
+            return true;
         }
 
-        return !string.Equals(remote.ReleaseId, local.InstalledReleaseId, StringComparison.OrdinalIgnoreCase);
+        if (!string.IsNullOrWhiteSpace(networkRoot)
+            && !LocalUpdateStateStore.LooksIdenticalToRelease(remote, networkRoot, localAppDirectory))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool IdsMatch(NetworkReleaseInfo remote, LocalUpdateState local)
+    {
+        var sameRelease = string.Equals(
+            remote.ReleaseId,
+            local.InstalledReleaseId,
+            StringComparison.OrdinalIgnoreCase);
+
+        if (!sameRelease)
+        {
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(remote.MajorVersion))
+        {
+            return true;
+        }
+
+        return string.Equals(
+            remote.MajorVersion,
+            local.InstalledMajorVersion,
+            StringComparison.OrdinalIgnoreCase);
     }
 }

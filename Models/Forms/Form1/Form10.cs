@@ -1138,4 +1138,30 @@ public partial class Form10 : Form
                && FormTextEquality.Equals(Okopf_DB, formToCompare.Okopf_DB)
                && FormTextEquality.Equals(Okfs_DB, formToCompare.Okfs_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(RegNo_DB), RegNo_DB);
+        sink.AddText(nameof(OrganUprav_DB), OrganUprav_DB);
+        sink.AddText(nameof(SubjectRF_DB), SubjectRF_DB);
+        sink.AddText(nameof(JurLico_DB), JurLico_DB);
+        sink.AddText(nameof(ShortJurLico_DB), ShortJurLico_DB);
+        sink.AddText(nameof(JurLicoAddress_DB), JurLicoAddress_DB);
+        sink.AddText(nameof(JurLicoFactAddress_DB), JurLicoFactAddress_DB);
+        sink.AddText(nameof(GradeFIO_DB), GradeFIO_DB);
+        sink.AddText(nameof(Telephone_DB), Telephone_DB);
+        sink.AddText(nameof(Fax_DB), Fax_DB);
+        sink.AddText(nameof(Email_DB), Email_DB);
+        sink.AddText(nameof(Okpo_DB), Okpo_DB);
+        sink.AddText(nameof(Okved_DB), Okved_DB);
+        sink.AddText(nameof(Okogu_DB), Okogu_DB);
+        sink.AddText(nameof(Oktmo_DB), Oktmo_DB);
+        sink.AddText(nameof(Inn_DB), Inn_DB);
+        sink.AddText(nameof(Kpp_DB), Kpp_DB);
+        sink.AddText(nameof(Okopf_DB), Okopf_DB);
+        sink.AddText(nameof(Okfs_DB), Okfs_DB);
+    }
 }

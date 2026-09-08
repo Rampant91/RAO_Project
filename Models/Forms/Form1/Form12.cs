@@ -1349,4 +1349,30 @@ public class Form12 : Form1
                && FormTextEquality.Equals(PackType_DB, formToCompare.PackType_DB)
                && FormTextEquality.Equals(PackNumber_DB, formToCompare.PackNumber_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(OperationCode_DB), OperationCode_DB);
+        sink.AddDate(nameof(OperationDate_DB), OperationDate_DB);
+        sink.AddText(nameof(PassportNumber_DB), PassportNumber_DB);
+        sink.AddText(nameof(NameIOU_DB), NameIOU_DB);
+        sink.AddText(nameof(FactoryNumber_DB), FactoryNumber_DB);
+        sink.AddExponential(nameof(Mass_DB), Mass_DB);
+        sink.AddText(nameof(CreatorOKPO_DB), CreatorOKPO_DB);
+        sink.AddDate(nameof(CreationDate_DB), CreationDate_DB);
+        sink.AddText(nameof(SignedServicePeriod_DB), SignedServicePeriod_DB);
+        sink.AddRaw(nameof(PropertyCode_DB), PropertyCode_DB);
+        sink.AddText(nameof(Owner_DB), Owner_DB);
+        sink.AddRaw(nameof(DocumentVid_DB), DocumentVid_DB);
+        sink.AddText(nameof(DocumentNumber_DB), DocumentNumber_DB);
+        sink.AddDate(nameof(DocumentDate_DB), DocumentDate_DB);
+        sink.AddText(nameof(ProviderOrRecieverOKPO_DB), ProviderOrRecieverOKPO_DB);
+        sink.AddText(nameof(TransporterOKPO_DB), TransporterOKPO_DB);
+        sink.AddText(nameof(PackName_DB), PackName_DB);
+        sink.AddText(nameof(PackType_DB), PackType_DB);
+        sink.AddText(nameof(PackNumber_DB), PackNumber_DB);
+    }
 }

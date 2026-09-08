@@ -9,6 +9,12 @@ public static class FormRadionuclidsEquality
     public static bool Equals(string? a, string? b) =>
         Parse(a).SequenceEqual(Parse(b));
 
+    /// <summary>
+    /// Каноническая строка радионуклидов для fingerprint (порядок как в Parse).
+    /// </summary>
+    public static string NormalizeForFingerprint(string? value) =>
+        string.Join(';', Parse(value));
+
     private static List<string> Parse(string? value)
     {
         if (FormStringHelper.IsNullOrWhiteSpace(value))

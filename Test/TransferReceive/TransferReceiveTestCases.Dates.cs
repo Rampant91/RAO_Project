@@ -13,6 +13,7 @@ internal static partial class TransferReceiveTestCases
         yield return D01_SameDate_Paired();
         yield return D02_OneDayDiff_InReport_ClosestNearDate();
         yield return D03_OutsideSearchWindow_InReport_NoClosest();
+        yield return D04_CustomTolerance_FindsClosestAt20Days();
     }
 
     /// <summary>D01. Даты равны → пара.</summary>
@@ -72,5 +73,26 @@ internal static partial class TransferReceiveTestCases
         CounterpartOps = [RowReceive(101, opDate: "2024-07-05")],
         ExpectedUnpairedIds = [1],
         ExpectedClosest = new Dictionary<int, IReadOnlyDictionary<TransferReceiveField, bool>>()
+    };
+
+    /// <summary>
+    /// D04. При окне ±30 дней находится closest на +20 дней (при ±15 — нет, см. D03).
+    /// </summary>
+    private static TransferReceiveTestCase D04_CustomTolerance_FindsClosestAt20Days() => new()
+    {
+        Name = "D04. Окно поиска ±30 дней — closest на +20 дней.",
+        OperationDateSearchToleranceDays = 30,
+        OurOkpo = DefaultOurOkpo,
+        OurOps = [RowTransfer(1, opDate: "2024-06-15")],
+        CounterpartOps = [RowReceive(101, opDate: "2024-07-05")],
+        ExpectedUnpairedIds = [1],
+        ExpectedClosestCandidateIds = new Dictionary<int, int> { [1] = 101 },
+        ExpectedClosestLevels = new Dictionary<int, IReadOnlyDictionary<TransferReceiveField, FieldMatchLevel>>
+        {
+            [1] = new Dictionary<TransferReceiveField, FieldMatchLevel>
+            {
+                [TransferReceiveField.OperationDate] = FieldMatchLevel.Near
+            }
+        }
     };
 }

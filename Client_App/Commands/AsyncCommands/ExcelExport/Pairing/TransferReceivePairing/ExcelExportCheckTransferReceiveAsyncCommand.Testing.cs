@@ -57,13 +57,59 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         {
             var titles = repsIdToOkpo.ToDictionary(
                 kv => kv.Key,
-                kv => new OrgTitleInfo(RegNo: string.Empty, Okpo: kv.Value, ShortName: string.Empty));
+                kv => new OrgTitleInfo(
+                    RegNo: string.Empty,
+                    Okpo: kv.Value,
+                    ShortName: string.Empty,
+                    LegalOkpo: kv.Value,
+                    BranchOkpo: string.Empty));
             return SeedOkpoAliasMapFromTitles(titles)
                 .ToDictionary(
                     kv => kv.Key,
                     kv => (IReadOnlyList<int>)kv.Value,
                     StringComparer.Ordinal);
         }
+
+        public static IReadOnlyDictionary<string, IReadOnlyList<int>> SeedOkpoAliasMapFromTitlesForTests(
+            IReadOnlyDictionary<int, (string Legal, string Branch)> repsIdToOkpos)
+        {
+            var titles = repsIdToOkpos.ToDictionary(
+                kv => kv.Key,
+                kv =>
+                {
+                    var display = IsOkpoValuePresent(kv.Value.Branch) ? kv.Value.Branch : kv.Value.Legal;
+                    return new OrgTitleInfo(
+                        RegNo: string.Empty,
+                        Okpo: display,
+                        ShortName: string.Empty,
+                        LegalOkpo: kv.Value.Legal,
+                        BranchOkpo: kv.Value.Branch);
+                });
+            return SeedOkpoAliasMapFromTitles(titles)
+                .ToDictionary(
+                    kv => kv.Key,
+                    kv => (IReadOnlyList<int>)kv.Value,
+                    StringComparer.Ordinal);
+        }
+
+        public static bool OkpoClaimMatchesTitleForTests(
+            string? claimRaw,
+            string legalOkpo,
+            string branchOkpo) =>
+            OkpoClaimMatchesTitle(
+                claimRaw,
+                new OrgTitleInfo(
+                    RegNo: string.Empty,
+                    Okpo: IsOkpoValuePresent(branchOkpo) ? branchOkpo : legalOkpo,
+                    ShortName: string.Empty,
+                    LegalOkpo: legalOkpo,
+                    BranchOkpo: branchOkpo));
+
+        public static IReadOnlyList<string> OkpoIndexKeysForTests(string? okpoRaw) =>
+            OkpoIndexKeys(okpoRaw).ToList();
+
+        public static bool TryGetOkpoHead8ForTests(string? raw, out string head8) =>
+            TryGetOkpoHead8(raw, out head8);
 
         public static string NormalizeNumberForTests(string? value) => NormalizeNumber(value);
 
@@ -79,7 +125,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
         public static bool DatesEqualExactForTests(string? left, string? right) =>
             DatesEqualExact(left, right);
 
-        public static bool DateWithinToleranceForTests(string? left, string? right, int days = OperationDateToleranceDays) =>
+        public static bool DateWithinToleranceForTests(string? left, string? right, int days = DefaultOperationDateSearchToleranceDays) =>
             DateWithinTolerance(left, right, days);
 
         public static bool OpCodesArePairedForTests(string? leftCode, string? rightCode) =>
@@ -110,7 +156,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 checkSubsidy);
 
         public static void CreateLegendSheetForTests(OfficeOpenXml.ExcelPackage excelPackage) =>
-            CreateLegendSheet(excelPackage);
+            CreateLegendSheet(excelPackage, DefaultOperationDateSearchToleranceDays);
 
         /// <summary>Создаёт лист «Форма 1.1» с заголовками полей (smoke Excel-layout).</summary>
         public static void CreateForm11SheetForTests(OfficeOpenXml.ExcelPackage excelPackage)
@@ -191,7 +237,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var options = pairingParams.GetParams(formId);
             var our = ToDtoList(ourOps, ourOkpo, formNum);
             var counterpart = ToDtoList(counterpartOps, null, formNum);
-            var (unpaired, _) = AnalyzeFormForOrganization(our, counterpart, ourOkpo, options, null);
+            var (unpaired, _) = AnalyzeFormForOrganization(
+                our, counterpart, ourOkpo, options, pairingParams.OperationDateSearchToleranceDays, null);
             return unpaired.Select(op => op.Id).OrderBy(id => id).ToList();
         }
 
@@ -329,7 +376,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var aliases = ToAliasMap(testCase.OkpoAliases);
 
             var (unpaired, _) = AnalyzeFormForOrganization(
-                ourOps, counterpartOps, testCase.OurOkpo, testCase.Params, aliases);
+                ourOps, counterpartOps, testCase.OurOkpo, testCase.Params, testCase.OperationDateSearchToleranceDays, aliases);
 
             return new TransferReceiveScenarioResult(
                 unpaired.Select(row => row.Id).OrderBy(id => id).ToList());
@@ -351,7 +398,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var sharedPool = BuildOpsPoolByOrgOkpo([], allOps, aliases);
             var indexes = SharedFormSearchIndexes.Build(sharedPool, testCase.Params);
             var unpaired = ComputeUnpairedOperations(
-                ourOps, sharedPool, testCase.OurOkpo, testCase.Params, prebuiltIndex: indexes.Pairing);
+                ourOps, sharedPool, testCase.OurOkpo, testCase.Params, testCase.OperationDateSearchToleranceDays, prebuiltIndex: indexes.Pairing);
 
             return new TransferReceiveScenarioResult(
                 unpaired.Select(row => row.Id).OrderBy(id => id).ToList());
@@ -374,9 +421,9 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var sharedPool = BuildOpsPoolByOrgOkpo([], allOps, aliases);
             var indexes = SharedFormSearchIndexes.Build(sharedPool, testCase.Params);
             var unpaired = ComputeUnpairedOperations(
-                ourOps, sharedPool, testCase.OurOkpo, testCase.Params, prebuiltIndex: indexes.Pairing);
+                ourOps, sharedPool, testCase.OurOkpo, testCase.Params, testCase.OperationDateSearchToleranceDays, prebuiltIndex: indexes.Pairing);
             var built = BuildClosestMatchResults(
-                unpaired, sharedPool, testCase.Params,
+                unpaired, sharedPool, testCase.Params, testCase.OperationDateSearchToleranceDays,
                 prebuiltCandidateIndex: indexes.Closest,
                 prebuiltNorms: indexes.Norms,
                 layout: LayoutForFormNum(testCase.FormNum));
@@ -400,10 +447,10 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var aliases = ToAliasMap(testCase.OkpoAliases);
 
             var (unpaired, opsByOrgOkpo) = AnalyzeFormForOrganization(
-                ourOps, counterpartOps, testCase.OurOkpo, testCase.Params, aliases);
+                ourOps, counterpartOps, testCase.OurOkpo, testCase.Params, testCase.OperationDateSearchToleranceDays, aliases);
 
             var built = BuildClosestMatchResults(
-                unpaired, opsByOrgOkpo, testCase.Params, layout: LayoutForFormNum(testCase.FormNum));
+                unpaired, opsByOrgOkpo, testCase.Params, testCase.OperationDateSearchToleranceDays, layout: LayoutForFormNum(testCase.FormNum));
             var exact = built.ToDictionary(
                 kv => kv.Key,
                 kv => (IReadOnlyDictionary<TransferReceiveField, bool>)kv.Value.FieldMatches);
@@ -426,7 +473,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
             var rightDto = ToDto(right, null, "1.1");
             var leftNorm = CreateNorm(leftDto);
             var rightNorm = CreateNorm(rightDto);
-            return FieldSimilarityOf(leftDto, rightDto, leftNorm, rightNorm, field, ourOkpo).Level;
+            return FieldSimilarityOf(
+                leftDto, rightDto, leftNorm, rightNorm, field, ourOkpo, DefaultOperationDateSearchToleranceDays).Level;
         }
 
         /// <summary>
@@ -452,7 +500,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 var our = ToDtoList(ourOps11, ourOkpo, "1.1");
                 var counterpart = ToDtoList(counterpartOps11, null, "1.1");
                 var (unpaired, _) = AnalyzeFormForOrganization(
-                    our, counterpart, ourOkpo, pairingParams.Form11, null);
+                    our, counterpart, ourOkpo, pairingParams.Form11, pairingParams.OperationDateSearchToleranceDays, null);
                 unpaired11 = unpaired.Select(op => op.Id).OrderBy(id => id).ToList();
             }
 
@@ -461,7 +509,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 var our = ToDtoList(ourOps12, ourOkpo, "1.2");
                 var counterpart = ToDtoList(counterpartOps12, null, "1.2");
                 var (unpaired, _) = AnalyzeFormForOrganization(
-                    our, counterpart, ourOkpo, pairingParams.Form12, null);
+                    our, counterpart, ourOkpo, pairingParams.Form12, pairingParams.OperationDateSearchToleranceDays, null);
                 unpaired12 = unpaired.Select(op => op.Id).OrderBy(id => id).ToList();
             }
 
@@ -470,7 +518,7 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 var our = ToDtoList(ourOps13, ourOkpo, "1.3");
                 var counterpart = ToDtoList(counterpartOps13, null, "1.3");
                 var (unpaired, _) = AnalyzeFormForOrganization(
-                    our, counterpart, ourOkpo, pairingParams.Form13, null);
+                    our, counterpart, ourOkpo, pairingParams.Form13, pairingParams.OperationDateSearchToleranceDays, null);
                 unpaired13 = unpaired.Select(op => op.Id).OrderBy(id => id).ToList();
             }
 
@@ -513,6 +561,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand
                 RepsId = row.RepsId,
                 ReportId = row.ReportId,
                 OrgOkpo = orgOkpo,
+                OrgLegalOkpo = orgOkpo,
+                OrgBranchOkpo = string.Empty,
                 OpCode = row.OpCode,
                 OpDate = row.OpDate,
                 PasNum = row.PasNum,

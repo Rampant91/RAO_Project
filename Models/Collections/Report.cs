@@ -1802,6 +1802,26 @@ public class Report : IKey, IDataGridColumn
 
     #endregion
 
+    #region LastExportedCorrectionNumber
+
+    /// <summary>
+    /// Номер корректировки на момент последнего слепка содержимого (выгрузка / импорт / догон при открытии).
+    /// </summary>
+    public byte? LastExportedCorrectionNumber_DB { get; set; }
+
+    #endregion
+
+    #region LastExportedFingerprint
+
+    /// <summary>
+    /// SHA-256 hex содержимого на момент последнего слепка (VARCHAR(64)).
+    /// Имя колонки ≤31 символа (лимит идентификатора Firebird).
+    /// </summary>
+    [MaxLength(64)]
+    public string? LastExportedFingerprint_DB { get; set; }
+
+    #endregion
+
     #region IsCorrection
 
     public bool IsCorrection_DB { get; set; }

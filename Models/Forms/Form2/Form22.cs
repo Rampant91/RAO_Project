@@ -2181,4 +2181,30 @@ public partial class Form22 : Form2, IBaseColor
                && FormTextEquality.Equals(Subsidy_DB, formToCompare.Subsidy_DB)
                && FormTextEquality.Equals(FcpNumber_DB, formToCompare.FcpNumber_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(StoragePlaceName_DB), StoragePlaceName_DB);
+        sink.AddText(nameof(StoragePlaceCode_DB), StoragePlaceCode_DB);
+        sink.AddText(nameof(PackName_DB), PackName_DB);
+        sink.AddText(nameof(PackType_DB), PackType_DB);
+        sink.AddText(nameof(PackQuantity_DB), PackQuantity_DB);
+        sink.AddText(nameof(CodeRAO_DB), CodeRAO_DB);
+        sink.AddText(nameof(StatusRAO_DB), StatusRAO_DB);
+        sink.AddExponential(nameof(VolumeOutOfPack_DB), VolumeOutOfPack_DB);
+        sink.AddExponential(nameof(VolumeInPack_DB), VolumeInPack_DB);
+        sink.AddExponential(nameof(MassOutOfPack_DB), MassOutOfPack_DB);
+        sink.AddExponential(nameof(MassInPack_DB), MassInPack_DB);
+        sink.AddText(nameof(QuantityOZIII_DB), QuantityOZIII_DB);
+        sink.AddExponential(nameof(TritiumActivity_DB), TritiumActivity_DB);
+        sink.AddExponential(nameof(BetaGammaActivity_DB), BetaGammaActivity_DB);
+        sink.AddExponential(nameof(AlphaActivity_DB), AlphaActivity_DB);
+        sink.AddExponential(nameof(TransuraniumActivity_DB), TransuraniumActivity_DB);
+        sink.AddRadionuclids(nameof(MainRadionuclids_DB), MainRadionuclids_DB);
+        sink.AddText(nameof(Subsidy_DB), Subsidy_DB);
+        sink.AddText(nameof(FcpNumber_DB), FcpNumber_DB);
+    }
 }

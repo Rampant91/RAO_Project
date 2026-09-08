@@ -294,4 +294,14 @@ public class Note : IKey, IDataGridColumn
                && GraphNumber_DB == noteToCompare.GraphNumber_DB
                && Comment_DB == noteToCompare.Comment_DB;
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public void ContributeToContentFingerprint(Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddRaw(nameof(RowNumber_DB), RowNumber_DB);
+        sink.AddRaw(nameof(GraphNumber_DB), GraphNumber_DB);
+        sink.AddRaw(nameof(Comment_DB), Comment_DB);
+    }
 }

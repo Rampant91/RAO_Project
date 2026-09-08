@@ -119,6 +119,13 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
         try
         {
             changeOrCreateVM = new ChangeOrCreateVM(numForm, report);
+
+            // Catch-up snapshot after full load (legacy FormChangeOrCreate / form 2).
+            if (changeOrCreateVM.Storage is not null)
+            {
+                await ReportExportSnapshotService.EnsureSnapshotOnOpenAsync(changeOrCreateVM.Storage);
+            }
+
             await Form2NewInterfaceOpener.PrepareSumRowsAsync(changeOrCreateVM, numForm);
         }
         catch

@@ -57,6 +57,8 @@ public class NetworkUpdateInstaller
         // (файл не занят). Дальше в Temp уйдёт уже новая версия.
         TrySyncUpdaterFromReleaseDirectory(sourceDir);
 
+        EnsureNoOtherAppInstancesRunning();
+
         Directory.CreateDirectory(NetworkUpdatePaths.UpdateMetaDirectory);
         var staging = NetworkUpdatePaths.StagingDirectory;
         if (Directory.Exists(staging))
@@ -169,6 +171,67 @@ public class NetworkUpdateInstaller
         var a = new FileInfo(pathA);
         var b = new FileInfo(pathB);
         return a.Length == b.Length && a.LastWriteTimeUtc == b.LastWriteTimeUtc;
+    }
+
+    /// <summary>
+    /// Другой экземпляр из той же папки держит DLL — MpzfUpdater не сможет заменить файлы.
+    /// </summary>
+    private static void EnsureNoOtherAppInstancesRunning()
+    {
+        var appDir = Path.GetFullPath(NetworkUpdatePaths.AppDirectory)
+            .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        var currentPid = Environment.ProcessId;
+        var exeName = Path.GetFileNameWithoutExtension(NetworkUpdatePaths.AppExeName);
+
+        Process[] processes;
+        try
+        {
+            processes = Process.GetProcessesByName(exeName);
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine($"EnsureNoOtherAppInstancesRunning: {ex.Message}");
+            return;
+        }
+
+        foreach (var process in processes)
+        {
+            try
+            {
+                if (process.Id == currentPid)
+                {
+                    continue;
+                }
+
+                string? processPath = null;
+                try
+                {
+                    processPath = process.MainModule?.FileName;
+                }
+                catch
+                {
+                    // Нет доступа к MainModule — не блокируем обновление из‑за чужого процесса.
+                    continue;
+                }
+
+                if (string.IsNullOrWhiteSpace(processPath))
+                {
+                    continue;
+                }
+
+                var processDir = Path.GetFullPath(Path.GetDirectoryName(processPath) ?? string.Empty)
+                    .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                if (string.Equals(processDir, appDir, StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidOperationException(
+                        "Закройте другие запущенные копии программы в этой папке и повторите обновление.");
+                }
+            }
+            finally
+            {
+                process.Dispose();
+            }
+        }
     }
 
     private static void WritePending(PendingUpdateAction pending)

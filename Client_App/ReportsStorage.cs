@@ -1,4 +1,5 @@
 using Client_App.DBAPIFactory;
+using Client_App.Services;
 using Client_App.ViewModels;
 using DynamicData;
 using Microsoft.EntityFrameworkCore;
@@ -96,6 +97,7 @@ public static class ReportsStorage
             viewModel.Storages = reps;
 
             NormalizeHiddenFlagsForReport(newRep);
+            await ReportExportSnapshotService.EnsureSnapshotOnOpenAsync(newRep);
         }
         return newRep;
     }

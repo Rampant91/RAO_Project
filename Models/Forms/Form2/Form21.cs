@@ -2168,4 +2168,32 @@ public partial class Form21 : Form2, IBaseColor
                && FormExponentialEquality.Equals(AlphaActivityOut_DB, formToCompare.AlphaActivityOut_DB)
                && FormExponentialEquality.Equals(TransuraniumActivityOut_DB, formToCompare.TransuraniumActivityOut_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(RefineMachineName_DB), RefineMachineName_DB);
+        sink.AddExponential(nameof(MachinePower_DB), MachinePower_DB);
+        sink.AddExponential(nameof(NumberOfHoursPerYear_DB), NumberOfHoursPerYear_DB);
+        sink.AddText(nameof(CodeRAOIn_DB), CodeRAOIn_DB);
+        sink.AddText(nameof(StatusRAOIn_DB), StatusRAOIn_DB);
+        sink.AddExponential(nameof(VolumeIn_DB), VolumeIn_DB);
+        sink.AddExponential(nameof(MassIn_DB), MassIn_DB);
+        sink.AddText(nameof(QuantityIn_DB), QuantityIn_DB);
+        sink.AddExponential(nameof(TritiumActivityIn_DB), TritiumActivityIn_DB);
+        sink.AddExponential(nameof(BetaGammaActivityIn_DB), BetaGammaActivityIn_DB);
+        sink.AddExponential(nameof(AlphaActivityIn_DB), AlphaActivityIn_DB);
+        sink.AddExponential(nameof(TransuraniumActivityIn_DB), TransuraniumActivityIn_DB);
+        sink.AddText(nameof(CodeRAOout_DB), CodeRAOout_DB);
+        sink.AddText(nameof(StatusRAOout_DB), StatusRAOout_DB);
+        sink.AddExponential(nameof(VolumeOut_DB), VolumeOut_DB);
+        sink.AddExponential(nameof(MassOut_DB), MassOut_DB);
+        sink.AddText(nameof(QuantityOZIIIout_DB), QuantityOZIIIout_DB);
+        sink.AddExponential(nameof(TritiumActivityOut_DB), TritiumActivityOut_DB);
+        sink.AddExponential(nameof(BetaGammaActivityOut_DB), BetaGammaActivityOut_DB);
+        sink.AddExponential(nameof(AlphaActivityOut_DB), AlphaActivityOut_DB);
+        sink.AddExponential(nameof(TransuraniumActivityOut_DB), TransuraniumActivityOut_DB);
+    }
 }

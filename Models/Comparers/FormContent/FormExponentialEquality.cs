@@ -92,4 +92,22 @@ public static class FormExponentialEquality
 
         return double.TryParse(tmp, ParseStyles, FormComparisonCulture.Russian, out result);
     }
+
+    /// <summary>
+    /// Каноническое значение для fingerprint (согласовано с Equals).
+    /// </summary>
+    public static string NormalizeForFingerprint(string? value)
+    {
+        if (IsAbsentOrZero(value))
+        {
+            return "0";
+        }
+
+        if (TryParse(value, out var parsed))
+        {
+            return FormDoubleEquality.NormalizeForFingerprint(parsed);
+        }
+
+        return FormTextEquality.Normalize(value);
+    }
 }

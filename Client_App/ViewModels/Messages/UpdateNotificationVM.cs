@@ -29,7 +29,7 @@ public class UpdateNotificationVM : INotifyPropertyChanged
         CurrentVersion = UpdateChecker.GetCurrentVersion().ToString();
         
         DownloadCommand = new RelayCommand(OpenDownloadPage);
-        RemindLaterCommand = new RelayCommand(CloseDialog);
+        RemindLaterCommand = new RelayCommand(RemindLater);
         SkipVersionCommand = new RelayCommand(SkipThisVersion);
     }
     
@@ -147,7 +147,26 @@ public class UpdateNotificationVM : INotifyPropertyChanged
     {
         _closeCallback?.Invoke();
     }
-    
+
+    /// <summary>
+    /// Откладывает автопредложение той же версии с сайта примерно на сутки.
+    /// </summary>
+    private void RemindLater()
+    {
+        try
+        {
+            new LocalUpdatePrefsStore().MarkWebsiteVersionNotified(UpdateInfo.Version.ToString());
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Failed to mark website version notified: {ex.Message}");
+        }
+        finally
+        {
+            CloseDialog();
+        }
+    }
+
     /// <summary>
     /// Пропускает текущую версию обновления
     /// </summary>

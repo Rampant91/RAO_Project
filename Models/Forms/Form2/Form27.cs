@@ -435,4 +435,16 @@ public class Form27 : Form2
                && FormExponentialEquality.Equals(FactedWasteValue_DB, formToCompare.FactedWasteValue_DB)
                && FormExponentialEquality.Equals(WasteOutbreakPreviousYear_DB, formToCompare.WasteOutbreakPreviousYear_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(ObservedSourceNumber_DB), ObservedSourceNumber_DB);
+        sink.AddRadionuclids(nameof(RadionuclidName_DB), RadionuclidName_DB);
+        sink.AddExponential(nameof(AllowedWasteValue_DB), AllowedWasteValue_DB);
+        sink.AddExponential(nameof(FactedWasteValue_DB), FactedWasteValue_DB);
+        sink.AddExponential(nameof(WasteOutbreakPreviousYear_DB), WasteOutbreakPreviousYear_DB);
+    }
 }

@@ -15,6 +15,10 @@ internal static class Program
     private const string PreviousFolderName = "previous";
     private const string PendingFileName = "pending.json";
     private const string RestartArgsFileName = "restart-args.json";
+    private const string LastErrorFileName = "last-error.txt";
+    private const string UpdaterLogFileName = "updater.log";
+    private const string KeyAssemblyName = "Client_App.dll";
+    private const string KeyExeName = "Client_App.exe";
 
     /// <summary>
     /// Папки, которые не удаляем / не затираем из дистрибутива / не тащим в previous.
@@ -29,9 +33,11 @@ internal static class Program
 
     private static int Main(string[] args)
     {
+        string? appDir = null;
+        string? metaDir = null;
         try
         {
-            var appDir = GetArg(args, "--app-dir") ?? throw new ArgumentException("Нужен --app-dir");
+            appDir = GetArg(args, "--app-dir") ?? throw new ArgumentException("Нужен --app-dir");
             var exeName = GetArg(args, "--exe-name") ?? "Client_App.exe";
             var pidText = GetArg(args, "--pid");
             if (int.TryParse(pidText, out var pid))
@@ -41,12 +47,14 @@ internal static class Program
 
             Thread.Sleep(500);
 
-            var metaDir = Path.Combine(appDir, UpdateFolderName);
+            metaDir = Path.Combine(appDir, UpdateFolderName);
+            Directory.CreateDirectory(metaDir);
+            Log(metaDir, "Старт MpzfUpdater");
+
             var pendingPath = Path.Combine(metaDir, PendingFileName);
             if (!File.Exists(pendingPath))
             {
-                Console.Error.WriteLine("pending.json не найден.");
-                return 1;
+                throw new InvalidOperationException("pending.json не найден.");
             }
 
             var pending = JsonSerializer.Deserialize<PendingAction>(File.ReadAllText(pendingPath))
@@ -67,11 +75,26 @@ internal static class Program
                 File.Delete(pendingPath);
             }
 
+            ClearLastError(metaDir);
+            Log(metaDir, mode == "rollback" ? "Откат завершён успешно" : "Обновление завершено успешно");
             StartApp(appDir, exeName, metaDir);
             return 0;
         }
         catch (Exception ex)
         {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(metaDir))
+                {
+                    WriteLastError(metaDir, ex);
+                    Log(metaDir, "Ошибка: " + ex);
+                }
+            }
+            catch
+            {
+                // ignore
+            }
+
             try
             {
                 var logDir = Path.Combine(Path.GetTempPath(), "MpzfUpdater");
@@ -99,6 +122,8 @@ internal static class Program
             throw new InvalidOperationException("Папка staging пуста или отсутствует.");
         }
 
+        EnsureKeyBinaryInDirectory(staging, "staging");
+
         if (Directory.Exists(previous))
         {
             Directory.Delete(previous, recursive: true);
@@ -106,11 +131,40 @@ internal static class Program
 
         Directory.CreateDirectory(previous);
         CopyAppFiles(appDir, previous);
+        Log(metaDir, "Резервная копия previous создана");
 
-        // Новая версия поверх, но локальный Client_App*.config и Logs не затираем
-        CopyDirectory(staging, appDir, preserveLocalAppConfig: true);
-        Directory.Delete(staging, recursive: true);
-        DeleteLegacyRootUpdaterFiles(appDir);
+        var appMutated = false;
+        try
+        {
+            // Чистая замена (как rollback), локальный Client_App*.config сохраняем.
+            DeleteAppFiles(appDir, preserveLocalAppConfig: true);
+            appMutated = true;
+            CopyDirectory(staging, appDir, preserveLocalAppConfig: true);
+            EnsureKeyBinaryMatchesStaging(appDir, staging);
+            Directory.Delete(staging, recursive: true);
+            DeleteLegacyRootUpdaterFiles(appDir);
+        }
+        catch (Exception ex)
+        {
+            Log(metaDir, "Сбой применения, откат из previous: " + ex.Message);
+            if (appMutated)
+            {
+                try
+                {
+                    RestoreFromPrevious(appDir, previous);
+                    Log(metaDir, "Восстановление из previous выполнено");
+                }
+                catch (Exception restoreEx)
+                {
+                    throw new InvalidOperationException(
+                        "Не удалось применить обновление и восстановить предыдущую версию. " +
+                        ex.Message + " | Restore: " + restoreEx.Message,
+                        ex);
+                }
+            }
+
+            throw;
+        }
 
         var state = LoadState(metaDir);
         // Пустой PreviousReleaseId = «до первого учёта версий»; в UI показываем DisplayName.
@@ -155,7 +209,7 @@ internal static class Program
         Directory.CreateDirectory(swap);
         CopyAppFiles(appDir, swap);
 
-        DeleteAppFiles(appDir);
+        DeleteAppFiles(appDir, preserveLocalAppConfig: false);
         CopyDirectory(previous, appDir, preserveLocalAppConfig: false);
         DeleteLegacyRootUpdaterFiles(appDir);
 
@@ -172,6 +226,18 @@ internal static class Program
         (state.InstalledDisplayName, state.PreviousDisplayName) =
             (state.PreviousDisplayName, state.InstalledDisplayName);
         SaveState(metaDir, state);
+    }
+
+    private static void RestoreFromPrevious(string appDir, string previous)
+    {
+        if (!Directory.Exists(previous) || !Directory.EnumerateFileSystemEntries(previous).Any())
+        {
+            throw new InvalidOperationException("Папка previous пуста, восстановить нельзя.");
+        }
+
+        DeleteAppFiles(appDir, preserveLocalAppConfig: false);
+        CopyDirectory(previous, appDir, preserveLocalAppConfig: false);
+        DeleteLegacyRootUpdaterFiles(appDir);
     }
 
     private static void DeleteLegacyRootUpdaterFiles(string appDir)
@@ -211,7 +277,7 @@ internal static class Program
                 continue;
             }
 
-            File.Copy(file, Path.Combine(destDir, name), overwrite: true);
+            CopyFileOverwrite(file, Path.Combine(destDir, name));
         }
 
         foreach (var dir in Directory.GetDirectories(appDir))
@@ -226,22 +292,24 @@ internal static class Program
         }
     }
 
-    private static void DeleteAppFiles(string appDir)
+    private static void DeleteAppFiles(string appDir, bool preserveLocalAppConfig)
     {
         foreach (var file in Directory.GetFiles(appDir))
         {
             var name = Path.GetFileName(file);
-            // Config восстановится из previous; пока удаляем, чтобы откат был полным по файлам приложения.
-            // Logs не трогаем (их нет в корне как файлов обычно).
-            if (name.StartsWith("MpzfUpdater", StringComparison.OrdinalIgnoreCase))
+            if (preserveLocalAppConfig && IsLocalAppConfigFile(name))
             {
-                File.SetAttributes(file, FileAttributes.Normal);
-                File.Delete(file);
                 continue;
             }
 
-            File.SetAttributes(file, FileAttributes.Normal);
-            File.Delete(file);
+            // Config восстановится из previous при откате; Logs не трогаем.
+            if (name.StartsWith("MpzfUpdater", StringComparison.OrdinalIgnoreCase))
+            {
+                TryDeleteFile(file);
+                continue;
+            }
+
+            TryDeleteFile(file);
         }
 
         foreach (var dir in Directory.GetDirectories(appDir))
@@ -252,7 +320,7 @@ internal static class Program
                 continue;
             }
 
-            Directory.Delete(dir, recursive: true);
+            TryDeleteDirectory(dir);
         }
     }
 
@@ -268,7 +336,7 @@ internal static class Program
                 continue;
             }
 
-            File.Copy(file, dest, overwrite: true);
+            CopyFileOverwrite(file, dest);
         }
 
         foreach (var dir in Directory.GetDirectories(sourceDir))
@@ -280,6 +348,81 @@ internal static class Program
             }
 
             CopyDirectory(dir, Path.Combine(destDir, name), preserveLocalAppConfig);
+        }
+    }
+
+    private static void CopyFileOverwrite(string source, string dest)
+    {
+        if (File.Exists(dest))
+        {
+            File.SetAttributes(dest, FileAttributes.Normal);
+        }
+
+        File.Copy(source, dest, overwrite: true);
+        File.SetAttributes(dest, FileAttributes.Normal);
+    }
+
+    private static void TryDeleteFile(string path)
+    {
+        File.SetAttributes(path, FileAttributes.Normal);
+        File.Delete(path);
+    }
+
+    private static void TryDeleteDirectory(string path)
+    {
+        foreach (var file in Directory.GetFiles(path, "*", SearchOption.AllDirectories))
+        {
+            try
+            {
+                File.SetAttributes(file, FileAttributes.Normal);
+            }
+            catch
+            {
+                // ignore — Directory.Delete всё равно покажет ошибку при блокировке
+            }
+        }
+
+        Directory.Delete(path, recursive: true);
+    }
+
+    private static void EnsureKeyBinaryInDirectory(string directory, string label)
+    {
+        var dll = Path.Combine(directory, KeyAssemblyName);
+        var exe = Path.Combine(directory, KeyExeName);
+        if (!File.Exists(dll) && !File.Exists(exe))
+        {
+            throw new InvalidOperationException(
+                $"В {label} нет {KeyAssemblyName} / {KeyExeName}.");
+        }
+    }
+
+    private static void EnsureKeyBinaryMatchesStaging(string appDir, string staging)
+    {
+        var stagingKey = Path.Combine(staging, KeyAssemblyName);
+        var appKey = Path.Combine(appDir, KeyAssemblyName);
+        if (!File.Exists(stagingKey))
+        {
+            stagingKey = Path.Combine(staging, KeyExeName);
+            appKey = Path.Combine(appDir, KeyExeName);
+        }
+
+        if (!File.Exists(stagingKey))
+        {
+            throw new InvalidOperationException("В staging нет ключевого бинарника для проверки.");
+        }
+
+        if (!File.Exists(appKey))
+        {
+            throw new InvalidOperationException($"После копирования отсутствует {Path.GetFileName(appKey)}.");
+        }
+
+        var stagingInfo = new FileInfo(stagingKey);
+        var appInfo = new FileInfo(appKey);
+        if (stagingInfo.Length != appInfo.Length)
+        {
+            throw new InvalidOperationException(
+                $"Размер {Path.GetFileName(appKey)} после копирования не совпал со staging " +
+                $"({appInfo.Length} ≠ {stagingInfo.Length}).");
         }
     }
 
@@ -299,6 +442,39 @@ internal static class Program
         Directory.CreateDirectory(metaDir);
         var path = Path.Combine(metaDir, StateFileName);
         File.WriteAllText(path, JsonSerializer.Serialize(state, new JsonSerializerOptions { WriteIndented = true }));
+    }
+
+    private static void WriteLastError(string metaDir, Exception ex)
+    {
+        Directory.CreateDirectory(metaDir);
+        var path = Path.Combine(metaDir, LastErrorFileName);
+        File.WriteAllText(
+            path,
+            $"[{DateTime.Now:O}]{Environment.NewLine}{ex.Message}{Environment.NewLine}{ex}");
+    }
+
+    private static void ClearLastError(string metaDir)
+    {
+        var path = Path.Combine(metaDir, LastErrorFileName);
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+    }
+
+    private static void Log(string metaDir, string message)
+    {
+        try
+        {
+            Directory.CreateDirectory(metaDir);
+            File.AppendAllText(
+                Path.Combine(metaDir, UpdaterLogFileName),
+                $"[{DateTime.Now:O}] {message}{Environment.NewLine}");
+        }
+        catch
+        {
+            // ignore
+        }
     }
 
     private static void StartApp(string appDir, string exeName, string metaDir)

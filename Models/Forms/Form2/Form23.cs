@@ -1068,4 +1068,23 @@ public partial class Form23 : Form2
                && FormDateEquality.Equals(ExpirationDate_DB, formToCompare.ExpirationDate_DB)
                && FormTextEquality.Equals(DocumentName_DB, formToCompare.DocumentName_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(StoragePlaceName_DB), StoragePlaceName_DB);
+        sink.AddText(nameof(StoragePlaceCode_DB), StoragePlaceCode_DB);
+        sink.AddExponential(nameof(ProjectVolume_DB), ProjectVolume_DB);
+        sink.AddText(nameof(CodeRAO_DB), CodeRAO_DB);
+        sink.AddExponential(nameof(Volume_DB), Volume_DB);
+        sink.AddExponential(nameof(Mass_DB), Mass_DB);
+        sink.AddText(nameof(QuantityOZIII_DB), QuantityOZIII_DB);
+        sink.AddExponential(nameof(SummaryActivity_DB), SummaryActivity_DB);
+        sink.AddText(nameof(DocumentNumber_DB), DocumentNumber_DB);
+        sink.AddDate(nameof(DocumentDate_DB), DocumentDate_DB);
+        sink.AddDate(nameof(ExpirationDate_DB), ExpirationDate_DB);
+        sink.AddText(nameof(DocumentName_DB), DocumentName_DB);
+    }
 }

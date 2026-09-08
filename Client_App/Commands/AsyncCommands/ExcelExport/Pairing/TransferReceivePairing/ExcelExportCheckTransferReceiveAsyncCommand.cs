@@ -26,10 +26,12 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Pairing.TransferReceiveP
 public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBaseAllAsyncCommand
 {
     /// <summary>
-    /// Окно поиска кандидатов по дате операции (дней в обе стороны).
-    /// Не критерий пары/подсветки: совпадение даты — только точное; отличие на 1 день уже ошибка.
+    /// Значение по умолчанию окна поиска по дате (см. <see cref="TransferReceiveParamsSet.DefaultOperationDateSearchToleranceDays"/>).
     /// </summary>
-    private const int OperationDateToleranceDays = 15;
+    public const int DefaultOperationDateSearchToleranceDays =
+        TransferReceiveParamsSet.DefaultOperationDateSearchToleranceDays;
+
+    private int _operationDateSearchToleranceDays = DefaultOperationDateSearchToleranceDays;
 
     /// <summary>Ограничение Firebird для списка IN (...).</summary>
     private const int FirebirdInListMaxCount = 1000;
@@ -182,6 +184,8 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
     /// </summary>
     internal static TransferReceiveParamsSet MapParamsFromDialogVm(Client_App.ViewModels.Messages.GetTransferReceiveParamsVM vm)
     {
+        vm.CommitOperationDateSearchToleranceDays();
+
         var form11 = new TransferReceiveFormParams(
             CheckOperationCode: vm.CheckOperationCode,
             CheckOperationDate: vm.CheckOperationDate,
@@ -286,7 +290,9 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
             CheckTransuraniumActivity: vm.CheckTransuraniumActivity16,
             AllowEmptySerialQuantityDrain: false);
 
-        return TransferReceiveParamsSet.Create(form11, form12, form13, form14, form15, form16);
+        return TransferReceiveParamsSet.Create(
+            form11, form12, form13, form14, form15, form16,
+            operationDateSearchToleranceDays: vm.OperationDateSearchToleranceDays);
     }
 
     #endregion
