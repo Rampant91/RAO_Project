@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.IO;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -219,7 +220,7 @@ public class UpdateService
         return;
       }
 
-      _prefsStore.MarkWebsiteVersionNotified(updateInfo.Version.ToString());
+      // Notify/throttle только по «Напомнить позже» (см. UpdateNotificationVM).
       await ShowUpdateNotificationDialog(updateInfo).ConfigureAwait(false);
     }
     else if (isManual)
@@ -230,6 +231,8 @@ public class UpdateService
 
   private async Task CheckAndNotifyNetworkAsync(bool isManual)
   {
+    await TryShowPendingUpdaterFailureAsync().ConfigureAwait(false);
+
     if (!NetworkUpdatePaths.IsNetworkRootAccessible(out _networkRoot, out var accessFailure))
     {
       if (isManual)
@@ -294,7 +297,7 @@ public class UpdateService
       return;
     }
 
-    if (!_networkChecker.IsUpdateAvailable(release, localState))
+    if (!_networkChecker.IsUpdateAvailable(release, localState, _networkRoot))
     {
       if (isManual)
       {
@@ -314,7 +317,7 @@ public class UpdateService
       return;
     }
 
-    _prefsStore.MarkNetworkReleaseNotified(release.ReleaseId);
+    // Notify/throttle только по «Напомнить позже» (см. NetworkUpdateNotificationVM).
     await ShowNetworkUpdateDialog(release, localState).ConfigureAwait(false);
   }
 
@@ -344,6 +347,54 @@ public class UpdateService
     }
 
     await _installer.PrepareAndApplyUpdateAsync(release, _networkRoot).ConfigureAwait(false);
+  }
+
+  /// <summary>
+  /// Показать ошибку прошлого прогона MpzfUpdater (если есть last-error.txt) и снять файл.
+  /// </summary>
+  private async Task TryShowPendingUpdaterFailureAsync()
+  {
+    try
+    {
+      if (!File.Exists(NetworkUpdatePaths.LastErrorFilePath))
+      {
+        return;
+      }
+
+      var text = File.ReadAllText(NetworkUpdatePaths.LastErrorFilePath).Trim();
+      try
+      {
+        File.Delete(NetworkUpdatePaths.LastErrorFilePath);
+      }
+      catch (Exception ex)
+      {
+        System.Diagnostics.Debug.WriteLine($"Failed to clear last-error.txt: {ex.Message}");
+      }
+
+      if (string.IsNullOrWhiteSpace(text))
+      {
+        text = "Предыдущая попытка обновления завершилась с ошибкой.";
+      }
+
+      // Показываем короткое начало — полный стек в updater.log рядом с установкой.
+      var firstLine = text.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
+        .FirstOrDefault() ?? text;
+      if (firstLine.Length > 300)
+      {
+        firstLine = firstLine[..300] + "…";
+      }
+
+      await ShowNetworkCheckUnavailableDialog(
+          "Не удалось применить обновление при прошлом запуске.\n\n" +
+          firstLine + "\n\n" +
+          "Подробности: файл .mpzf-update\\updater.log рядом с программой.\n" +
+          "Можно повторить обновление через «Сервис → Проверить обновления».")
+        .ConfigureAwait(false);
+    }
+    catch (Exception ex)
+    {
+      System.Diagnostics.Debug.WriteLine($"TryShowPendingUpdaterFailureAsync: {ex.Message}");
+    }
   }
 
   /// <summary>

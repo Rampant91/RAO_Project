@@ -33,7 +33,7 @@ public class NetworkUpdateNotificationVM : INotifyPropertyChanged
         PublishedAtText = string.Empty;
         CanSkip = true;
         UpdateNowCommand = new AsyncRelayCommand(UpdateNowAsync, () => !IsBusy);
-        RemindLaterCommand = new RelayCommand(CloseDialog, () => !IsBusy);
+        RemindLaterCommand = new RelayCommand(RemindLater, () => !IsBusy);
         SkipReleaseCommand = new RelayCommand(SkipRelease, () => !IsBusy && CanSkip);
     }
 
@@ -54,7 +54,7 @@ public class NetworkUpdateNotificationVM : INotifyPropertyChanged
         PublishedAtText = release.PublishedAt?.ToString("dd.MM.yyyy HH:mm") ?? "—";
 
         UpdateNowCommand = new AsyncRelayCommand(UpdateNowAsync, () => !IsBusy);
-        RemindLaterCommand = new RelayCommand(CloseDialog, () => !IsBusy);
+        RemindLaterCommand = new RelayCommand(RemindLater, () => !IsBusy);
         SkipReleaseCommand = new RelayCommand(SkipRelease, () => !IsBusy && CanSkip);
     }
 
@@ -117,6 +117,25 @@ public class NetworkUpdateNotificationVM : INotifyPropertyChanged
     }
 
     private void CloseDialog() => _closeCallback?.Invoke();
+
+    /// <summary>
+    /// Откладывает автопредложение того же releaseId примерно на сутки.
+    /// </summary>
+    private void RemindLater()
+    {
+        try
+        {
+            new LocalUpdatePrefsStore().MarkNetworkReleaseNotified(Release.ReleaseId);
+        }
+        catch
+        {
+            // ignore
+        }
+        finally
+        {
+            CloseDialog();
+        }
+    }
 
     private void SkipRelease()
     {

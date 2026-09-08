@@ -102,16 +102,24 @@ public class LocalUpdateStateStore
     /// <summary>
     /// Совпадение основного бинарника локальной копии с релизом на шаре (размер + время записи).
     /// </summary>
-    public static bool LooksIdenticalToRelease(NetworkReleaseInfo release, string networkRoot)
+    /// <param name="localAppDirectory">Каталог установки; по умолчанию — текущий AppDirectory.</param>
+    public static bool LooksIdenticalToRelease(
+        NetworkReleaseInfo release,
+        string networkRoot,
+        string? localAppDirectory = null)
     {
         try
         {
+            var appDir = string.IsNullOrWhiteSpace(localAppDirectory)
+                ? NetworkUpdatePaths.AppDirectory
+                : localAppDirectory.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
             var releaseDir = NetworkUpdatePaths.GetReleaseDirectory(networkRoot, release);
-            var localDll = Path.Combine(NetworkUpdatePaths.AppDirectory, "Client_App.dll");
+            var localDll = Path.Combine(appDir, "Client_App.dll");
             var remoteDll = Path.Combine(releaseDir, "Client_App.dll");
             if (!File.Exists(localDll) || !File.Exists(remoteDll))
             {
-                localDll = Path.Combine(NetworkUpdatePaths.AppDirectory, NetworkUpdatePaths.AppExeName);
+                localDll = Path.Combine(appDir, NetworkUpdatePaths.AppExeName);
                 remoteDll = Path.Combine(releaseDir, NetworkUpdatePaths.AppExeName);
             }
 
