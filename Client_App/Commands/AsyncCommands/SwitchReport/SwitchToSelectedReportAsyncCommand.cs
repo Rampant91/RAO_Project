@@ -39,11 +39,6 @@ public class SwitchToSelectedReportAsyncCommand(BaseFormVM formVM) : BaseAsyncCo
             await new NewChangeReportAsyncCommand(mainWindowVM.Forms4TabControlVM).AsyncExecute(selectedReport).ConfigureAwait(false);
             form41.Close();
         }
-        else if (Form2InterfaceFlags.IsEnabledFor(selectedReport.FormNum.Value))
-        {
-            await new NewChangeReportAsyncCommand(mainWindowVM.Forms2TabControlVM).AsyncExecute(selectedReport).ConfigureAwait(false);
-            window.Close();
-        }
         else
         {
             var windowParam = new FormParameter()

@@ -1074,4 +1074,29 @@ public partial class Form40 : Form
                && FormTextEquality.Equals(FaxRiac_DB, formToCompare.FaxRiac_DB)
                && FormTextEquality.Equals(EmailRiac_DB, formToCompare.EmailRiac_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(CodeSubjectRF_DB), CodeSubjectRF_DB);
+        sink.AddText(nameof(SubjectRF_DB), SubjectRF_DB);
+        sink.AddText(nameof(NameOrganUprav_DB), NameOrganUprav_DB);
+        sink.AddText(nameof(ShortNameOrganUprav_DB), ShortNameOrganUprav_DB);
+        sink.AddText(nameof(AddressOrganUprav_DB), AddressOrganUprav_DB);
+        sink.AddText(nameof(GradeFioDirectorOrganUprav_DB), GradeFioDirectorOrganUprav_DB);
+        sink.AddText(nameof(GradeFioExecutorOrganUprav_DB), GradeFioExecutorOrganUprav_DB);
+        sink.AddText(nameof(TelephoneOrganUprav_DB), TelephoneOrganUprav_DB);
+        sink.AddText(nameof(FaxOrganUprav_DB), FaxOrganUprav_DB);
+        sink.AddText(nameof(EmailOrganUprav_DB), EmailOrganUprav_DB);
+        sink.AddText(nameof(NameRiac_DB), NameRiac_DB);
+        sink.AddText(nameof(ShortNameRiac_DB), ShortNameRiac_DB);
+        sink.AddText(nameof(AddressRiac_DB), AddressRiac_DB);
+        sink.AddText(nameof(GradeFioDirectorRiac_DB), GradeFioDirectorRiac_DB);
+        sink.AddText(nameof(GradeFioExecutorRiac_DB), GradeFioExecutorRiac_DB);
+        sink.AddText(nameof(TelephoneRiac_DB), TelephoneRiac_DB);
+        sink.AddText(nameof(FaxRiac_DB), FaxRiac_DB);
+        sink.AddText(nameof(EmailRiac_DB), EmailRiac_DB);
+    }
 }

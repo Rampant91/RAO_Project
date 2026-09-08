@@ -641,4 +641,19 @@ public partial class Form211 : Form2
                && FormExponentialEquality.Equals(SpecificActivityOfLiquidPart_DB, formToCompare.SpecificActivityOfLiquidPart_DB)
                && FormExponentialEquality.Equals(SpecificActivityOfDensePart_DB, formToCompare.SpecificActivityOfDensePart_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(PlotName_DB), PlotName_DB);
+        sink.AddText(nameof(PlotKadastrNumber_DB), PlotKadastrNumber_DB);
+        sink.AddText(nameof(PlotCode_DB), PlotCode_DB);
+        sink.AddExponential(nameof(InfectedArea_DB), InfectedArea_DB);
+        sink.AddRadionuclids(nameof(Radionuclids_DB), Radionuclids_DB);
+        sink.AddExponential(nameof(SpecificActivityOfPlot_DB), SpecificActivityOfPlot_DB);
+        sink.AddExponential(nameof(SpecificActivityOfLiquidPart_DB), SpecificActivityOfLiquidPart_DB);
+        sink.AddExponential(nameof(SpecificActivityOfDensePart_DB), SpecificActivityOfDensePart_DB);
+    }
 }

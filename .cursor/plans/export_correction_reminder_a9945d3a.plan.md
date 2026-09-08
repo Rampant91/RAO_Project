@@ -4,28 +4,28 @@ overview: "Единый диалог при выгрузке .RAODB (для вс
 todos:
   - id: model-migration
     content: Поля Report + миграция (LastExported N из ExportDate; fingerprint NULL; VARCHAR(64); поля в .RAODB)
-    status: pending
+    status: completed
   - id: fingerprint-core
     content: ContentFingerprintSink + Contribute на Form/Note; Compute для Report; version v1; exclude шапки
-    status: pending
+    status: completed
   - id: fingerprint-guards
     content: Guard-тесты IsContentEqual↔Contribute; Report *_DB ∈ exclude или в хэше
-    status: pending
+    status: completed
   - id: snapshot-service
     content: Evaluate / Prompt (единый текст) / Record / ApplyFromImport / EnsureOnOpen
-    status: pending
+    status: completed
   - id: export-hooks
     content: ExportReport + ExportReports; диалог; слепок в файл; Record после File.Copy
-    status: pending
+    status: completed
   - id: import-hooks
     content: ApplyFromImport при замене/добавлении (копия из файла или Compute)
-    status: pending
+    status: completed
   - id: open-hooks
     content: EnsureOnOpen только при ExportDate/LastExported; прогресс догона
-    status: pending
+    status: completed
   - id: unit-tests
     content: Evaluate-матрица; ApplyFromImport; EnsureOnOpen; fingerprint стабильность
-    status: pending
+    status: completed
 isProject: false
 ---
 

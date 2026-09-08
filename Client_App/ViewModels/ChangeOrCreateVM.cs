@@ -219,8 +219,12 @@ public class ChangeOrCreateVM : BaseVM, INotifyPropertyChanged
         {
             var id = rep.Id;
             while (StaticConfiguration.IsFileLocked(null)) Thread.Sleep(50);
-            Task myTask = Task.Factory.StartNew(() => ReportsStorage.GetReportAsync(id, this));  //при открытии формы загружаем все формы из БД
-            myTask.Wait();
+            // StartNew + Wait без Unwrap ждал только запуск Task, не GetReportAsync/EnsureSnapshot.
+            Task.Factory
+                .StartNew(() => ReportsStorage.GetReportAsync(id, this))
+                .Unwrap()
+                .GetAwaiter()
+                .GetResult();
         }
         
         FormType = formNum;

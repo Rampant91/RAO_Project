@@ -92,6 +92,12 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
 
         var changeOrCreateVM = new ChangeOrCreateVM(numForm, report);
 
+        // Страховка: догон слепка после полной загрузки (легаси FormChangeOrCreate / формы 2).
+        if (changeOrCreateVM.Storage is not null)
+        {
+            await ReportExportSnapshotService.EnsureSnapshotOnOpenAsync(changeOrCreateVM.Storage);
+        }
+
         await Form2NewInterfaceOpener.PrepareSumRowsAsync(changeOrCreateVM, numForm);
 
         switch (numForm)

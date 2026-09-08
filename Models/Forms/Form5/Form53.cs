@@ -698,5 +698,23 @@ namespace Models.Forms.Form5
                    && Volume_DB == formToCompare.Volume_DB
                    && Quantity_DB == formToCompare.Quantity_DB;
         }
+
+        /// <summary>
+        /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+        /// </summary>
+        public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+        {
+            sink.AddRaw(nameof(NumberInOrder_DB), NumberInOrder_DB);
+            sink.AddRaw(nameof(OperationCode_DB), OperationCode_DB);
+            sink.AddRaw(nameof(TypeORI_DB), TypeORI_DB);
+            sink.AddRaw(nameof(VarietyORI_DB), VarietyORI_DB);
+            sink.AddRaw(nameof(AggregateState_DB), AggregateState_DB);
+            sink.AddRaw(nameof(ProviderOrRecieverOKPO_DB), ProviderOrRecieverOKPO_DB);
+            sink.AddRaw(nameof(Radionuclids_DB), Radionuclids_DB);
+            sink.AddRaw(nameof(Activity_DB), Activity_DB);
+            sink.AddRaw(nameof(Mass_DB), Mass_DB);
+            sink.AddRaw(nameof(Volume_DB), Volume_DB);
+            sink.AddRaw(nameof(Quantity_DB), Quantity_DB);
+        }
     }
 }

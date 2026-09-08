@@ -551,4 +551,9 @@ public abstract partial class Form : IKey, IDataGridColumn
 
     //Абстрактный метод для сравнения форм по содержанию
     public abstract bool IsContentEqual(Form other);
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public abstract void ContributeToContentFingerprint(Comparers.FormContent.ContentFingerprintSink sink);
 }

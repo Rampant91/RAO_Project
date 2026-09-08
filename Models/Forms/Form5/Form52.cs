@@ -354,4 +354,15 @@ public class Form52 : Form
                && Quantity_DB == formToCompare.Quantity_DB
                && FormExponentialEquality.Equals(Activity_DB, formToCompare.Activity_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddRaw(nameof(Category_DB), Category_DB);
+        sink.AddRadionuclids(nameof(Radionuclids_DB), Radionuclids_DB);
+        sink.AddRaw(nameof(Quantity_DB), Quantity_DB);
+        sink.AddExponential(nameof(Activity_DB), Activity_DB);
+    }
 }

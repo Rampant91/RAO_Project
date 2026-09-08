@@ -536,5 +536,20 @@ namespace Models.Forms.Form5
                    && Practice_DB == formToCompare.Practice_DB
                    && Note_DB == formToCompare.Note_DB;
         }
+
+        /// <summary>
+        /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+        /// </summary>
+        public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+        {
+            sink.AddRaw(nameof(NumberInOrder_DB), NumberInOrder_DB);
+            sink.AddRaw(nameof(RegNo_DB), RegNo_DB);
+            sink.AddRaw(nameof(OKPO_DB), OKPO_DB);
+            sink.AddRaw(nameof(Name_DB), Name_DB);
+            sink.AddRaw(nameof(Recognizance_DB), Recognizance_DB);
+            sink.AddRaw(nameof(License_DB), License_DB);
+            sink.AddRaw(nameof(Practice_DB), Practice_DB);
+            sink.AddRaw(nameof(Note_DB), Note_DB);
+        }
     }
 }

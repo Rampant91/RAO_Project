@@ -1304,4 +1304,27 @@ public partial class Form24 : Form2
                && FormExponentialEquality.Equals(MassRemovedFromAccount_DB, formToCompare.MassRemovedFromAccount_DB)
                && FormTextEquality.Equals(QuantityRemovedFromAccount_DB, formToCompare.QuantityRemovedFromAccount_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(CodeOYAT_DB), CodeOYAT_DB);
+        sink.AddText(nameof(FcpNumber_DB), FcpNumber_DB);
+        sink.AddExponential(nameof(MassCreated_DB), MassCreated_DB);
+        sink.AddText(nameof(QuantityCreated_DB), QuantityCreated_DB);
+        sink.AddExponential(nameof(MassFromAnothers_DB), MassFromAnothers_DB);
+        sink.AddText(nameof(QuantityFromAnothers_DB), QuantityFromAnothers_DB);
+        sink.AddExponential(nameof(MassFromAnothersImported_DB), MassFromAnothersImported_DB);
+        sink.AddText(nameof(QuantityFromAnothersImported_DB), QuantityFromAnothersImported_DB);
+        sink.AddExponential(nameof(MassAnotherReasons_DB), MassAnotherReasons_DB);
+        sink.AddText(nameof(QuantityAnotherReasons_DB), QuantityAnotherReasons_DB);
+        sink.AddExponential(nameof(MassTransferredToAnother_DB), MassTransferredToAnother_DB);
+        sink.AddText(nameof(QuantityTransferredToAnother_DB), QuantityTransferredToAnother_DB);
+        sink.AddExponential(nameof(MassRefined_DB), MassRefined_DB);
+        sink.AddText(nameof(QuantityRefined_DB), QuantityRefined_DB);
+        sink.AddExponential(nameof(MassRemovedFromAccount_DB), MassRemovedFromAccount_DB);
+        sink.AddText(nameof(QuantityRemovedFromAccount_DB), QuantityRemovedFromAccount_DB);
+    }
 }

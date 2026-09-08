@@ -474,4 +474,19 @@ public class Form19 : Form1
                && FormRadionuclidsEquality.Equals(Radionuclids_DB, formToCompare.Radionuclids_DB)
                && FormExponentialEquality.Equals(Activity_DB, formToCompare.Activity_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(OperationCode_DB), OperationCode_DB);
+        sink.AddDate(nameof(OperationDate_DB), OperationDate_DB);
+        sink.AddRaw(nameof(DocumentVid_DB), DocumentVid_DB);
+        sink.AddText(nameof(DocumentNumber_DB), DocumentNumber_DB);
+        sink.AddDate(nameof(DocumentDate_DB), DocumentDate_DB);
+        sink.AddRaw(nameof(CodeTypeAccObject_DB), CodeTypeAccObject_DB);
+        sink.AddRadionuclids(nameof(Radionuclids_DB), Radionuclids_DB);
+        sink.AddExponential(nameof(Activity_DB), Activity_DB);
+    }
 }

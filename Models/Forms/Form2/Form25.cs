@@ -735,4 +735,20 @@ public partial class Form25 : Form2
                && FormExponentialEquality.Equals(AlphaActivity_DB, formToCompare.AlphaActivity_DB)
                && FormExponentialEquality.Equals(BetaGammaActivity_DB, formToCompare.BetaGammaActivity_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(StoragePlaceName_DB), StoragePlaceName_DB);
+        sink.AddText(nameof(StoragePlaceCode_DB), StoragePlaceCode_DB);
+        sink.AddText(nameof(CodeOYAT_DB), CodeOYAT_DB);
+        sink.AddText(nameof(FcpNumber_DB), FcpNumber_DB);
+        sink.AddExponential(nameof(FuelMass_DB), FuelMass_DB);
+        sink.AddExponential(nameof(CellMass_DB), CellMass_DB);
+        sink.AddRaw(nameof(Quantity_DB), Quantity_DB);
+        sink.AddExponential(nameof(AlphaActivity_DB), AlphaActivity_DB);
+        sink.AddExponential(nameof(BetaGammaActivity_DB), BetaGammaActivity_DB);
+    }
 }

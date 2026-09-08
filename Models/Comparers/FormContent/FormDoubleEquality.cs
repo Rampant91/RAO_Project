@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace Models.Comparers.FormContent;
 
@@ -64,4 +65,32 @@ public static class FormDoubleEquality
 
         return MathF.Abs(a - b) <= absoluteTolerance;
     }
+
+    /// <summary>
+    /// Канонизация double/float для fingerprint: округление согласовано с допуском Equals.
+    /// </summary>
+    public static string NormalizeForFingerprint(double value)
+    {
+        if (double.IsNaN(value))
+        {
+            return "NaN";
+        }
+
+        if (double.IsPositiveInfinity(value))
+        {
+            return "+Inf";
+        }
+
+        if (double.IsNegativeInfinity(value))
+        {
+            return "-Inf";
+        }
+
+        // 1e-9 abs tolerance → 9 decimal places is enough for stable equality buckets
+        var rounded = Math.Round(value, 9, MidpointRounding.AwayFromZero);
+        return rounded.ToString("G17", CultureInfo.InvariantCulture);
+    }
+
+    public static string NormalizeForFingerprint(float value) =>
+        NormalizeForFingerprint((double)value);
 }

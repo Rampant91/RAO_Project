@@ -2547,4 +2547,43 @@ public partial class Form17 : Form1
                && FormTextEquality.Equals(FcpNumber_DB, formToCompare.FcpNumber_DB)
                && FormTextEquality.Equals(ContractNumber_DB, formToCompare.ContractNumber_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(OperationCode_DB), OperationCode_DB);
+        sink.AddDate(nameof(OperationDate_DB), OperationDate_DB);
+        sink.AddRaw(nameof(DocumentVid_DB), DocumentVid_DB);
+        sink.AddText(nameof(DocumentNumber_DB), DocumentNumber_DB);
+        sink.AddDate(nameof(DocumentDate_DB), DocumentDate_DB);
+        sink.AddText(nameof(PackName_DB), PackName_DB);
+        sink.AddText(nameof(PackType_DB), PackType_DB);
+        sink.AddText(nameof(PackFactoryNumber_DB), PackFactoryNumber_DB);
+        sink.AddText(nameof(PackNumber_DB), PackNumber_DB);
+        sink.AddDate(nameof(FormingDate_DB), FormingDate_DB);
+        sink.AddText(nameof(PassportNumber_DB), PassportNumber_DB);
+        sink.AddExponential(nameof(Volume_DB), Volume_DB);
+        sink.AddExponential(nameof(Mass_DB), Mass_DB);
+        sink.AddRadionuclids(nameof(Radionuclids_DB), Radionuclids_DB);
+        sink.AddExponential(nameof(SpecificActivity_DB), SpecificActivity_DB);
+        sink.AddText(nameof(ProviderOrRecieverOKPO_DB), ProviderOrRecieverOKPO_DB);
+        sink.AddText(nameof(TransporterOKPO_DB), TransporterOKPO_DB);
+        sink.AddText(nameof(StoragePlaceName_DB), StoragePlaceName_DB);
+        sink.AddText(nameof(StoragePlaceCode_DB), StoragePlaceCode_DB);
+        sink.AddText(nameof(CodeRAO_DB), CodeRAO_DB);
+        sink.AddText(nameof(StatusRAO_DB), StatusRAO_DB);
+        sink.AddExponential(nameof(VolumeOutOfPack_DB), VolumeOutOfPack_DB);
+        sink.AddExponential(nameof(MassOutOfPack_DB), MassOutOfPack_DB);
+        sink.AddText(nameof(Quantity_DB), Quantity_DB);
+        sink.AddExponential(nameof(TritiumActivity_DB), TritiumActivity_DB);
+        sink.AddExponential(nameof(BetaGammaActivity_DB), BetaGammaActivity_DB);
+        sink.AddExponential(nameof(AlphaActivity_DB), AlphaActivity_DB);
+        sink.AddExponential(nameof(TransuraniumActivity_DB), TransuraniumActivity_DB);
+        sink.AddText(nameof(RefineOrSortRAOCode_DB), RefineOrSortRAOCode_DB);
+        sink.AddText(nameof(Subsidy_DB), Subsidy_DB);
+        sink.AddText(nameof(FcpNumber_DB), FcpNumber_DB);
+        sink.AddText(nameof(ContractNumber_DB), ContractNumber_DB);
+    }
 }

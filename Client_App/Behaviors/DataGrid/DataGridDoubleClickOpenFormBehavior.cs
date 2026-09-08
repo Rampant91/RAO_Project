@@ -4,7 +4,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
 using Avalonia.Xaml.Interactivity;
 using Client_App.Commands.AsyncCommands;
-using Client_App.Resources;
 using Client_App.ViewModels;
 using Client_App.Views;
 using Models.Collections;
@@ -63,9 +62,7 @@ public class DataGridDoubleClickOpenFormBehavior : Behavior<DataGrid>
                 if (report.FormNum_DB.Split('.')[0] is "1")
                     command = new NewChangeReportAsyncCommand(mainWindowVM.Forms1TabControlVM);
                 else if (report.FormNum_DB.Split('.')[0] is "2")
-                    command = Form2InterfaceFlags.UseNewInterface
-                        ? new NewChangeReportAsyncCommand(mainWindowVM.Forms2TabControlVM)
-                        : new ChangeFormAsyncCommand();
+                    command = new ChangeFormAsyncCommand();
                 else if (report.FormNum_DB.Split('.')[0] is "4")
                     command = new NewChangeReportAsyncCommand(mainWindowVM.Forms4TabControlVM);
                 else if (report.FormNum_DB.Split('.')[0] is "5")

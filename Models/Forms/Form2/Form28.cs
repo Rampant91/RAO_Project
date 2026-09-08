@@ -533,4 +533,17 @@ public class Form28 : Form2
                && FormExponentialEquality.Equals(AllowedWasteRemovalVolume_DB, formToCompare.AllowedWasteRemovalVolume_DB)
                && FormExponentialEquality.Equals(RemovedWasteVolume_DB, formToCompare.RemovedWasteVolume_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(WasteSourceName_DB), WasteSourceName_DB);
+        sink.AddText(nameof(WasteRecieverName_DB), WasteRecieverName_DB);
+        sink.AddText(nameof(RecieverTypeCode_DB), RecieverTypeCode_DB);
+        sink.AddText(nameof(PoolDistrictName_DB), PoolDistrictName_DB);
+        sink.AddExponential(nameof(AllowedWasteRemovalVolume_DB), AllowedWasteRemovalVolume_DB);
+        sink.AddExponential(nameof(RemovedWasteVolume_DB), RemovedWasteVolume_DB);
+    }
 }

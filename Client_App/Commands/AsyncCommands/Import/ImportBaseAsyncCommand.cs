@@ -3,6 +3,7 @@ using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
 using Client_App.Logging;
 using Client_App.Resources.CustomComparers;
+using Client_App.Services;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Messages;
 using Client_App.Views.Messages;
@@ -129,6 +130,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 if (addToDB)
                 {
                     newReport.Id = 0;
+                    ReportExportSnapshotService.ApplyFromImport(newReport);
                     baseReps.Report_Collection.Add(newReport);
                     AtLeastOneImportDone = true;
                     RecordImportedReport(baseReps);
@@ -166,6 +168,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 }
                 if (addToDB)
                 {
+                    ReportExportSnapshotService.ApplyFromImport(newReport!);
                     baseReps.Report_Collection.Add(newReport);
                     AtLeastOneImportDone = true;
                     RecordImportedReport(baseReps);
@@ -201,6 +204,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 {
                     await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
                 }
+                ReportExportSnapshotService.ApplyFromImport(newReport!);
                 baseReps.Report_Collection.Replace(oldReport, newReport);
                 StaticConfiguration.DBModel.Remove(oldReport!);
                 await ReportDeletionLogger.LogDeletionAsync(oldReport!);
@@ -239,6 +243,7 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 }
                 newReport.Rows.AddRange<IKey>(0, oldReport.Rows.GetEnumerable());
                 newReport.Notes.AddRange<IKey>(0, oldReport.Notes);
+                ReportExportSnapshotService.ApplyFromImport(newReport);
                 baseReps.Report_Collection.Replace(oldReport, newReport);
                 StaticConfiguration.DBModel.Remove(oldReport);
                 await ReportDeletionLogger.LogDeletionAsync(oldReport);

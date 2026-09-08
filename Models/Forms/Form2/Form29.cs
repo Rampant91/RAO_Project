@@ -373,4 +373,15 @@ public class Form29 : Form2
                && FormExponentialEquality.Equals(AllowedActivity_DB, formToCompare.AllowedActivity_DB)
                && FormExponentialEquality.Equals(FactedActivity_DB, formToCompare.FactedActivity_DB);
     }
+
+    /// <summary>
+    /// Вклад полей содержимого в fingerprint (тот же набор, что в <see cref="IsContentEqual"/>).
+    /// </summary>
+    public override void ContributeToContentFingerprint(Models.Comparers.FormContent.ContentFingerprintSink sink)
+    {
+        sink.AddText(nameof(WasteSourceName_DB), WasteSourceName_DB);
+        sink.AddRadionuclids(nameof(RadionuclidName_DB), RadionuclidName_DB);
+        sink.AddExponential(nameof(AllowedActivity_DB), AllowedActivity_DB);
+        sink.AddExponential(nameof(FactedActivity_DB), FactedActivity_DB);
+    }
 }

@@ -673,7 +673,7 @@
 					<DataGrid.ContextMenu>
                         <ContextMenu>
                             <MenuItem Header="Редактировать отчёт"
-                                      Command="{Binding NewChangeReport, Mode=OneWay}"
+                                      Command="{Binding MainWindowVM.ChangeForm, Mode=OneWay}"
                                       CommandParameter="{Binding SelectedReport}"
                                       IsVisible="{Binding SelectedReport, Converter={StaticResource NotNullToBoolConverter}, Mode=OneWay}"/>
                             <MenuItem Header="Выгрузить отчёт в Excel"

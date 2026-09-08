@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Resources;
+using Client_App.Services;
 using Client_App.ViewModels;
 using Client_App.Views.ProgressBar;
 using FirebirdSql.Data.FirebirdClient;
@@ -56,16 +58,6 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
         {
             case ObservableCollectionWithItemPropertyChanged<IKey> param:
             {
-                var reps = (Reports)param.First();
-                var aDay = dt.Day.ToString();
-                var aMonth = dt.Month.ToString();
-                if (aDay.Length < 2) aDay = $"0{aDay}";
-                if (aMonth.Length < 2) aMonth = $"0{aMonth}";
-                foreach (var key in reps.Report_Collection)
-                {
-                    var rep = (Report)key;
-                    rep.ExportDate.Value = $"{aDay}.{aMonth}.{dt.Year}";
-                }
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
                 exportOrg = (Reports)param.First();
                 break;
@@ -74,15 +66,15 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
             {
                 fileNameTmp = $"Reports_{dt.Year}_{dt.Month}_{dt.Day}_{dt.Hour}_{dt.Minute}_{dt.Second}";
                 exportOrg = reps;
-                exportOrg.Master.ExportDate.Value = dt.Date.ToShortDateString();
                 break;
             }
             default: return;
         }
 
-        await StaticConfiguration.DBModel.SaveChangesAsync(cts.Token);
-
         var repsId = exportOrg.Id;
+        var trackedById = exportOrg.Report_Collection
+            .OfType<Report>()
+            .ToDictionary(r => r.Id);
 
         #region ProgressBarInitialization
 
@@ -222,12 +214,74 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
             #endregion
 
-            rep.ExportDate.Value = DateTime.Now.ToShortDateString();
+            if (trackedById.TryGetValue(rep.Id, out var tracked))
+            {
+                rep.CorrectionNumber_DB = tracked.CorrectionNumber_DB;
+                rep.LastExportedCorrectionNumber_DB = tracked.LastExportedCorrectionNumber_DB;
+                rep.LastExportedFingerprint_DB = tracked.LastExportedFingerprint_DB;
+                // Для текста диалога — прежняя дата выгрузки с tracked.
+                rep.ExportDate_DB = tracked.ExportDate_DB;
+            }
+
             repsFull.Report_Collection.Add(rep);
 
             progressBarDoubleValue += (double)35 / repsReportIds.Length;
             progressBarVM.ValueBar = (int)Math.Floor(progressBarDoubleValue);
             progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
+        }
+
+        #region CorrectionNumberReminder
+
+        var needingWarning = repsFull.Report_Collection
+            .OfType<Report>()
+            .Where(ReportExportSnapshotService.Evaluate)
+            .ToList();
+
+        if (needingWarning.Count > 0)
+        {
+            var decision = await ReportExportSnapshotService.PromptAsync(needingWarning);
+            if (decision == ReportExportSnapshotDecision.Cancel)
+            {
+                await cts.CancelAsync();
+                await progressBar.CloseAsync();
+                return;
+            }
+
+            if (decision == ReportExportSnapshotDecision.RaiseAndExport)
+            {
+                foreach (var exportRep in needingWarning)
+                {
+                    var raised = (byte)(exportRep.CorrectionNumber_DB + 1);
+                    exportRep.CorrectionNumber_DB = raised;
+                    if (trackedById.TryGetValue(exportRep.Id, out var tracked))
+                    {
+                        tracked.CorrectionNumber.Value = raised;
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+        var aDay = dt.Day.ToString();
+        var aMonth = dt.Month.ToString();
+        if (aDay.Length < 2) aDay = $"0{aDay}";
+        if (aMonth.Length < 2) aMonth = $"0{aMonth}";
+        var exportDateText = $"{aDay}.{aMonth}.{dt.Year}";
+
+        foreach (var exportRep in repsFull.Report_Collection.OfType<Report>())
+        {
+            exportRep.ExportDate.Value = exportDateText;
+            ReportExportSnapshotService.WriteSnapshotOntoExportCopy(exportRep);
+            if (trackedById.TryGetValue(exportRep.Id, out var tracked))
+            {
+                tracked.ExportDate.Value = exportDateText;
+            }
+        }
+
+        if (parameter is Reports)
+        {
+            exportOrg.Master.ExportDate.Value = dt.Date.ToShortDateString();
         }
 
         var fullPathTmp = Path.Combine(BaseVM.TmpDirectory, $"{fileNameTmp}_exp.RAODB");
@@ -338,10 +392,12 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
 
         #endregion
 
+        var exportFileCopied = false;
         try
         {
             File.Copy(fullPathTmp, fullPath);
             File.Delete(fullPathTmp);
+            exportFileCopied = true;
         }
         catch (Exception ex)
         {
@@ -361,6 +417,22 @@ public class ExportReportsAsyncCommand : ExportRaodbBaseAsyncCommand
                 }).ShowDialog(Desktop.MainWindow));
 
             #endregion
+        }
+
+        if (exportFileCopied)
+        {
+            foreach (var exportRep in repsFull.Report_Collection.OfType<Report>())
+            {
+                if (!trackedById.TryGetValue(exportRep.Id, out var tracked))
+                {
+                    continue;
+                }
+
+                tracked.LastExportedCorrectionNumber_DB = exportRep.LastExportedCorrectionNumber_DB;
+                tracked.LastExportedFingerprint_DB = exportRep.LastExportedFingerprint_DB;
+            }
+
+            await StaticConfiguration.DBModel.SaveChangesAsync(cts.Token);
         }
 
         #region Progress = 100
