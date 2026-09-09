@@ -65,11 +65,20 @@ public class CalculatorInputPatternsTests
     }
 
     [Theory]
-    [InlineData("a")]
-    [InlineData("09-09-2026")]
-    [InlineData("09/09/2026")]
-    public void DateDigitsAndDots_RejectsOtherChars(string text)
+    [InlineData("")]
+    [InlineData("0")]
+    [InlineData("12")]
+    public void PositiveInteger_AllowsDigits(string text)
     {
-        Assert.DoesNotMatch(CalculatorInputPatterns.DateDigitsAndDots, text);
+        Assert.Matches(CalculatorInputPatterns.PositiveInteger, text);
+    }
+
+    [Theory]
+    [InlineData("a")]
+    [InlineData("1.2")]
+    [InlineData("-1")]
+    public void PositiveInteger_RejectsNoise(string text)
+    {
+        Assert.DoesNotMatch(CalculatorInputPatterns.PositiveInteger, text);
     }
 }

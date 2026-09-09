@@ -149,7 +149,14 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
             {
                 var currentActivity = _vm.IsSingleActivity ? _vm.Activity : nuclid.Activity;
                 var nuclidFromR = _vm.RadionuclidsFullList
-                    !.First(x => x.Name == nuclid.Name);
+                    ?.FirstOrDefault(x => x.Name == nuclid.Name);
+                if (nuclidFromR is null)
+                {
+                    _vm.ActivityToNormalizingD = string.Empty;
+                    _vm.Category = string.Empty;
+                    _vm.CategoryText = "\u041d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d \u0440\u0430\u0434\u0438\u043e\u043d\u0443\u043a\u043b\u0438\u0434 \u0432 \u0441\u043f\u0440\u0430\u0432\u043e\u0447\u043d\u0438\u043a\u0435.";
+                    return;
+                }
 
                 var dFromR = ToExponentialString(nuclidFromR.D);
 
@@ -161,7 +168,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
                 {
                     _vm.ActivityToNormalizingD = string.Empty;
                     _vm.Category = string.Empty;
-                    _vm.CategoryText = "Некорректное значение нормализующего фактора (D-величина) в справочнике.";
+                    _vm.CategoryText = "\u041d\u0435\u043a\u043e\u0440\u0440\u0435\u043a\u0442\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u043d\u043e\u0440\u043c\u0430\u043b\u0438\u0437\u0443\u044e\u0449\u0435\u0433\u043e \u0444\u0430\u043a\u0442\u043e\u0440\u0430 (D-\u0432\u0435\u043b\u0438\u0447\u0438\u043d\u0430) \u0432 \u0441\u043f\u0440\u0430\u0432\u043e\u0447\u043d\u0438\u043a\u0435.";
                     return;
                 }
 
@@ -172,14 +179,21 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
                 {
                     _vm.ActivityToNormalizingD = string.Empty;
                     _vm.Category = string.Empty;
-                    _vm.CategoryText = "Некорректное значение МЗА в справочнике.";
+                    _vm.CategoryText = "\u041d\u0435\u043a\u043e\u0440\u0440\u0435\u043a\u0442\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u041c\u0417\u0410 \u0432 \u0441\u043f\u0440\u0430\u0432\u043e\u0447\u043d\u0438\u043a\u0435.";
                     return;
                 }
 
-                var activity = decimal.Parse(
-                    ToExponentialString(currentActivity),
-                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                    new CultureInfo("ru-RU", useUserOverride: false));
+                if (!decimal.TryParse(
+                        ToExponentialString(currentActivity),
+                        NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
+                        new CultureInfo("ru-RU", useUserOverride: false),
+                        out var activity))
+                {
+                    _vm.ActivityToNormalizingD = string.Empty;
+                    _vm.Category = string.Empty;
+                    _vm.CategoryText = "\u041d\u0435\u043a\u043e\u0440\u0440\u0435\u043a\u0442\u043d\u043e \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u043e \u043f\u043e\u043b\u0435 \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u0438 \u0440\u0430\u0434\u0438\u043e\u043d\u0443\u043a\u043b\u0438\u0434\u0430.";
+                    return;
+                }
 
                 var d = decimal.Multiply(dValueFromR, 1e12m);
 
@@ -220,15 +234,29 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
             var countNonRadioactiveRads = 0;
             List<decimal> dValueList = [];
 
-            var activity = decimal.Parse(
-                ToExponentialString(_vm.Activity),
-                NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
-                new CultureInfo("ru-RU", useUserOverride: false));
+            if (!decimal.TryParse(
+                    ToExponentialString(_vm.Activity),
+                    NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent | NumberStyles.AllowThousands,
+                    new CultureInfo("ru-RU", useUserOverride: false),
+                    out var activity))
+            {
+                _vm.ActivityToNormalizingD = string.Empty;
+                _vm.Category = string.Empty;
+                _vm.CategoryText = "\u041d\u0435\u043a\u043e\u0440\u0440\u0435\u043a\u0442\u043d\u043e \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u043e \u043f\u043e\u043b\u0435 \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u0438 \u0440\u0430\u0434\u0438\u043e\u043d\u0443\u043a\u043b\u0438\u0434\u0430.";
+                return;
+            }
 
             foreach (var nuclid in radsSet)
             {
                 var nuclidFromR = _vm.RadionuclidsFullList
-                    !.First(x => x.Name == nuclid.Name);
+                    ?.FirstOrDefault(x => x.Name == nuclid.Name);
+                if (nuclidFromR is null)
+                {
+                    _vm.ActivityToNormalizingD = string.Empty;
+                    _vm.Category = string.Empty;
+                    _vm.CategoryText = "\u041d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d \u0440\u0430\u0434\u0438\u043e\u043d\u0443\u043a\u043b\u0438\u0434 \u0432 \u0441\u043f\u0440\u0430\u0432\u043e\u0447\u043d\u0438\u043a\u0435.";
+                    return;
+                }
 
                 var dFromR = ToExponentialString(nuclidFromR.D);
 

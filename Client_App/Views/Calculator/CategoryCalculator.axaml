@@ -6,15 +6,16 @@
         xmlns:m="clr-namespace:Models.DTO;assembly=Models"
         xmlns:converter="clr-namespace:Client_App.Resources.CustomConverters"
         xmlns:behaviors="clr-namespace:Client_App.Behaviors"
+        xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
         mc:Ignorable="d"
         x:Class="Client_App.Views.Calculator.CategoryCalculator"
         x:Name="CategoryCalculatorWindow"
         x:CompileBindings="True"
         x:DataType="vm:CategoryCalculatorVM"
         Title="Расчёт категории"
-        MinHeight="500" MinWidth="500"
-        d:DesignWidth="700" d:DesignHeight="700"
-        behaviors:WindowScreenSizeBehavior.WidthRatio="0.5" behaviors:WindowScreenSizeBehavior.HeightRatio="0.75"
+        MinHeight="500" MinWidth="820"
+        d:DesignWidth="880" d:DesignHeight="700"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.58" behaviors:WindowScreenSizeBehavior.HeightRatio="0.75"
         Icon="/Assets/Radiation_sign.ico"
         WindowStartupLocation="Manual"
         CanResize="True">
@@ -25,6 +26,22 @@
 
     <Window.Resources>
         <converter:BoolInverterConverter x:Key="BoolInverterConverter"/>
+        <!-- Fluent docks error chrome inside DataValidationErrors (looks like a button). Never set
+             DataValidationErrors.IsVisible=False — that control wraps the whole TextBox. -->
+        <ControlTheme x:Key="NoChromeDataValidationErrors" TargetType="DataValidationErrors">
+            <Setter Property="Template">
+                <ControlTemplate TargetType="DataValidationErrors">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Padding="{TemplateBinding Padding}"
+                                      Background="{TemplateBinding Background}"
+                                      BorderBrush="{TemplateBinding BorderBrush}"
+                                      BorderThickness="{TemplateBinding BorderThickness}"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      CornerRadius="{TemplateBinding CornerRadius}"/>
+                </ControlTemplate>
+            </Setter>
+        </ControlTheme>
     </Window.Resources>
 
     <Window.Styles>
@@ -32,9 +49,86 @@
             <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="Black"/>
         </Style>
+        <Style Selector="TextBlock.calc-label">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="5,4"/>
+        </Style>
+        <Style Selector="TextBox.calc-result">
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="Background" Value="#EDEDED"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="BorderBrush" Value="#B0B0B0"/>
+            <Setter Property="CaretBrush" Value="Transparent"/>
+        </Style>
+        <Style Selector="Expander.calc-expander">
+            <Setter Property="Margin" Value="0,0,0,2"/>
+        </Style>
+        <!-- Compact but clickable header: fixed Height=20 was too flat. -->
+        <Style Selector="Expander.calc-expander ToggleButton">
+            <Setter Property="MinHeight" Value="26"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style Selector="TextBox.calc-input">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="MinWidth" Value="0"/>
+            <Setter Property="TextWrapping" Value="NoWrap"/>
+        </Style>
+        <Style Selector="Button.calc-list-action">
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="MinWidth" Value="92"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+        <!-- Selected-nuclides grid: muted RO vs clear editable activity (works with LightBlue selection). -->
+        <Style Selector="DataGrid.calc-selected-rads DataGridCell TextBlock.calc-ro">
+            <Setter Property="Background" Value="#E8E8E8"/>
+            <Setter Property="Foreground" Value="#4A4A4A"/>
+            <Setter Property="Padding" Value="6,0"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+        </Style>
+        <Style Selector="DataGrid.calc-selected-rads DataGridRow:pointerover:not(:selected) DataGridCell TextBlock.calc-ro">
+            <Setter Property="Background" Value="#D0D0D0"/>
+            <Setter Property="Foreground" Value="#333333"/>
+        </Style>
+        <Style Selector="DataGrid.calc-selected-rads DataGridRow:selected DataGridCell TextBlock.calc-ro">
+            <Setter Property="Background" Value="#9EC5D8"/>
+            <Setter Property="Foreground" Value="#1A1A1A"/>
+        </Style>
+        <Style Selector="DataGrid.calc-selected-rads DataGridCell TextBox.calc-activity-cell">
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#7A7A7A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="2"/>
+            <Setter Property="Padding" Value="3,0"/>
+            <Setter Property="Margin" Value="1"/>
+            <Setter Property="MinHeight" Value="22"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="InnerRightContent" Value="{x:Null}"/>
+            <!-- Single-line value: no vertical bar (it ate the e+NN). Horizontal only if text overflows. -->
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+        </Style>
+        <Style Selector="DataGrid.calc-selected-rads DataGridRow:selected DataGridCell TextBox.calc-activity-cell">
+            <Setter Property="Background" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#2F6F9F"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+        </Style>
+        <Style Selector="DataGrid.calc-selected-rads DataGridCell TextBox.calc-activity-cell /template/ DataValidationErrors">
+            <Setter Property="Theme" Value="{StaticResource NoChromeDataValidationErrors}"/>
+        </Style>
     </Window.Styles>
 
-    <Grid ColumnDefinitions="0.4*,0.6*"
+    <Grid ColumnDefinitions="0.42*,0.58*"
           RowDefinitions="0.1*,0.9*">
 
         <HeaderedContentControl Grid.Column="0"
@@ -51,11 +145,14 @@
                          Watermark="Фильтр"/>
 
                 <DataGrid Grid.Row="1"
+                          Classes="main-list-grid"
                           AutoGenerateColumns="False"
                           CanUserResizeColumns="True"
                           CanUserReorderColumns="False"
+                          CanUserSortColumns="False"
                           DoubleTapped="OnAddButtonClicked"
                           Margin="5"
+                          RowHeight="24"
                           SelectionMode="Single"
                           ItemsSource="{Binding Path=RadionuclidDictionary}"
                           SelectedItem="{Binding Path=SelectedDictionaryNuclid, Mode=TwoWay}">
@@ -63,39 +160,56 @@
                     <DataGrid.Columns>
 
                         <DataGridTextColumn x:DataType="m:CalculatorRadionuclidDTO"
-                                            Width="0.6*"
-                                            Header="Радионуклид"
+                                            Width="*"
+                                            MinWidth="60"
                                             IsReadOnly="True"
-                                            Binding="{Binding Path=Name}"/>
+                                            Binding="{Binding Path=Name}">
+                            <DataGridTextColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <Border Classes="headerTemplate">
+                                        <TextBlock Text="Радионуклид"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTextColumn.HeaderTemplate>
+                        </DataGridTextColumn>
 
                         <DataGridTextColumn x:DataType="m:CalculatorRadionuclidDTO"
-                                            Width="0.4*"
-                                            Header="Обозначение"
+                                            Width="120"
+                                            MinWidth="60"
                                             IsReadOnly="True"
-                                            Binding="{Binding Path=Abbreviation}"/>
+                                            CellStyleClasses="calc-abbrev"
+                                            Binding="{Binding Path=Abbreviation}">
+                            <DataGridTextColumn.HeaderTemplate>
+                                <DataTemplate>
+                                    <Border Classes="headerTemplate">
+                                        <TextBlock Text="Обозначение"/>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTextColumn.HeaderTemplate>
+                        </DataGridTextColumn>
 
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>
         </HeaderedContentControl>
         
-        <StackPanel Grid.Column="1"
-                    Grid.Row="0" 
-                    Grid.RowSpan="2"
-                    Orientation="Vertical"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch">
+        <Grid Grid.Column="1"
+              Grid.Row="0"
+              Grid.RowSpan="2"
+              Margin="5,5,5,5"
+              RowDefinitions="Auto,*">
 
-            <Expander ExpandDirection="Down"
+            <Expander Grid.Row="0"
+                      Classes="calc-expander"
+                      ExpandDirection="Down"
                       IsExpanded="True"
                       Header="Раскрыть/Скрыть верхнюю панель"
                       HorizontalAlignment="Stretch"
                       HorizontalContentAlignment="Stretch"
-                      Margin="5"
                       VerticalAlignment="Top">
 
                 <HeaderedContentControl Header="Выбранный радионуклид"
-                                        Margin="5, 0,5,5">
+                                        Margin="0,0,0,0">
                     <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0.25*" MinWidth="125"/>
@@ -105,17 +219,14 @@
 
                         <TextBlock Grid.Column="0"
                                    Grid.Row="0"
-                                   Margin="5"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Center"
+                                   Classes="calc-label"
                                    Text="Обозначение"/>
 
                         <TextBox Grid.Column="1"
                                  Grid.ColumnSpan="2"
                                  Grid.Row="0"
+                                 Classes="calc-result calc-abbrev"
                                  ContextMenu="{x:Null}"
-                                 IsHitTestVisible="False"
-                                 IsReadOnly="True"
                                  HorizontalAlignment="Stretch"
                                  HorizontalContentAlignment="Left"
                                  Margin="5"
@@ -124,16 +235,13 @@
 
                         <TextBlock Grid.Column="0"
                                    Grid.Row="1"
-                                   Margin="5"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Center"
+                                   Classes="calc-label"
                                    Text="Наименование"/>
 
                         <TextBox Grid.Column="1"
                                  Grid.ColumnSpan="2"
                                  Grid.Row="1"
-                                 IsHitTestVisible="False"
-                                 IsReadOnly="True"
+                                 Classes="calc-result"
                                  HorizontalAlignment="Stretch"
                                  HorizontalContentAlignment="Left"
                                  Margin="5"
@@ -142,15 +250,12 @@
 
                         <TextBlock Grid.Column="0"
                                    Grid.Row="2"
-                                   Margin="5"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Center"
+                                   Classes="calc-label"
                                    Text="Период полураспада"/>
 
                         <TextBox Grid.Column="1"
                                  Grid.Row="2"
-                                 IsHitTestVisible="False"
-                                 IsReadOnly="True"
+                                 Classes="calc-result"
                                  HorizontalAlignment="Stretch"
                                  HorizontalContentAlignment="Left"
                                  Margin="5"
@@ -166,16 +271,13 @@
 
                         <TextBlock Grid.Column="0"
                                    Grid.Row="3"
-                                   Margin="5"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Center"
+                                   Classes="calc-label"
                                    Text="D-величина (ТБк):"/>
 
                         <TextBox Grid.Column="1"
                                  Grid.ColumnSpan="2"
                                  Grid.Row="3"
-                                 IsHitTestVisible="False"
-                                 IsReadOnly="True"
+                                 Classes="calc-result"
                                  HorizontalAlignment="Stretch"
                                  HorizontalContentAlignment="Left"
                                  Margin="5"
@@ -184,16 +286,13 @@
 
                         <TextBlock Grid.Column="0"
                                    Grid.Row="4"
-                                   Margin="5"
-                                   HorizontalAlignment="Right"
-                                   VerticalAlignment="Center"
+                                   Classes="calc-label"
                                    Text="МЗА (Бк):"/>
 
                         <TextBox Grid.Column="1"
                                  Grid.ColumnSpan="2"
                                  Grid.Row="4"
-                                 IsHitTestVisible="False"
-                                 IsReadOnly="True"
+                                 Classes="calc-result"
                                  HorizontalAlignment="Stretch"
                                  HorizontalContentAlignment="Left"
                                  Margin="5"
@@ -204,187 +303,220 @@
                 </HeaderedContentControl>
             </Expander>
 
-            <HeaderedContentControl Margin="5"
+            <HeaderedContentControl Grid.Row="1"
+                                    Margin="0"
+                                    VerticalAlignment="Stretch"
                                     Header="Список радионуклидов">
-                <Grid ColumnDefinitions="0.1*,0.45*,0.45*"
-                      RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                <Grid ColumnDefinitions="Auto,*"
+                      RowDefinitions="Auto,*,Auto">
                     
                     <TextBlock Grid.Column="0"
-                               Grid.ColumnSpan="3"
+                               Grid.ColumnSpan="2"
                                Grid.Row="0"
                                FontSize="12"
                                HorizontalAlignment="Center"
-                               Margin="0,0,0,10"
+                               Margin="0,0,0,6"
                                Text="Добавьте радионуклиды в список, укажите активность в Бк и количество (1 по умолчанию)"
                                TextWrapping="WrapWithOverflow"/>
 
-                    <Button Grid.Column="0"
-                            Grid.Row="1"
-                            Click="OnAddButtonClicked"
-                            FontSize="16"
-                            Height="30"
-                            VerticalAlignment="Bottom"
-                            VerticalContentAlignment="Center"
-                            Width="30">
+                    <StackPanel Grid.Column="0"
+                                Grid.Row="1"
+                                Margin="0,0,8,0"
+                                Spacing="0"
+                                VerticalAlignment="Center"
+                                MinWidth="92">
+                        <Button Classes="calc-list-action"
+                                Click="OnAddButtonClicked"
+                                Content="&#x0414;&#x043E;&#x0431;&#x0430;&#x0432;&#x0438;&#x0442;&#x044C;"
+                                ToolTip.Tip="&#x0414;&#x043E;&#x0431;&#x0430;&#x0432;&#x0438;&#x0442;&#x044C; &#x0432;&#x044B;&#x0431;&#x0440;&#x0430;&#x043D;&#x043D;&#x044B;&#x0439; &#x0440;&#x0430;&#x0434;&#x0438;&#x043E;&#x043D;&#x0443;&#x043A;&#x043B;&#x0438;&#x0434; &#x0438;&#x0437; &#x0441;&#x043F;&#x0440;&#x0430;&#x0432;&#x043E;&#x0447;&#x043D;&#x0438;&#x043A;&#x0430; &#x0432; &#x0441;&#x043F;&#x0438;&#x0441;&#x043E;&#x043A;"/>
+                        <Button Classes="calc-list-action"
+                                Click="OnRemoveButtonClicked"
+                                Content="&#x0423;&#x0431;&#x0440;&#x0430;&#x0442;&#x044C;"
+                                ToolTip.Tip="&#x0423;&#x0431;&#x0440;&#x0430;&#x0442;&#x044C; &#x0432;&#x044B;&#x0434;&#x0435;&#x043B;&#x0435;&#x043D;&#x043D;&#x044B;&#x0439; &#x0440;&#x0430;&#x0434;&#x0438;&#x043E;&#x043D;&#x0443;&#x043A;&#x043B;&#x0438;&#x0434; &#x0438;&#x0437; &#x0441;&#x043F;&#x0438;&#x0441;&#x043A;&#x0430;"/>
+                        <Button Classes="calc-list-action"
+                                Click="OnClearButtonClicked"
+                                Content="&#x041E;&#x0447;&#x0438;&#x0441;&#x0442;&#x0438;&#x0442;&#x044C;"
+                                Margin="0"
+                                ToolTip.Tip="&#x041E;&#x0447;&#x0438;&#x0441;&#x0442;&#x0438;&#x0442;&#x044C; &#x0432;&#x0435;&#x0441;&#x044C; &#x0441;&#x043F;&#x0438;&#x0441;&#x043E;&#x043A; &#x0440;&#x0430;&#x0434;&#x0438;&#x043E;&#x043D;&#x0443;&#x043A;&#x043B;&#x0438;&#x0434;&#x043E;&#x0432;"/>
+                    </StackPanel>
 
-                        <TextBlock FontSize="16"
-                                   HorizontalAlignment="Center"
-                                   Margin="-3"
-                                   Text="&gt;"
-                                   VerticalAlignment="Center"/>
-                    </Button>
-
-                    <Button Grid.Column="0"
-                            Grid.Row="2"
-                            Click="OnRemoveButtonClicked"
-                            Height="30"
-                            VerticalAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            Width="30">
-
-                        <TextBlock
-                            FontSize="16"
-                            HorizontalAlignment="Center"
-                            Margin="-3"
-                            Text="&lt;"
-                            VerticalAlignment="Center"/>
-                    </Button>
-
-                    <Button Grid.Column="0"
-                            Grid.Row="3"
-                            Click="OnClearButtonClicked"
-                            FontSize="16"
-                            Height="30"
-                            VerticalAlignment="Top"
-                            VerticalContentAlignment="Center"
-                            Width="30">
-
-                        <TextBlock FontSize="16"
-                                   HorizontalAlignment="Center"
-                                   Margin="-3"
-                                   Text="&lt;&lt;"
-                                   VerticalAlignment="Center"/>
-                    </Button>
-
-                    <DataGrid Grid.Column="1"
-                              Grid.ColumnSpan="2"
+                    <DataGrid x:Name="SelectedRadsDataGrid"
+                              Grid.Column="1"
                               Grid.Row="1"
-                              Grid.RowSpan="3"
+                              Classes="main-list-grid calc-selected-rads"
                               AutoGenerateColumns="False"
                               CanUserResizeColumns="True"
                               CanUserReorderColumns="False"
-                              Margin="5"
-                              MinHeight="150"
-                              MaxHeight="175"
+                              CanUserSortColumns="False"
+                              Margin="0,2,0,2"
+                              MinHeight="165"
+                              VerticalAlignment="Stretch"
+                              RowHeight="28"
                               SelectionMode="Single"
                               ItemsSource="{Binding Path=SelectedRadionuclids}"
                               SelectedItem="{Binding Path=SelectedNuclid, Mode=TwoWay}">
                         <DataGrid.Columns>
 
-                            <DataGridTextColumn x:DataType="m:CalculatorRadionuclidDTO"
-                                                Width="0.3*"
-                                                MinWidth="50"
-                                                Header="Радионуклид"
-                                                IsReadOnly="True"
-                                                Binding="{Binding Path=Name}"/>
+                            <DataGridTemplateColumn x:DataType="m:CalculatorRadionuclidDTO"
+                                                    Width="0.3*"
+                                                    MinWidth="50"
+                                                    IsReadOnly="True">
+                                <DataGridTemplateColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Border Classes="headerTemplate">
+                                            <TextBlock Text="Радионуклид"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.HeaderTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate x:DataType="m:CalculatorRadionuclidDTO">
+                                        <TextBlock Classes="calc-ro"
+                                                   Text="{Binding Name}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   ToolTip.Tip="{Binding Name}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
 
-                            <DataGridTextColumn x:DataType="m:CalculatorRadionuclidDTO"
-                                                Width="0.3*"
-                                                MinWidth="50"
-                                                Header="Обозначение"
-                                                IsReadOnly="True"
-                                                Binding="{Binding Path=Abbreviation}"/>
+                            <DataGridTemplateColumn x:DataType="m:CalculatorRadionuclidDTO"
+                                                    Width="0.3*"
+                                                    MinWidth="50"
+                                                    IsReadOnly="True">
+                                <DataGridTemplateColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Border Classes="headerTemplate">
+                                            <TextBlock Text="Обозначение"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.HeaderTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate x:DataType="m:CalculatorRadionuclidDTO">
+                                        <TextBlock Classes="calc-ro calc-abbrev"
+                                                   Text="{Binding Abbreviation}"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   ToolTip.Tip="{Binding Abbreviation}"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
 
-                            <DataGridTextColumn x:DataType="m:CalculatorRadionuclidDTO"
-                                                Width="0.4*"
-                                                MinWidth="100"
-                                                Header="Активность, Бк"
-                                                IsVisible="{Binding VM.IsSingleActivity, 
-                                                    ElementName=CategoryCalculatorWindow, 
-                                                    Converter={StaticResource BoolInverterConverter}}"
-                                                Binding="{Binding Path=Activity, Mode=TwoWay}"/>
+                            <DataGridTemplateColumn x:DataType="m:CalculatorRadionuclidDTO"
+                                                    Tag="PerNuclideActivity"
+                                                    Width="0.5*"
+                                                    MinWidth="140"
+                                                    IsReadOnly="False">
+                                <DataGridTemplateColumn.HeaderTemplate>
+                                    <DataTemplate>
+                                        <Border Classes="headerTemplate">
+                                            <TextBlock Text="&#x0410;&#x043A;&#x0442;&#x0438;&#x0432;&#x043D;&#x043E;&#x0441;&#x0442;&#x044C;, &#x0411;&#x043A; *"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.HeaderTemplate>
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate x:DataType="m:CalculatorRadionuclidDTO">
+                                        <TextBox Classes="calc-input calc-activity-cell"
+                                                 VerticalAlignment="Center"
+                                                 ToolTip.Tip="&#x041F;&#x043E;&#x043B;&#x0435; &#x0434;&#x043B;&#x044F; &#x0432;&#x0432;&#x043E;&#x0434;&#x0430; &#x0430;&#x043A;&#x0442;&#x0438;&#x0432;&#x043D;&#x043E;&#x0441;&#x0442;&#x0438; (&#x0411;&#x043A;)"
+                                                 Text="{Binding Activity, Mode=TwoWay}"
+                                                 LostFocus="InputElement_OnLostFocus">
+                                            <interactivity:Interaction.Behaviors>
+                                                <behaviors:TextBoxPositiveExponentialInputBehavior/>
+                                            </interactivity:Interaction.Behaviors>
+                                        </TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
 
                         </DataGrid.Columns>
                     </DataGrid>
                     <Grid Grid.Column="0"
-                          Grid.ColumnSpan="3"
-                          Grid.Row="4"
-                          ColumnDefinitions="Auto,Auto,Auto,Auto"
-                          RowDefinitions="Auto,Auto,Auto,Auto,Auto">
+                          Grid.ColumnSpan="2"
+                          Grid.Row="2"
+                          ColumnDefinitions="Auto,Auto,Auto,*"
+                          RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+                          Margin="0,2,0,0">
 
                         <!-- 1 ряд: Раздельная активность + Общая активность -->
 
                         <TextBlock Grid.Row="0" Grid.Column="0"
-                                   Margin="5"
+                                   Margin="4,2"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Center"
                                    Text="Раздельная активность"/>
 
                         <CheckBox Grid.Row="0" Grid.Column="1"
-                                  Margin="5"
+                                  Margin="4,2"
+                                  HorizontalAlignment="Left"
                                   IsThreeState="False"
                                   IsChecked="{Binding IsSingleActivity, Converter={StaticResource BoolInverterConverter}, Mode=TwoWay}"
                                   VerticalAlignment="Center"/>
 
                         <TextBlock Grid.Row="0" Grid.Column="2"
                                    IsVisible="{Binding IsSingleActivity}"
-                                   Margin="5"
+                                   Margin="4,2"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Center"
                                    Text="Общая активность"/>
 
                         <TextBox Grid.Row="0" Grid.Column="3"
+                                 Classes="calc-input"
                                  IsVisible="{Binding IsSingleActivity}"
-                                 HorizontalAlignment="Stretch"
-                                 Margin="5"
+                                 Margin="4,2"
                                  Text="{Binding Activity, Mode=TwoWay}"
                                  LostFocus="InputElement_OnLostFocus"
-                                 VerticalAlignment="Center"/>
+                                 VerticalAlignment="Center">
+                            <interactivity:Interaction.Behaviors>
+                                <behaviors:TextBoxResultPatternValidationBehavior
+                                    Pattern="{x:Static behaviors:CalculatorInputPatterns.PositiveExponential}"/>
+                            </interactivity:Interaction.Behaviors>
+                        </TextBox>
 
                         <!-- 2 ряд: Количество + Отношение A/D -->
 
                         <TextBlock Grid.Row="1" Grid.Column="0"
-                                   Margin="5"
+                                   Margin="4,2"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Center"
                                    Text="Количество"/>
 
                         <TextBox Grid.Row="1" Grid.Column="1"
-                                 HorizontalAlignment="Stretch"
-                                 Margin="5"
+                                 Classes="calc-input"
+                                 Margin="4,2"
+                                 MaxWidth="120"
+                                 HorizontalAlignment="Left"
                                  Text="{Binding Quantity}"
-                                 VerticalAlignment="Center"/>
+                                 VerticalAlignment="Center">
+                            <interactivity:Interaction.Behaviors>
+                                <behaviors:TextBoxResultPatternValidationBehavior
+                                    Pattern="{x:Static behaviors:CalculatorInputPatterns.PositiveInteger}"/>
+                            </interactivity:Interaction.Behaviors>
+                        </TextBox>
 
                         <TextBlock Grid.Row="1" Grid.Column="2"
-                                   Margin="5"
+                                   Margin="4,2"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Center"
                                    Text="Отношение A/D"/>
 
                         <TextBox Grid.Row="1" Grid.Column="3"
-                                 IsReadOnly="True"
-                                 HorizontalAlignment="Left"
-                                 Margin="5"
-                                 MinWidth="65"
+                                 Classes="calc-result calc-input"
+                                 Margin="4,2"
                                  Text="{Binding ActivityToNormalizingD}"
                                  VerticalAlignment="Center"/>
 
                         <!-- 3 ряд: Категория ЗРИ -->
 
                         <TextBlock Grid.Row="2" Grid.Column="0"
-                                   Margin="5"
+                                   Margin="4,2"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Center"
                                    Text="Категория ЗРИ"/>
 
                         <TextBox Grid.Row="2" Grid.Column="1"
                                  Grid.ColumnSpan="3"
+                                 Classes="calc-result calc-input"
                                  ContextMenu="{x:Null}"
-                                 IsHitTestVisible="False"
-                                 IsReadOnly="True"
-                                 HorizontalAlignment="Stretch"
-                                 Margin="5"
-                                 Text="{Binding Category, Mode=TwoWay}"
+                                 Margin="4,2"
+                                 Text="{Binding Category, Mode=OneWay}"
                                  VerticalAlignment="Center"/>
 
                         <!-- 4 ряд: текст категории -->
@@ -393,26 +525,32 @@
                                    Grid.ColumnSpan="4"
                                    Foreground="Red"
                                    HorizontalAlignment="Center"
-                                   Margin="5"
+                                   Margin="4,2"
+                                   TextWrapping="Wrap"
                                    VerticalAlignment="Center"
                                    Text="{Binding CategoryText}"/>
 
                         <!-- 5 ряд: кнопки -->
 
-                        <Button Grid.Row="4" Grid.Column="0"
-                                Grid.ColumnSpan="2"
-                                Click="OnCalculateButtonClicked"
-                                Content="Рассчитать"
-                                Margin="0,5,5,0"/>
-
-                        <Button Grid.Row="4" Grid.Column="2"
-                                Grid.ColumnSpan="2"
-                                Click="OnCloseButtonClicked"
-                                Content="Закрыть"
-                                Margin="5,5,0,0"/>
+                        <Grid Grid.Row="4"
+                              Grid.Column="0"
+                              Grid.ColumnSpan="4"
+                              ColumnDefinitions="*,*"
+                              Margin="0,4,0,0">
+                            <Button Grid.Column="0"
+                                    Click="OnCalculateButtonClicked"
+                                    Content="Рассчитать"
+                                    HorizontalAlignment="Stretch"
+                                    Margin="0,0,4,0"/>
+                            <Button Grid.Column="1"
+                                    Click="OnCloseButtonClicked"
+                                    Content="Закрыть"
+                                    HorizontalAlignment="Stretch"
+                                    Margin="4,0,0,0"/>
+                        </Grid>
                     </Grid>
                 </Grid>
             </HeaderedContentControl>
-        </StackPanel>
+        </Grid>
     </Grid>
 </Window>

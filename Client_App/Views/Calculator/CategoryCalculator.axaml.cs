@@ -4,6 +4,7 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Client_App.ViewModels.Calculator;
 using Models.DTO;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -22,15 +23,91 @@ public partial class CategoryCalculator : BaseWindow<CategoryCalculatorVM>
     public CategoryCalculator()
     {
         AvaloniaXamlLoader.Load(this);
-        Name = "CategoryCalculatorWindow";
     }
 
     public CategoryCalculator(CategoryCalculatorVM vm)
     {
         AvaloniaXamlLoader.Load(this);
-        Name = "CategoryCalculatorWindow";
         this.AttachDevTools();
         VM = vm;
+        DataContext = vm;
+        vm.PropertyChanged += OnVmPropertyChanged;
+        Opened += (_, _) => SyncPerNuclideActivityColumnVisibility();
+        SyncPerNuclideActivityColumnVisibility();
+    }
+
+    #endregion
+
+    #region Activity column visibility
+
+    private DataGrid? _selectedRadsDataGrid;
+    private DataGridColumn? _perNuclideActivityColumn;
+    private int _perNuclideActivityInsertIndex = 2;
+
+    private void OnVmPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName is null or nameof(CategoryCalculatorVM.IsSingleActivity))
+            SyncPerNuclideActivityColumnVisibility();
+    }
+
+    /// <summary>
+    /// Avalonia often fails to re-show a DataGridColumn that started (or became) IsVisible=false.
+    /// Insert/remove from Columns is reliable; shared "total activity" field still uses IsVisible binding.
+    /// </summary>
+    private void SyncPerNuclideActivityColumnVisibility()
+    {
+        if (VM is null)
+            return;
+
+        var grid = _selectedRadsDataGrid ??= this.FindControl<DataGrid>("SelectedRadsDataGrid");
+        if (grid is null)
+            return;
+
+        if (!TryResolvePerNuclideActivityColumn(grid))
+            return;
+
+        var column = _perNuclideActivityColumn!;
+        var shouldShow = !VM.IsSingleActivity;
+        var isInGrid = grid.Columns.Contains(column);
+
+        if (shouldShow)
+        {
+            if (isInGrid)
+            {
+                column.IsVisible = true;
+                return;
+            }
+
+            var index = Math.Clamp(_perNuclideActivityInsertIndex, 0, grid.Columns.Count);
+            grid.Columns.Insert(index, column);
+            column.IsVisible = true;
+            return;
+        }
+
+        if (!isInGrid)
+            return;
+
+        _perNuclideActivityInsertIndex = Math.Max(0, grid.Columns.IndexOf(column));
+        grid.Columns.Remove(column);
+    }
+
+    private bool TryResolvePerNuclideActivityColumn(DataGrid grid)
+    {
+        if (_perNuclideActivityColumn is not null)
+            return true;
+
+        if (grid.Columns.Count == 0)
+            return false;
+
+        _perNuclideActivityColumn =
+            grid.Columns.FirstOrDefault(c => Equals(c.Tag, "PerNuclideActivity"))
+            ?? (grid.Columns.Count > 2 ? grid.Columns[2] : null);
+
+        if (_perNuclideActivityColumn is null)
+            return false;
+
+        _perNuclideActivityInsertIndex = grid.Columns.IndexOf(_perNuclideActivityColumn);
+        return true;
     }
 
     #endregion

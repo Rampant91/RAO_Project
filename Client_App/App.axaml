@@ -533,6 +533,16 @@
             <!-- Tabular figures: same digit count => same width, without monospace body text. -->
             <Setter Property="FontFeatures" Value="+tnum"/>
         </Style>
+        <!-- Radionuclide abbreviations: fixed pitch so same length lines up (tnum alone is digits-only). -->
+        <Style Selector="DataGrid.main-list-grid DataGridCell.calc-abbrev TextBlock">
+            <Setter Property="FontFamily" Value="Consolas, Courier New, monospace"/>
+        </Style>
+        <Style Selector="TextBlock.calc-abbrev">
+            <Setter Property="FontFamily" Value="Consolas, Courier New, monospace"/>
+        </Style>
+        <Style Selector="TextBox.calc-abbrev">
+            <Setter Property="FontFamily" Value="Consolas, Courier New, monospace"/>
+        </Style>
         <!-- Report rows: center all cells; comments stay left (CellStyleClasses=comments-column). -->
         <Style Selector="DataGrid.report-list-grid DataGridCell TextBlock">
             <Setter Property="TextAlignment" Value="Center"/>

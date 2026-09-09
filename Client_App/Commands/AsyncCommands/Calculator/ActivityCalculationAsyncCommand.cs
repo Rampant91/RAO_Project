@@ -1,9 +1,9 @@
-﻿using System;
-using Client_App.ViewModels.Calculator;
-using System.Linq;
-using System.Threading.Tasks;
+using System;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Client_App.ViewModels.Calculator;
 
 namespace Client_App.Commands.AsyncCommands.Calculator;
 
@@ -12,7 +12,7 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
     private readonly ActivityCalculatorVM _activityCalculatorVM;
 
     #region Constructor
-    
+
     public ActivityCalculationAsyncCommand(ActivityCalculatorVM activityCalculatorVM)
     {
         _activityCalculatorVM = activityCalculatorVM;
@@ -22,14 +22,16 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
     #endregion
 
     #region PropertyChanged
-    
+
     private void ActivityCalculatorVMPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
-        if (e.PropertyName is nameof(ActivityCalculatorVM.SelectedDictionaryNuclid.Halflife)
-            or nameof(ActivityCalculatorVM.SelectedDictionaryNuclid.Unit)
+        if (e.PropertyName is nameof(ActivityCalculatorVM.SelectedDictionaryNuclid)
             or nameof(ActivityCalculatorVM.InitialActivity)
+            or nameof(ActivityCalculatorVM.InitialActivityDate)
+            or nameof(ActivityCalculatorVM.ResidualActivityDate)
             or nameof(ActivityCalculatorVM.TimePeriodDouble)
-            or nameof(ActivityCalculatorVM.SelectedTimeUnit))
+            or nameof(ActivityCalculatorVM.SelectedTimeUnit)
+            or nameof(ActivityCalculatorVM.IsDateRange))
         {
             OnCanExecuteChanged();
         }
@@ -38,63 +40,99 @@ public partial class ActivityCalculationAsyncCommand : BaseAsyncCommand
     #endregion
 
     #region AsyncExecute
-    
+
     public override Task AsyncExecute(object? parameter)
     {
-        switch (_activityCalculatorVM)
-        {
-            case { IsDateRange: false }:
-            {
-                _activityCalculatorVM.IsDateRangeTextVisible = false;
+        if (_activityCalculatorVM.IsDateRange)
+            CalculateByDateRange();
+        else
+            CalculateByTimePeriod();
 
-                if (double.TryParse(ToExponentialString(_activityCalculatorVM.TimePeriodDouble), out var timePeriodDoubleValue) 
-                    && double.TryParse(ToExponentialString(_activityCalculatorVM.InitialActivity), out var initialActivityDoubleValue))
-                {
-                    var timeParam = GetTimeDoubleValueInMinutes(timePeriodDoubleValue, _activityCalculatorVM.SelectedTimeUnit)
-                                    / GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedDictionaryNuclid.Halflife, _activityCalculatorVM.SelectedDictionaryNuclid.Unit);
-
-                    var degree = -0.693 * timeParam;
-                    var exp = Math.Exp(degree);
-                    var activity = initialActivityDoubleValue * exp;
-
-                    _activityCalculatorVM.ResidualActivity = ToExponentialString(activity);
-                }
-                else _activityCalculatorVM.ResidualActivity = string.Empty;
-
-                break;
-            }
-            case { IsDateRange: true }:
-            {
-                if (!(double.TryParse(ToExponentialString(_activityCalculatorVM.InitialActivity), out var initialActivityDoubleValue)
-                      && DateOnly.TryParse(_activityCalculatorVM.InitialActivityDate, out var initialActivityDate)
-                      && DateOnly.TryParse(_activityCalculatorVM.ResidualActivityDate, out var residualActivityDate)))
-                {
-                    _activityCalculatorVM.IsDateRangeTextVisible = false;
-                    _activityCalculatorVM.ResidualActivity = string.Empty;
-                    return Task.CompletedTask;
-                }
-
-                _activityCalculatorVM.IsDateRangeTextVisible = initialActivityDate > residualActivityDate;
-                if (initialActivityDate > residualActivityDate)
-                {
-                    _activityCalculatorVM.ResidualActivity = string.Empty;
-                    return Task.CompletedTask;
-                }
-
-                var timeParam = GetTimeDoubleValueInMinutes(residualActivityDate.DayNumber - initialActivityDate.DayNumber, "сут")
-                                / GetTimeDoubleValueInMinutes(_activityCalculatorVM.SelectedDictionaryNuclid.Halflife, _activityCalculatorVM.SelectedDictionaryNuclid.Unit);
-
-                var degree = -0.693 * timeParam;
-                var exp = Math.Exp(degree);
-                var activity = initialActivityDoubleValue * exp;
-
-                _activityCalculatorVM.ResidualActivity = ToExponentialString(activity);
-
-                break;
-            }
-        }
         return Task.CompletedTask;
     }
+
+    #endregion
+
+    #region Calculate
+
+    private void CalculateByDateRange()
+    {
+        var hasActivity = double.TryParse(
+            ToExponentialString(_activityCalculatorVM.InitialActivity),
+            out var initialActivity);
+        var hasInitialDate = DateOnly.TryParse(_activityCalculatorVM.InitialActivityDate, out var initialDate);
+        var hasResidualDate = DateOnly.TryParse(_activityCalculatorVM.ResidualActivityDate, out var residualDate);
+
+        if (hasInitialDate && hasResidualDate)
+        {
+            _activityCalculatorVM.IsDateRangeTextVisible = initialDate > residualDate;
+            if (initialDate > residualDate)
+            {
+                _activityCalculatorVM.ResidualActivity = string.Empty;
+                return;
+            }
+        }
+        else
+        {
+            _activityCalculatorVM.IsDateRangeTextVisible = false;
+        }
+
+        if (!hasActivity
+            || !hasInitialDate
+            || !hasResidualDate
+            || !TryGetHalfLifeMinutes(out var halfLifeMinutes))
+        {
+            _activityCalculatorVM.ResidualActivity = string.Empty;
+            return;
+        }
+
+        var timeParam = GetTimeDoubleValueInMinutes(residualDate.DayNumber - initialDate.DayNumber, "сут")
+                        / halfLifeMinutes;
+        _activityCalculatorVM.ResidualActivity = ToExponentialString(Decay(initialActivity, timeParam));
+    }
+
+    private void CalculateByTimePeriod()
+    {
+        _activityCalculatorVM.IsDateRangeTextVisible = false;
+
+        if (!double.TryParse(ToExponentialString(_activityCalculatorVM.TimePeriodDouble), out var timePeriod)
+            || !double.TryParse(ToExponentialString(_activityCalculatorVM.InitialActivity), out var initialActivity)
+            || string.IsNullOrWhiteSpace(_activityCalculatorVM.SelectedTimeUnit)
+            || !TryGetHalfLifeMinutes(out var halfLifeMinutes))
+        {
+            _activityCalculatorVM.ResidualActivity = string.Empty;
+            return;
+        }
+
+        var timeParam = GetTimeDoubleValueInMinutes(timePeriod, _activityCalculatorVM.SelectedTimeUnit)
+                        / halfLifeMinutes;
+        _activityCalculatorVM.ResidualActivity = ToExponentialString(Decay(initialActivity, timeParam));
+    }
+
+    /// <summary>
+    /// Период полураспада выбранного радионуклида в минутах.
+    /// false — если нуклид/единица ещё не заданы (любой порядок ввода).
+    /// </summary>
+    private bool TryGetHalfLifeMinutes(out double halfLifeMinutes)
+    {
+        halfLifeMinutes = 0;
+        var nuclid = _activityCalculatorVM.SelectedDictionaryNuclid;
+        if (nuclid is null || string.IsNullOrWhiteSpace(nuclid.Unit) || nuclid.Halflife <= 0)
+            return false;
+
+        try
+        {
+            halfLifeMinutes = GetTimeDoubleValueInMinutes(nuclid.Halflife, nuclid.Unit);
+            return halfLifeMinutes > 0;
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return false;
+        }
+    }
+
+    private static double Decay(double initialActivity, double timeParam) =>
+        initialActivity * Math.Exp(-0.693 * timeParam);
 
     #endregion
 

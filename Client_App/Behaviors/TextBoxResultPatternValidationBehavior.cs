@@ -21,6 +21,9 @@ public static class CalculatorInputPatterns
     /// <summary>Positive decimal (no sign, no exponent); partial input allowed while typing.</summary>
     public const string PositiveDecimal = "^\\d*([.,]\\d*)?$";
 
+    /// <summary>Non-negative integer digits only; partial input allowed while typing.</summary>
+    public const string PositiveInteger = "^\\d*$";
+
     /// <summary>Digits and '.' only (no auto-format); empty allowed by the behavior.</summary>
     public const string DateDigitsAndDots = "^[0-9.]*$";
 }
@@ -39,6 +42,9 @@ public class TextBoxResultPatternValidationBehavior : Behavior<TextBox>
         get => GetValue(PatternProperty);
         set => SetValue(PatternProperty, value);
     }
+
+    /// <summary>Effective regex; subclasses may hardcode when XAML Pattern binding is unreliable.</summary>
+    protected virtual string? EffectivePattern => Pattern;
 
     protected override void OnAttached()
     {
@@ -107,8 +113,12 @@ public class TextBoxResultPatternValidationBehavior : Behavior<TextBox>
         if (string.IsNullOrEmpty(text))
             return true;
 
-        var pattern = Pattern;
-        return !string.IsNullOrEmpty(pattern) && Regex.IsMatch(text, pattern);
+        // Missing pattern must not swallow input (e.g. x:Static failed inside DataTemplate).
+        var pattern = EffectivePattern;
+        if (string.IsNullOrEmpty(pattern))
+            return true;
+
+        return Regex.IsMatch(text, pattern);
     }
 
     private static string BuildResultText(TextBox textBox, string incoming)
@@ -118,4 +128,13 @@ public class TextBoxResultPatternValidationBehavior : Behavior<TextBox>
         var end = Math.Clamp(Math.Max(textBox.SelectionStart, textBox.SelectionEnd), 0, text.Length);
         return text.Remove(start, end - start).Insert(start, incoming);
     }
+}
+
+/// <summary>
+/// Positive exponential / plain number filter with pattern fixed in code
+/// (reliable inside DataGrid DataTemplate where x:Static Pattern may not bind).
+/// </summary>
+public sealed class TextBoxPositiveExponentialInputBehavior : TextBoxResultPatternValidationBehavior
+{
+    protected override string? EffectivePattern => CalculatorInputPatterns.PositiveExponential;
 }

@@ -160,20 +160,22 @@
 			</Grid>
             <ScrollViewer Grid.Row ="0"
                           Grid.Column="1"
-                          Margin="5"
+                          Margin="3,4,3,4"
                           HorizontalScrollBarVisibility="Disabled"
                           VerticalScrollBarVisibility="Auto"
+                          AllowAutoHide="False"
                           ToolTip.Tip="{Binding SelectedReports, Converter={StaticResource NullToTooltipConverter}, ConverterParameter='Для создания отчёта выберите свой центр из списка ВИАЦ. Если ВИАЦ в списке отсутствуют, сначала добавьте свой центр в список.'}">
 			    <StackPanel>
                     <StackPanel.Styles>
                         <Style Selector="Button">
                             <Setter Property="HorizontalAlignment" Value="Stretch"/>
                             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                            <Setter Property="Padding" Value="6,2"/>
+                            <Setter Property="Padding" Value="6,3"/>
                             <Setter Property="Margin" Value="0,0,0,3"/>
+                            <Setter Property="FontSize" Value="13"/>
                         </Style>
                     </StackPanel.Styles>
-                    <TextBlock Margin="0,0,0,8"
+                    <TextBlock Margin="0,0,0,6"
                                FontWeight="SemiBold"
                                Text="Создать отчёт по форме:"
                                TextWrapping="Wrap"/>

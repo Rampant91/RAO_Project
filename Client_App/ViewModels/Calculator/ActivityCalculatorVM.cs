@@ -11,8 +11,8 @@ public class ActivityCalculatorVM : BaseCalculatorVM
 {
     #region Properties
 
-    private CalculatorRadionuclidDTO _selectedDictionaryNuclid;
-    public CalculatorRadionuclidDTO SelectedDictionaryNuclid
+    private CalculatorRadionuclidDTO? _selectedDictionaryNuclid;
+    public CalculatorRadionuclidDTO? SelectedDictionaryNuclid
     {
         get => _selectedDictionaryNuclid;
         set
