@@ -59,8 +59,7 @@ public sealed class Forms1WarmCache
 
         MainWindowListQuery.InvalidateAllOrgKeysCaches();
         MainWindowPrefetchService.Instance.CancelPending();
-        CancelPrefetch();
-        CancelPrefetchOrgsOnly();
+        CancelAllBackgroundWork();
     }
 
     public void InvalidateOrg(int orgId)
@@ -274,20 +273,23 @@ public sealed class Forms1WarmCache
         {
             try
             {
-                await using var db = new DBModel(dbPath);
-                GetOrLoadStubs(db, orgId);
-                GetReportPage(db, orgId, filter, page, pageSize);
-
-                var total = CountReports(db, orgId, filter);
-                var totalPages = total <= 0
-                    ? 0
-                    : (total + Math.Max(1, pageSize) - 1) / Math.Max(1, pageSize);
-
-                foreach (var p in NeighborPages(page, radius: 2))
+                await MainWindowDbGate.RunAsync(dbPath, async (db, ct) =>
                 {
-                    if (cts.IsCancellationRequested || p < 1 || p > totalPages) continue;
-                    GetReportPage(db, orgId, filter, p, pageSize);
-                }
+                    if (ct.IsCancellationRequested) return;
+                    GetOrLoadStubs(db, orgId);
+                    GetReportPage(db, orgId, filter, page, pageSize);
+
+                    var total = CountReports(db, orgId, filter);
+                    var totalPages = total <= 0
+                        ? 0
+                        : (total + Math.Max(1, pageSize) - 1) / Math.Max(1, pageSize);
+
+                    foreach (var p in NeighborPages(page, radius: 2))
+                    {
+                        if (ct.IsCancellationRequested || p < 1 || p > totalPages) continue;
+                        GetReportPage(db, orgId, filter, p, pageSize);
+                    }
+                }, cts.Token).ConfigureAwait(false);
             }
             catch
             {
@@ -314,12 +316,16 @@ public sealed class Forms1WarmCache
         {
             try
             {
-                await using var db = new DBModel(dbPath);
-                foreach (var p in NeighborPages(currentPage, radius: 2))
+                await MainWindowDbGate.RunAsync(dbPath, async (db, ct) =>
                 {
-                    if (cts.IsCancellationRequested || p < 1 || p > totalPages) continue;
-                    GetReportPage(db, orgId, filter, p, pageSize);
-                }
+                    foreach (var p in NeighborPages(currentPage, radius: 2))
+                    {
+                        if (ct.IsCancellationRequested || p < 1 || p > totalPages) continue;
+                        GetReportPage(db, orgId, filter, p, pageSize);
+                    }
+
+                    await Task.CompletedTask;
+                }, cts.Token).ConfigureAwait(false);
             }
             catch
             {
@@ -341,12 +347,16 @@ public sealed class Forms1WarmCache
         {
             try
             {
-                await using var db = new DBModel(dbPath);
-                foreach (var p in NeighborPages(currentPage, radius: 2))
+                await MainWindowDbGate.RunAsync(dbPath, async (db, ct) =>
                 {
-                    if (cts.IsCancellationRequested || p < 1 || p > totalPages) continue;
-                    GetOrgPage(db, search, p, pageSize, masterFormNum);
-                }
+                    foreach (var p in NeighborPages(currentPage, radius: 2))
+                    {
+                        if (ct.IsCancellationRequested || p < 1 || p > totalPages) continue;
+                        GetOrgPage(db, search, p, pageSize, masterFormNum);
+                    }
+
+                    await Task.CompletedTask;
+                }, cts.Token).ConfigureAwait(false);
             }
             catch
             {
@@ -373,15 +383,19 @@ public sealed class Forms1WarmCache
         {
             try
             {
-                await using var db = new DBModel(dbPath);
-                foreach (var masterFormNum in masterFormNums)
+                await MainWindowDbGate.RunAsync(dbPath, async (db, _) =>
                 {
-                    var orgs = GetOrgPage(db, searchText: null, page: 1, orgPageSize, masterFormNum);
-                    var first = orgs.Items.FirstOrDefault();
-                    if (first == null) continue;
-                    GetOrLoadStubs(db, first.Id);
-                    GetReportPage(db, first.Id, formNumWhiteList: null, page: 1, reportPageSize);
-                }
+                    foreach (var masterFormNum in masterFormNums)
+                    {
+                        var orgs = GetOrgPage(db, searchText: null, page: 1, orgPageSize, masterFormNum);
+                        var first = orgs.Items.FirstOrDefault();
+                        if (first == null) continue;
+                        GetOrLoadStubs(db, first.Id);
+                        GetReportPage(db, first.Id, formNumWhiteList: null, page: 1, reportPageSize);
+                    }
+
+                    await Task.CompletedTask;
+                }).ConfigureAwait(false);
             }
             catch
             {
@@ -397,6 +411,15 @@ public sealed class Forms1WarmCache
             yield return current - d;
             yield return current + d;
         }
+    }
+
+    /// <summary>
+    /// Останавливает фоновый prefetch org/report (перед сменой вкладки / полной инвалидацией).
+    /// </summary>
+    public void CancelAllBackgroundWork()
+    {
+        CancelPrefetch();
+        CancelPrefetchOrgsOnly();
     }
 
     private void CancelPrefetch()

@@ -104,8 +104,9 @@ public static class Form2NewInterfaceOpener
         if (window is IFormOwnerStateWindow ownerState)
             ownerState.OwnerPrevState = mainWindow.WindowState;
 
+        // Overlay сначала (если ещё не показан), minimize — только перед ShowDialog.
+        await mainWindow.ShowReportOpeningOverlayAsync();
         mainWindow.WindowState = WindowState.Minimized;
-        mainWindow.SetReportOpeningOverlay(true);
 
         if (window is IFormDialogHost dialogHost)
             await dialogHost.ShowFormDialogAsync(mainWindow);

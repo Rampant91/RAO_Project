@@ -104,8 +104,8 @@ public class Forms4TabControlVM : FormsTabControlBaseVM
         {
             try
             {
-                using var db = new DBModel(dbPath);
-                var items = _cache.GetReportPage(db, orgId, null, page, pageSize);
+                var items = MainWindowDbGate.Run(dbPath, db =>
+                    _cache.GetReportPage(db, orgId, null, page, pageSize));
                 Dispatcher.UIThread.Post(() =>
                 {
                     if (generation != _reportLoadGeneration || SelectedReports?.Id != orgId)

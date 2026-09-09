@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "lastModified": "2026-09-08T16:00:55.3666119+03:00",
+  "columnWidths": {
+    "columnWidthSettings": {
+      "MainWindow.Orgs.1.v3": [
+        68,
+        0,
+        140,
+        32
+      ],
+      "MainWindow.Orgs.1.v4": [
+        68,
+        0,
+        140,
+        32
+      ],
+      "MainWindow.Reports.1": [
+        65,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "rowCounts": {
+    "rowCountSettings": {}
+  }
+}

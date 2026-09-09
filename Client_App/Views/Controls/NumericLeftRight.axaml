@@ -21,10 +21,22 @@
 			<Setter Property="Background" Value="White"/>
 			<Setter Property="MinWidth" Value="36"/>
 			<Setter Property="MaxWidth" Value="48"/>
+			<Setter Property="Width" Value="40"/>
 			<Setter Property="Height" Value="24"/>
 			<Setter Property="Padding" Value="4,2"/>
 			<Setter Property="TextAlignment" Value="Center"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<!-- Tip on hover; do not hide DataValidationErrors itself (Fluent wraps the whole TextBox). -->
+			<Setter Property="inputBehaviors:OrgFormValidationPresentation.IsEnabled" Value="True"/>
+		</Style>
+		<!-- Hide only the ! icon so it does not steal width; keep red error border. -->
+		<Style Selector="TextBox /template/ DataValidationErrors /template/ ContentControl">
+			<Setter Property="IsVisible" Value="False"/>
+			<Setter Property="Width" Value="0"/>
+			<Setter Property="Height" Value="0"/>
+			<Setter Property="Margin" Value="0"/>
+			<Setter Property="Padding" Value="0"/>
+			<Setter Property="IsHitTestVisible" Value="False"/>
 		</Style>
 	</UserControl.Styles>
 	<Grid ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto" VerticalAlignment="Center">
@@ -32,7 +44,9 @@
 					  Classes="DecreasePart" 
 					  Command="{Binding Decrease, RelativeSource={RelativeSource AncestorType=UserControl}}" 
 					  Content="❮" />
-		<TextBox Grid.Column="1" Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}}">
+		<TextBox x:Name="ValueTextBox"
+		         Grid.Column="1"
+		         Text="{Binding Value, RelativeSource={RelativeSource AncestorType=UserControl}}">
 			<interactivity:Interaction.Behaviors>
 				<inputBehaviors:TextBoxDigitValidationBehavior/>
 			</interactivity:Interaction.Behaviors>

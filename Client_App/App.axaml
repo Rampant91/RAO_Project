@@ -32,6 +32,10 @@
         -->
         <!--Палитра-->
         <SolidColorBrush x:Key="PrimaryColor" Color="#99d3f0"/>
+        <!-- Avalonia 11 Fluent: шаблон DataGridColumnHeader резервирует ~32px под SortIcon
+             даже при CanUserSortColumns=False — из-за этого справа «пустое» место перекрывает
+             хвост заголовка. См. Avalonia#9791 / Discussion#15442. -->
+        <x:Double x:Key="DataGridSortIconMinWidth">0</x:Double>
 
     </Application.Resources>
 
@@ -39,6 +43,24 @@
     <Application.Styles>
         <FluentTheme />
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+
+        <!--
+          Scrollbars stay expanded (not thin overlay). Compact/auto-hide can be a settings option later.
+        -->
+        <Style Selector="ScrollViewer">
+            <Setter Property="AllowAutoHide" Value="False"/>
+        </Style>
+        <Style Selector="ScrollBar">
+            <Setter Property="AllowAutoHide" Value="False"/>
+        </Style>
+        <Style Selector="ScrollBar:vertical">
+            <Setter Property="Width" Value="18"/>
+            <Setter Property="MinWidth" Value="18"/>
+        </Style>
+        <Style Selector="ScrollBar:horizontal">
+            <Setter Property="Height" Value="18"/>
+            <Setter Property="MinHeight" Value="18"/>
+        </Style>
 
         <Style Selector="DataGridCell.cell_tooltip">
             <Setter Property="ToolTip.Tip" Value="{Binding Content.Text, Mode=OneWay, RelativeSource={RelativeSource Self}}"/>
@@ -441,35 +463,98 @@
         <Style Selector="DataGrid.main-list-grid">
             <Setter Property="CanUserResizeColumns" Value="True"/>
             <Setter Property="CanUserReorderColumns" Value="False"/>
-            <Setter Property="MinColumnWidth" Value="48"/>
+            <!-- Floor so a column cannot be dragged to zero / fully hidden. -->
+            <Setter Property="MinColumnWidth" Value="60"/>
+            <!--
+              Star-колонки + UseLayoutRounding: вертикальные линии (ячейки/заголовки) пропадают
+              при ресайзе/пересчёте (Avalonia.Controls.DataGrid#71, #160).
+            -->
+            <Setter Property="UseLayoutRounding" Value="False"/>
+            <!-- Lines via GridLines only: cell BorderThickness + PART_RightGridLine otherwise double. -->
             <Setter Property="GridLinesVisibility" Value="All"/>
             <Setter Property="HorizontalGridLinesBrush" Value="#FFB0B0B0"/>
             <Setter Property="VerticalGridLinesBrush" Value="#FFB0B0B0"/>
+            <Setter Property="BorderBrush" Value="#FFB0B0B0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <!-- Visible reserves scrollbar gutter; AllowAutoHide=False keeps it always shown. -->
+            <Setter Property="VerticalScrollBarVisibility" Value="Visible"/>
+            <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+        </Style>
+        <Style Selector="DataGrid.main-list-grid ScrollBar">
+            <Setter Property="AllowAutoHide" Value="False"/>
         </Style>
         <Style Selector="DataGrid.main-list-grid DataGridColumnHeader">
-            <Setter Property="MinHeight" Value="30"/>
-            <Setter Property="BorderThickness" Value="1,1,1,1"/>
+            <Setter Property="MinHeight" Value="24"/>
+            <Setter Property="MinWidth" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <!-- Right edge: header separators without relying only on rounded gridlines. -->
+            <Setter Property="BorderThickness" Value="0,0,1,0"/>
             <Setter Property="BorderBrush" Value="#FFB0B0B0"/>
-            <Setter Property="Padding" Value="4,0,10,0"/>
+            <Setter Property="Padding" Value="4,0,4,0"/>
         </Style>
-        <Style Selector="DataGrid.main-list-grid DataGridColumnHeader:first-child">
-            <Setter Property="BorderThickness" Value="1,1,1,1"/>
+        <!-- Report grids: two-line headers; keep compact so default 10 rows still fit. -->
+        <Style Selector="DataGrid.report-list-grid">
+            <Setter Property="ColumnHeaderHeight" Value="34"/>
+        </Style>
+        <Style Selector="DataGrid.report-list-grid DataGridColumnHeader">
+            <Setter Property="MinHeight" Value="34"/>
+            <Setter Property="Height" Value="34"/>
+            <Setter Property="MaxHeight" Value="34"/>
+            <Setter Property="Padding" Value="2,0,2,0"/>
+        </Style>
+        <Style Selector="DataGrid.main-list-grid DataGridColumnHeader /template/ ContentPresenter">
+            <Setter Property="ClipToBounds" Value="True"/>
         </Style>
         <Style Selector="DataGrid.main-list-grid DataGridColumnHeader /template/ Thumb">
-            <Setter Property="Width" Value="8"/>
-            <Setter Property="MinWidth" Value="8"/>
-            <Setter Property="MaxWidth" Value="8"/>
+            <Setter Property="Width" Value="4"/>
+            <Setter Property="MinWidth" Value="4"/>
+            <Setter Property="MaxWidth" Value="4"/>
             <Setter Property="HorizontalAlignment" Value="Right"/>
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Opacity" Value="0.35"/>
+            <Setter Property="Opacity" Value="0"/>
+        </Style>
+        <Style Selector="DataGrid.main-list-grid DataGridColumnHeader:pointerover /template/ Thumb">
+            <Setter Property="Opacity" Value="0.5"/>
+            <Setter Property="Background" Value="#40000000"/>
+        </Style>
+        <Style Selector="DataGrid.main-list-grid Border.headerTemplate TextBlock">
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="Margin" Value="2,2,8,2"/>
         </Style>
         <Style Selector="DataGrid.main-list-grid DataGridCell">
-            <Setter Property="BorderBrush" Value="#FFB0B0B0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="0"/>
         </Style>
-
-		<Style Selector="DataGridColumnHeader:first-child">
-			<Setter Property="BorderThickness" Value="1,1,1,1"/>
-		</Style>
+        <Style Selector="DataGrid.main-list-grid DataGridCell TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <!-- Tabular figures: same digit count => same width, without monospace body text. -->
+            <Setter Property="FontFeatures" Value="+tnum"/>
+        </Style>
+        <!-- Report rows: center all cells; comments stay left (CellStyleClasses=comments-column). -->
+        <Style Selector="DataGrid.report-list-grid DataGridCell TextBlock">
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>
+        <Style Selector="DataGrid.report-list-grid DataGridCell.comments-column TextBlock">
+            <Setter Property="TextAlignment" Value="Left"/>
+        </Style>
+        <Style Selector="DataGrid.report-list-grid DataGridCell.comments-column TextBox">
+            <Setter Property="TextAlignment" Value="Left"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        </Style>
+        <Style Selector="DataGrid.main-list-grid DataGridCell TextBox">
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="InnerRightContent" Value="{x:Null}"/>
+            <Setter Property="FontFeatures" Value="+tnum"/>
+        </Style>
+        <!-- Default Fluent docks a validation icon on the right (looks like a button under the scrollbar). -->
+        <Style Selector="DataGrid.main-list-grid DataGridCell TextBox /template/ DataValidationErrors">
+            <Setter Property="Theme" Value="{StaticResource TooltipDataValidationErrors}"/>
+        </Style>
 		
 		<Style Selector="Border.headerTemplate">
 			<Setter Property="BorderThickness" Value="0"/>
@@ -486,6 +571,18 @@
 		    <Setter Property="Margin" Value="2,2"/>
 			<Setter Property="TextWrapping" Value="NoWrap"/>
 		</Style>
+        <!-- Must be AFTER Border.headerTemplate TextBlock (NoWrap), otherwise wrap never wins. -->
+        <Style Selector="DataGrid.report-list-grid Border.headerTemplate TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextTrimming" Value="None"/>
+            <Setter Property="MaxLines" Value="2"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="LineHeight" Value="14"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="1,0"/>
+        </Style>
 		<Style Selector="Border.headerTemplate-compact">
 			<Setter Property="Padding" Value="2,1"/>
 		</Style>
@@ -564,7 +661,7 @@
         <Style Selector="Border.pageControlContainer">
 			<Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
-            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Margin" Value="5,3"/>
         </Style>
 		<Style Selector="Border.pageControlContainer TextBlock">
 			<Setter Property="VerticalAlignment" Value="Center"/>
@@ -686,6 +783,10 @@
 
         <Style Selector="DataGrid.dbPicker">
             <Setter Property="FontSize" Value="12"/>
+            <!-- Outer frame supplies top/left edges; cells/headers draw right/bottom. -->
+            <Setter Property="BorderBrush" Value="#CCCCCC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
         </Style>
     </Application.Styles>
 </Application>

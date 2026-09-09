@@ -181,10 +181,14 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
         {
             try
             {
-                using var db = new DBModel(dbPath);
-                var items = _cache.GetReportPage(db, orgId, filter, page, pageSize);
-                var hasFilter = string.IsNullOrEmpty(FormNumWhiteList)
-                    || _cache.HasFormNum(db, orgId, FormNumWhiteList);
+                List<Report> items = [];
+                var hasFilter = true;
+                MainWindowDbGate.Run(dbPath, db =>
+                {
+                    items = _cache.GetReportPage(db, orgId, filter, page, pageSize);
+                    hasFilter = string.IsNullOrEmpty(FormNumWhiteList)
+                        || _cache.HasFormNum(db, orgId, FormNumWhiteList);
+                });
 
                 Dispatcher.UIThread.Post(() =>
                 {

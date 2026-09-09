@@ -43,34 +43,42 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
     public override async Task AsyncExecute(object? parameter)
     {
         var onStartProgressBarVm = parameter as OnStartProgressBarVM;
-        onStartProgressBarVm!.LoadStatus = "Поиск системной директории";
+        onStartProgressBarVm!.ThrowIfStartupCancelled();
+        onStartProgressBarVm.LoadStatus = "Поиск системной директории";
         mainWindowViewModel.OnStartProgressBar = 1;
         await GetSystemDirectory();
 
+        onStartProgressBarVm.ThrowIfStartupCancelled();
         onStartProgressBarVm.LoadStatus = "Создание временных файлов";
         mainWindowViewModel.OnStartProgressBar = 5;
         await ProcessRaoDirectory();
 
+        onStartProgressBarVm.ThrowIfStartupCancelled();
         onStartProgressBarVm.LoadStatus = "Загрузка справочников";
         mainWindowViewModel.OnStartProgressBar = 10;
         await ProcessSpravochniks();
 
+        onStartProgressBarVm.ThrowIfStartupCancelled();
         onStartProgressBarVm.LoadStatus = "Подключение к базе данных";
         mainWindowViewModel.OnStartProgressBar = 15;
         await ProcessDataBaseCreate(onStartProgressBarVm);
 
+        onStartProgressBarVm.ThrowIfStartupCancelled();
         EnsureDatabaseBackupScheduleInitialized();
 
+        onStartProgressBarVm.ThrowIfStartupCancelled();
         onStartProgressBarVm.LoadStatus = "Загрузка таблиц";
         mainWindowViewModel.OnStartProgressBar = 20;
         var dbm = StaticConfiguration.DBModel;
 
+        onStartProgressBarVm.ThrowIfStartupCancelled();
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций организаций";
         mainWindowViewModel.OnStartProgressBar = 25;
         await dbm.ReportsCollectionDbSet
             .Include(r => r.Master_DB)
-            .LoadAsync();
+            .LoadAsync(onStartProgressBarVm.StartupCts.Token);
 
+        onStartProgressBarVm.ThrowIfStartupCancelled();
         onStartProgressBarVm.LoadStatus = "Загрузка коллекций базы";
         mainWindowViewModel.OnStartProgressBar = 60;
         if (!dbm.DBObservableDbSet.Any())
@@ -86,24 +94,28 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             dbm.ReportsCollectionDbSet.Remove(reports);
         }
 
-        await dbm.DBObservableDbSet.LoadAsync();
+        await dbm.DBObservableDbSet.LoadAsync(onStartProgressBarVm.StartupCts.Token);
 
+        onStartProgressBarVm.ThrowIfStartupCancelled();
         onStartProgressBarVm.LoadStatus = "Сортировка организаций";
         mainWindowViewModel.OnStartProgressBar = 70;
         await ProcessDataBaseFillEmpty(dbm);
 
+        onStartProgressBarVm.ThrowIfStartupCancelled();
         onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
         mainWindowViewModel.OnStartProgressBar = 80;
         ReportsStorage.LocalReports = dbm.DBObservableDbSet.Local.First();
 
         await ProcessDataBaseFillNullOrder();
 
+        onStartProgressBarVm.ThrowIfStartupCancelled();
         onStartProgressBarVm.LoadStatus = "Сохранение";
         mainWindowViewModel.OnStartProgressBar = 90;
         if (dbm.ChangeTracker.HasChanges())
-            await dbm.SaveChangesAsync();
+            await dbm.SaveChangesAsync(onStartProgressBarVm.StartupCts.Token);
         ReportsStorage.LocalReports.PropertyChanged += Local_ReportsChanged;
 
+        onStartProgressBarVm.ThrowIfStartupCancelled();
         mainWindowViewModel.OnStartProgressBar = 100;
 
         var dbPath = StaticConfiguration.DBPath;

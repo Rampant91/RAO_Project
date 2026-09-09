@@ -6,12 +6,14 @@
         mc:Ignorable="d"
         x:Class="Client_App.Views.OnStartProgressBar"
         x:DataType="vm:OnStartProgressBarVM"
-        MinWidth="340" MinHeight="72"
-        Width="340" Height="72"
-        d:DesignWidth="340" d:DesignHeight="72"
+        Title="{Binding WindowTitle, Mode=OneWay}"
+        MinWidth="360" MinHeight="96"
+        Width="380" Height="108"
+        d:DesignWidth="380" d:DesignHeight="108"
         SystemDecorations="None"
         WindowStartupLocation="Manual"
         CanResize="False"
+        Topmost="True"
         Background="Transparent"
         TransparencyLevelHint="Transparent">
 
@@ -19,19 +21,65 @@
         <vm:OnStartProgressBarVM/>
     </Design.DataContext>
 
+    <!--
+      Без рамки ОС: весь корпус — зона перетаскивания; крестик отменяет запуск.
+      Процент на полосе (как у рабочих прогрессбаров), статус снизу.
+    -->
     <Border Background="#F4F6F8"
             BorderBrush="#9AA3AD"
             BorderThickness="1"
             CornerRadius="8"
-            Padding="12,10"
+            Padding="12,10,12,12"
             Margin="4">
-        <StackPanel Spacing="8">
-            <ProgressBar Maximum="100"
-                         Minimum="0"
-                         Height="8"
-                         CornerRadius="4"
-                         Value="{Binding OnStartProgressBar, Mode=OneWay}" />
-            <TextBlock HorizontalAlignment="Center"
+        <Grid RowDefinitions="Auto,10,Auto,8,Auto"
+              ColumnDefinitions="*,Auto">
+            <TextBlock Grid.Row="0"
+                       Grid.Column="0"
+                       VerticalAlignment="Center"
+                       FontSize="13"
+                       FontWeight="SemiBold"
+                       Foreground="#1F2933"
+                       Text="{Binding WindowTitle, Mode=OneWay}" />
+
+            <Button Grid.Row="0"
+                    Grid.Column="1"
+                    Width="28"
+                    Height="28"
+                    Padding="0"
+                    Margin="8,0,0,0"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Foreground="#4B5563"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    CornerRadius="4"
+                    ToolTip.Tip="{Binding CloseButtonTooltip, Mode=OneWay}"
+                    Content="&#x2715;"
+                    Click="CloseButton_OnClick" />
+
+            <Panel Grid.Row="2"
+                   Grid.Column="0"
+                   Grid.ColumnSpan="2"
+                   Height="22">
+                <ProgressBar Height="22"
+                             Minimum="0"
+                             Maximum="100"
+                             CornerRadius="4"
+                             Value="{Binding OnStartProgressBar, Mode=OneWay}" />
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="11"
+                           FontWeight="Bold"
+                           Foreground="#1F2933"
+                           Text="{Binding ProgressPercentText, Mode=OneWay}" />
+            </Panel>
+
+            <TextBlock Grid.Row="4"
+                       Grid.Column="0"
+                       Grid.ColumnSpan="2"
+                       HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        FontSize="12"
                        FontWeight="SemiBold"
@@ -39,6 +87,6 @@
                        TextWrapping="Wrap"
                        TextAlignment="Center"
                        Text="{Binding LoadStatus, Mode=OneWay}" />
-        </StackPanel>
+        </Grid>
     </Border>
 </Window>

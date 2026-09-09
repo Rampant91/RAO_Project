@@ -1,4 +1,5 @@
 ﻿using Client_App.Commands.AsyncCommands.SwitchReport;
+using Client_App.Services;
 using Client_App.Services.DataAccess;
 using Client_App.ViewModels.Forms;
 using Models.Collections;
@@ -237,23 +238,32 @@ public class SelectReportPopupVM : INotifyPropertyChanged
         var prefer = Report;
         var dbPath = StaticConfiguration.DBPath;
 
-        List<Report> shells = await Task.Run(() =>
+        List<Report> shells;
+        try
         {
-            List<ReportListStub> stubs;
-            if (Forms1WarmCache.Instance.TryGetReportStubs(orgId, out var warm)
-                && warm.Any(s => s.FormNum == formNum))
+            shells = await Task.Run(() =>
             {
-                stubs = warm.Where(s => s.FormNum == formNum).ToList();
-            }
-            else
-            {
-                using var db = new DBModel(dbPath);
-                stubs = MainWindowListQuery.LoadReportStubsForForm(db, orgId, formNum);
-            }
+                List<ReportListStub> stubs;
+                if (Forms1WarmCache.Instance.TryGetReportStubs(orgId, out var warm)
+                    && warm.Any(s => s.FormNum == formNum))
+                {
+                    stubs = warm.Where(s => s.FormNum == formNum).ToList();
+                }
+                else
+                {
+                    stubs = MainWindowDbGate.Run(dbPath, db =>
+                        MainWindowListQuery.LoadReportStubsForForm(db, orgId, formNum));
+                }
 
-            return MainWindowListQuery.CreateReportShellsFromStubs(
-                stubs, formNum, orderByYear, prefer);
-        });
+                return MainWindowListQuery.CreateReportShellsFromStubs(
+                    stubs, formNum, orderByYear, prefer);
+            });
+        }
+        catch (Exception ex)
+        {
+            FirebirdLogger.LogError("SelectReportPopupVM.EnsureFormShellsLoadedAsync failed", ex);
+            shells = [Report];
+        }
 
         if (shells.Count == 0)
             shells = [Report];

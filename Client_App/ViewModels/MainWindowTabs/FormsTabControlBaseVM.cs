@@ -3,6 +3,7 @@ using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.RaodbExport;
+using Client_App.Services;
 using Client_App.Services.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
@@ -436,9 +437,15 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     #region Org paging
 
     /// <summary>
-    /// Смена вкладки: показать org из warm-cache; miss и счётчики — в фоне.
+    /// Смена вкладки: гасим фоновый Firebird-prefetch, затем cache-first reload org/report.
     /// </summary>
-    public virtual void ActivateTab() => ReloadOrgAndReportGrids();
+    public virtual void ActivateTab()
+    {
+        // Сначала гасим фоновые соединения — иначе Firebird embedded падает при смене вкладки.
+        MainWindowPrefetchService.Instance.CancelPending();
+        _cache.CancelAllBackgroundWork();
+        ReloadOrgAndReportGrids();
+    }
 
     /// <summary>
     /// После мутации данных (import/delete/add): перезагрузить org/report без блокировки UI.
@@ -483,8 +490,8 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
         {
             try
             {
-                using var db = new DBModel(dbPath);
-                var page = _cache.GetOrgPage(db, search, pageNum, pageSize, master);
+                var page = MainWindowDbGate.Run(dbPath, db =>
+                    _cache.GetOrgPage(db, search, pageNum, pageSize, master));
                 Dispatcher.UIThread.Post(() =>
                 {
                     if (generation != _orgLoadGeneration)
@@ -614,10 +621,15 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
         {
             try
             {
-                using var db = new DBModel(dbPath);
-                var filtered = QueryFilteredRowsOrgs(db, formNum, search);
-                var totalReports = QueryTotalReportCount(db, formNum, search);
-                var totalOrgs = QueryTotalRowsOrgs(db, formNum);
+                var filtered = 0;
+                var totalReports = 0;
+                var totalOrgs = 0;
+                MainWindowDbGate.Run(dbPath, db =>
+                {
+                    filtered = QueryFilteredRowsOrgs(db, formNum, search);
+                    totalReports = QueryTotalReportCount(db, formNum, search);
+                    totalOrgs = QueryTotalRowsOrgs(db, formNum);
+                });
 
                 Dispatcher.UIThread.Post(() =>
                 {
@@ -633,8 +645,9 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
                     OnPropertyChanged(nameof(TotalRowsOrgs));
                 });
             }
-            catch
+            catch (Exception ex)
             {
+                FirebirdLogger.LogError("RefreshCountsAsync failed", ex);
                 // keep previous counts
             }
         });
@@ -711,20 +724,33 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
     {
         if (rep == null || rep.FormNum == null) return 0;
 
-        await StaticConfiguration.WaitForDatabaseFileAvailableAsync();
+        try
+        {
+            await StaticConfiguration.WaitForDatabaseFileAvailableAsync();
 
-        await using var db = new DBModel(StaticConfiguration.DBPath);
+            var reportId = rep.Id;
+            var formNum = rep.FormNum_DB;
+            var dbPath = StaticConfiguration.DBPath;
 
-        var baseQuery = db.ReportCollectionDbSet
-            .AsNoTracking()
-            .AsSplitQuery()
-            .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-            .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == rep.Id);
+            return await MainWindowDbGate.RunAsync(dbPath, async (db, _) =>
+            {
+                var baseQuery = db.ReportCollectionDbSet
+                    .AsNoTracking()
+                    .AsSplitQuery()
+                    .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
+                    .Where(report => report.Reports != null && report.Reports.DBObservable != null && report.Id == reportId);
 
-        if (RowSelectors.TryGetValue(rep.FormNum_DB, out var selector))
-            return await selector(baseQuery).CountAsync();
+                if (RowSelectors.TryGetValue(formNum, out var selector))
+                    return await selector(baseQuery).CountAsync().ConfigureAwait(false);
 
-        return 0;
+                return 0;
+            }).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            FirebirdLogger.LogError("GetReportRowsCount failed", ex);
+            return 0;
+        }
     }
 
     private async Task UpdateInSelectedReportFormsCountAsync()
@@ -735,11 +761,15 @@ public abstract class FormsTabControlBaseVM : INotifyPropertyChanged
             return;
         }
 
-        // Асинхронно получаем данные
-        var count = await GetReportRowsCount(SelectedReport);
-
-        // Записываем в свойство - UI автоматически обновится через OnPropertyChanged
-        InSelectedReportFormsCount = count;
+        try
+        {
+            var count = await GetReportRowsCount(SelectedReport);
+            InSelectedReportFormsCount = count;
+        }
+        catch (Exception ex)
+        {
+            FirebirdLogger.LogError("UpdateInSelectedReportFormsCountAsync failed", ex);
+        }
     }
 
     /// <summary>

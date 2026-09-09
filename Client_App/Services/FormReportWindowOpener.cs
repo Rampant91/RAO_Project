@@ -45,7 +45,8 @@ public static class FormReportWindowOpener
         if (await ReportExportLock.TryBlockReportAccessAsync(report.Id))
             return;
 
-        owner?.SetReportOpeningOverlay(true);
+        if (owner != null)
+            await owner.ShowReportOpeningOverlayAsync();
         try
         {
             var window = await CreateWindowAsync(report);
@@ -163,27 +164,41 @@ public static class FormReportWindowOpener
             if (tracked == null)
                 return null;
 
-            var (total, pageItems) = await Task.Run(async () =>
+            try
             {
-                using var db = new DBModel(dbPath);
-                var count = await FormRowsPageLoader.CountAsync(db, reportId, numForm).ConfigureAwait(false);
-                var items = await FormRowsPageLoader
-                    .LoadPageListAsync(db, reportId, numForm, skip: 0, take: DefaultPageSize)
-                    .ConfigureAwait(false);
-                return (count, items);
-            }).ConfigureAwait(true);
+                var (total, pageItems) = await MainWindowDbGate.RunAsync(dbPath, async (db, ct) =>
+                {
+                    var count = await FormRowsPageLoader.CountAsync(db, reportId, numForm, ct).ConfigureAwait(false);
+                    var items = await FormRowsPageLoader
+                        .LoadPageListAsync(db, reportId, numForm, skip: 0, take: DefaultPageSize, ct)
+                        .ConfigureAwait(false);
+                    return (count, items);
+                }).ConfigureAwait(true);
 
-            FormRowsPageLoader.ApplyPageToReport(uiDb, tracked, numForm, pageItems);
-            tracked.FormNum_DB = numForm;
-            _lastLoadedDbTotalRows = total;
-            return tracked;
+                FormRowsPageLoader.ApplyPageToReport(uiDb, tracked, numForm, pageItems);
+                tracked.FormNum_DB = numForm;
+                _lastLoadedDbTotalRows = total;
+                return tracked;
+            }
+            catch (Exception ex)
+            {
+                FirebirdLogger.LogError("FormReportWindowOpener.LoadReportDataAsync page failed", ex);
+                return null;
+            }
         }
 
-        var snapshot = await Task.Run(async () =>
+        Report? snapshot;
+        try
         {
-            using var db = new DBModel(dbPath);
-            return await LoadFullReportSnapshotAsync(db, reportId, numForm).ConfigureAwait(false);
-        }).ConfigureAwait(true);
+            snapshot = await MainWindowDbGate.RunAsync(dbPath, async (db, _) =>
+                await LoadFullReportSnapshotAsync(db, reportId, numForm).ConfigureAwait(false)
+            ).ConfigureAwait(true);
+        }
+        catch (Exception ex)
+        {
+            FirebirdLogger.LogError("FormReportWindowOpener.LoadReportDataAsync snapshot failed", ex);
+            return null;
+        }
 
         if (snapshot == null)
             return null;

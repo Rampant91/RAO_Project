@@ -193,9 +193,16 @@ public static class FormRowsPageLoader
             return cached;
 
         List<int> dbIds;
-        await using (var snap = new DBModel(StaticConfiguration.DBPath))
+        try
         {
-            dbIds = await LoadOrderedIdsAsync(snap, reportId, formNum, ct).ConfigureAwait(false);
+            dbIds = await MainWindowDbGate.RunAsync(StaticConfiguration.DBPath, async (snap, token) =>
+                await LoadOrderedIdsAsync(snap, reportId, formNum, token).ConfigureAwait(false), ct)
+                .ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            FirebirdLogger.LogError("FormRowsPageLoader.GetOrLoadOrderedDbIdsAsync failed", ex);
+            throw;
         }
 
         FormRowOrderedIdsCache.Store(reportId, formNum, dbIds);
@@ -243,10 +250,16 @@ public static class FormRowsPageLoader
         if (added.Count == 0 && excludeIds.Count == 0)
         {
             List<Form> page;
-            await using (var snap = new DBModel(StaticConfiguration.DBPath))
+            try
             {
-                page = await LoadPageListAsync(snap, reportId, formNum, skip, take, ct)
-                    .ConfigureAwait(false);
+                page = await MainWindowDbGate.RunAsync(StaticConfiguration.DBPath, async (snap, token) =>
+                    await LoadPageListAsync(snap, reportId, formNum, skip, take, token)
+                        .ConfigureAwait(false), ct).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                FirebirdLogger.LogError("FormRowsPageLoader.LoadMergedVisiblePageAsync page failed", ex);
+                throw;
             }
 
             return FormRowMutationService.PreferTracked(page, trackedById);
@@ -272,10 +285,19 @@ public static class FormRowsPageLoader
         var loaded = new Dictionary<int, Form>();
         if (idsToLoad.Count > 0)
         {
-            await using var snap = new DBModel(StaticConfiguration.DBPath);
-            var forms = await LoadByIdsAsync(snap, formNum, idsToLoad, ct).ConfigureAwait(false);
-            foreach (var form in forms)
-                loaded[form.Id] = form;
+            try
+            {
+                var forms = await MainWindowDbGate.RunAsync(StaticConfiguration.DBPath, async (snap, token) =>
+                    await LoadByIdsAsync(snap, formNum, idsToLoad, token).ConfigureAwait(false), ct)
+                    .ConfigureAwait(false);
+                foreach (var form in forms)
+                    loaded[form.Id] = form;
+            }
+            catch (Exception ex)
+            {
+                FirebirdLogger.LogError("FormRowsPageLoader.LoadMergedVisiblePageAsync by-id failed", ex);
+                throw;
+            }
         }
 
         var result = new List<Form>(pageSlots.Count);
@@ -320,10 +342,19 @@ public static class FormRowsPageLoader
         var loaded = new Dictionary<int, Form>();
         if (idsToLoad.Count > 0)
         {
-            await using var snap = new DBModel(StaticConfiguration.DBPath);
-            var forms = await LoadByIdsAsync(snap, formNum, idsToLoad, ct).ConfigureAwait(false);
-            foreach (var form in forms)
-                loaded[form.Id] = form;
+            try
+            {
+                var forms = await MainWindowDbGate.RunAsync(StaticConfiguration.DBPath, async (snap, token) =>
+                    await LoadByIdsAsync(snap, formNum, idsToLoad, token).ConfigureAwait(false), ct)
+                    .ConfigureAwait(false);
+                foreach (var form in forms)
+                    loaded[form.Id] = form;
+            }
+            catch (Exception ex)
+            {
+                FirebirdLogger.LogError("FormRowsPageLoader.LoadAllLiveRowsAsync by-id failed", ex);
+                throw;
+            }
         }
 
         var result = new List<Form>(slots.Count);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -55,14 +56,20 @@ public static class FormRowsEnsureService
 
         var db = StaticConfiguration.DBModel;
         List<Note> notes;
-        await using (var snap = new DBModel(StaticConfiguration.DBPath))
+        try
         {
-            notes = await snap.ReportCollectionDbSet.AsNoTracking()
-                .Where(r => r.Id == report.Id)
-                .SelectMany(r => r.Notes)
-                .OrderBy(n => n.Order)
-                .ToListAsync(ct)
-                .ConfigureAwait(false);
+            notes = await MainWindowDbGate.RunAsync(StaticConfiguration.DBPath, async (snap, token) =>
+                await snap.ReportCollectionDbSet.AsNoTracking()
+                    .Where(r => r.Id == report.Id)
+                    .SelectMany(r => r.Notes)
+                    .OrderBy(n => n.Order)
+                    .ToListAsync(token)
+                    .ConfigureAwait(false), ct).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            FirebirdLogger.LogError("FormRowsEnsureService.ReloadNotesFromDbAsync failed", ex);
+            throw;
         }
 
         foreach (var entry in db.ChangeTracker.Entries().ToList())

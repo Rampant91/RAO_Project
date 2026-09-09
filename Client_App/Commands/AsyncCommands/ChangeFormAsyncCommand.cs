@@ -114,7 +114,9 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
         //    .FirstOrDefault(i => i.Report_Collection.Contains(report));
         var numForm = report.FormNum.Value;
 
-        mainWindow?.SetReportOpeningOverlay(true);
+        if (mainWindow != null)
+            await mainWindow.ShowReportOpeningOverlayAsync();
+
         ChangeOrCreateVM changeOrCreateVM;
         try
         {
@@ -140,7 +142,8 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                 {
                     var form11VM = new Form_11VM(changeOrCreateVM.Storage);
                     var form11Window = new Form_11(form11VM) { OwnerPrevState = mainWindow.WindowState };
-                    mainWindow.WindowState = WindowState.Minimized;
+                    if (mainWindow != null)
+                        mainWindow.WindowState = WindowState.Minimized;
                     await form11Window.ShowDialog(mainWindow);
                     break;
                 }
@@ -148,7 +151,8 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                 {
                     var form12VM = new Form_12VM(changeOrCreateVM.Storage);
                     var window = new Form_12(form12VM) { OwnerPrevState = mainWindow.WindowState };
-                    mainWindow.WindowState = WindowState.Minimized;
+                    if (mainWindow != null)
+                        mainWindow.WindowState = WindowState.Minimized;
                     await window.ShowDialog(mainWindow);
                     break;
                 }
@@ -156,7 +160,8 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                 {
                     var form13VM = new Form_13VM(changeOrCreateVM.Storage);
                     var window = new Form_13(form13VM) { OwnerPrevState = mainWindow.WindowState };
-                    mainWindow.WindowState = WindowState.Minimized;
+                    if (mainWindow != null)
+                        mainWindow.WindowState = WindowState.Minimized;
                     await window.ShowDialog(mainWindow);
                     break;
                 }
@@ -164,7 +169,8 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                 {
                     var form14VM = new Form_14VM(changeOrCreateVM.Storage);
                     var window = new Form_14(form14VM) { OwnerPrevState = mainWindow.WindowState };
-                    mainWindow.WindowState = WindowState.Minimized;
+                    if (mainWindow != null)
+                        mainWindow.WindowState = WindowState.Minimized;
                     await window.ShowDialog(mainWindow);
                     break;
                 }
@@ -172,7 +178,8 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                 {
                     var form15VM = new Form_15VM(changeOrCreateVM.Storage);
                     var window = new Form_15(form15VM) { OwnerPrevState = mainWindow.WindowState };
-                    mainWindow.WindowState = WindowState.Minimized;
+                    if (mainWindow != null)
+                        mainWindow.WindowState = WindowState.Minimized;
                     await window.ShowDialog(mainWindow);
                     break;
                 }
@@ -180,7 +187,8 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                 {
                     var form16VM = new Form_16VM(changeOrCreateVM.Storage);
                     var window = new Form_16(form16VM) { OwnerPrevState = mainWindow.WindowState };
-                    mainWindow.WindowState = WindowState.Minimized;
+                    if (mainWindow != null)
+                        mainWindow.WindowState = WindowState.Minimized;
                     await window.ShowDialog(mainWindow);
                     break;
                 }
@@ -188,7 +196,8 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                 {
                     var form17VM = new Form_17VM(changeOrCreateVM.Storage);
                     var window = new Form_17(form17VM) { OwnerPrevState = mainWindow.WindowState };
-                    mainWindow.WindowState = WindowState.Minimized;
+                    if (mainWindow != null)
+                        mainWindow.WindowState = WindowState.Minimized;
                     await window.ShowDialog(mainWindow);
                     break;
                 }
@@ -196,7 +205,8 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                 {
                     var form18VM = new Form_18VM(changeOrCreateVM.Storage);
                     var window = new Form_18(form18VM) { OwnerPrevState = mainWindow.WindowState };
-                    mainWindow.WindowState = WindowState.Minimized;
+                    if (mainWindow != null)
+                        mainWindow.WindowState = WindowState.Minimized;
                     await window.ShowDialog(mainWindow);
                     break;
                 }
@@ -204,7 +214,8 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                 {
                     var form19VM = new Form_19VM(changeOrCreateVM.Storage);
                     var window = new Form_19(form19VM) { OwnerPrevState = mainWindow.WindowState };
-                    mainWindow.WindowState = WindowState.Minimized;
+                    if (mainWindow != null)
+                        mainWindow.WindowState = WindowState.Minimized;
                     await window.ShowDialog(mainWindow);
                     break;
                 }
@@ -212,7 +223,8 @@ public class ChangeFormAsyncCommand(FormParameter? formParam = null) : BaseAsync
                 {
                     var form41VM = new Form_41VM(changeOrCreateVM.Storage);
                     var window = new Form_41(form41VM) { OwnerPrevState = mainWindow.WindowState };
-                    mainWindow.WindowState = WindowState.Minimized;
+                    if (mainWindow != null)
+                        mainWindow.WindowState = WindowState.Minimized;
                     await window.ShowDialog(mainWindow);
                     break;
                 }

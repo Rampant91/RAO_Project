@@ -120,7 +120,7 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
 
     private async Task DoShowDialogAsync(IInteractionContext<ChangeOrCreateVM, object> interaction)
     {
-        SetReportOpeningOverlay(true);
+        await ShowReportOpeningOverlayAsync();
         try
         {
             FormChangeOrCreate frm = new(interaction.Input);
@@ -446,6 +446,17 @@ public partial class MainWindow : BaseWindow<MainWindowVM>
             marquee.Start();
         else
             marquee.Stop();
+    }
+
+    /// <summary>
+    /// Показать overlay и дать UI отрисовать кадр (marquee) до тяжёлой синхронной работы.
+    /// </summary>
+    public async Task ShowReportOpeningOverlayAsync()
+    {
+        SetReportOpeningOverlay(true);
+        await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(
+            static () => { }, Avalonia.Threading.DispatcherPriority.Render);
+        await Task.Delay(16);
     }
 
     #endregion

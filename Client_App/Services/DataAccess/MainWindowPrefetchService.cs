@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Models.DBRealization;
 
 namespace Client_App.Services.DataAccess;
 
@@ -56,21 +55,25 @@ public sealed class MainWindowPrefetchService
     {
         try
         {
-            await using var db = new DBModel(dbPath);
-            var cache = Forms1WarmCache.Instance;
-
-            foreach (var master in masterFormNums)
+            await MainWindowDbGate.RunAsync(dbPath, async (db, ct) =>
             {
-                if (ct.IsCancellationRequested)
-                    break;
+                var cache = Forms1WarmCache.Instance;
 
-                var orgs = cache.GetOrgPage(db, searchText: null, page: 1, orgPageSize, master);
-                var first = orgs.Items.FirstOrDefault();
-                if (first == null)
-                    continue;
+                foreach (var master in masterFormNums)
+                {
+                    if (ct.IsCancellationRequested)
+                        break;
 
-                cache.GetReportPage(db, first.Id, formNumWhiteList: null, page: 1, reportPageSize);
-            }
+                    var orgs = cache.GetOrgPage(db, searchText: null, page: 1, orgPageSize, master);
+                    var first = orgs.Items.FirstOrDefault();
+                    if (first == null)
+                        continue;
+
+                    cache.GetReportPage(db, first.Id, formNumWhiteList: null, page: 1, reportPageSize);
+                }
+
+                await Task.CompletedTask;
+            }, ct).ConfigureAwait(false);
         }
         catch (OperationCanceledException)
         {

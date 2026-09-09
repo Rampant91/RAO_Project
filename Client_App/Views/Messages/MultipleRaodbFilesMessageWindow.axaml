@@ -39,8 +39,10 @@
                   CanUserReorderColumns="False"
                   CanUserResizeColumns="True"
                   CanUserSortColumns="False"
-                  GridLinesVisibility="All"
+                  GridLinesVisibility="None"
                   HeadersVisibility="Column"
+                  BorderBrush="#CCCCCC"
+                  BorderThickness="1"
                   RowBackground="White"
                   MinHeight="140"
                   MaxHeight="220">

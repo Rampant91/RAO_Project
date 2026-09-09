@@ -9,7 +9,8 @@ namespace Client_App.Behaviors.DataGrid;
 internal static class DataGridColumnWidthClamp
 {
     public const double FallbackMin = 20;
-    public const double FallbackMax = 500;
+    /// <summary>Safety cap only when column/grid MaxWidth are unset (Infinity). Not a UX limit.</summary>
+    public const double FallbackMax = 10000;
 
     public static double Clamp(
         double width,

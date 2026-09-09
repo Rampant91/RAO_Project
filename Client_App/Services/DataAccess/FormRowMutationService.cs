@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -92,11 +93,17 @@ public static class FormRowMutationService
         DetachAllFormRows(uiDb, report.Id, formNum);
 
         List<Form> snapshot;
-        await using (var snap = new DBModel(StaticConfiguration.DBPath))
+        try
         {
-            snapshot = await FormRowsPageLoader
-                .LoadPageListAsync(snap, report.Id, formNum, 0, 1_000_000, ct)
-                .ConfigureAwait(false);
+            snapshot = await MainWindowDbGate.RunAsync(StaticConfiguration.DBPath, async (snap, token) =>
+                await FormRowsPageLoader
+                    .LoadPageListAsync(snap, report.Id, formNum, 0, 1_000_000, token)
+                    .ConfigureAwait(false), ct).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            FirebirdLogger.LogError("FormRowMutationService.LoadFullSetIntoReportAsync failed", ex);
+            throw;
         }
 
         var merged = MergeSessionRows(snapshot, added, keepById, excludeIds);

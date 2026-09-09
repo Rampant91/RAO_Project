@@ -29,7 +29,7 @@
     </Design.DataContext>
 	
 	<Border Classes="borderContainer">
-		<Grid RowDefinitions="1.04*,0.96*" ColumnDefinitions="5*,3*" >
+		<Grid RowDefinitions="1*,1*" ColumnDefinitions="5*,3*" >
 			<Grid Grid.Row ="0" Grid.Column="0" RowDefinitions="Auto,Auto,*,Auto">
 				<TextBlock Grid.Row="0"
 						   Margin="5,5,5,0"
@@ -40,13 +40,13 @@
                          Margin="5" 
                          Watermark ="Поиск..." 
                          Text="{Binding SearchText, Mode=OneWayToSource}"/>
-				<Grid Grid.Row="2" Margin="5,3,5,3">
+				<Grid Grid.Row="2" Margin="5,2,5,2">
 				<DataGrid x:Name="ReportsDataGrid"
 						  Classes="main-list-grid"
 						  ItemsSource="{Binding ReportsCollection, Mode=TwoWay}"
 						  SelectionMode="Single"
 						  SelectedItem="{Binding SelectedReports, Mode=OneWayToSource}"
-						  RowHeight="25"
+						  RowHeight="24"
 						  GridLinesVisibility="All"
 						  RowBackground="White"
 						  CanUserSortColumns="False"
@@ -55,7 +55,7 @@
 					<interactivity:Interaction.Behaviors>
 						<dgBehaviors:DataGridDoubleClickOpenFormBehavior />
 						<dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
-						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="MainWindow.Orgs.1" />
+						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="MainWindow.Orgs.1.v7" />
 					</interactivity:Interaction.Behaviors>
 
 					<DataGrid.ContextMenu>
@@ -283,7 +283,7 @@
 					</DataGrid.ContextMenu>
 
 					<DataGrid.Columns>
-						<DataGridTemplateColumn Width="68" MinWidth="56" MaxWidth="96" IsReadOnly="True">
+						<DataGridTemplateColumn Width="80" MinWidth="60" IsReadOnly="True">
 							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate headerTemplate-compact">
@@ -293,12 +293,12 @@
 							</DataGridTemplateColumn.HeaderTemplate>
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="models:Reports">
-									<TextBlock Margin="5" Text="{Binding Master.RegNoRep.Value, Mode=OneWay}"/>
+									<TextBlock Margin="3,1,3,1" VerticalAlignment="Center" Text="{Binding Master.RegNoRep.Value, Mode=OneWay}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 						
-						<DataGridTemplateColumn Width="*" MinWidth="100" IsReadOnly="True">
+						<DataGridTemplateColumn Width="*" MinWidth="60" IsReadOnly="True">
 							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
@@ -311,7 +311,7 @@
 							</DataGridTemplateColumn.HeaderTemplate>
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="models:Reports">
-									<TextBlock Margin="5">
+									<TextBlock Margin="3,1,3,1" VerticalAlignment="Center">
 										<TextBlock.Text>
 											<MultiBinding Converter="{StaticResource IfNullShowAnotherValue}">
 												<Binding Path="Master.Rows10[1].ShortJurLico.Value"/>
@@ -323,7 +323,7 @@
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
 
-						<DataGridTemplateColumn Width="128" MinWidth="112" MaxWidth="200" IsReadOnly="True">
+						<DataGridTemplateColumn Width="160" MinWidth="60" IsReadOnly="True">
 							<DataGridTemplateColumn.HeaderTemplate>
 								<DataTemplate>
 									<Border Classes="headerTemplate">
@@ -336,7 +336,9 @@
 							</DataGridTemplateColumn.HeaderTemplate>
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="models:Reports">
-									<TextBlock Margin="5" Text="{Binding Master.OkpoRep.Value, Mode=OneWay}"/>
+									<TextBlock Margin="3,1,3,1"
+									           VerticalAlignment="Center"
+									           Text="{Binding Master.OkpoRep.Value, Mode=OneWay}"/>
 								</DataTemplate>
 							</DataGridTemplateColumn.CellTemplate>
 						</DataGridTemplateColumn>
@@ -590,17 +592,17 @@
                   Grid.ColumnSpan="2" 
                   RowDefinitions="Auto,*,Auto" >
 				<TextBlock Grid.Row="0"
-						   Margin="5,5,5,0"
+						   Margin="5,3,5,0"
 						   FontWeight="SemiBold"
 						   Text="Список отчётов:"
 						   TextWrapping="Wrap" />
-				<Grid Grid.Row="1" Margin="5">
+				<Grid Grid.Row="1" Margin="5,2,5,3">
 				<DataGrid x:Name="ReportDataGrid"
-						  Classes="main-list-grid"
+						  Classes="main-list-grid report-list-grid"
 						  ItemsSource="{Binding ReportCollection}"
 						  SelectionMode="Single"
 						  SelectedItem="{Binding SelectedReport}"
-						  RowHeight="25"
+						  RowHeight="24"
 						  GridLinesVisibility="All"
 						  RowBackground="White"
 						  CanUserSortColumns="False"
@@ -609,7 +611,7 @@
                     <interactivity:Interaction.Behaviors>
 						<dgBehaviors:DataGridDoubleClickOpenFormBehavior />
 						<dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
-						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="MainWindow.Reports.1" />
+						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="MainWindow.Reports.1.v7" />
 					</interactivity:Interaction.Behaviors>
 					
                     <DataGrid.ContextMenu>
@@ -648,9 +650,9 @@
 					<DataGrid.Columns>
 
                         <DataGridTextColumn x:DataType="models:Report"
-                                            Width="Auto"
-                                            MinWidth="48"
-                                            MaxWidth="80"
+                                            Width="60"
+                                            MinWidth="60"
+
                                             IsReadOnly="True"
                                             Binding="{Binding FormNum.Value}">
 							<DataGridTextColumn.HeaderTemplate>
@@ -666,9 +668,9 @@
 						</DataGridTextColumn>
 
 						<DataGridTextColumn x:DataType="models:Report"
-											Width="*"
-											MinWidth="96"
-											MaxWidth="160"
+											Width="115"
+											MinWidth="60"
+
 											IsReadOnly="True"
 											Binding="{Binding StartPeriod.Value}">
 							<DataGridTextColumn.HeaderTemplate>
@@ -684,9 +686,9 @@
 						</DataGridTextColumn>
 
 						<DataGridTextColumn x:DataType="models:Report"
-											Width="*"
-											MinWidth="96"
-											MaxWidth="160"
+											Width="115"
+											MinWidth="60"
+
 											IsReadOnly="True"
 											Binding="{Binding EndPeriod.Value}">
 							<DataGridTextColumn.HeaderTemplate>
@@ -702,9 +704,9 @@
 						</DataGridTextColumn>
 
 						<DataGridTextColumn x:DataType="models:Report"
-											Width="*"
-											MinWidth="96"
-											MaxWidth="160"
+											Width="115"
+											MinWidth="60"
+
 											IsReadOnly="True"
 											Binding="{Binding ExportDate.Value}">
 							<DataGridTextColumn.HeaderTemplate>
@@ -720,9 +722,9 @@
 						</DataGridTextColumn>
 
 						<DataGridTextColumn x:DataType="models:Report"
-											Width="*"
-											MinWidth="80"
-											MaxWidth="140"
+											Width="115"
+											MinWidth="60"
+
 											IsReadOnly="True"
 											Binding="{Binding CorrectionNumber.Value}">
 							<DataGridTextColumn.HeaderTemplate>
@@ -738,9 +740,11 @@
 						</DataGridTextColumn>
 
 						<DataGridTextColumn x:DataType="models:Report"
-                                            Width="2*"
-                                            MinWidth="120"
+                                            Width="*"
+                                            MinWidth="60"
+
                                             IsReadOnly="False"
+                                            CellStyleClasses="comments-column"
                                             Binding="{Binding Comments.Value}">
 							<DataGridTextColumn.HeaderTemplate>
 								<DataTemplate>
