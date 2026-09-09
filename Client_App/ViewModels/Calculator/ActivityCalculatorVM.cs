@@ -102,9 +102,7 @@ public class ActivityCalculatorVM : BaseCalculatorVM
         get => _initialActivityDate;
         set
         {
-            _initialActivityDate = DateTime.TryParse(value, out var dateTimeValue)
-                ? dateTimeValue.ToShortDateString()
-                : value;
+            _initialActivityDate = value;
 
             OnPropertyChanged();
             ActivityCalculation.Execute(this);
@@ -117,9 +115,7 @@ public class ActivityCalculatorVM : BaseCalculatorVM
         get => _residualActivityDate;
         set
         {
-            _residualActivityDate = DateTime.TryParse(value, out var dateTimeValue)
-                ? dateTimeValue.ToShortDateString()
-                : value;
+            _residualActivityDate = value;
 
             OnPropertyChanged();
             ActivityCalculation.Execute(this);
