@@ -8,7 +8,7 @@ public static class Form2InterfaceFlags
 {
 #if DEBUG
     /// <summary>В Debug можно включить для тестирования нового UI форм 2.x.</summary>
-    public static bool UseNewInterface { get; set; }
+    public static bool UseNewInterface { get; set; } = true;
 #else
     public const bool UseNewInterface = false;
 #endif
