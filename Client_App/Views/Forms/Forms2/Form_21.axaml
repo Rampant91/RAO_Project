@@ -122,9 +122,14 @@
             </WrapPanel>
         </Expander>
 
-		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
 
-            <Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="*">
+		<ScrollViewer Grid.Row="1" Classes="tableScrollViewer" HorizontalScrollBarVisibility="Disabled">
+			<Grid x:Name="Table"
+                  ColumnDefinitions="*"
+                  RowDefinitions="Auto,*">
+
+
+				<!--#region Контекстное меню-->
                 <Grid.ContextMenu>
                     <ContextMenu
                         x:CompileBindings="True"
@@ -218,7 +223,7 @@
                     </ContextMenu>
                 </Grid.ContextMenu>
 
-                <!--#endregion Контекстное меню-->
+				<!--#endregion Контекстное меню-->
 
                 <!--#region Заголовки таблицы-->
 

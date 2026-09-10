@@ -10,6 +10,7 @@ using Models.Forms.DataAccess;
 using Models.Interfaces;
 using OfficeOpenXml;
 using Models.Comparers.FormContent;
+using System.Drawing;
 
 namespace Models.Forms.Form2;
 
