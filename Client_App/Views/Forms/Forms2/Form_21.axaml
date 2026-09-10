@@ -125,7 +125,7 @@
 
 		<ScrollViewer Grid.Row="1" Classes="tableScrollViewer" HorizontalScrollBarVisibility="Disabled">
 			<Grid x:Name="Table"
-                  ColumnDefinitions="*"
+                  ColumnDefinitions="Auto"
                   RowDefinitions="Auto,*">
 
 

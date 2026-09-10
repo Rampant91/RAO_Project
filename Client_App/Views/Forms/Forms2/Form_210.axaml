@@ -119,7 +119,9 @@
 
 		<ScrollViewer Classes="tableScrollViewer" Grid.Row="1" HorizontalScrollBarVisibility="Disabled">
 
-            <Grid x:Name="Table" RowDefinitions="Auto,*" ColumnDefinitions="*">
+            <Grid x:Name="Table" 
+				  RowDefinitions="Auto,*" 
+				  ColumnDefinitions="Auto">
                 <Grid.ContextMenu>
                     <ContextMenu
                         x:CompileBindings="True"
