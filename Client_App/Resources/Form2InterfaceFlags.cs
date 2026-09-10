@@ -10,7 +10,7 @@ public static class Form2InterfaceFlags
     /// <summary>В Debug можно включить для тестирования нового UI форм 2.x.</summary>
     public static bool UseNewInterface { get; set; } = true;
 #else
-    public const bool UseNewInterface = false;
+    public const bool UseNewInterface = true;
 #endif
 
     public static bool IsEnabledFor(string? formNum) =>
