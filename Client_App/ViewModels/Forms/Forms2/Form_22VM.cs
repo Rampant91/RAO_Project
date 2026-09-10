@@ -4,8 +4,15 @@ using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.Passports;
 using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.ViewModels.Controls;
+using DynamicData;
+using Microsoft.EntityFrameworkCore;
 using Models.Collections;
+using Models.DBRealization;
+using Models.Forms;
+using Models.Forms.Form2;
 using System;
+using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Input;
 
@@ -15,11 +22,43 @@ public class Form_22VM : BaseFormVM
 {
     public override string FormType => "2.2";
 
+    #region Properties
+
+    #region SumMode
+    private bool _sumMode ;
+    public bool SumMode
+    {
+        get
+        {
+            return _sumMode;
+        }
+        set
+        {
+            if (_sumMode == value) return; 
+
+            _sumMode = value;
+            OnPropertyChanged();
+            if (value == true)
+                SumUpFormList();
+            else
+                UndoSumUpFormList();
+
+            UpdateFormList();
+            UpdatePageInfo();
+        }
+    }
+    #endregion
+
+    #endregion
+
     #region Constructors
 
     public Form_22VM() { }
 
-    public Form_22VM(Report report) : base(report) { }
+    public Form_22VM(Report report) : base(report)
+    {
+        SumMode = report.Rows22.Any(row22 => row22.IsSumRow);
+    }
 
     public Form_22VM(in Reports reps)
     {
@@ -36,6 +75,195 @@ public class Form_22VM : BaseFormVM
     }
 
     #endregion
+
+    #region Functions
+
+    #region SumUpFormList
+    public void SumUpFormList()
+    {
+        var rows22 = Report.Rows22.ToList()
+            .Where(row22 => row22.IsSumRow == false)
+            .AsEnumerable()
+            .OrderBy(row22 => row22.StoragePlaceCode_DB)
+            .ThenBy(row22 => row22.StoragePlaceName_DB)
+            .ThenBy(row22 => row22.PackName_DB)
+            .ThenBy(row22 => row22.PackType_DB)
+            .ThenBy(row22 => row22.CodeRAO_DB)
+            .ThenBy(row22 => row22.StatusRAO_DB)
+            .ToList();
+
+        var storageAndPackageTypeGroups = rows22.GroupBy(row22 =>
+            (row22.StoragePlaceName_DB,
+            row22.StoragePlaceCode_DB,
+            row22.PackName_DB,
+            row22.PackType_DB));
+
+        foreach(var storageAndPackageTypeGroup in storageAndPackageTypeGroups)
+        {
+            var raoGroups = storageAndPackageTypeGroup.GroupBy(row22 =>
+            (row22.CodeRAO_DB,
+            row22.StatusRAO_DB
+            ));
+            if(raoGroups.Count()>1)
+            {
+                var firstElement = storageAndPackageTypeGroup.ToList()[0];
+                var titleIndex = rows22.IndexOf(firstElement);
+                var titleRow = new Form22()
+                {
+                    StoragePlaceName_DB = firstElement.StoragePlaceName_DB, //2
+                    StoragePlaceCode_DB = firstElement.StoragePlaceCode_DB, //3
+                    PackName_DB = firstElement.PackName_DB, //4
+                    PackType_DB = firstElement.PackType_DB, //5
+                    //SumUp
+                    PackQuantity_DB = "-", 
+                    VolumeOutOfPack_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.VolumeOutOfPack_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    VolumeInPack_DB = "-", 
+                    MassOutOfPack_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.MassOutOfPack_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    MassInPack_DB = "-", 
+                    QuantityOZIII_DB = storageAndPackageTypeGroup.Sum(row22 => int.TryParse(row22.QuantityOZIII_DB?.Replace('.', ','), out var value) ? value : 0).ToString(),
+                    TritiumActivity_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.TritiumActivity_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    BetaGammaActivity_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.BetaGammaActivity_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    AlphaActivity_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.AlphaActivity_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    TransuraniumActivity_DB = storageAndPackageTypeGroup.Sum(row22 => double.TryParse(row22.TransuraniumActivity_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
+                    MainRadionuclids_DB = "-",//18
+
+
+                    IsSumRow = true,
+                };
+
+                ReplaceZeroValueOnDashSignInRow22(titleRow);
+
+                rows22.Insert(titleIndex, titleRow);
+
+                foreach (var raoGroup in raoGroups)
+                {
+
+                    if (raoGroup.Count() > 1)
+                    {
+                        var firstRaoGroupElement = raoGroup.ToList()[0];
+                        var raoInfoIndex = rows22.IndexOf(firstRaoGroupElement);
+
+                        var raoInfoRow = new Form22()
+                        {
+                            StoragePlaceName_DB = firstElement.StoragePlaceName_DB, //2
+                            StoragePlaceCode_DB = firstElement.StoragePlaceCode_DB, //3
+                            PackName_DB = firstElement.PackName_DB, //4
+                            PackType_DB = firstElement.PackType_DB, //5
+
+                            CodeRAO_DB = firstRaoGroupElement.CodeRAO_DB, //7
+                            StatusRAO_DB = firstRaoGroupElement.StatusRAO_DB, //8
+
+                            //SumUp
+                            PackQuantity_DB = "-",//6
+                            VolumeOutOfPack_DB = raoGroup.Sum(row22 => double.TryParse(row22.VolumeOutOfPack_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),//9
+                            VolumeInPack_DB = "-",//10
+                            MassOutOfPack_DB = raoGroup.Sum(row22 => double.TryParse(row22.MassOutOfPack_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),//11
+                            MassInPack_DB = "-",//12
+                            QuantityOZIII_DB = raoGroup.Sum(row22 => int.TryParse(row22.QuantityOZIII_DB?.Replace('.', ','), out var value) ? value : 0).ToString(),//13
+                            TritiumActivity_DB = raoGroup.Sum(row22 => double.TryParse(row22.TritiumActivity_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),//14
+                            BetaGammaActivity_DB = raoGroup.Sum(row22 => double.TryParse(row22.BetaGammaActivity_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),//15
+                            AlphaActivity_DB = raoGroup.Sum(row22 => double.TryParse(row22.AlphaActivity_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),//16
+                            TransuraniumActivity_DB = raoGroup.Sum(row22 => double.TryParse(row22.TransuraniumActivity_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),//17
+
+                            //RowColor = Color.FromArgb(50, 204, 204, 0),
+                        };
+                        foreach (var row22 in raoGroup)
+                        {
+                            //Суммируем 18 столбец
+                            var radionuclidList = row22.MainRadionuclids_DB.Split(";").ToList();
+                            for (int i = 0; i < radionuclidList.Count; i++)
+                            {
+                                radionuclidList[i] = radionuclidList[i].Trim();
+                                if (string.IsNullOrWhiteSpace(radionuclidList[i]))
+                                    continue;
+
+                                if (!raoInfoRow.MainRadionuclids_DB.Split("; ")
+                                    .Any(radionuclid => radionuclid == radionuclidList[i]))
+                                {
+                                    if (!string.IsNullOrWhiteSpace(raoInfoRow.MainRadionuclids_DB))
+                                        raoInfoRow.MainRadionuclids_DB += "; ";
+
+                                    raoInfoRow.MainRadionuclids_DB += radionuclidList[i];
+                                }
+                            }
+                            rows22.Remove(row22);
+                        }
+
+                        ReplaceZeroValueOnDashSignInRow22(raoInfoRow);
+
+                        rows22.Insert(raoInfoIndex, raoInfoRow);
+                    }
+                }
+            }
+        }
+
+        for(int i=0; i<rows22.Count;i++)
+        {
+            rows22[i].NumberInOrder_DB = i + 1;
+        }
+
+        this.Report.Rows22 = new(rows22);
+    }
+    #region UndoSumUpFormList
+    public void UndoSumUpFormList()
+    {
+        this.Report.Rows22 = new(Report.Rows22.ToList()
+            .Where(row22 => row22.IsSumRow == false)
+           .AsEnumerable()
+           .OrderBy(row22 => row22.StoragePlaceCode_DB)
+           .ThenBy(row22 => row22.StoragePlaceName_DB)
+           .ThenBy(row22 => row22.PackName_DB)
+           .ThenBy(row22 => row22.PackType_DB)
+           .ThenBy(row22 => row22.CodeRAO_DB)
+           .ThenBy(row22 => row22.StatusRAO_DB));
+
+        for (int i = 0; i < this.Report.Rows22.Count; i++)
+        {
+            this.Report.Rows22[i].NumberInOrder_DB = i + 1;
+        }
+
+        
+    }
+    #endregion
+    public void ReplaceZeroValueOnDashSignInRow22(Form22 row22)
+    {
+        if (row22.PackQuantity_DB == 0.ToString())
+            row22.PackQuantity_DB = "-";
+
+        if (row22.VolumeOutOfPack_DB == 0.ToString("e3"))
+            row22.VolumeOutOfPack_DB = "-";
+
+        if (row22.VolumeInPack_DB == 0.ToString("e3"))
+            row22.VolumeInPack_DB = "-";
+
+        if (row22.MassOutOfPack_DB == 0.ToString("e3"))
+            row22.MassOutOfPack_DB = "-";
+
+        if (row22.MassInPack_DB == 0.ToString("e3"))
+            row22.MassInPack_DB = "-";
+
+        if (row22.QuantityOZIII_DB == 0.ToString())
+            row22.QuantityOZIII_DB = "-";
+
+        if (row22.TritiumActivity_DB == 0.ToString("e3"))
+            row22.TritiumActivity_DB = "-";
+
+        if (row22.BetaGammaActivity_DB == 0.ToString("e3"))
+            row22.BetaGammaActivity_DB = "-";
+
+        if (row22.AlphaActivity_DB == 0.ToString("e3"))
+            row22.AlphaActivity_DB = "-";
+
+        if (row22.TransuraniumActivity_DB == 0.ToString("e3"))
+            row22.TransuraniumActivity_DB = "-";
+    }
+
+    #endregion
+
+    
+    #endregion
+
+
 
     #region Commands
 

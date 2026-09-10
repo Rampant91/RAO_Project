@@ -77,11 +77,6 @@
                                 Margin="5"
                                 Text="{Binding Path=Report.CorrectionNumber.Value}" />
                         </StackPanel>
-						
-						<StackPanel Grid.Row="2" Orientation="Horizontal">
-                            <TextBlock Margin="5,10" Text="Суммирование:"/>
-                            <ToggleSwitch  />
-                        </StackPanel>
 
                         <StackPanel Grid.Row="3" Orientation="Horizontal">
                             <Button

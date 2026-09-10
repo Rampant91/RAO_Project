@@ -30,6 +30,8 @@
         <converter:NullToStringConverter x:Key="NullToStringConverter" />
         <converter:DateConverter x:Key="DateConverter" />
         <converter:IsOperation41AndSingleSelectionConverter x:Key="Op41AndOneSelectedConverter" />
+		<converter:ColorBlendConverter x:Key="ColorBlendConverter"/>
+		<converter:SystemDrawingColorToSolidColorBrush x:Key="SystemDrawingColorToSolidColorBrush"/>
     </Window.Resources>
 
     <Design.DataContext>
@@ -80,7 +82,7 @@
 						
 						<StackPanel Grid.Row="2" Orientation="Horizontal">
                             <TextBlock Margin="5,10" Text="Суммирование:"/>
-                            <ToggleSwitch  />
+							<ToggleSwitch IsChecked="{Binding SumMode}" />
                         </StackPanel>
 
                         <StackPanel Grid.Row="3" Orientation="Horizontal">
@@ -381,7 +383,40 @@
                         <dgBehaviors:DataGridEditingStateBehavior IsEditing="{Binding DataGridIsEditing, Mode=TwoWay}" />
                         <dgBehaviors:DataGridAlternateArrowsKeyBehavior IsEditing="{Binding DataGridIsEditing, Mode=OneWay}" />
                     </interactivity:Interaction.Behaviors>
+					
+					<DataGrid.Styles>
+						<Style Selector="DataGridCell">
+							<Setter Property="Background"
+									x:DataType="forms2:Form21"
+									Value="{Binding RowColor, Converter={ StaticResource SystemDrawingColorToSolidColorBrush}}"/>
+						</Style>
 
+						<Style Selector="DataGrid DataGridRow:selected DataGridCell">
+							<Setter Property="CornerRadius" Value="5"/>
+							<Setter Property="Foreground" Value="Black"/>
+							<Setter Property="Background">
+								<MultiBinding x:DataType="forms2:Form21" Converter="{StaticResource ColorBlendConverter}">
+									<Binding Source="LightBlue"/>
+									<!-- Базовый цвет выделения -->
+									<Binding Path="RowColor"/>
+									<!-- Цвет из условия -->
+								</MultiBinding>
+							</Setter>
+						</Style>
+
+						<Style Selector="DataGrid DataGridRow:pointerover:not(:selected) DataGridCell">
+							<Setter Property="Foreground" Value="Black"/>
+							<Setter Property="Background">
+								<MultiBinding x:DataType="forms2:Form21" Converter="{StaticResource ColorBlendConverter}">
+									<Binding Source="LightGray"/>
+									<!-- Базовый цвет наведения -->
+									<Binding  Path="RowColor"/>
+									<!-- Цвет из условия -->
+								</MultiBinding>
+							</Setter>
+						</Style>
+					</DataGrid.Styles>
+					
 					<DataGrid.Columns>
                         <DataGridTemplateColumn Width="40"
                                                 IsReadOnly="True">
