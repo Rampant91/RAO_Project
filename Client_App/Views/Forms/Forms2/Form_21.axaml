@@ -123,7 +123,7 @@
         </Expander>
 
 
-		<ScrollViewer Grid.Row="1" Classes="tableScrollViewer" HorizontalScrollBarVisibility="Disabled">
+		<ScrollViewer Grid.Row="1" Classes="tableScrollViewer">
 			<Grid x:Name="Table"
                   ColumnDefinitions="Auto"
                   RowDefinitions="Auto,*">
