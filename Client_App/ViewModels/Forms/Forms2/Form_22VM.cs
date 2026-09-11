@@ -204,6 +204,8 @@ public class Form_22VM : BaseFormVM
 
         this.Report.Rows22 = new(rows22);
     }
+    #endregion
+
     #region UndoSumUpFormList
     public void UndoSumUpFormList()
     {
@@ -260,8 +262,6 @@ public class Form_22VM : BaseFormVM
 
     #endregion
 
-    
-    #endregion
 
 
 
