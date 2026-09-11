@@ -21,6 +21,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Models.Attributes;
+using Models.DBRealization;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Client_App.ViewModels.Forms;
 
@@ -418,6 +421,70 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         _selectReportVM = new SelectReportPopupVM(this);
         _executorDataControlVM = new ExecutorDataControlVM(this.Report);
     }
+    #endregion
+
+    #region FrozenColumnCount
+
+    private int _frozenColumnCount = 0;
+
+    public int FrozenColumnCount
+    {
+        get => _frozenColumnCount;
+        set
+        {
+            var clamped = Math.Clamp(value, 0, 3);
+            if (_frozenColumnCount == clamped) return;
+            _frozenColumnCount = clamped;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(IsFrozenHeaderVisible));
+            OnPropertyChanged(nameof(IsZeroFrozenMode));
+            OnPropertyChanged(nameof(IsFrozenCol1Visible));
+            OnPropertyChanged(nameof(IsFrozenCol1OnlyVisible));
+            OnPropertyChanged(nameof(IsFrozenCol2Visible));
+            OnPropertyChanged(nameof(CanDecreaseFrozen));
+            OnPropertyChanged(nameof(CanIncreaseFrozen));
+            OnPropertyChanged(nameof(IsScrollableGroupHeaderFull));
+        }
+    }
+
+    /// <summary>Режим без замороженных колонок: вся шапка скроллируется, включая "№ п/п".</summary>
+    public bool IsZeroFrozenMode => FrozenColumnCount == 0;
+
+    /// <summary>
+    /// Показывать ли фиксированную секцию шапки.
+    /// При FrozenColumnCount=0 секция скрыта; скроллируемая шапка выравнивается по
+    /// DataGrid col 1 через отрицательный сдвиг в FrozenHeaderScrollSyncBehavior.
+    /// </summary>
+    public bool IsFrozenHeaderVisible => FrozenColumnCount > 0;
+
+    /// <summary>Колонка 1 ("код") попала в фиксированную область (FrozenColumnCount >= 2).</summary>
+    public bool IsFrozenCol1Visible => FrozenColumnCount >= 2;
+
+    /// <summary>Только колонка 1 заморожена, колонка 2 — нет (FrozenColumnCount == 2).
+    /// Используется для группового заголовка с ColumnSpan=1.</summary>
+    public bool IsFrozenCol1OnlyVisible => FrozenColumnCount == 2;
+
+    /// <summary>Колонка 2 ("дата") попала в фиксированную область (FrozenColumnCount >= 3).</summary>
+    public bool IsFrozenCol2Visible => FrozenColumnCount >= 3;
+
+    /// <summary>
+    /// Группа "Сведения об операции" полностью в скроллируемой области (FrozenCount == 1).
+    /// При FrozenCount>=2 col 0 ("код") уходит в фиксированную область,
+    /// и spanning-border заменяется на одиночный border для col 1 без левой границы.
+    /// </summary>
+    public bool IsScrollableGroupHeaderFull => FrozenColumnCount < 2;
+
+    public bool CanDecreaseFrozen => FrozenColumnCount > 0;
+    public bool CanIncreaseFrozen => FrozenColumnCount < 3;
+
+    private ICommand? _decreaseFrozenCommand;
+    public ICommand DecreaseFrozenColumnCountCommand =>
+        _decreaseFrozenCommand ??= new RelayCommand(() => FrozenColumnCount--);
+
+    private ICommand? _increaseFrozenCommand;
+    public ICommand IncreaseFrozenColumnCountCommand =>
+        _increaseFrozenCommand ??= new RelayCommand(() => FrozenColumnCount++);
+
     #endregion
 
     #region Commands

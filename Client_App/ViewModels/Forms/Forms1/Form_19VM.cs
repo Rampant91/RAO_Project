@@ -1,4 +1,8 @@
 ﻿using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands.Calculator;
+using Client_App.Commands.AsyncCommands.ExcelExport;
+using Client_App.Commands.AsyncCommands.Passports;
+using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.ViewModels.Controls;
 using Client_App.ViewModels.Forms.Forms1.Items;
 using Client_App.ViewModels.Forms.Forms1.Providers;
@@ -64,52 +68,11 @@ public class Form_19VM : BaseFormVM
 
     #endregion
 
-    #region FrozenColumnCount
 
-    private int _frozenColumnCount = 0;
-
-    public int FrozenColumnCount
-    {
-        get => _frozenColumnCount;
-        set
-        {
-            var clamped = Math.Clamp(value, 0, 3);
-            if (_frozenColumnCount == clamped) return;
-            _frozenColumnCount = clamped;
-            OnPropertyChanged();
-            OnPropertyChanged(nameof(IsFrozenHeaderVisible));
-            OnPropertyChanged(nameof(IsZeroFrozenMode));
-            OnPropertyChanged(nameof(IsFrozenCol1Visible));
-            OnPropertyChanged(nameof(IsFrozenCol1OnlyVisible));
-            OnPropertyChanged(nameof(IsFrozenCol2Visible));
-            OnPropertyChanged(nameof(CanDecreaseFrozen));
-            OnPropertyChanged(nameof(CanIncreaseFrozen));
-            OnPropertyChanged(nameof(IsScrollableGroupHeaderFull));
-        }
-    }
-
-    public bool IsZeroFrozenMode => FrozenColumnCount == 0;
-    public bool IsFrozenHeaderVisible => FrozenColumnCount > 0;
-    public bool IsFrozenCol1Visible => FrozenColumnCount >= 2;
-    public bool IsFrozenCol1OnlyVisible => FrozenColumnCount == 2;
-    public bool IsFrozenCol2Visible => FrozenColumnCount >= 3;
-    public bool IsScrollableGroupHeaderFull => FrozenColumnCount < 2;
-    public bool CanDecreaseFrozen => FrozenColumnCount > 0;
-    public bool CanIncreaseFrozen => FrozenColumnCount < 3;
-
-    private ICommand? _decreaseFrozenCommand;
-    public ICommand DecreaseFrozenColumnCountCommand =>
-        _decreaseFrozenCommand ??= new RelayCommand(() => FrozenColumnCount--);
-
-    private ICommand? _increaseFrozenCommand;
-    public ICommand IncreaseFrozenColumnCountCommand =>
-        _increaseFrozenCommand ??= new RelayCommand(() => FrozenColumnCount++);
-
-    #endregion
     #region Commands
     public ICommand PasteRows => new NewPasteRowsAsyncCommand(this.Report.Rows19);
-    #endregion
 
+    #endregion
     #region Constructors
 
     public Form_19VM() { }
