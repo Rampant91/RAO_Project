@@ -1,16 +1,19 @@
+using Models.Attributes;
+using Models.Collections;
+using Models.Comparers.FormContent;
+using Models.Forms.DataAccess;
+using Models.Interfaces;
+using Models.Passports;
+using OfficeOpenXml;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text.RegularExpressions;
-using Models.Attributes;
-using Models.Collections;
-using Models.Forms.DataAccess;
-using Models.Interfaces;
-using OfficeOpenXml;
-using Models.Comparers.FormContent;
-using System.Drawing;
 
 namespace Models.Forms.Form2;
 
@@ -2179,7 +2182,34 @@ public partial class Form21 : Form2, IBaseColor, ICopiable
     #endregion
     public void PasteParsedTSVstring(string[] parsedTSVstring)
     {
-        throw new NotImplementedException();
+        if (parsedTSVstring.Length is not 21 and not 22) return;
+
+        int offset = 0;
+        if (parsedTSVstring.Length is 22)
+            offset = 1;
+
+
+        RefineMachineName.Value = parsedTSVstring[0 + offset];
+        MachineCode.Value = FormStringHelper.ConvertStringToByte(parsedTSVstring[1 + offset]);
+        MachinePower.Value = parsedTSVstring[2 + offset];
+        NumberOfHoursPerYear.Value = parsedTSVstring[3 + offset];
+        CodeRAOIn.Value = parsedTSVstring[4 + offset];
+        StatusRAOIn.Value = parsedTSVstring[5 + offset];
+        VolumeIn.Value = parsedTSVstring[6 + offset];
+        MassIn.Value = parsedTSVstring[7 + offset];
+        QuantityIn.Value = parsedTSVstring[8 + offset];
+        TritiumActivityIn.Value = parsedTSVstring[9 + offset];
+        BetaGammaActivityIn.Value = parsedTSVstring[10 + offset];
+        AlphaActivityIn.Value = parsedTSVstring[11 + offset];
+        TransuraniumActivityIn.Value = parsedTSVstring[12 + offset];
+        CodeRAOout.Value = parsedTSVstring[13 + offset];
+        StatusRAOout.Value = parsedTSVstring[14 + offset];
+        VolumeOut.Value = parsedTSVstring[15 + offset];
+        MassOut.Value = parsedTSVstring[16 + offset];
+        QuantityOZIIIout.Value = parsedTSVstring[17 + offset];
+        TritiumActivityOut.Value = parsedTSVstring[18 + offset];
+        BetaGammaActivityOut.Value = parsedTSVstring[19 + offset];
+        TransuraniumActivityOut.Value = parsedTSVstring[20 + offset];
     }
 
     public override bool IsContentEqual(Form otherForm)

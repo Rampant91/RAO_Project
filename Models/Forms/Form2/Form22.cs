@@ -1,15 +1,17 @@
+using Models.Attributes;
+using Models.Collections;
+using Models.Comparers.FormContent;
+using Models.Forms.DataAccess;
+using Models.Interfaces;
+using Models.Passports;
+using OfficeOpenXml;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Models.Attributes;
-using Models.Collections;
-using Models.Forms.DataAccess;
-using Models.Interfaces;
-using OfficeOpenXml;
-using Models.Comparers.FormContent;
-using System.Drawing;
 
 namespace Models.Forms.Form2;
 
@@ -2194,7 +2196,32 @@ public partial class Form22 : Form2, IBaseColor, ICopiable
     #endregion
     public void PasteParsedTSVstring(string[] parsedTSVstring)
     {
-        throw new NotImplementedException();
+        if (parsedTSVstring.Length is not 19 and not 20) return;
+
+        int offset = 0;
+        if (parsedTSVstring.Length is 20)
+            offset = 1;
+
+
+        StoragePlaceName.Value = parsedTSVstring[0 + offset];
+        StoragePlaceCode.Value = parsedTSVstring[1 + offset];
+        PackName.Value = parsedTSVstring[2 + offset];
+        PackType.Value = parsedTSVstring[3 + offset];
+        PackQuantity.Value = parsedTSVstring[4 + offset];
+        CodeRAO.Value = parsedTSVstring[5 + offset];
+        StatusRAO.Value = parsedTSVstring[6 + offset];
+        VolumeOutOfPack.Value = parsedTSVstring[7 + offset];
+        VolumeInPack.Value = parsedTSVstring[8 + offset];
+        MassOutOfPack.Value = parsedTSVstring[9 + offset];
+        MassInPack.Value = parsedTSVstring[10 + offset];
+        QuantityOZIII.Value = parsedTSVstring[11 + offset];
+        TritiumActivity.Value = parsedTSVstring[12 + offset];
+        BetaGammaActivity.Value = parsedTSVstring[13 + offset];
+        AlphaActivity.Value = parsedTSVstring[14 + offset];
+        TransuraniumActivity.Value = parsedTSVstring[15 + offset];
+        MainRadionuclids.Value = parsedTSVstring[16 + offset];
+        Subsidy.Value = parsedTSVstring[17 + offset];
+        FcpNumber.Value = parsedTSVstring[18 + offset];
     }
 
     public override bool IsContentEqual(Form otherForm)

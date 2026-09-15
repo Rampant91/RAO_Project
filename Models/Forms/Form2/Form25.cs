@@ -1,14 +1,17 @@
+using Models.Attributes;
+using Models.Collections;
+using Models.Comparers.FormContent;
+using Models.Forms.DataAccess;
+using Models.Interfaces;
+using Models.Passports;
+using OfficeOpenXml;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text.RegularExpressions;
-using Models.Attributes;
-using Models.Collections;
-using Models.Forms.DataAccess;
-using OfficeOpenXml;
-using Models.Comparers.FormContent;
-using Models.Interfaces;
 
 namespace Models.Forms.Form2;
 
@@ -723,7 +726,22 @@ public partial class Form25 : Form2, ICopiable
     #endregion
     public void PasteParsedTSVstring(string[] parsedTSVstring)
     {
-        throw new NotImplementedException();
+        if (parsedTSVstring.Length is not 9 and not 10) return;
+
+        int offset = 0;
+        if (parsedTSVstring.Length is 10)
+            offset = 1;
+
+
+        StoragePlaceName.Value = parsedTSVstring[0 + offset];
+        StoragePlaceCode.Value = parsedTSVstring[1 + offset];
+        CodeOYAT.Value = parsedTSVstring[2 + offset];
+        FcpNumber.Value = parsedTSVstring[3 + offset];
+        FuelMass.Value = parsedTSVstring[4 + offset];
+        CellMass.Value = parsedTSVstring[5 + offset];
+        Quantity.Value = FormStringHelper.ConvertStringToInt(parsedTSVstring[6 + offset]);
+        AlphaActivity.Value = parsedTSVstring[7 + offset];
+        BetaGammaActivity.Value = parsedTSVstring[8 + offset];
     }
 
     public override bool IsContentEqual(Form otherForm)

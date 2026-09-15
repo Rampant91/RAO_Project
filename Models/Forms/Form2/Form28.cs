@@ -1,14 +1,17 @@
+using Models.Attributes;
+using Models.Collections;
+using Models.Comparers.FormContent;
+using Models.Forms.DataAccess;
+using Models.Interfaces;
+using Models.Passports;
+using OfficeOpenXml;
+using Spravochniki;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Linq;
-using Models.Attributes;
-using Models.Collections;
-using Models.Forms.DataAccess;
-using OfficeOpenXml;
-using Spravochniki;
-using Models.Comparers.FormContent;
-using Models.Interfaces;
+using System.Security.AccessControl;
 
 namespace Models.Forms.Form2;
 
@@ -524,7 +527,19 @@ public class Form28 : Form2, ICopiable
     #endregion
     public void PasteParsedTSVstring(string[] parsedTSVstring)
     {
-        throw new NotImplementedException();
+        if (parsedTSVstring.Length is not 6 and not 7) return;
+
+        int offset = 0;
+        if (parsedTSVstring.Length is 7)
+            offset = 1;
+
+
+        WasteSourceName.Value = parsedTSVstring[0 + offset];
+        WasteRecieverName.Value = parsedTSVstring[1 + offset];
+        RecieverTypeCode.Value = parsedTSVstring[2 + offset];
+        PoolDistrictName.Value = parsedTSVstring[3 + offset];
+        AllowedWasteRemovalVolume.Value = parsedTSVstring[4 + offset];
+        RemovedWasteVolume.Value = parsedTSVstring[5 + offset];
     }
 
     public override bool IsContentEqual(Form otherForm)

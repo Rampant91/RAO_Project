@@ -1,14 +1,17 @@
+using Models.Attributes;
+using Models.Collections;
+using Models.Comparers.FormContent;
+using Models.Forms.DataAccess;
+using Models.Interfaces;
+using Models.Passports;
+using OfficeOpenXml;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text.RegularExpressions;
-using Models.Attributes;
-using Models.Collections;
-using Models.Forms.DataAccess;
-using OfficeOpenXml;
-using Models.Comparers.FormContent;
-using Models.Interfaces;
 
 namespace Models.Forms.Form2;
 
@@ -1054,7 +1057,25 @@ public partial class Form23 : Form2, ICopiable
 
     public void PasteParsedTSVstring(string[] parsedTSVstring)
     {
-        throw new NotImplementedException();
+        if (parsedTSVstring.Length is not 12 and not 13) return;
+
+        int offset = 0;
+        if (parsedTSVstring.Length is 13)
+            offset = 1;
+
+
+        StoragePlaceName.Value = parsedTSVstring[0 + offset];
+        StoragePlaceCode.Value = parsedTSVstring[1 + offset];
+        ProjectVolume.Value = parsedTSVstring[2 + offset];
+        CodeRAO.Value = parsedTSVstring[3 + offset];
+        Volume.Value = parsedTSVstring[4 + offset];
+        Mass.Value = parsedTSVstring[5 + offset];
+        QuantityOZIII.Value = parsedTSVstring[6 + offset];
+        SummaryActivity.Value = parsedTSVstring[7 + offset];
+        DocumentNumber.Value = parsedTSVstring[8 + offset];
+        DocumentDate.Value = parsedTSVstring[9 + offset];
+        ExpirationDate.Value = parsedTSVstring[10 + offset];
+        DocumentName.Value = parsedTSVstring[11 + offset];
     }
     public override bool IsContentEqual(Form otherForm)
     {

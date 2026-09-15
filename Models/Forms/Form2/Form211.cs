@@ -1,14 +1,16 @@
+using Models.Attributes;
+using Models.Collections;
+using Models.Comparers.FormContent;
+using Models.Forms.DataAccess;
+using Models.Interfaces;
+using OfficeOpenXml;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text.RegularExpressions;
-using Models.Attributes;
-using Models.Collections;
-using Models.Forms.DataAccess;
-using OfficeOpenXml;
-using Models.Comparers.FormContent;
-using Models.Interfaces;
 
 namespace Models.Forms.Form2;
 
@@ -630,7 +632,21 @@ public partial class Form211 : Form2, ICopiable
     #endregion
     public void PasteParsedTSVstring(string[] parsedTSVstring)
     {
-        throw new NotImplementedException();
+        if (parsedTSVstring.Length is not 8 and not 9) return;
+
+        int offset = 0;
+        if (parsedTSVstring.Length is 9)
+            offset = 1;
+
+
+        PlotName.Value = parsedTSVstring[0 + offset];
+        PlotKadastrNumber.Value = parsedTSVstring[1 + offset];
+        PlotCode.Value = parsedTSVstring[2 + offset];
+        InfectedArea.Value = parsedTSVstring[3 + offset];
+        Radionuclids.Value = parsedTSVstring[4 + offset];
+        SpecificActivityOfPlot.Value = parsedTSVstring[5 + offset];
+        SpecificActivityOfLiquidPart.Value = parsedTSVstring[6 + offset];
+        SpecificActivityOfDensePart.Value = parsedTSVstring[7 + offset];
     }
 
     public override bool IsContentEqual(Form otherForm)

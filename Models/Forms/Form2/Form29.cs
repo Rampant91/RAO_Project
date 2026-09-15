@@ -1,13 +1,16 @@
+using Models.Attributes;
+using Models.Collections;
+using Models.Comparers.FormContent;
+using Models.Forms.DataAccess;
+using Models.Interfaces;
+using Models.Passports;
+using OfficeOpenXml;
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Linq;
-using Models.Attributes;
-using Models.Collections;
-using Models.Forms.DataAccess;
-using OfficeOpenXml;
-using Models.Comparers.FormContent;
-using Models.Interfaces;
+using System.Security.AccessControl;
 
 namespace Models.Forms.Form2;
 
@@ -366,7 +369,17 @@ public class Form29 : Form2, ICopiable
     #endregion
     public void PasteParsedTSVstring(string[] parsedTSVstring)
     {
-        throw new NotImplementedException();
+        if (parsedTSVstring.Length is not 4 and not 5) return;
+
+        int offset = 0;
+        if (parsedTSVstring.Length is 5)
+            offset = 1;
+
+
+        WasteSourceName.Value = parsedTSVstring[0 + offset];
+        RadionuclidName.Value = parsedTSVstring[1 + offset];
+        AllowedActivity.Value = parsedTSVstring[2 + offset];
+        FactedActivity.Value = parsedTSVstring[3 + offset];
     }
 
 
