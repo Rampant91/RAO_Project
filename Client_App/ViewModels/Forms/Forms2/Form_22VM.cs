@@ -154,7 +154,7 @@ public class Form_22VM : BaseFormVM
                             StatusRAO_DB = firstRaoGroupElement.StatusRAO_DB, //8
 
                             //SumUp
-                            PackQuantity_DB = "-",//6
+                            PackQuantity_DB = raoGroup.Sum(row22 => int.TryParse(row22.PackQuantity_DB?.Replace('.', ','), out var value) ? value : 0).ToString(),//6
                             VolumeOutOfPack_DB = raoGroup.Sum(row22 => double.TryParse(row22.VolumeOutOfPack_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),//9
                             VolumeInPack_DB = "-",//10
                             MassOutOfPack_DB = raoGroup.Sum(row22 => double.TryParse(row22.MassOutOfPack_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),//11
