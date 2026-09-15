@@ -205,8 +205,8 @@ public class ExportTitleListAsyncCommand : ExportRaodbBaseAsyncCommand
         progressBarVM.LoadStatus = $"{progressBarVM.ValueBar}% ({loadStatus})";
 
         #endregion
-
-        await tempDb.Database.MigrateAsync(cancellationToken: cts.Token);
+        
+        await tempDb.MigrateDatabaseAsync(cts.Token);
 
         #region Progress = 60
 
