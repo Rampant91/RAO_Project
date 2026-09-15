@@ -367,7 +367,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                         ContentTitle = "Импорт из .xlsx",
                                         ContentHeader = "Уведомление",
                                         ContentMessage =
-                                            $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
+                                            $"Будет добавлена новая организация ({titleListNum}), содержащая отчет по форме {ImpRepFormNum}." +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
                                             $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
@@ -398,7 +398,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                         ContentTitle = "Импорт из .xlsx",
                                         ContentHeader = "Уведомление",
                                         ContentMessage =
-                                            $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
+                                            $"Будет добавлена новая организация ({titleListNum}), содержащая отчет по форме {ImpRepFormNum}." +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
                                             $"{Environment.NewLine}" +
@@ -430,7 +430,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                         ],
                                         ContentTitle = "Импорт из .xlsx",
                                         ContentHeader = "Уведомление",
-                                        ContentMessage = $"Будет добавлена новая организация ({repNumber})." +
+                                        ContentMessage = $"Будет добавлена новая организация ({titleListNum})." +
                                                          $"{Environment.NewLine}" +
                                                          $"{Environment.NewLine}Регистрационный номер - {BaseRepsRegNum}" +
                                                          $"{Environment.NewLine}ОКПО - {BaseRepsOkpo}" +
@@ -457,7 +457,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                                         ContentTitle = "Импорт из .xlsx",
                                         ContentHeader = "Уведомление",
                                         ContentMessage =
-                                            $"Будет добавлена новая организация ({repNumber}), содержащая отчет по форме {ImpRepFormNum}." +
+                                            $"Будет добавлена новая организация ({titleListNum}), содержащая отчет по форме {ImpRepFormNum}." +
                                             $"{Environment.NewLine}" +
                                             $"{Environment.NewLine}Сокращенное наименование - {BaseRepsShortName}" +
                                             $"{Environment.NewLine}",
