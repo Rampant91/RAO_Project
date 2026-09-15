@@ -111,8 +111,8 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
                         Topmost = true,
                     })
                     .ShowDialog(Desktop.MainWindow));
-
                 #endregion
+                throw ex;
             }
             finally
             {
