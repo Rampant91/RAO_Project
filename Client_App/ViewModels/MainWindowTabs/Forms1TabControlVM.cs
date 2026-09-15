@@ -38,11 +38,6 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
     public ICommand ExcelExportFormAnalysis { get; private set; }
 
     /// <summary>
-    /// Выбранная организация -> Импортировать отчёт в организацию -> Из Excel
-    /// </summary>
-    public ICommand ImportExcel { get; private set; }
-
-    /// <summary>
     /// Выбранная организация -> Импортировать отчёт в организацию -> Из Raodb
     /// </summary>
     public ICommand ImportRaodb { get; private set; }
@@ -65,7 +60,6 @@ public class Forms1TabControlVM : FormsTabControlBaseVM
     {
         CheckReportFromMain = new CheckReportFromMainAsyncCommand(this);
         ExcelExportFormAnalysis = new ExcelExportFormAnalysisAsyncCommand(this);
-        ImportExcel = new ImportExcelAsyncCommand(this);
         ImportRaodb = new ImportRaodbAsyncCommand(this);
     }
 

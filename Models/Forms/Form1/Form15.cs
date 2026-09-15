@@ -551,7 +551,7 @@ public partial class Form15 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
         }
@@ -567,7 +567,7 @@ public partial class Form15 : Form1
             return false;
         }
         if (value.Value.Equals("прим.") 
-            || Spravochniks.OKSM.Contains(value.Value.ToUpper()) 
+            || Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()) 
             || value.Value.Equals("Минобороны"))
         {
             return true;

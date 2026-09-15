@@ -685,7 +685,7 @@ public partial class Form16 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
         }
@@ -717,7 +717,7 @@ public partial class Form16 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("Минобороны") || Spravochniks.OKSM.Contains(value.Value.ToUpper()))
+        if (value.Value.Equals("Минобороны") || Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()))
         {
             return true;
         }
