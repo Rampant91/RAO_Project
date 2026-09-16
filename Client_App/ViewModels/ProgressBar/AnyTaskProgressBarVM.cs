@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -18,18 +18,20 @@ public class AnyTaskProgressBarVM : BaseVM, INotifyPropertyChanged
 {
     private IBackgroundLoader _backgroundWorker;
     private Task MainTask { get; set; }
-    public CancellationTokenSource CancellationTokenSource { 
-        get; 
-        set; }
+    public CancellationTokenSource CancellationTokenSource
+    {
+        get;
+        set;
+    }
     private AnyTaskProgressBar AnyTaskProgressBar_DB { get; set; }
 
     public Interaction<MainWindowVM, object> ShowDialog { get; }
 
     public bool IsShowDialog { get; set; }
     public event EventHandler ClosingRequest;
-    public ICommand ExcelExportCancel { get; set; } //Отмена экспорта в .xlsx
+    public ICommand ExcelExportCancel { get; set; }
 
-    public AnyTaskProgressBarVM() {}
+    public AnyTaskProgressBarVM() { }
 
     public AnyTaskProgressBarVM(AnyTaskProgressBar anyTaskProgressBar, CancellationTokenSource cts, IBackgroundLoader backgroundWorker, bool isShowDialog = false)
     {
@@ -37,13 +39,10 @@ public class AnyTaskProgressBarVM : BaseVM, INotifyPropertyChanged
         _backgroundWorker = backgroundWorker;
         AnyTaskProgressBar_DB = anyTaskProgressBar;
         CancellationTokenSource = cts;
-        LoadStatus = "Начало экспорта";
+        ExportName = "Выполнение операции";
+        LoadStatus = "Подготовка...";
         ValueBar = 1;
         if (isShowDialog) IsShowDialog = true;
-        //_backgroundWorker.BackgroundWorker(() =>
-        //{
-
-        //}, () => AnyTaskProgressBar.Close());
     }
 
     #region LoadStatus
@@ -73,6 +72,7 @@ public class AnyTaskProgressBarVM : BaseVM, INotifyPropertyChanged
             if (value == _exportName) return;
             _exportName = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(WindowTitle));
         }
     }
 
@@ -89,10 +89,21 @@ public class AnyTaskProgressBarVM : BaseVM, INotifyPropertyChanged
             if (value == _exportType) return;
             _exportType = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(WindowTitle));
         }
     }
 
     #endregion
+
+    /// <summary>
+    /// Заголовок окна: человекочитаемое имя операции (не служебный ExportType для имени файла).
+    /// </summary>
+    public string WindowTitle =>
+        !string.IsNullOrWhiteSpace(ExportName)
+            ? ExportName
+            : !string.IsNullOrWhiteSpace(ExportType)
+                ? ExportType
+                : "Выполнение операции";
 
     #region ValueBar
 

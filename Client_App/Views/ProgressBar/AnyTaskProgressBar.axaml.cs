@@ -5,11 +5,12 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Client_App.Interfaces.BackgroundLoader;
 using Client_App.ViewModels.ProgressBar;
-using static Avalonia.Controls.WindowState;
 
 namespace Client_App.Views.ProgressBar;
 
@@ -33,10 +34,19 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
         DataContext = vm;
         AnyTaskProgressBarVM = (AnyTaskProgressBarVM)DataContext!;
 
+        // ProgressBar often marks PointerPressed handled — still allow drag from chrome.
+        AddHandler(PointerPressedEvent, Chrome_OnPointerPressed, RoutingStrategies.Tunnel, handledEventsToo: true);
+
         var showOwner = owner;
         if (showOwner == null && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             showOwner = desktop.MainWindow;
+        }
+
+        // Owner keeps us above the main window without Topmost over system/file dialogs.
+        if (showOwner != null && showOwner != this)
+        {
+            Owner = showOwner;
         }
 
         if (AnyTaskProgressBarVM.IsShowDialog && showOwner != null)
@@ -59,43 +69,43 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
 
     #region Events
 
-    private bool _mouseDownForWindowMoving;
-    private Point _dragStart;
-
-    private void InputElement_OnPointerMoved(object? sender, PointerEventArgs e)
+    private void Chrome_OnPointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (!_mouseDownForWindowMoving)
+        if (e.Source is Button || VisualTreeHelperIsDescendantOfButton(e.Source as Visual))
         {
             return;
         }
 
-        var currentPosition = e.GetPosition(this);
-        var startPosition = _dragStart;
-        Position = new PixelPoint(
-            Position.X + (int)(currentPosition.X - startPosition.X),
-            Position.Y + (int)(currentPosition.Y - startPosition.Y));
-    }
-
-    private void InputElement_OnPointerPressed(object? sender, PointerPressedEventArgs e)
-    {
-        if (WindowState is Maximized or FullScreen)
+        if (WindowState is WindowState.Maximized or WindowState.FullScreen)
         {
             return;
         }
 
-        _mouseDownForWindowMoving = true;
-        _dragStart = e.GetPosition(this);
+        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+        {
+            BeginMoveDrag(e);
+        }
     }
 
-    private void InputElement_OnPointerReleased(object? sender, PointerReleasedEventArgs e)
+    private static bool VisualTreeHelperIsDescendantOfButton(Visual? visual)
     {
-        _mouseDownForWindowMoving = false;
+        while (visual is not null)
+        {
+            if (visual is Button)
+            {
+                return true;
+            }
+
+            visual = visual.GetVisualParent() as Visual;
+        }
+
+        return false;
     }
 
     #endregion
 
     /// <summary>
-    /// Крестик, Escape и кнопка «Отмена» должны останавливать команду, а не только прятать окно.
+    /// Крестик, Escape и закрытие окна должны останавливать команду, а не только прятать окно.
     /// </summary>
     protected override void OnClosing(WindowClosingEventArgs e)
     {
@@ -128,6 +138,9 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
         }
     }
 
+    /// <summary>
+    /// Поднять окно над owner после модального диалога, без постоянного Topmost.
+    /// </summary>
     public async Task BringToForegroundAsync()
     {
         await Dispatcher.UIThread.InvokeAsync(() =>
@@ -137,15 +150,54 @@ public partial class AnyTaskProgressBar : BaseWindow<AnyTaskProgressBarVM>
                 return;
             }
 
-            Topmost = true;
+            Topmost = false;
             Activate();
+        });
+    }
 
-            // После модального диалога (выбор папки и т.п.) WM часто поднимает owner диалога — возвращаем Z-order.
-            if (OperatingSystem.IsWindows())
+    /// <summary>
+    /// Перед модальным диалогом на MainWindow: спрятать прогресс, чтобы он не оказался
+    /// disabled/под диалогом и не мешал SaveFileDialog.
+    /// </summary>
+    public async Task PrepareForExternalDialogAsync()
+    {
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            if (!IsVisible)
             {
-                Topmost = false;
-                Topmost = true;
+                return;
             }
+
+            Topmost = false;
+            Hide();
+        });
+    }
+
+    /// <summary>
+    /// После закрытия внешнего диалога — снова показать прогресс над главным окном.
+    /// </summary>
+    public async Task RestoreAfterExternalDialogAsync(Window? owner = null)
+    {
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            var showOwner = owner;
+            if (showOwner == null && Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                showOwner = desktop.MainWindow;
+            }
+
+            if (showOwner != null && showOwner != this)
+            {
+                Owner = showOwner;
+            }
+
+            Topmost = false;
+            if (!IsVisible)
+            {
+                Show();
+            }
+
+            Activate();
         });
     }
 

@@ -24,7 +24,8 @@ public static class ReportCheckSnapshotLoader
             .Include(x => x.Reports!).ThenInclude(r => r.DBObservable)
             .Include(x => x.Reports!).ThenInclude(r => r.Master_DB!).ThenInclude(m => m.Rows10)
             .Include(x => x.Reports!).ThenInclude(r => r.Master_DB!).ThenInclude(m => m.Rows20)
-            .Include(x => x.Reports!).ThenInclude(r => r.Master_DB!).ThenInclude(m => m.Rows40);
+            .Include(x => x.Reports!).ThenInclude(r => r.Master_DB!).ThenInclude(m => m.Rows40)
+            .Include(x => x.Reports!).ThenInclude(r => r.Master_DB!).ThenInclude(m => m.Rows50);
 
         query = ApplyFormRowsInclude(query, formNum);
 

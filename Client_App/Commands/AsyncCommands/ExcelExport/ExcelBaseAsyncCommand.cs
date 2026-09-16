@@ -45,7 +45,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         IsExecute = true;
         try
         {
-            await Task.Run(() => AsyncExecute(parameter));
+            await Task.Run(async () => await AsyncExecute(parameter));
         }
         catch (OperationCanceledException) { }
         catch (Exception ex)
@@ -54,7 +54,20 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg);
         }
-        IsExecute = false;
+        finally
+        {
+            // Native dialogs / cancel must never leave MainWindow permanently disabled.
+            try
+            {
+                await SetMainWindowEnabledAsync(true);
+            }
+            catch
+            {
+                // Ignore restore failures on shutdown.
+            }
+
+            IsExecute = false;
+        }
     }
 
     public abstract override Task AsyncExecute(object? parameter);
@@ -90,8 +103,61 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     private protected static async Task CancelCommandAndCloseProgressBarWindow(CancellationTokenSource cts, AnyTaskProgressBar? progressBar = null)
     {
         await cts.CancelAsync();
-        if (progressBar is not null) await progressBar.CloseAsync();
+        if (progressBar is not null)
+        {
+            try
+            {
+                await progressBar.CloseCompletedAsync();
+            }
+            catch
+            {
+                // Already closed.
+            }
+        }
+
+        await SetMainWindowEnabledAsync(true);
         cts.Token.ThrowIfCancellationRequested();
+    }
+
+    #endregion
+
+    #region MainWindowEnabled
+
+    /// <summary>
+    /// На время фоновой выгрузки главное окно можно отключить, чтобы не кликали отчёты поверх прогресса.
+    /// Всегда восстанавливать в finally команды.
+    /// </summary>
+    private protected static async Task SetMainWindowEnabledAsync(bool enabled)
+    {
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            if (Desktop.MainWindow is { } main)
+            {
+                main.IsEnabled = enabled;
+            }
+        });
+    }
+
+    /// <summary>Синхронная обёртка для мест без await (редко).</summary>
+    private protected static void SetMainWindowEnabled(bool enabled)
+    {
+        if (Dispatcher.UIThread.CheckAccess())
+        {
+            if (Desktop.MainWindow is { } main)
+            {
+                main.IsEnabled = enabled;
+            }
+
+            return;
+        }
+
+        Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            if (Desktop.MainWindow is { } main)
+            {
+                main.IsEnabled = enabled;
+            }
+        }).GetAwaiter().GetResult();
     }
 
     #endregion
@@ -100,6 +166,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     /// <summary>
     /// Выводит сообщение, дающее выбор, открывать временную копию или сохранить файл.
+    /// На время диалогов прогрессбар скрывается (иначе оказывается под модалкой / disabled у Owner).
     /// </summary>
     /// <param name="fileName">Имя файла.</param>
     /// <param name="cts">Токен.</param>
@@ -108,99 +175,136 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     private protected static async Task<(string fullPath, bool openTemp)> ExcelGetFullPath(string fileName, CancellationTokenSource cts, 
         AnyTaskProgressBar? progressBar = null)
     {
-        #region MessageSaveOrOpenTemp
-
-        var res = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
-            .GetMessageBoxCustom(new MessageBoxCustomParams 
-            {
-                ButtonDefinitions =
-                [
-                    new ButtonDefinition { Name = "Сохранить" },
-                    new ButtonDefinition { Name = "Открыть временную копию" }
-                ],
-                CanResize = true,
-                ContentTitle = "Выгрузка в .xlsx",
-                ContentHeader = "Уведомление",
-                ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
-                MinWidth = 400,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Topmost = true,
-            }).ShowWindowDialogAsync(Desktop.MainWindow));
-
-        #endregion
-
-        var fullPath = "";
-        var openTemp = res is "Открыть временную копию";
-
-        switch (res)
+        if (progressBar is not null)
         {
-            case "Открыть временную копию":
-            {
-                DirectoryInfo tmpFolder = new(Path.Combine(BaseVM.SystemDirectory, "RAO", "temp"));
-                var count = 0;
+            await progressBar.PrepareForExternalDialogAsync();
+        }
 
-                fullPath = Path.Combine(tmpFolder.FullName, fileName + ".xlsx");
-                while (File.Exists(fullPath))
-                {
-                    fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{++count}.xlsx");
-                }
+        // Disabled MainWindow as dialog parent freezes Avalonia native pickers on cancel.
+        await SetMainWindowEnabledAsync(true);
 
-                break;
-            }
-            case "Сохранить":
+        try
+        {
+            #region MessageSaveOrOpenTemp
+
+            var res = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Сохранить" },
+                        new ButtonDefinition { Name = "Открыть временную копию" }
+                    ],
+                    CanResize = true,
+                    ContentTitle = "Выгрузка в .xlsx",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "Что бы вы хотели сделать с данной выгрузкой?",
+                    MinWidth = 400,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                }).ShowWindowDialogAsync(Desktop.MainWindow));
+
+            #endregion
+
+            var fullPath = "";
+            var openTemp = res is "Открыть временную копию";
+
+            switch (res)
             {
-                SaveFileDialog dial = new();
-                var filter = new FileDialogFilter
+                case "Открыть временную копию":
                 {
-                    Name = "Excel",
-                    Extensions = { "xlsx" }
-                };
-                dial.Filters.Add(filter);
-                dial.InitialFileName = fileName;
-                fullPath = await dial.ShowAsync(Desktop.MainWindow);
-                if (string.IsNullOrEmpty(fullPath)) await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-                if (!fullPath.EndsWith(".xlsx")) fullPath += ".xlsx"; //В проводнике Linux в имя файла не подставляется расширение из фильтра, добавляю руками если его нет
-                if (File.Exists(fullPath))
-                {
-                    try
+                    DirectoryInfo tmpFolder = new(Path.Combine(BaseVM.SystemDirectory, "RAO", "temp"));
+                    var count = 0;
+
+                    fullPath = Path.Combine(tmpFolder.FullName, fileName + ".xlsx");
+                    while (File.Exists(fullPath))
                     {
-                        File.Delete(fullPath!);
+                        fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{++count}.xlsx");
                     }
-                    catch
-                    {
-                        #region MessageFailedToSaveFile
 
-                        await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
-                            .GetMessageBoxStandard(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в .xlsx",
-                                ContentHeader = "Ошибка",
-                                ContentMessage =
-                                    $"Не удалось сохранить файл по пути: {fullPath}" +
-                                    $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                                    $"{Environment.NewLine}и используется другим процессом.",
-                                MinWidth = 400,
-                                MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                                Topmost = true,
-                            }).ShowWindowDialogAsync(Desktop.MainWindow));
+                    break;
+                }
+                case "Сохранить":
+                {
+                    SaveFileDialog dial = new();
+                    var filter = new FileDialogFilter
+                    {
+                        Name = "Excel",
+                        Extensions = { "xlsx" }
+                    };
+                    dial.Filters.Add(filter);
+                    dial.InitialFileName = fileName;
+                    // Must run on UI thread — ShowAsync from Task.Run deadlocks Avalonia.
+                    // Parent must be enabled; cancel otherwise leaves the UI frozen.
+                    fullPath = await Dispatcher.UIThread.InvokeAsync(async () =>
+                    {
+                        if (Desktop.MainWindow is { } main)
+                        {
+                            main.IsEnabled = true;
+                        }
+
+                        return await dial.ShowAsync(Desktop.MainWindow) ?? string.Empty;
+                    });
+                    if (string.IsNullOrEmpty(fullPath))
+                    {
+                        await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                    }
+
+                    // Linux file picker may omit extension from the filter.
+                    if (!fullPath.EndsWith(".xlsx", StringComparison.OrdinalIgnoreCase))
+                    {
+                        fullPath += ".xlsx";
+                    }
+
+                    if (File.Exists(fullPath))
+                    {
+                        try
+                        {
+                            File.Delete(fullPath);
+                        }
+                        catch
+                        {
+                            #region MessageFailedToSaveFile
+
+                            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                                .GetMessageBoxStandard(new MessageBoxStandardParams
+                                {
+                                    ButtonDefinitions = ButtonEnum.Ok,
+                                    ContentTitle = "Выгрузка в .xlsx",
+                                    ContentHeader = "Ошибка",
+                                    ContentMessage =
+                                        $"Не удалось сохранить файл по пути: {fullPath}" +
+                                        $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
+                                        $"{Environment.NewLine}и используется другим процессом.",
+                                    MinWidth = 400,
+                                    MinHeight = 150,
+                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                                }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                             #endregion
 
-                        await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                        }
                     }
-                }
 
-                break;
+                    break;
+                }
+                default:
+                {
+                    // Closed via X / Esc / empty result — stop the export.
+                    await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                    break;
+                }
             }
-            default:
+
+            return (fullPath, openTemp);
+        }
+        finally
+        {
+            if (progressBar is not null && !cts.IsCancellationRequested)
             {
-                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-                break;
+                await progressBar.RestoreAfterExternalDialogAsync(Desktop.MainWindow);
             }
         }
-        return (fullPath, openTemp);
     }
 
     #endregion

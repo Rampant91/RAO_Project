@@ -30,8 +30,10 @@
 		<converter:BoolInverterConverter x:Key="BoolInverterConverter"/>
 	</Window.Resources>
     
+    <!--#region Layout-->
     <Grid>
         <DockPanel>
+        <!--#region Menu-->
         <Menu x:Name="SubMenuBorder" 
               BorderBrush="#FF959595" 
               BorderThickness="1" 
@@ -398,7 +400,9 @@
 			</MenuItem>
 
         </Menu>
-        
+        <!--#endregion Menu-->
+
+        <!--#region Content-->
         <Grid x:Name="MainPanel"
                Margin="5,5,5,5"
                HorizontalAlignment="Stretch"
@@ -456,8 +460,10 @@
 
         </Grid>
 
+        <!--#endregion Content-->
         </DockPanel>
 
+        <!--#region Overlay-->
         <Border x:Name="ReportOpeningOverlay"
                 Background="#99000000"
                 IsHitTestVisible="True"
@@ -475,5 +481,7 @@
                            Text="Открытие отчёта…" />
             </StackPanel>
         </Border>
+        <!--#endregion Overlay-->
     </Grid>
+    <!--#endregion Layout-->
 </Window>

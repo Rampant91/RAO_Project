@@ -1,4 +1,4 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -23,11 +23,14 @@
         <vm:ActivityCalculatorVM/>
     </Design.DataContext>
 
+    <!--#region Resources-->
     <Window.Resources>
         <converter:BoolInverterConverter x:Key="BoolInverterConverter"/>
         <converter:ExactDateStringConverter x:Key="ExactDateStringConverter"/>
     </Window.Resources>
+    <!--#endregion Resources-->
 
+    <!--#region Styles-->
     <Window.Styles>
         <!-- Field labels: wrap instead of clipping when the left column is narrow. -->
         <Style Selector="TextBlock.calc-label">
@@ -55,7 +58,9 @@
             <Setter Property="CaretBrush" Value="Transparent"/>
         </Style>
     </Window.Styles>
+    <!--#endregion Styles-->
 
+    <!--#region Content-->
     <Grid ColumnDefinitions="0.42*,0.58*"
           RowDefinitions="0.1*,0.3*,0.6*">
         <HeaderedContentControl Grid.Column="0"
@@ -324,4 +329,5 @@
             </Grid>
         </HeaderedContentControl>
     </Grid>
+    <!--#endregion Content-->
 </Window>

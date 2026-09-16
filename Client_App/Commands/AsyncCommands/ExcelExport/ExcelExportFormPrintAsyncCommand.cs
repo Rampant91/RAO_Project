@@ -1,9 +1,10 @@
-﻿using MsBox.Avalonia;
+using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.CheckForm;
 using Client_App.Properties;
 using Client_App.Services;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
 using Client_App.ViewModels.MainWindowTabs;
 using Client_App.ViewModels.ProgressBar;
@@ -72,57 +73,77 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
         var cts = new CancellationTokenSource();
         ExportType = "Для_печати";
-        var progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
-        var progressBarVM = progressBar.AnyTaskProgressBarVM;
-
-        var organizationId = ReportExportLock.ResolveOrganizationId(repParam!, _formsTabControlVM.SelectedReports);
-        if (organizationId <= 0)
-        {
-            await progressBar.CloseAsync();
-            return;
-        }
-
-        using var exportLock = ReportExportLock.Acquire(repId, organizationId);
-
+        AnyTaskProgressBar? progressBar = null;
+        var mainDisabled = false;
         try
         {
-            progressBarVM.SetProgressBar(5, "Определение имени файла");
-            var fileName = await GetFileName(repParam, progressBar, cts);
-
-            progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
-            var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
-
-            progressBarVM.SetProgressBar(15, "Загрузка отчёта", "Выгрузка отчёта для печати", ExportType);
-            var rep = await GetReportWithRows(repId, cts);
-
-            progressBarVM.SetProgressBar(70, "Инициализация Excel пакета");
-            using var excelPackage = await InitializeExcelPackage(fullPath, rep);
-
-            progressBarVM.SetProgressBar(75, "Проверка отчёта");
-            await CheckForm(rep, cts, progressBar);
-
-            progressBarVM.SetProgressBar(80, "Выгрузка данных");
-            await FillExcel(excelPackage, rep);
-
-            progressBarVM.SetProgressBar(90, "Сохранение");
-            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
-
-            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
+            var organizationId = ReportExportLock.ResolveOrganizationId(repParam!, _formsTabControlVM.SelectedReports);
+            if (organizationId <= 0)
+            {
+                return;
+            }
+            using var exportLock = ReportExportLock.Acquire(repId, organizationId);
+            // Interactive phase first (no progress) — иначе прогресс оказывается под модалками.
+            var fileName = await GetFileName(repParam, progressBar: null, cts);
+            var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar: null);
+            progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
+            var progressBarVM = progressBar.AnyTaskProgressBarVM;
+            progressBarVM.SetProgressBar(15, "Загрузка отчёта", "Выгрузка отчёта для печати");
+            await SetMainWindowEnabledAsync(false);
+            mainDisabled = true;
+
+            // Узкий снимок только нужной формы + CheckRunContext (кэш sibling, прогресс строк).
+            var formNum = repParam!.FormNum_DB;
+            var loadProgress = ReportCheckProgress.ForExportPhase(
+                progressBarVM, 15, 55, progressBarVM.ExportType ?? ExportType);
+            loadProgress.OnLoadStarted();
+            Report rep;
+            await using (var db = new DBModel(StaticConfiguration.DBPath))
+            {
+                var loaded = await ReportCheckSnapshotLoader.LoadAsync(db, repId, formNum, cts.Token);
+                if (loaded is null)
+                {
+                    await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+                }
+
+                loadProgress.OnLoadComplete(ReportCheckSnapshotLoader.CountLoadedRows(loaded!));
+                rep = loaded!;
+            }
+
+            progressBarVM.SetProgressBar(55, "Инициализация Excel пакета");
+            using var excelPackage = await InitializeExcelPackage(fullPath, rep);
+
+            var checkProgress = ReportCheckProgress.ForExportPhase(
+                progressBarVM, 65, 85, progressBarVM.ExportType ?? ExportType);
+            checkProgress.OnLoadComplete(ReportCheckSnapshotLoader.CountLoadedRows(rep));
+            await CheckForm(rep, cts, progressBar, checkProgress);
+
+            progressBarVM.SetProgressBar(85, "Выгрузка данных");
+            await FillExcel(excelPackage, rep);
+            progressBarVM.SetProgressBar(95, "Сохранение");
+            await ExcelSaveAndOpen(excelPackage, fullPath, openTemp, cts, progressBar);
+            progressBarVM.SetProgressBar(100, "Завершение выгрузки");
         }
         finally
         {
-            GC.Collect();
-            try
+            if (mainDisabled)
             {
-                await progressBar.CloseAsync();
+                await SetMainWindowEnabledAsync(true);
             }
-            catch
+            GC.Collect();
+            if (progressBar is not null)
             {
-                // Окно могло быть уже закрыто при отмене через CancelCommandAndCloseProgressBarWindow.
+                try
+                {
+                    await progressBar.CloseCompletedAsync();
+                }
+                catch
+                {
+                    // Window may already be closed on cancel.
+                }
             }
         }
     }
-
     /// <summary>
     /// Выгрузка отчёта в Excel для печати (перегрузка для пакетной обработки без диалогов).
     /// </summary>
@@ -141,6 +162,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
         {
             progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
             progressBarVM = progressBar.AnyTaskProgressBarVM;
+            progressBarVM.SetProgressBar(1, "Подготовка...", "Выгрузка отчёта для печати");
             progressBarVM.SetProgressBar(5, "Определение имени файла");
         }
 
@@ -172,9 +194,9 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
             if (!suppressDialogs && progressBarVM != null)
             {
-                progressBarVM.SetProgressBar(15, "Загрузка отчёта", "Выгрузка отчёта для печати", ExportType);
+                progressBarVM.SetProgressBar(15, "Загрузка отчёта", "Выгрузка отчёта для печати");
             }
-            var rep = await GetReportWithRows(report.Id, cts);
+            var rep = await GetReportWithRows(report.Id, report.FormNum_DB, cts);
 
             if (!suppressDialogs && progressBarVM != null)
             {
@@ -217,7 +239,7 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
             if (!suppressDialogs && progressBar != null)
             {
-                await progressBar.CloseAsync();
+                await progressBar.CloseCompletedAsync();
             }
             GC.Collect();
         }
@@ -225,96 +247,112 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
     #region CheckForm
 
-    private static async Task CheckForm(Report exportReport, CancellationTokenSource cts, AnyTaskProgressBar progressBar)
-    {
-        var errorList = new List<CheckError>();
-        try
-        {
-            errorList.AddRange(exportReport.FormNum_DB switch
-            {
-                "1.1" => CheckF11.Check_Total(exportReport.Reports, exportReport),
-                "1.2" => CheckF12.Check_Total(exportReport.Reports, exportReport),
-                "1.3" => CheckF13.Check_Total(exportReport.Reports, exportReport),
-                "1.4" => CheckF14.Check_Total(exportReport.Reports, exportReport),
-                "1.5" => CheckF15.Check_Total(exportReport.Reports, exportReport),
-                "1.6" => CheckF16.Check_Total(exportReport.Reports, exportReport),
-                "1.7" => CheckF17.Check_Total(exportReport.Reports, exportReport),
-                "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
-                //"2.1" => await new CheckF21().AsyncExecute(exportReport),
-                //"2.2" => await new CheckF22().AsyncExecute(exportReport),
-                //"2.3" => await new CheckF23().AsyncExecute(exportReport),
-                //"2.4" => await new CheckF24().AsyncExecute(exportReport),
-                //"2.5" => await new CheckF25().AsyncExecute(exportReport),
-                //"2.6" => await new CheckF26().AsyncExecute(exportReport),
-                //"2.7" => await new CheckF27().AsyncExecute(exportReport),
-                //"2.8" => await new CheckF28().AsyncExecute(exportReport),
-                //"2.9" => await new CheckF29().AsyncExecute(exportReport),
-                //"2.10" => await new CheckF210().AsyncExecute(exportReport),
-                //"2.11" => await new CheckF211().AsyncExecute(exportReport),
-                _ => []
-            });
-        }
-        catch (Exception)
-        {
-            //ignored
-        }
-
-        if (!errorList.Any(x => x.IsCritical)) return;
-
-        if (!Settings.Default.AppLaunchedInNorao)
-        {
-            #region ExportTerminatedDueToCriticalErrors
-
-            await Dispatcher.UIThread.InvokeAsync(() =>
-                MessageBoxManager
-                    .GetMessageBoxStandard(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Выгрузка в .xlsx",
-                        ContentHeader = "Ошибка",
-                        ContentMessage = "Выгрузка отчёта невозможна из-за наличия в нём критических ошибок (выделены красным)." +
-                                         $"{Environment.NewLine}Устраните ошибки и повторите операцию выгрузки.",
-                        MinWidth = 250,
-                        MinHeight = 150,
-                        WindowStartupLocation = WindowStartupLocation.CenterScreen
-                    }).ShowWindowDialogAsync(Desktop.MainWindow));
-
-            #endregion
-
-            await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(exportReport.FormNum_DB, exportReport), errorList));
-
-            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-        }
-        else
-        {
-            #region ReportHasCriticalErrors
-
-            var answer = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
-                .GetMessageBoxCustom(new MessageBoxCustomParams
-                {
-                    ButtonDefinitions =
-                    [
-                        new ButtonDefinition { Name = "Да" },
-                        new ButtonDefinition { Name = "Отмена" }
-                    ],
-                    ContentTitle = "Выгрузка в .xlsx",
-                    ContentHeader = "Уведомление",
-                    ContentMessage = $"В отчёте присутствуют критические ошибки (выделены красным). " +
-                                     $"{Environment.NewLine}Всё равно выгрузить отчёт?",
-                    MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    Topmost = true,
-                }).ShowWindowDialogAsync(Desktop.MainWindow));
-
-            #endregion
-
-            if (answer is "Да") return;
-
-            await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(exportReport.FormNum_DB, exportReport), errorList));
-
-            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-        }
-    }
+    private static async Task CheckForm(
+        Report exportReport,
+        CancellationTokenSource cts,
+        AnyTaskProgressBar progressBar,
+        ReportCheckProgress? checkProgress = null)
+    {
+        List<CheckError> errorList;
+        try
+        {
+            checkProgress ??= ReportCheckProgress.ForExportPhase(
+                progressBar.AnyTaskProgressBarVM,
+                progressBar.AnyTaskProgressBarVM.ValueBar,
+                Math.Min(100, progressBar.AnyTaskProgressBarVM.ValueBar + 20),
+                progressBar.AnyTaskProgressBarVM.ExportType ?? "Выгрузка в .xlsx");
+
+            errorList = await Task.Run(
+                () => ReportCheckRunner.ExecuteCheck(exportReport.Reports!, exportReport, checkProgress),
+                cts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception)
+        {
+            return;
+        }
+
+        if (!errorList.Any(x => x.IsCritical)) return;
+
+        await SetMainWindowEnabledAsync(true);
+        await progressBar.PrepareForExternalDialogAsync();
+        try
+        {
+            if (!Settings.Default.AppLaunchedInNorao)
+            {
+                #region ExportTerminatedDueToCriticalErrors
+
+                await Dispatcher.UIThread.InvokeAsync(() =>
+                    MessageBoxManager
+                        .GetMessageBoxStandard(new MessageBoxStandardParams
+                        {
+                            ButtonDefinitions = ButtonEnum.Ok,
+                            ContentTitle = "Выгрузка в .xlsx",
+                            ContentHeader = "Ошибка",
+                            ContentMessage = "Выгрузка отчёта невозможна из-за наличия в нём критических ошибок (выделены красным)." +
+                                             $"{Environment.NewLine}Устраните ошибки и повторите операцию выгрузки.",
+                            MinWidth = 250,
+                            MinHeight = 150,
+                            WindowStartupLocation = WindowStartupLocation.CenterScreen
+                        }).ShowWindowDialogAsync(Desktop.MainWindow));
+
+                #endregion
+
+                await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(exportReport.FormNum_DB, exportReport), errorList));
+
+                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+            }
+            else
+            {
+                #region ReportHasCriticalErrors
+
+                var answer = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+                    .GetMessageBoxCustom(new MessageBoxCustomParams
+                    {
+                        ButtonDefinitions =
+                        [
+                            new ButtonDefinition { Name = "Да" },
+                            new ButtonDefinition { Name = "Отмена" }
+                        ],
+                        ContentTitle = "Выгрузка в .xlsx",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = $"В отчёте присутствуют критические ошибки (выделены красным). " +
+                                         $"{Environment.NewLine}Всё равно выгрузить отчёт?",
+                        MinWidth = 400,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    }).ShowWindowDialogAsync(Desktop.MainWindow));
+
+                #endregion
+
+                if (answer is "Да")
+                {
+                    await progressBar.RestoreAfterExternalDialogAsync(Desktop.MainWindow);
+                    await SetMainWindowEnabledAsync(false);
+                    return;
+                }
+
+                await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(new ChangeOrCreateVM(exportReport.FormNum_DB, exportReport), errorList));
+
+                await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch
+        {
+            if (!cts.IsCancellationRequested)
+            {
+                await progressBar.RestoreAfterExternalDialogAsync(Desktop.MainWindow);
+            }
+
+            throw;
+        }
+    }
 
     #endregion
 
@@ -445,65 +483,24 @@ public class ExcelExportFormPrintAsyncCommand : ExcelBaseAsyncCommand
 
     #endregion
 
-    #region GetReportWithRows
-
-    /// <summary>
-    /// Получение отчёта вместе со строчками из основной БД (снимок AsNoTracking в память).
-    /// </summary>
-    /// <param name="repId">Id отчёта.</param>
-    /// <param name="cts">Токен.</param>
-    /// <returns>Отчёт вместе со строчками.</returns>
-    private static async Task<Report> GetReportWithRows(int repId, CancellationTokenSource cts)
-    {
-        await using var db = new DBModel(StaticConfiguration.DBPath);
-        var rep = await db.ReportCollectionDbSet
-                .AsNoTracking()
-                .AsSplitQuery()
-                .AsQueryable()
-                .Include(rep => rep.Reports).ThenInclude(reps => reps.DBObservable)
-                .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows10)
-                .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows20)
-                .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows40)
-                .Include(rep => rep.Reports).ThenInclude(reps => reps.Master_DB).ThenInclude(x => x.Rows50)
-                .Include(rep => rep.Rows11.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows12.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows13.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows14.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows15.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows16.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows17.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows18.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows19.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows21.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows22.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows23.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows24.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows25.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows26.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows27.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows28.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows29.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows210.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows211.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows212.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows41.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows51.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows52.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows53.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows54.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows55.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows56.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Rows57.OrderBy(form => form.NumberInOrder_DB))
-                .Include(rep => rep.Notes.OrderBy(note => note.Order))
-                .Where(rep => rep.Reports != null && rep.Reports.DBObservable != null)
-                .FirstAsync(rep => rep.Id == repId, cts.Token);
-        await rep.SortAsync();
-        return rep;
-    }
-        
-
-    #endregion
-
+    #region GetReportWithRows
+
+    /// <summary>
+    /// Снимок отчёта только со строками нужной формы (не все таблицы Rows*).
+    /// </summary>
+    private static async Task<Report> GetReportWithRows(int repId, string formNum, CancellationTokenSource cts)
+    {
+        await using var db = new DBModel(StaticConfiguration.DBPath);
+        var rep = await ReportCheckSnapshotLoader.LoadAsync(db, repId, formNum, cts.Token);
+        if (rep is null)
+        {
+            throw new InvalidOperationException($"Отчёт Id={repId} не найден при загрузке формы {formNum}.");
+        }
+
+        return rep;
+    }
+
+    #endregion
     #region InitializeExcelPackage
 
     /// <summary>

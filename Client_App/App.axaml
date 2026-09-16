@@ -1,6 +1,5 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 			 xmlns:behaviors="using:Client_App.Behaviors"
 			 xmlns:inputBehaviors="using:Client_App.Behaviors.Input"
 			 xmlns:controlBehaviors="using:Client_App.Behaviors.Controls"
@@ -9,13 +8,13 @@
              xmlns:converters="clr-namespace:Client_App.Converters"
              xmlns:visualConverters="clr-namespace:Client_App.VisualRealization.Converters"
 			 xmlns:appControls="using:Client_App.Controls"
-			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              x:Class="Client_App.App">
 
     <Application.DataTemplates>
         <local:ViewLocator/>
     </Application.DataTemplates>
 
+    <!--#region Resources-->
     <Application.Resources>
         <resources:RatioConverter x:Key="RatioConverter"/>
         <converters:StringToDateTimeConverter x:Key="StringToDateTimeConverter"/>
@@ -38,9 +37,11 @@
         <x:Double x:Key="DataGridSortIconMinWidth">0</x:Double>
 
     </Application.Resources>
+    <!--#endregion Resources-->
 
-
+    <!--#region Styles-->
     <Application.Styles>
+        <!--#region Themes and chrome-->
         <FluentTheme />
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
 
@@ -105,11 +106,12 @@
                 </ControlTemplate>
             </Setter>
         </Style>
-		
-	    <!--Общие стили-->
+		<!--#endregion Themes and chrome-->
+
+	    <!--#region Общие стили-->
 		
 			<!--Из-за особенностей предметной области допускается, что пользователи могут ввести вместо даты строку
-			    Поэтому buttonOnly предназначен для использвания в связки с другим текстбоксом -->
+			    Поэтому buttonOnly предназначен для использования в связки с другим текстбоксом -->
         <Style Selector="CalendarDatePicker.buttonOnly TextBox">
             <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="IsVisible" Value="False"/>
@@ -151,8 +153,10 @@
 		<Style Selector="TextBox">
 			<Setter Property="behaviors:TextBoxAutoTrim.IsEnabled" Value="True"/>
 		</Style>
-        <!--Стили для окон редактирования форм-->
-        <!--Header-->
+		<!--#endregion Общие стили-->
+
+        <!--#region Стили для окон редактирования форм-->
+        <!--#region Header-->
         <Style Selector="CheckBox.hideButton">
             <Setter Property="Height" Value="30" />
             <Setter Property="Margin" Value="5"/>
@@ -214,7 +218,9 @@
             <Setter Property="IsVisible" Value="False"/>
             <Setter Property="IsHitTestVisible" Value="False"/>
         </Style>
-        <!--Org form windows 1.0, 2.0, 4.0, 5.0-->
+        <!--#endregion Header-->
+
+        <!--#region Org form windows-->
         <Style Selector="Window.orgForm TextBlock.org-label">
             <Setter Property="Margin" Value="5,6,12,6"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
@@ -390,7 +396,9 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="FontSize" Value="13"/>
         </Style>
-        <!--TableHeader-->
+        <!--#endregion Org form windows-->
+
+        <!--#region TableHeader-->
         <Style Selector="ScrollViewer.tableScrollViewer">
             <!-- Disabled: Avalonia DataGrid must measure with a finite width. Auto/Visible
                  pass Infinity to the child; DataGrid then writes Infinity into the last column
@@ -420,7 +428,9 @@
         <Style Selector="Grid.tableHeader Border.header-rowspan-bottom">
             <Setter Property="Background" Value="Transparent"/>
         </Style>
-        <!--Table-->
+        <!--#endregion TableHeader-->
+
+        <!--#region Table / DataGrid-->
         <Style Selector="DataGrid.table">
             <Setter Property="CornerRadius" Value="5"/>
             <Setter Property="CanUserResizeColumns" Value="True"/>
@@ -667,7 +677,9 @@
 			<Setter Property="Watermark" Value="&lt;дд.мм.гггг&gt;"/>
         </Style>
 		
-        <!--PageControl-->
+		<!--#endregion Table / DataGrid-->
+
+        <!--#region PageControl-->
         <Style Selector="Border.pageControlContainer">
 			<Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
@@ -681,6 +693,20 @@
 		</Style>
 		<Style Selector="Border.pageControlContainer StackPanel.form-filter-panel">
 			<Setter Property="VerticalAlignment" Value="Center"/>
+			<!-- Keep filters clear of counters (up to 4–5 digits) so buttons do not jump. -->
+			<Setter Property="Margin" Value="28,0,0,0"/>
+		</Style>
+		<Style Selector="Border.pageControlContainer TextBlock.page-count-value">
+			<!-- Total pages / reports: reserve ~4 digits. -->
+			<Setter Property="MinWidth" Value="44"/>
+			<Setter Property="TextAlignment" Value="Left"/>
+			<Setter Property="FontFeatures" Value="+tnum"/>
+		</Style>
+		<Style Selector="Border.pageControlContainer TextBlock.rows-in-report-count">
+			<!-- Rows in selected report: reserve ~5 digits. -->
+			<Setter Property="MinWidth" Value="52"/>
+			<Setter Property="TextAlignment" Value="Left"/>
+			<Setter Property="FontFeatures" Value="+tnum"/>
 		</Style>
 		<Style Selector="Border.pageControlContainer StackPanel.form-filter-panel > TextBlock">
 			<Setter Property="VerticalAlignment" Value="Center"/>
@@ -700,7 +726,9 @@
             <Setter Property="IsVisible" Value="False"/>
         </Style>
 		
-        <!--Notes-->
+		<!--#endregion PageControl-->
+
+        <!--#region Notes-->
 		<Style Selector="Border.notesContainer">
 			<Setter Property="CornerRadius" Value="5"/>
             <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
@@ -733,8 +761,10 @@
 			<Setter Property="TextWrapping" Value="Wrap"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
 		</Style>
-        <!--Конец стилей для окон редактирования форм-->
-		<!--Другие стили-->
+        <!--#endregion Notes-->
+        <!--#endregion Стили для окон редактирования форм-->
+
+		<!--#region Другие стили-->
 		<Style Selector="DataGrid DataGridRow DataGridCell TextBlock.readOnly">
 			<Setter Property="Background" Value="#ededed"/>
 			<Setter Property="Foreground" Value="#93140e"/>
@@ -767,7 +797,8 @@
 			<Setter Property="IsHitTestVisible" Value="True"/>
 		</Style>
 
-		<!-- Legacy DataGrid: плоские ячейки как Excel, ошибка — иконка внутри -->
+		<!--#region Legacy DataGrid-->
+		<!-- Legacy DataGrid: flat cells like Excel; validation icon inside -->
 		<Style Selector="TextBox.legacy-dg-cell">
 			<Setter Property="CornerRadius" Value="0"/>
 			<Setter Property="BorderThickness" Value="0"/>
@@ -790,7 +821,9 @@
 		<Style Selector="ScrollViewer.legacy-dg-scroll">
 			<Setter Property="AllowAutoHide" Value="False"/>
 		</Style>
+		<!--#endregion Legacy DataGrid-->
 
+        <!--#region dbPicker-->
         <Style Selector="DataGrid.dbPicker">
             <Setter Property="FontSize" Value="12"/>
             <!-- Outer frame supplies top/left edges; cells/headers draw right/bottom. -->
@@ -798,5 +831,8 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="GridLinesVisibility" Value="None"/>
         </Style>
+        <!--#endregion dbPicker-->
+		<!--#endregion Другие стили-->
     </Application.Styles>
+    <!--#endregion Styles-->
 </Application>

@@ -1,4 +1,4 @@
-﻿using MsBox.Avalonia;
+using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
@@ -64,8 +64,7 @@ public class CheckF28 : CheckBase
         var yearRealCurrent = rep.Year_DB ?? 0;
         var yearPrevious = yearRealCurrent - 1;
 
-        Reports? reps28Prev = null;
-        foreach (var _ in db2.ReportsCollectionDbSet
+        Reports? reps28Prev = await db2.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -74,8 +73,9 @@ public class CheckF28 : CheckBase
             .Where(x => x.Master_DB.Rows20.Any(y => y.RegNo_DB == form20RegNo))
             .Include(x => x.Report_Collection)
             .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.8")).ThenInclude(report => report.Rows28)
-            .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.8")).ThenInclude(x => x.Rows210))
-            if (_.Report_Collection.Count > 0) { reps28Prev = _; break; }
+            .Include(x => x.Report_Collection.Where(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.8")).ThenInclude(x => x.Rows210)
+            .Where(x => x.Report_Collection.Any(y => y.Year_DB == yearPrevious && y.FormNum_DB == "2.8"))
+            .FirstOrDefaultAsync(cts.Token);
 
         await db2.DisposeAsync();
 

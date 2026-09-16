@@ -28,8 +28,10 @@
         <vm:Forms1TabControlVM/>
     </Design.DataContext>
 	
+	<!--#region Layout-->
 	<Border Classes="borderContainer">
 		<Grid RowDefinitions="1*,1*" ColumnDefinitions="5*,3*" >
+			<!--#region Список организаций-->
 			<Grid Grid.Row ="0" Grid.Column="0" RowDefinitions="Auto,Auto,*,Auto">
 				<TextBlock Grid.Row="0"
 						   Margin="5,5,5,0"
@@ -405,6 +407,9 @@
 					</Grid>
 				</Border>
 			</Grid>
+			<!--#endregion Список организаций-->
+
+			<!--#region Создание форм-->
 			<ScrollViewer Grid.Row ="0" 
                           Grid.Column="1" 
                           Margin="5"
@@ -587,6 +592,9 @@
                     </Button>
 				</StackPanel>
 			</ScrollViewer>
+			<!--#endregion Создание форм-->
+
+			<!--#region Список отчётов-->
 			<Grid Grid.Row ="1" 
                   Grid.Column="0" 
                   Grid.ColumnSpan="2" 
@@ -784,6 +792,7 @@
                                    Margin="5"
                                    VerticalAlignment="Center"/>
 						<TextBlock Text="{Binding TotalPagesForms}"
+                                   Classes="page-count-value"
                                    Grid.Row="0" 
                                    Grid.Column="3" 
                                    Margin="5"
@@ -803,6 +812,7 @@
                                    Grid.Column="2" 
                                    Margin="5"/>
 						<TextBlock Text="{Binding TotalRowsForms}"
+                                   Classes="page-count-value"
                                    Grid.Row="1" 
                                    Grid.Column="3" 
                                    Margin="5"
@@ -812,6 +822,7 @@
                                    Grid.Column="4" 
                                    Margin="5"/>
 						<TextBlock Text="{Binding InSelectedReportFormsCount}"
+                                   Classes="rows-in-report-count"
                                    Grid.Row="1" 
                                    Grid.Column="5" 
                                    Margin="5"/>
@@ -819,8 +830,7 @@
 						<StackPanel Grid.Row="0" 
                                     Grid.RowSpan="2"
 									Grid.Column="6"
-									Classes="form-filter-panel"
-									Margin="5,0,0,0">
+									Classes="form-filter-panel">
 							<TextBlock Margin="0,0,0,4"
 									   Text="Фильтр по номеру формы:"
 									   TextWrapping="Wrap" />
@@ -840,5 +850,7 @@
 				</Border>
 			</Grid>
 		</Grid>
+			<!--#endregion Список отчётов-->
 	</Border>
+	<!--#endregion Layout-->
 </UserControl>

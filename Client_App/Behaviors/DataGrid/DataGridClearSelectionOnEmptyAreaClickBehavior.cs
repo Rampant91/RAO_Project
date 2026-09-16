@@ -13,7 +13,7 @@ using Client_App.ViewModels.MainWindowTabs;
 namespace Client_App.Behaviors.DataGrid;
 
 /// <summary>
-/// \u0421\u0431\u0440\u0430\u0441\u044b\u0432\u0430\u0435\u0442 \u0432\u044b\u0434\u0435\u043b\u0435\u043d\u0438\u0435 DataGrid \u043f\u0440\u0438 \u043a\u043b\u0438\u043a\u0435 \u0432\u043d\u0443\u0442\u0440\u0438 \u0433\u0440\u0438\u0434\u0430, \u043d\u043e \u043c\u0438\u043c\u043e \u0441\u0442\u0440\u043e\u043a\u0438 \u0434\u0430\u043d\u043d\u044b\u0445.
+/// Сбрасывает выделение DataGrid при клике внутри грида, но мимо строки данных.
 /// </summary>
 public class DataGridClearSelectionOnEmptyAreaClickBehavior : Behavior<AvaloniaDataGrid>
 {

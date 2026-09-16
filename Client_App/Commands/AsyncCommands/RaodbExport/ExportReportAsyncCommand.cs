@@ -544,33 +544,27 @@ public class ExportReportAsyncCommand : ExportRaodbBaseAsyncCommand
         var errorList = new List<CheckError>();
         try
         {
-            errorList.Add(exportReport.FormNum_DB switch
+            if (exportReport.FormNum_DB is "1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8")
             {
-                "1.1" => CheckF11.Check_Total(exportReport.Reports, exportReport),
-                "1.2" => CheckF12.Check_Total(exportReport.Reports, exportReport),
-                "1.3" => CheckF13.Check_Total(exportReport.Reports, exportReport),
-                "1.4" => CheckF14.Check_Total(exportReport.Reports, exportReport),
-                "1.5" => CheckF15.Check_Total(exportReport.Reports, exportReport),
-                "1.6" => CheckF16.Check_Total(exportReport.Reports, exportReport),
-                "1.7" => CheckF17.Check_Total(exportReport.Reports, exportReport),
-                "1.8" => CheckF18.Check_Total(exportReport.Reports, exportReport),
-                //"2.1" => await new CheckF21().AsyncExecute(exportReport),
-                //"2.2" => await new CheckF22().AsyncExecute(exportReport),
-                //"2.3" => await new CheckF23().AsyncExecute(exportReport),
-                //"2.4" => await new CheckF24().AsyncExecute(exportReport),
-                //"2.5" => await new CheckF25().AsyncExecute(exportReport),
-                //"2.6" => await new CheckF26().AsyncExecute(exportReport),
-                //"2.7" => await new CheckF27().AsyncExecute(exportReport),
-                //"2.8" => await new CheckF28().AsyncExecute(exportReport),
-                //"2.9" => await new CheckF29().AsyncExecute(exportReport),
-                //"2.10" => await new CheckF210().AsyncExecute(exportReport),
-                //"2.11" => await new CheckF211().AsyncExecute(exportReport),
-                _ => []
-            });
+                var checkProgress = ReportCheckProgress.ForExportPhase(
+                    progressBar.AnyTaskProgressBarVM,
+                    progressBar.AnyTaskProgressBarVM.ValueBar,
+                    Math.Min(100, progressBar.AnyTaskProgressBarVM.ValueBar + 15),
+                    progressBar.AnyTaskProgressBarVM.ExportType ?? "Выгрузка в .raodb");
+                checkProgress.OnLoadComplete(
+                    Client_App.Services.DataAccess.ReportCheckSnapshotLoader.CountLoadedRows(exportReport));
+                errorList.AddRange(await Task.Run(
+                    () => ReportCheckRunner.ExecuteCheck(exportReport.Reports, exportReport, checkProgress),
+                    cts.Token));
+            }
         }
-        catch (Exception ex)
+        catch (OperationCanceledException)
         {
-            //ignored
+            throw;
+        }
+        catch (Exception)
+        {
+            // Check failures should not abort RAODB export path abruptly; critical list stays empty.
         }
 
         if (!errorList.Any(x => x.IsCritical)) return;

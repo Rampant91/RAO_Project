@@ -1,4 +1,4 @@
-﻿using Client_App.ViewModels.Calculator;
+using Client_App.ViewModels.Calculator;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -154,7 +154,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
                 {
                     _vm.ActivityToNormalizingD = string.Empty;
                     _vm.Category = string.Empty;
-                    _vm.CategoryText = "\u041d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d \u0440\u0430\u0434\u0438\u043e\u043d\u0443\u043a\u043b\u0438\u0434 \u0432 \u0441\u043f\u0440\u0430\u0432\u043e\u0447\u043d\u0438\u043a\u0435.";
+                    _vm.CategoryText = "Не найден радионуклид в справочнике.";
                     return;
                 }
 
@@ -168,7 +168,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
                 {
                     _vm.ActivityToNormalizingD = string.Empty;
                     _vm.Category = string.Empty;
-                    _vm.CategoryText = "\u041d\u0435\u043a\u043e\u0440\u0440\u0435\u043a\u0442\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u043d\u043e\u0440\u043c\u0430\u043b\u0438\u0437\u0443\u044e\u0449\u0435\u0433\u043e \u0444\u0430\u043a\u0442\u043e\u0440\u0430 (D-\u0432\u0435\u043b\u0438\u0447\u0438\u043d\u0430) \u0432 \u0441\u043f\u0440\u0430\u0432\u043e\u0447\u043d\u0438\u043a\u0435.";
+                    _vm.CategoryText = "Некорректное значение нормализующего фактора (D-величина) в справочнике.";
                     return;
                 }
 
@@ -179,7 +179,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
                 {
                     _vm.ActivityToNormalizingD = string.Empty;
                     _vm.Category = string.Empty;
-                    _vm.CategoryText = "\u041d\u0435\u043a\u043e\u0440\u0440\u0435\u043a\u0442\u043d\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 \u041c\u0417\u0410 \u0432 \u0441\u043f\u0440\u0430\u0432\u043e\u0447\u043d\u0438\u043a\u0435.";
+                    _vm.CategoryText = "Некорректное значение МЗА в справочнике.";
                     return;
                 }
 
@@ -191,7 +191,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
                 {
                     _vm.ActivityToNormalizingD = string.Empty;
                     _vm.Category = string.Empty;
-                    _vm.CategoryText = "\u041d\u0435\u043a\u043e\u0440\u0440\u0435\u043a\u0442\u043d\u043e \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u043e \u043f\u043e\u043b\u0435 \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u0438 \u0440\u0430\u0434\u0438\u043e\u043d\u0443\u043a\u043b\u0438\u0434\u0430.";
+                    _vm.CategoryText = "Некорректно заполнено поле активности радионуклида.";
                     return;
                 }
 
@@ -242,7 +242,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
             {
                 _vm.ActivityToNormalizingD = string.Empty;
                 _vm.Category = string.Empty;
-                _vm.CategoryText = "\u041d\u0435\u043a\u043e\u0440\u0440\u0435\u043a\u0442\u043d\u043e \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u043e \u043f\u043e\u043b\u0435 \u0430\u043a\u0442\u0438\u0432\u043d\u043e\u0441\u0442\u0438 \u0440\u0430\u0434\u0438\u043e\u043d\u0443\u043a\u043b\u0438\u0434\u0430.";
+                _vm.CategoryText = "Некорректно заполнено поле активности радионуклида.";
                 return;
             }
 
@@ -254,7 +254,7 @@ public partial class CategoryCalculationAsyncCommand : BaseAsyncCommand
                 {
                     _vm.ActivityToNormalizingD = string.Empty;
                     _vm.Category = string.Empty;
-                    _vm.CategoryText = "\u041d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d \u0440\u0430\u0434\u0438\u043e\u043d\u0443\u043a\u043b\u0438\u0434 \u0432 \u0441\u043f\u0440\u0430\u0432\u043e\u0447\u043d\u0438\u043a\u0435.";
+                    _vm.CategoryText = "Не найден радионуклид в справочнике.";
                     return;
                 }
 

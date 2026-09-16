@@ -1,4 +1,4 @@
-﻿using MsBox.Avalonia;
+using MsBox.Avalonia;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using Models.Helpers;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
@@ -26,6 +27,54 @@ public abstract class CheckF41 : CheckBase
 {
     static List<Organization> organizations10 = [];
     static List<Organization> organizations20 = [];
+
+    private sealed class Form41RunCache
+    {
+        public Dictionary<(int OrgId, string FormNum), List<Report>> FormReports { get; } = new();
+        public Dictionary<(int OrgId, string Kind, string Year), int> Counts { get; } = new();
+        public Dictionary<string, Reports?> OrgsByKey { get; } = new();
+    }
+
+    private static readonly AsyncLocal<Form41RunCache?> RunCache = new();
+
+    private static List<Report> GetCachedFormReports(int orgId, string formNum, Func<List<Report>> loader)
+    {
+        var cache = RunCache.Value;
+        if (cache is null)
+            return loader();
+        var key = (orgId, formNum);
+        if (cache.FormReports.TryGetValue(key, out var cached))
+            return cached;
+        var loaded = loader();
+        cache.FormReports[key] = loaded;
+        return loaded;
+    }
+
+    private static async Task<int> GetCachedCountAsync(
+        int orgId, string kind, string year, Func<Task<int>> loader)
+    {
+        var cache = RunCache.Value;
+        if (cache is null)
+            return await loader();
+        var key = (orgId, kind, year);
+        if (cache.Counts.TryGetValue(key, out var cached))
+            return cached;
+        var loaded = await loader();
+        cache.Counts[key] = loaded;
+        return loaded;
+    }
+
+    private static async Task<Reports?> GetCachedOrgAsync(string key, Func<Task<Reports?>> loader)
+    {
+        var cache = RunCache.Value;
+        if (cache is null)
+            return await loader();
+        if (cache.OrgsByKey.TryGetValue(key, out var cached))
+            return cached;
+        var loaded = await loader();
+        cache.OrgsByKey[key] = loaded;
+        return loaded;
+    }
     public override bool CanExecute(object? parameter) => true;
 
     #region AsyncExecute
@@ -48,6 +97,7 @@ public abstract class CheckF41 : CheckBase
 
         organizations10.Clear();
         organizations20.Clear();
+        RunCache.Value = new Form41RunCache();
 
         if (rep is null) await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
 
@@ -267,6 +317,8 @@ public abstract class CheckF41 : CheckBase
             await secondDB.DisposeAsync();
 
         await progressBar.CloseAsync();
+
+        RunCache.Value = null;
         return errorList;
     }
 
@@ -289,7 +341,8 @@ public abstract class CheckF41 : CheckBase
             if (organization != null)
             {
                 var reportYearText = form41.Report.Year_DB?.ToString() ?? "";
-                count = await dbModel.ReportsCollectionDbSet
+                count = await GetCachedCountAsync(organization.Id, "noInv", reportYearText, async () =>
+                    await dbModel.ReportsCollectionDbSet
                     .AsNoTracking()
                     .Include(x => x.DBObservable)
                     .Include(reps => reps.Report_Collection).ThenInclude(x => x.Rows11)
@@ -306,7 +359,7 @@ public abstract class CheckF41 : CheckBase
                                         || y.FormNum_DB == "1.3" && y.Rows13.All(form => form.OperationCode_DB != "10")
                                         || y.FormNum_DB == "1.4" && y.Rows14.All(form => form.OperationCode_DB != "10")
                                     )))
-                    .CountAsync(token);
+                    .CountAsync(token));
             }
         }
         catch (OperationCanceledException)
@@ -362,8 +415,8 @@ public abstract class CheckF41 : CheckBase
             else
             {
                 var year = form41.Report!.Year_DB?.ToString() ?? "";
-
-                count = await dbModel.ReportsCollectionDbSet
+                count = await GetCachedCountAsync(organization.Id, "inv", year, async () =>
+                    await dbModel.ReportsCollectionDbSet
                     .AsNoTracking()
                     .AsSplitQuery()
                     .AsQueryable()
@@ -382,7 +435,7 @@ public abstract class CheckF41 : CheckBase
                                         || y.FormNum_DB == "1.3" && y.Rows13.Any(form => form.OperationCode_DB == "10")
                                         || y.FormNum_DB == "1.4" && y.Rows14.Any(form => form.OperationCode_DB == "10")
                                     )))
-                    .CountAsync(token);
+                    .CountAsync(token));
             }
         }
         catch (OperationCanceledException)
@@ -438,14 +491,16 @@ public abstract class CheckF41 : CheckBase
             }
             else
             {
-                count = await secondDB.ReportCollectionDbSet
+                var year212 = form41.Report.Year_DB?.ToString() ?? "";
+                count = await GetCachedCountAsync(organization.Id, "f212", year212, async () =>
+                    await secondDB.ReportCollectionDbSet
                     .AsSplitQuery()
                     .AsQueryable()
                     .Include(report => report.Reports)
                     .Where(report => report.Reports.Id == organization.Id)
                     .Where(report => report.Year_DB == form41.Report.Year_DB)
                     .Where(report => report.FormNum_DB == "2.12")
-                    .CountAsync(cancellationToken);
+                    .CountAsync(cancellationToken));
             }
         }
         catch (OperationCanceledException)
@@ -492,7 +547,11 @@ public abstract class CheckF41 : CheckBase
 
         try
         {
-            organization20 = await secondDB.ReportsCollectionDbSet
+            var db20CacheKey = ReferenceEquals(secondDB, dbModel)
+                ? "primary"
+                : $"alt:{RuntimeHelpers.GetHashCode(secondDB)}";
+            organization20 = await GetCachedOrgAsync($"20|{regNo}|{db20CacheKey}", async () =>
+                await secondDB.ReportsCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
@@ -500,14 +559,15 @@ public abstract class CheckF41 : CheckBase
                 .Include(x => x.Master_DB).ThenInclude(x => x.Rows20)
                 .Where(x => x.Master_DB.Rows20.Any(y => y.RegNo_DB == regNo))
                 .Include(x => x.Report_Collection)
-                .ThenInclude(x => x.Rows212).FirstOrDefaultAsync(cancellationToken);
+                .ThenInclude(x => x.Rows212).FirstOrDefaultAsync(cancellationToken));
 
             //Если отчет 2.12 есть, то Выход
-            if ((organization20 != null) && organization20.Report_Collection.Any(report => 
+            if ((organization20 != null) && organization20.Report_Collection.Any(report =>
                     report.FormNum_DB == "2.12" && report.Year_DB == year))
                 return null;
 
-            organization10 = await dbModel.ReportsCollectionDbSet
+            organization10 = await GetCachedOrgAsync($"10|{regNo}", async () =>
+                await dbModel.ReportsCollectionDbSet
                 .AsNoTracking()
                 .AsSplitQuery()
                 .AsQueryable()
@@ -515,7 +575,7 @@ public abstract class CheckF41 : CheckBase
                 .Include(x => x.Master_DB).ThenInclude(x => x.Rows10)
                 .Where(x => x.Master_DB.Rows10.Any(y => y.RegNo_DB == regNo))
                 .Include(x => x.Report_Collection)
-                .ThenInclude(x => x.Rows19).FirstOrDefaultAsync(cancellationToken);
+                .ThenInclude(x => x.Rows19).FirstOrDefaultAsync(cancellationToken));
         }
         catch (OperationCanceledException)
         {
@@ -583,18 +643,18 @@ public abstract class CheckF41 : CheckBase
         //List<Report>? reportCollection = null;
         //Report? lastInventoryReport = null;
 
-        var reportCollection = dbModel.ReportsCollectionDbSet
+        var reportCollection = GetCachedFormReports(organization.Id, "1.1", () => dbModel.ReportsCollectionDbSet
             .AsNoTracking()
             .Where(reps => reps.Id == organization.Id)
             .SelectMany(reps => reps.Report_Collection)
             .Where(rep => rep.FormNum_DB == "1.1")
             .Include(rep => rep.Rows11)
-            .AsEnumerable() // Переходим к клиентской обработке
+            .AsEnumerable()
             .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out _)
                           && DateTime.TryParse(rep.EndPeriod_DB, out _))
             .OrderBy(rep => DateTime.Parse(rep.StartPeriod_DB))
             .ThenBy(rep => DateTime.Parse(rep.EndPeriod_DB))
-            .ToList();
+            .ToList());
 
         var lastInventoryReport = reportCollection.LastOrDefault(rep =>
             rep.Rows11.Any(form11 => form11.OperationCode_DB == "10") 
@@ -703,18 +763,18 @@ public abstract class CheckF41 : CheckBase
         var inventoryFlag = false;
         var dbModel = StaticConfiguration.DBModel;
 
-        var reportCollection = dbModel.ReportsCollectionDbSet
+        var reportCollection = GetCachedFormReports(organization.Id, "1.2", () => dbModel.ReportsCollectionDbSet
             .AsNoTracking()
             .Where(reps => reps.Id == organization.Id)
             .SelectMany(reps => reps.Report_Collection)
             .Where(rep => rep.FormNum_DB == "1.2")
             .Include(rep => rep.Rows12)
-            .AsEnumerable() // Переходим к клиентской обработке
+            .AsEnumerable()
             .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out _)
                           && DateTime.TryParse(rep.EndPeriod_DB, out _))
             .OrderBy(rep => DateTime.Parse(rep.StartPeriod_DB))
             .ThenBy(rep => DateTime.Parse(rep.EndPeriod_DB))
-            .ToList();
+            .ToList());
 
         var lastInventoryReport = reportCollection.LastOrDefault(rep =>
             rep.Rows12.Any(form12 => form12.OperationCode_DB == "10")
@@ -820,18 +880,18 @@ public abstract class CheckF41 : CheckBase
         var inventoryFlag = false;
         var dbModel = StaticConfiguration.DBModel;
 
-        var reportCollection = dbModel.ReportsCollectionDbSet
+        var reportCollection = GetCachedFormReports(organization.Id, "1.3", () => dbModel.ReportsCollectionDbSet
             .AsNoTracking()
             .Where(reps => reps.Id == organization.Id)
             .SelectMany(reps => reps.Report_Collection)
             .Where(rep => rep.FormNum_DB == "1.3")
             .Include(rep => rep.Rows13)
-            .AsEnumerable() // Переходим к клиентской обработке
+            .AsEnumerable()
             .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out _)
                           && DateTime.TryParse(rep.EndPeriod_DB, out _))
             .OrderBy(rep => DateTime.Parse(rep.StartPeriod_DB))
             .ThenBy(rep => DateTime.Parse(rep.EndPeriod_DB))
-            .ToList();
+            .ToList());
 
         var lastInventoryReport = reportCollection.LastOrDefault(rep =>
             rep.Rows13.Any(form13 => form13.OperationCode_DB == "10")
@@ -938,18 +998,18 @@ public abstract class CheckF41 : CheckBase
 
         var dbModel = StaticConfiguration.DBModel;
 
-        var reportCollection = dbModel.ReportsCollectionDbSet
+        var reportCollection = GetCachedFormReports(organization.Id, "1.4", () => dbModel.ReportsCollectionDbSet
             .AsNoTracking()
             .Where(reps => reps.Id == organization.Id)
             .SelectMany(reps => reps.Report_Collection)
             .Where(rep => rep.FormNum_DB == "1.4")
             .Include(rep => rep.Rows14)
-            .AsEnumerable() // Переходим к клиентской обработке
+            .AsEnumerable()
             .Where(rep => DateTime.TryParse(rep.StartPeriod_DB, out _)
                           && DateTime.TryParse(rep.EndPeriod_DB, out _))
             .OrderBy(rep => DateTime.Parse(rep.StartPeriod_DB))
             .ThenBy(rep => DateTime.Parse(rep.EndPeriod_DB))
-            .ToList();
+            .ToList());
 
         var lastInventoryReport = reportCollection.LastOrDefault(rep =>
             rep.Rows14.Any(form14 => form14.OperationCode_DB == "10")

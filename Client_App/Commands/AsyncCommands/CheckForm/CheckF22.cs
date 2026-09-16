@@ -1,4 +1,4 @@
-﻿using MsBox.Avalonia;
+using MsBox.Avalonia;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -128,13 +128,8 @@ public class CheckF22 : CheckBase
 
         var repsWithForm1Exist = await db.ReportsCollectionDbSet
             .AsNoTracking()
-            .AsSplitQuery()
-            .AsQueryable()
-            .Include(reps => reps.DBObservable)
-            .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows10)
-            .Where(reps => reps.DBObservable != null)
-            .AnyAsync(reps => reps.Master_DB.Rows10
-                .Any(form10 => form10.RegNo_DB == form20RegNo), cts.Token);
+            .AnyAsync(reps => reps.DBObservable != null
+                && reps.Master_DB.Rows10.Any(form10 => form10.RegNo_DB == form20RegNo), cts.Token);
 
         if (!repsWithForm1Exist)
         {
@@ -208,17 +203,34 @@ public class CheckF22 : CheckBase
             .AsQueryable()
             .Include(reps => reps.DBObservable)
             .Include(reps => reps.Master_DB).ThenInclude(report => report.Rows10)
-            .Include(reps => reps.Report_Collection
-                .Where(report =>
-                    (report.FormNum_DB == "1.5" || report.FormNum_DB == "1.6" || report.FormNum_DB == "1.7" || report.FormNum_DB == "1.8")
-                    && ((report.StartPeriod_DB.Length >= 4
-                         && report.StartPeriod_DB.Substring(report.StartPeriod_DB.Length - 4) == repYearText)
-                        || (report.EndPeriod_DB.Length >= 4
-                            && report.EndPeriod_DB.Substring(report.EndPeriod_DB.Length - 4) == repYearText))))
+            .Include(reps => reps.Report_Collection.Where(report =>
+                (report.FormNum_DB == "1.5" || report.FormNum_DB == "1.6" || report.FormNum_DB == "1.7" || report.FormNum_DB == "1.8")
+                && ((report.StartPeriod_DB.Length >= 4
+                     && report.StartPeriod_DB.Substring(report.StartPeriod_DB.Length - 4) == repYearText)
+                    || (report.EndPeriod_DB.Length >= 4
+                        && report.EndPeriod_DB.Substring(report.EndPeriod_DB.Length - 4) == repYearText))))
             .ThenInclude(x => x.Rows15)
-            .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows16)
-            .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows17)
-            .Include(reps => reps.Report_Collection).ThenInclude(report => report.Rows18)
+            .Include(reps => reps.Report_Collection.Where(report =>
+                (report.FormNum_DB == "1.5" || report.FormNum_DB == "1.6" || report.FormNum_DB == "1.7" || report.FormNum_DB == "1.8")
+                && ((report.StartPeriod_DB.Length >= 4
+                     && report.StartPeriod_DB.Substring(report.StartPeriod_DB.Length - 4) == repYearText)
+                    || (report.EndPeriod_DB.Length >= 4
+                        && report.EndPeriod_DB.Substring(report.EndPeriod_DB.Length - 4) == repYearText))))
+            .ThenInclude(report => report.Rows16)
+            .Include(reps => reps.Report_Collection.Where(report =>
+                (report.FormNum_DB == "1.5" || report.FormNum_DB == "1.6" || report.FormNum_DB == "1.7" || report.FormNum_DB == "1.8")
+                && ((report.StartPeriod_DB.Length >= 4
+                     && report.StartPeriod_DB.Substring(report.StartPeriod_DB.Length - 4) == repYearText)
+                    || (report.EndPeriod_DB.Length >= 4
+                        && report.EndPeriod_DB.Substring(report.EndPeriod_DB.Length - 4) == repYearText))))
+            .ThenInclude(report => report.Rows17)
+            .Include(reps => reps.Report_Collection.Where(report =>
+                (report.FormNum_DB == "1.5" || report.FormNum_DB == "1.6" || report.FormNum_DB == "1.7" || report.FormNum_DB == "1.8")
+                && ((report.StartPeriod_DB.Length >= 4
+                     && report.StartPeriod_DB.Substring(report.StartPeriod_DB.Length - 4) == repYearText)
+                    || (report.EndPeriod_DB.Length >= 4
+                        && report.EndPeriod_DB.Substring(report.EndPeriod_DB.Length - 4) == repYearText))))
+            .ThenInclude(report => report.Rows18)
             .Where(reps => reps.DBObservable != null);
 
         var forms1 = repsWithForm1Base.Where(reps => reps.Master_DB.Rows10.Any(form10 => form10.RegNo_DB == form20RegNo)).ToList();
@@ -235,14 +247,11 @@ public class CheckF22 : CheckBase
             bool fusion = true;
             if (fusion)
             {
+                // forms1 already loaded with the same RegNo filter — reuse, do not re-query per OKPO.
                 repsWithForm1 = new Reports();
-                foreach (var okpo in okpoList)
+                foreach (var org in forms1)
                 {
-                    repsWithForm1.Report_Collection
-                        .AddRange(repsWithForm1Base
-                            .FirstOrDefaultAsync(reps => reps.Master_DB.Rows10
-                                .Any(form10 => form10.RegNo_DB == form20RegNo && form10.Okpo_DB == okpo), cts.Token)
-                            .Result!.Report_Collection);
+                    repsWithForm1.Report_Collection.AddRange(org.Report_Collection);
                 }
             }
             else
@@ -293,9 +302,7 @@ public class CheckF22 : CheckBase
         }
         else
         {
-            repsWithForm1 = await repsWithForm1Base
-                .FirstOrDefaultAsync(reps => reps.Master_DB.Rows10
-                    .Any(form10 => form10.RegNo_DB == form20RegNo), cts.Token);
+            repsWithForm1 = forms1.FirstOrDefault();
         }
 
         progressBarVM.SetProgressBar(9, "Получение данных формы 2.2 за предыдущий год");

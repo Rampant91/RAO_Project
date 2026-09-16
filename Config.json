@@ -15,12 +15,25 @@
         140,
         32
       ],
+      "MainWindow.Orgs.1.v7": [
+        80,
+        0,
+        160
+      ],
       "MainWindow.Reports.1": [
         65,
         0,
         0,
         0,
         0,
+        0
+      ],
+      "MainWindow.Reports.1.v7": [
+        60,
+        115,
+        115,
+        115,
+        115,
         0
       ]
     }

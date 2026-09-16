@@ -26,8 +26,10 @@
         <vm:Forms4TabControlVM />
     </Design.DataContext>
 
+    <!--#region Layout-->
     <Border Classes="borderContainer">
         <Grid ColumnDefinitions="5*,3*" RowDefinitions="*,*">
+            <!--#region Список РИАЦ-->
             <Grid Grid.Row="0"
                   Grid.Column="0"
                   RowDefinitions="Auto,Auto,*,Auto">
@@ -206,6 +208,9 @@
                     </Grid>
                 </Border>
             </Grid>
+            <!--#endregion Список РИАЦ-->
+
+            <!--#region Создание форм-->
             <Grid Grid.Row="0"
                   Grid.Column="1"
                   Margin="5">
@@ -242,6 +247,9 @@
                         IsVisible="{Binding SelectedReports, Converter={StaticResource NullToBoolConverter}}"
                         ToolTip.Tip="{Binding SelectedReports, Converter={StaticResource NullToTooltipConverter}, ConverterParameter='Для создания отчёта выберите свой центр из списка РИАЦ. Если РИАЦ в списке отсутствуют, сначала добавьте свой центр в список.'}" />
             </Grid>
+            <!--#endregion Создание форм-->
+
+            <!--#region Список отчётов-->
             <Grid Grid.Row="1"
                   Grid.Column="0"
                   Grid.ColumnSpan="2"
@@ -426,5 +434,7 @@
                 </Border>
             </Grid>
         </Grid>
+            <!--#endregion Список отчётов-->
     </Border>
+    <!--#endregion Layout-->
 </UserControl>

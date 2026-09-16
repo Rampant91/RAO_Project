@@ -165,23 +165,14 @@ public class ExcelExportCheckAllFormsAsyncCommand : ExcelBaseAsyncCommand
                     errorList = await Task.Run(
                         () => ReportCheckRunner.ExecuteCheck(rep.Reports, rep, reportProgress));
                 }
+                else if (rep.FormNum_DB is "2.1" or "2.2" or "2.3" or "2.6" or "2.7" or "2.8" or "2.9" or "2.10" or "2.11" or "4.1")
+                {
+                    await using var db = new DBModel(StaticConfiguration.DBPath);
+                    errorList = await ReportCheckRunner.RunForm2OrLegacyAsync(rep, db, CancellationToken.None);
+                }
                 else
                 {
-                    errorList = rep.FormNum_DB switch
-                    {
-                        "2.1" => CheckF18.Check_Total(rep.Reports, rep),
-                        "2.2" => CheckF18.Check_Total(rep.Reports, rep),
-                        "2.3" => CheckF18.Check_Total(rep.Reports, rep),
-                        "2.4" => CheckF18.Check_Total(rep.Reports, rep),
-                        "2.5" => CheckF18.Check_Total(rep.Reports, rep),
-                        "2.6" => CheckF18.Check_Total(rep.Reports, rep),
-                        "2.7" => CheckF18.Check_Total(rep.Reports, rep),
-                        "2.8" => CheckF18.Check_Total(rep.Reports, rep),
-                        "2.9" => CheckF18.Check_Total(rep.Reports, rep),
-                        "2.10" => CheckF18.Check_Total(rep.Reports, rep),
-                        "2.11" => CheckF18.Check_Total(rep.Reports, rep),
-                        _ => []
-                    };
+                    errorList = [];
                 }
             }
             catch (Exception ex)

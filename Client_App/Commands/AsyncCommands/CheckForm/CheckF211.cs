@@ -1,4 +1,4 @@
-﻿using MsBox.Avalonia;
+using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.ViewModels;
@@ -64,8 +64,7 @@ public class CheckF211 : CheckBase
             await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
         }
 
-        Reports? reps210Cur = null;
-        foreach (var _ in db2.ReportsCollectionDbSet
+        Reports? reps210Cur = await db2.ReportsCollectionDbSet
             .AsNoTracking()
             .AsSplitQuery()
             .AsQueryable()
@@ -74,8 +73,9 @@ public class CheckF211 : CheckBase
             .Where(x => x.Master_DB.Rows20.Any(y => y.RegNo_DB == form20RegNo))
             .Include(x => x.Report_Collection)
             .Include(x => x.Report_Collection.Where(y => y.Year_DB == repYear && y.FormNum_DB == "2.10"))
-            .ThenInclude(x => x.Rows210))
-            if (_.Report_Collection.Count > 0) { reps210Cur = _; break; }
+            .ThenInclude(x => x.Rows210)
+            .Where(x => x.Report_Collection.Any(y => y.Year_DB == repYear && y.FormNum_DB == "2.10"))
+            .FirstOrDefaultAsync(cts.Token);
 
         await db2.DisposeAsync();
 

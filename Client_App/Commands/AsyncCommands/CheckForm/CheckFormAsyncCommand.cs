@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
+using Client_App.Views.ProgressBar;
 using MsBox.Avalonia.Dto;
-using Microsoft.EntityFrameworkCore;
 using Models.CheckForm;
 using Models.DBRealization;
 
@@ -28,7 +29,7 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
         IsExecute = true;
         try
         {
-            await Task.Run(() => AsyncExecute(parameter));
+            await Task.Run(async () => await AsyncExecute(parameter));
         }
         catch (OperationCanceledException) { }
         catch (Exception ex)
@@ -51,111 +52,69 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
 
         var window = Desktop.Windows.FirstOrDefault(x => x.Name == rep.FormNum_DB);
 
-        await using var db = new DBModel(StaticConfiguration.DBPath);
+        AnyTaskProgressBar? progressBar = null;
         List<CheckError> result = [];
         try
         {
-            switch (rep.FormNum_DB)
+            if (rep.FormNum_DB is "1.1" or "1.2" or "1.3" or "1.4" or "1.5" or "1.6" or "1.7" or "1.8")
             {
-                case "1.1":
-                    result.AddRange(CheckF11.Check_Total(reps, rep));
-                    break;
-                case "1.2":
-                    result.AddRange(CheckF12.Check_Total(reps, rep));
-                    break;
-                case "1.3":
-                    result.AddRange(CheckF13.Check_Total(reps, rep));
-                    break;
-                case "1.4":
-                    result.AddRange(CheckF14.Check_Total(reps, rep));
-                    break;
-                case "1.5":
-                    result.AddRange(CheckF15.Check_Total(reps, rep));
-                    break;
-                case "1.6":
-                    result.AddRange(CheckF16.Check_Total(reps, rep));
-                    break;
-                case "1.7":
-                    result.AddRange(CheckF17.Check_Total(reps, rep));
-                    break;
-                case "1.8":
-                    result.AddRange(CheckF18.Check_Total(reps, rep));
-                    break;
-                case "2.1":
-                    var rep21 = await db.ReportCollectionDbSet
-                        .AsNoTracking()
-                        .AsQueryable()
-                        .AsSplitQuery()
-                        .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                        .Include(x => x.Rows21.OrderBy(form => form.NumberInOrder_DB))
-                        .Include(x => x.Notes.OrderBy(note => note.Order))
-                        .Where(x => x.Reports != null && x.Reports.DBObservable != null)
-                    .FirstOrDefaultAsync(x => x.Id == rep.Id, cts.Token);
-
-                    var rep21Test = ReportsStorage.Api.GetAsync(rep.Id);
-
-                    result.AddRange(await new CheckF21().AsyncExecute(rep21));
-                    break;
-                case "2.2":
-                    var rep22 = await db.ReportCollectionDbSet
-                        .AsNoTracking()
-                        .AsQueryable()
-                        .AsSplitQuery()
-                        .Include(x => x.Reports).ThenInclude(x => x.DBObservable)
-                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows10)
-                        .Include(x => x.Reports).ThenInclude(x => x.Master_DB).ThenInclude(x => x.Rows20)
-                        .Include(x => x.Rows22.OrderBy(form => form.NumberInOrder_DB))
-                        .Include(x => x.Notes.OrderBy(note => note.Order))
-                        .Where(x => x.Reports != null && x.Reports.DBObservable != null)
-                    .FirstOrDefaultAsync(x => x.Id == rep.Id, cts.Token);
-
-                    result.AddRange(await new CheckF22().AsyncExecute(rep22));
-                    break;
-                case "2.3":
-                    result.AddRange(await CheckF23.Check_Total(rep));
-                    break;
-                case "2.6":
-                    result.AddRange(await CheckF26.Check_Total(rep));
-                    break;
-                case "2.7":
-                    result.AddRange(await CheckF27.Check_Total(rep));
-                    break;
-                case "2.8":
-                    result.AddRange(await CheckF28.Check_Total(rep));
-                    break;
-                case "2.9":
-                    result.AddRange(await CheckF29.Check_Total(rep));
-                    break;
-                case "2.10":
-                    result.AddRange(await CheckF210.Check_Total(rep));
-                    break;
-                case "2.11":
-                    result.AddRange(await CheckF211.Check_Total(rep));
-                    break;
-                default:
-                {
-                    #region MessageCheckFailed
-
-                    await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
-                        .GetMessageBoxStandard(new MessageBoxStandardParams
-                        {
-                            ButtonDefinitions = ButtonEnum.Ok,
-                            ContentTitle = $"Проверка формы {rep.FormNum_DB}",
-                            ContentHeader = "Уведомление",
-                            ContentMessage = "Функция проверки данных форм находится в процессе реализации.",
-                            MinWidth = 400,
-                            MinHeight = 150,
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                            Topmost = true,
-                        }).ShowWindowDialogAsync(window ?? Desktop.MainWindow));
-
-                    #endregion
-
-                    return;
-                }
+                progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
+                var checkProgress = ReportCheckProgress.ForStandalone(progressBar.AnyTaskProgressBarVM);
+                checkProgress.OnLoadComplete(ReportCheckSnapshotLoader.CountLoadedRows(rep));
+                result.AddRange(await Task.Run(
+                    () => ReportCheckRunner.ExecuteCheck(reps, rep, checkProgress),
+                    cts.Token));
             }
+            else if (IsForm2Or41(rep.FormNum_DB))
+            {
+                await using var db = new DBModel(StaticConfiguration.DBPath);
+                // Узкий снимок: у открытой формы строки могут быть paging/partial — для 2.1/2.2 и legacy нужен полный read-only.
+                var snapshot = await ReportCheckSnapshotLoader.LoadAsync(db, rep.Id, rep.FormNum_DB, cts.Token)
+                               ?? rep;
+                result.AddRange(await ReportCheckRunner.RunForm2OrLegacyAsync(snapshot, db, cts.Token));
+            }
+            else
+            {
+                #region MessageCheckFailed
+
+                await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                    .GetMessageBoxStandard(new MessageBoxStandardParams
+                    {
+                        ButtonDefinitions = ButtonEnum.Ok,
+                        ContentTitle = $"Проверка формы {rep.FormNum_DB}",
+                        ContentHeader = "Уведомление",
+                        ContentMessage = "Функция проверки данных форм находится в процессе реализации.",
+                        MinWidth = 400,
+                        MinHeight = 150,
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                        Topmost = true,
+                    }).ShowWindowDialogAsync(window ?? Desktop.MainWindow));
+
+                #endregion
+
+                return;
+            }
+        }
+        catch (NotImplementedException)
+        {
+            #region MessageCheckFailed
+
+            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxStandard(new MessageBoxStandardParams
+                {
+                    ButtonDefinitions = ButtonEnum.Ok,
+                    ContentTitle = $"Проверка формы {rep.FormNum_DB}",
+                    ContentHeader = "Уведомление",
+                    ContentMessage = "Функция проверки данных форм находится в процессе реализации.",
+                    MinWidth = 400,
+                    MinHeight = 150,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                    Topmost = true,
+                }).ShowWindowDialogAsync(window ?? Desktop.MainWindow));
+
+            #endregion
+
+            return;
         }
         catch (Exception ex)
         {
@@ -181,6 +140,20 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
             #endregion
 
             return;
+        }
+        finally
+        {
+            if (progressBar is not null)
+            {
+                try
+                {
+                    await progressBar.CloseAsync();
+                }
+                catch
+                {
+                    // Already closed.
+                }
+            }
         }
 
         if (result.Count == 0)
@@ -211,4 +184,7 @@ public class CheckFormAsyncCommand(ChangeOrCreateVM changeOrCreateViewModel) : B
             await Dispatcher.UIThread.InvokeAsync(() => new Views.CheckForm(changeOrCreateViewModel, result));
         }
     }
+
+    private static bool IsForm2Or41(string formNum) =>
+        formNum is "2.1" or "2.2" or "2.3" or "2.6" or "2.7" or "2.8" or "2.9" or "2.10" or "2.11" or "4.1";
 }

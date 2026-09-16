@@ -1,13 +1,13 @@
 ---
-description: Avalonia 0.10.x — UI-решения только под эту ветку, не под 11+
+description: Avalonia 11.x — UI-решения под текущую ветку проекта
 globs: "**/*.axaml,**/Views/**/*.cs,**/Behaviors/**/*.cs"
 alwaysApply: false
 ---
 
 # Avalonia UI
 
-Проект на **Avalonia 0.10.22** (не 11.x).
+Проект на **Avalonia 11.2.x** (FluentTheme, compiled bindings).
 
-- Искать API, примеры и фиксы именно для **0.10.x**
-- Не предлагать API/пакеты/паттерны Avalonia 11+ (breaking changes), если нет явной задачи миграции
+- Искать API, примеры и фиксы для **Avalonia 11**, не для 0.10.x
 - Ориентироваться на существующие Views/Behaviors в репозитории
+- Группировка крупных `.axaml`: см. правило **axaml-regions** (`<!--#region …-->`)

@@ -4,13 +4,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:Client_App.ViewModels"
         xmlns:behaviors="clr-namespace:Client_App.Behaviors"
-        mc:Ignorable="d" 
+        mc:Ignorable="d"
         x:Class="Client_App.Views.Contacts"
         x:CompileBindings="True"
         Title="Контакты"
-        MinWidth="450" MinHeight="450"
-        d:DesignWidth="700" d:DesignHeight="450"
-        behaviors:WindowScreenSizeBehavior.WidthRatio="0.45" behaviors:WindowScreenSizeBehavior.HeightRatio="0.55"
+        MinWidth="450" MinHeight="400"
+        d:DesignWidth="700" d:DesignHeight="400"
+        behaviors:WindowScreenSizeBehavior.WidthRatio="0.45" behaviors:WindowScreenSizeBehavior.HeightRatio="0.46"
         Background="WhiteSmoke"
         Icon="/Assets/logo.png"
         WindowStartupLocation="Manual"
@@ -20,125 +20,145 @@
         <vm:BaseVM/>
     </Design.DataContext>
 
-    <Grid RowDefinitions="0.7*,0.3*" 
-          VerticalAlignment="Top">
+    <!--#region Styles-->
+    <Window.Styles>
+        <Style Selector="StackPanel.contact-row">
+            <Setter Property="Orientation" Value="Horizontal"/>
+            <Setter Property="Margin" Value="10,8,10,8"/>
+        </Style>
+        <Style Selector="StackPanel.links-row">
+            <Setter Property="Orientation" Value="Horizontal"/>
+            <Setter Property="Margin" Value="10,0,10,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>
+        <Style Selector="StackPanel.contact-row > TextBlock, StackPanel.links-row > TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="StackPanel.contact-row > HyperlinkButton, StackPanel.links-row > HyperlinkButton">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+        </Style>
+        <Style Selector="TextBlock.contact-note">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontStyle" Value="Italic"/>
+            <Setter Property="Margin" Value="10,0,10,8"/>
+            <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+        </Style>
+    </Window.Styles>
+    <!--#endregion Styles-->
+
+    <!--#region Content-->
+    <Grid RowDefinitions="Auto,*"
+          Margin="0,0,0,5">
         <HeaderedContentControl Grid.Row="0"
                                 Margin="5"
-                                MinHeight="300"
                                 VerticalAlignment="Top"
                                 Header="Техническая поддержка">
             <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="10,15,0,10"
-                               FontSize="14"
-                               VerticalAlignment="Top"
-                               Text="По вопросам, связанным с работой программного обеспечения: "/>
-                    <TextBox Background="Transparent"
-                             BorderThickness="0"
-                             Foreground="Blue"
-                             FontSize="14"
-                             IsReadOnly="True"
-                             Margin="0,11,10,10"
-                             VerticalAlignment="Top"
-                             Text="ciac.support@norao.ru"/>
+                <StackPanel Classes="contact-row">
+                    <TextBlock Text="По вопросам, связанным с работой программного обеспечения: "/>
+                    <HyperlinkButton NavigateUri="mailto:ciac.support@norao.ru"
+                                     Content="ciac.support@norao.ru">
+                        <HyperlinkButton.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Копировать"
+                                          Tag="ciac.support@norao.ru"
+                                          Click="OnCopyLinkClicked"/>
+                            </ContextMenu>
+                        </HyperlinkButton.ContextMenu>
+                    </HyperlinkButton>
                 </StackPanel>
-                <TextBlock Margin="10,0,45,10"
-                           FontSize="12"
-                           FontStyle="Italic"
-                           TextWrapping="WrapWithOverflow"
-                           VerticalAlignment="Top"
+                <TextBlock Classes="contact-note"
                            Text="При обращении, необходимо указать операционную систему (версию сборки, разрядность), версию программного обеспечения. При возникновении ошибок при запуске/установке, приложить файлы Crash.log и Import.log из папки RAO/logs, а также снимок экрана с возникшей ошибкой."/>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Margin="10,15,0,10"
-                               FontSize="14"
-                               VerticalAlignment="Top"
-                               Text="По вопросам заполнения форм: "/>
-                    <TextBox Background="Transparent"
-                             BorderThickness="0"
-                             Foreground="Blue"
-                             FontSize="14"
-                             IsReadOnly="True"
-                             Margin="0,11,10,10"
-                             VerticalAlignment="Top"
-                             Text="ciac.help@norao.ru"/>
+
+                <StackPanel Classes="contact-row">
+                    <TextBlock Text="По вопросам заполнения форм: "/>
+                    <HyperlinkButton NavigateUri="mailto:ciac.help@norao.ru"
+                                     Content="ciac.help@norao.ru">
+                        <HyperlinkButton.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Копировать"
+                                          Tag="ciac.help@norao.ru"
+                                          Click="OnCopyLinkClicked"/>
+                            </ContextMenu>
+                        </HyperlinkButton.ContextMenu>
+                    </HyperlinkButton>
                 </StackPanel>
-                <TextBlock FontSize="12"
-                           FontStyle="Italic"
-                           Margin="10,0,45,10"
-                           TextWrapping="WrapWithOverflow"
-                           VerticalAlignment="Top"
+                <TextBlock Classes="contact-note"
                            Text="При обращении необходимо указать номер формы/графы, при заполнении которой возникли трудности. Перед обращением настоятельно рекомендуется ознакомиться с приказом №1/13-НПА и НП-067-24."/>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock FontSize="14"
-                               Margin="10,15,0,10"
-                               VerticalAlignment="Top"
-                               Text="Адрес электронной почты обучающего портала: "/>
-                    <TextBox Background="Transparent"
-                             BorderThickness="0"
-                             Foreground="Blue"
-                             FontSize="14"
-                             IsReadOnly="True"
-                             Margin="0,11,10,0"
-                             VerticalAlignment="Top"
-                             Text="ciac.education@norao.ru"/>
+
+                <StackPanel Classes="contact-row">
+                    <TextBlock Text="Адрес электронной почты обучающего портала: "/>
+                    <HyperlinkButton NavigateUri="mailto:ciac.education@norao.ru"
+                                     Content="ciac.education@norao.ru">
+                        <HyperlinkButton.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Копировать"
+                                          Tag="ciac.education@norao.ru"
+                                          Click="OnCopyLinkClicked"/>
+                            </ContextMenu>
+                        </HyperlinkButton.ContextMenu>
+                    </HyperlinkButton>
                 </StackPanel>
-                <TextBlock FontSize="12"
-                           FontStyle="Italic"
-                           Margin="10,0,45,0"
-                           TextWrapping="WrapWithOverflow"
-                           VerticalAlignment="Top"
+                <TextBlock Classes="contact-note"
+                           Margin="10,0,10,0"
                            Text="По вопросам, связанным с обучением и повышением квалификации."/>
             </StackPanel>
         </HeaderedContentControl>
+
         <HeaderedContentControl Grid.Row="1"
-                                Margin="5,5,5,0"
-                                MinHeight="180"
-                                VerticalAlignment="Top"
+                                Margin="5,0,5,0"
+                                VerticalAlignment="Stretch"
+                                HorizontalAlignment="Stretch"
                                 Header="Ссылки">
-            <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock FontSize="14"
-                               Margin="10,15,0,15"
-                               VerticalAlignment="Top"
-                               Text="Адрес сайта СГУК РВ и РАО: "/>
-                    <TextBox Background="Transparent"
-                             BorderThickness="0"
-                             Foreground="Blue"
-                             FontSize="14"
-                             IsReadOnly="True"
-                             Margin="0,11,10,15"
-                             VerticalAlignment="Top"
-                             Text="www.norao.ru/sguk/"/>
+            <Grid Margin="0,4,0,8"
+                  RowDefinitions="*,*,*"
+                  VerticalAlignment="Stretch">
+                <StackPanel Grid.Row="0" Classes="links-row">
+                    <TextBlock Text="Адрес сайта СГУК РВ и РАО: "/>
+                    <HyperlinkButton NavigateUri="https://www.norao.ru/sguk/"
+                                     Content="www.norao.ru/sguk/">
+                        <HyperlinkButton.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Копировать"
+                                          Tag="https://www.norao.ru/sguk/"
+                                          Click="OnCopyLinkClicked"/>
+                            </ContextMenu>
+                        </HyperlinkButton.ContextMenu>
+                    </HyperlinkButton>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock FontSize="14"
-                               Margin="10,15,0,15"
-                               VerticalAlignment="Top"
-                               Text="Программное обеспечение &quot;МПЗФ&quot;: "/>
-                    <TextBox Background="Transparent"
-                             BorderThickness="0"
-                             Foreground="Blue"
-                             FontSize="14"
-                             IsReadOnly="True"
-                             Margin="0,11,10,15"
-                             VerticalAlignment="Top"
-                             Text="www.norao.ru/sguk/software/mpzf/"/>
+                <StackPanel Grid.Row="1" Classes="links-row">
+                    <TextBlock Text="Программное обеспечение &quot;МПЗФ&quot;: "/>
+                    <HyperlinkButton NavigateUri="https://www.norao.ru/sguk/software/mpzf/"
+                                     Content="www.norao.ru/sguk/software/mpzf/">
+                        <HyperlinkButton.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Копировать"
+                                          Tag="https://www.norao.ru/sguk/software/mpzf/"
+                                          Click="OnCopyLinkClicked"/>
+                            </ContextMenu>
+                        </HyperlinkButton.ContextMenu>
+                    </HyperlinkButton>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock FontSize="14"
-                               Margin="10,15,10,0"
-                               VerticalAlignment="Top"
-                               Text="Нормативные документы: "/>
-                    <TextBox Background="Transparent"
-                             BorderThickness="0"
-                             Foreground="Blue"
-                             FontSize="14"
-                             IsReadOnly="True"
-                             Margin="0,11,10,0"
-                             VerticalAlignment="Top"
-                             Text="www.norao.ru/sguk/regulations/"/>
+                <StackPanel Grid.Row="2" Classes="links-row">
+                    <TextBlock Text="Нормативные документы: "/>
+                    <HyperlinkButton NavigateUri="https://www.norao.ru/sguk/regulations/"
+                                     Content="www.norao.ru/sguk/regulations/">
+                        <HyperlinkButton.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Копировать"
+                                          Tag="https://www.norao.ru/sguk/regulations/"
+                                          Click="OnCopyLinkClicked"/>
+                            </ContextMenu>
+                        </HyperlinkButton.ContextMenu>
+                    </HyperlinkButton>
                 </StackPanel>
-            </StackPanel>
+            </Grid>
         </HeaderedContentControl>
     </Grid>
+    <!--#endregion Content-->
 </Window>

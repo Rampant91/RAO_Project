@@ -1,4 +1,4 @@
-﻿<Window xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -24,6 +24,7 @@
         <vm:CategoryCalculatorVM/>
     </Design.DataContext>
 
+    <!--#region Resources-->
     <Window.Resources>
         <converter:BoolInverterConverter x:Key="BoolInverterConverter"/>
         <!-- Fluent docks error chrome inside DataValidationErrors (looks like a button). Never set
@@ -43,7 +44,9 @@
             </Setter>
         </ControlTheme>
     </Window.Resources>
+    <!--#endregion Resources-->
 
+    <!--#region Styles-->
     <Window.Styles>
         <Style Selector="DataGridCell:focus-within">
             <Setter Property="Background" Value="White"/>
@@ -127,7 +130,9 @@
             <Setter Property="Theme" Value="{StaticResource NoChromeDataValidationErrors}"/>
         </Style>
     </Window.Styles>
+    <!--#endregion Styles-->
 
+    <!--#region Content-->
     <Grid ColumnDefinitions="0.42*,0.58*"
           RowDefinitions="0.1*,0.9*">
 
@@ -553,4 +558,5 @@
             </HeaderedContentControl>
         </Grid>
     </Grid>
+    <!--#endregion Content-->
 </Window>
