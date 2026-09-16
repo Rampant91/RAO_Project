@@ -46,14 +46,35 @@
                   Margin="10">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Рег. №"
-                                    Binding="{Binding RegNum}" 
+                                    Binding="{Binding RegNum}"
+									IsVisible="{Binding DataContext.IsFormNum10or20,
+                                     RelativeSource={RelativeSource AncestorType=Window}}"
                                     Width="120"/>
                 <DataGridTextColumn Header="Наименование" 
+									IsVisible="{Binding DataContext.IsFormNum10or20,
+                                     RelativeSource={RelativeSource AncestorType=Window}}"
                                     Binding="{Binding ShortName}" 
                                     Width="*"/>
                 <DataGridTextColumn Header="ОКПО" 
                                     Binding="{Binding Okpo}" 
+									IsVisible="{Binding DataContext.IsFormNum10or20,
+                                     RelativeSource={RelativeSource AncestorType=Window}}"
                                     Width="100"/>
+				<DataGridTextColumn Header="Код субъекта РФ"
+                                    Binding="{Binding CodeSubjectRF}"
+									IsVisible="{Binding DataContext.IsFormNum40,
+                                     RelativeSource={RelativeSource AncestorType=Window}}"
+                                    Width="100"/>
+				<DataGridTextColumn Header="Субъект РФ"
+                                    Binding="{Binding SubjectRF}"
+									IsVisible="{Binding DataContext.IsFormNum40,
+                                     RelativeSource={RelativeSource AncestorType=Window}}"
+                                    Width="100"/>
+				<DataGridTextColumn Header="Наименование ВИАЦ"
+									IsVisible="{Binding DataContext.IsFormNum50,
+                                     RelativeSource={RelativeSource AncestorType=Window}}"
+                                    Binding="{Binding ShortName}"
+                                    Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
 

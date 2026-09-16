@@ -411,6 +411,11 @@ public abstract partial class Form : IKey, IDataGridColumn
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
     }
 
+    public void UpdateProperty([CallerMemberName] string prop = "")
+    {
+        OnPropertyChanged(prop);
+    }
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion

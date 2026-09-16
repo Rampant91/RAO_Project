@@ -7,17 +7,20 @@ using Client_App.Commands.AsyncCommands.SourceTransmission;
 using Client_App.Commands.AsyncCommands.SwitchReport;
 using Client_App.Commands.SyncCommands;
 using Client_App.ViewModels.Controls;
+using Client_App.ViewModels.Forms.Forms1.Items;
+using Client_App.ViewModels.Forms.Forms1.Providers.AutoCompleteProviders;
+using Models.Attributes;
 using Models.Collections;
+using Models.DBRealization;
 using Models.Forms;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Models.Attributes;
-using Models.DBRealization;
 
 namespace Client_App.ViewModels.Forms;
 
@@ -61,6 +64,26 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
             OnPropertyChanged();
         }
     }
+
+    #region OksmProvider
+
+    private OksmProvider _oksmProvider = new OksmProvider();
+    public OksmProvider OksmProvider
+    {
+        get
+        {
+            return _oksmProvider;
+        }
+    }
+
+    public ObservableCollection<OksmItem> OksmItems
+    {
+        get
+        {
+            return _oksmProvider.TypedItemsCollection;
+        }
+    }
+    #endregion
 
     #region Report
 
@@ -143,7 +166,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     }
 
     private ObservableCollection<Form> _selectedForms = [];
-    public ObservableCollection<Form> SelectedForms
+    public virtual ObservableCollection<Form> SelectedForms
     {
         get => _selectedForms;
         set
@@ -428,7 +451,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
     /// Обновление списка выделенных строчек.
     /// </summary>
     /// <param name="collection"></param>
-    private void SubscribeSelectedForms(ObservableCollection<Form> collection)
+    protected void SubscribeSelectedForms(ObservableCollection<Form> collection)
     {
         if (collection is INotifyCollectionChanged notify)
         {
@@ -436,7 +459,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    private void UnsubscribeSelectedForms(ObservableCollection<Form> collection)
+    protected void UnsubscribeSelectedForms(ObservableCollection<Form> collection)
     {
         if (collection is INotifyCollectionChanged notify)
         {
@@ -444,7 +467,7 @@ public abstract class BaseFormVM : BaseVM, INotifyPropertyChanged
         }
     }
 
-    private void SelectedForms_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+    protected virtual void SelectedForms_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
         OnPropertyChanged(nameof(AnyRowSelected));
         OnPropertyChanged(nameof(OnlyOneRowSelected));
