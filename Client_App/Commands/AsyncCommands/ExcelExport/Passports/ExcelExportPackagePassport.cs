@@ -60,6 +60,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
 
             progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
             var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+            fullPath = ResolveUniqueFilePath(fullPath, null);
 
             progressBarVM.SetProgressBar(15, "Создание временной БД", "Выгрузка отчёта для печати", ExportType);
             var tmpDbPath = await CreateTempDataBase(progressBar, cts);

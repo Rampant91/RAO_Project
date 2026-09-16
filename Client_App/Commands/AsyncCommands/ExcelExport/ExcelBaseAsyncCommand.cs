@@ -135,15 +135,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
         {
             case "Открыть временную копию":
             {
-                DirectoryInfo tmpFolder = new(Path.Combine(BaseVM.SystemDirectory, "RAO", "temp"));
-                var count = 0;
-
-                fullPath = Path.Combine(tmpFolder.FullName, fileName + ".xlsx");
-                while (File.Exists(fullPath))
-                {
-                    fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{++count}.xlsx");
-                }
-
+                var tmpFolderPath = Path.Combine(BaseVM.SystemDirectory, "RAO", "temp");
+                Directory.CreateDirectory(tmpFolderPath);
+                fullPath = ResolveUniqueFilePath(Path.Combine(tmpFolderPath, fileName + ".xlsx"), tmpFolderPath);
                 break;
             }
             case "Сохранить":
@@ -159,39 +153,8 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                 fullPath = await dial.ShowAsync(Desktop.MainWindow);
                 if (string.IsNullOrEmpty(fullPath)) await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
                 if (!fullPath.EndsWith(".xlsx")) fullPath += ".xlsx"; //В проводнике Linux в имя файла не подставляется расширение из фильтра, добавляю руками если его нет
-                if (File.Exists(fullPath))
-                {
-                    try
-                    {
-                        File.Delete(fullPath!);
-                    }
-                    catch
-                    {
-                        #region MessageFailedToSaveFile
-
-                        await Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                            .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                            {
-                                ButtonDefinitions = MessageBox.Avalonia.Enums.ButtonEnum.Ok,
-                                ContentTitle = "Выгрузка в .xlsx",
-                                ContentHeader = "Ошибка",
-                                ContentMessage =
-                                    $"Не удалось сохранить файл по пути: {fullPath}" +
-                                    $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                                    $"{Environment.NewLine}и используется другим процессом.",
-                                MinWidth = 400,
-                                MinHeight = 150,
-                                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                                Topmost = true,
-                            })
-                            .ShowDialog(Desktop.MainWindow));
-
-                            #endregion
-
-                        await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-                    }
-                }
-
+                // Если файл уже есть (в т.ч. открыт в Excel) — пишем рядом с индексом: name_1.xlsx, name_2.xlsx…
+                fullPath = ResolveUniqueFilePath(fullPath, Path.GetDirectoryName(fullPath));
                 break;
             }
             default:
@@ -1001,10 +964,11 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
     /// <summary>
     /// Возвращает путь к файлу, не совпадающий с уже существующим в каталоге.
+    /// При занятости имени добавляет индекс: name.xlsx → name_1.xlsx → name_2.xlsx …
     /// </summary>
     /// <param name="fullPath">Исходный путь к файлу.</param>
     /// <param name="fallbackDirectory">Каталог по умолчанию, если в пути не указан.</param>
-    private protected static string ResolveUniqueFilePath(string fullPath, string? fallbackDirectory)
+    internal static string ResolveUniqueFilePath(string fullPath, string? fallbackDirectory)
     {
         if (!File.Exists(fullPath))
             return fullPath;
