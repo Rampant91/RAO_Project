@@ -24,6 +24,9 @@ public class App : Application
         FirebirdLogger.Initialize();
         FirebirdLogger.Log("Application Initialize started");
 
+        // Ранняя регистрация обработчиков ToolTip для MenuItem (до разбора MainWindow.axaml).
+        _ = typeof(Behaviors.MenuItemToolTipHelper);
+
         AvaloniaXamlLoader.Load(this);
 
         FirebirdLogger.Log("Application Initialize finished");

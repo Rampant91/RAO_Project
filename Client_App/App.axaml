@@ -44,6 +44,33 @@
         <StyleInclude Source="avares://Avalonia.Themes.Default/Accents/BaseLight.xaml"/>
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Default.xaml"/>
 
+        <!-- После темы. Placement=Top: Left у края экрана часто flip'ится в Right поверх cascade. -->
+        <Style Selector="MenuItem">
+            <Setter Property="ToolTip.Placement" Value="Top"/>
+            <Setter Property="ToolTip.ShowDelay" Value="700"/>
+            <Setter Property="ToolTip.HorizontalOffset" Value="0"/>
+            <Setter Property="ToolTip.VerticalOffset" Value="-6"/>
+            <Setter Property="behaviors:MenuItemToolTipHelper.CloseTipWhenSubmenuOpen" Value="True"/>
+        </Style>
+        <Style Selector="ToolTip">
+            <!-- Отличие от меню (WhiteSmoke): тёплый фон и янтарная рамка. -->
+            <Setter Property="Background" Value="#FFF8E8"/>
+            <Setter Property="BorderBrush" Value="#C9A227"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Foreground" Value="#2F2F2F"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="12,9"/>
+            <Setter Property="MaxWidth" Value="360"/>
+        </Style>
+        <!-- Строковый Tip по умолчанию в одну линию; перенос для текста внутри подсказки. -->
+        <Style Selector="ToolTip TextBlock">
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="TextAlignment" Value="Left"/>
+            <Setter Property="MaxWidth" Value="320"/>
+            <Setter Property="Foreground" Value="#2F2F2F"/>
+        </Style>
+
         <Style Selector="HeaderedContentControl">
             <Setter Property="Template">
                 <ControlTemplate>

@@ -51,76 +51,97 @@
 
             <MenuItem Header="_Импорт"
                       Name="ImportMenu">
-                <MenuItem Header="Из RAODB" 
+                <MenuItem Header="Из RAODB"
+                          ToolTip.Tip="Загрузка файлов .RAODB в текущую открытую базу данных."
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
                     <MenuItem Header="Импорт с авто выбором организации"
-                              Command="{Binding ImportRaodb, Mode=OneWay}" 
-                              CommandParameter="Auto"/>
+                              Command="{Binding ImportRaodb, Mode=OneWay}"
+                              CommandParameter="Auto"
+                              ToolTip.Tip="Программа попросит выбрать файл(ы) .RAODB. Отчёты попадут в организацию в базе по совпадению рег.№ и ОКПО из файла."/>
                     <MenuItem Header="Импорт в организацию из списка"
                               Command="{Binding ImportRaodb, Mode=OneWay}"
-                              CommandParameter="FromList"/>
+                              CommandParameter="FromList"
+                              ToolTip.Tip="Программа попросит выбрать файл(ы) .RAODB и указать организацию из списка. Отчёты будут загружены в эту организацию."/>
                 </MenuItem>
                 <MenuItem Header="Из RAODB"
                           Command="{Binding ImportRaodb, Mode=OneWay}"
                           CommandParameter="Auto"
+                          ToolTip.Tip="Программа попросит выбрать файл(ы) .RAODB. Отчёты попадут в организацию в базе по совпадению рег.№ и ОКПО из файла."
                           IsVisible="{Binding AppLaunchedAtNorao, 
                             Converter={StaticResource BoolInverterConverter}, 
                             Mode=OneWay}"/>
 
                 <MenuItem Header="Из Excel"
+                          ToolTip.Tip="Загрузка печатных шаблонов в формате .xlsx в текущую открытую базу данных."
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
                     <MenuItem Header="Импорт с авто выбором организации"
                               Command="{Binding ImportExcel, Mode=OneWay}"
-                              CommandParameter="Auto"/>
+                              CommandParameter="Auto"
+                              ToolTip.Tip="Программа попросит выбрать файл(ы) .xlsx. Отчёты попадут в организацию в базе по совпадению рег.№ и ОКПО из файла."/>
                     <MenuItem Header="Импорт в организацию из списка"
                               Command="{Binding ImportExcel, Mode=OneWay}"
-                              CommandParameter="FromList"/>
+                              CommandParameter="FromList"
+                              ToolTip.Tip="Программа попросит выбрать файл(ы) .xlsx и указать организацию из списка. Отчёты будут загружены в эту организацию."/>
                 </MenuItem>
                 <MenuItem Header="Из Excel"
                           Command="{Binding ImportExcel, Mode=OneWay}"
                           CommandParameter="Auto"
+                          ToolTip.Tip="Программа попросит выбрать файл(ы) .xlsx. Отчёты попадут в организацию в базе по совпадению рег.№ и ОКПО из файла."
                           IsVisible="{Binding AppLaunchedAtNorao, 
                             Converter={StaticResource BoolInverterConverter}, 
                             Mode=OneWay}"/>
 
                 <MenuItem Header="Из Json"
-                          Command="{Binding ImportJson, Mode=OneWay}"/>
+                          Command="{Binding ImportJson, Mode=OneWay}"
+                          ToolTip.Tip="Программа попросит выбрать файл .json. Данные организаций и форм будут загружены в текущую базу."/>
             </MenuItem>
 
             <MenuItem Name="ExcelMenu"
                       Header="_Аналитика">
                 <MenuItem Header="Список организаций"
+                          ToolTip.Tip="Сводные таблицы по организациям текущей базы. На выходе — файл в табличном формате .xlsx."
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
-                    <MenuItem Command="{Binding ExcelExportListOfOrgs, Mode=OneWay}" 
-                              Header="Количество форм"/>
+                    <MenuItem Command="{Binding ExcelExportListOfOrgs, Mode=OneWay}"
+                              Header="Количество форм"
+                              ToolTip.Tip="Программа попросит указать период. На выходе — файл .xlsx со списком организаций и числом отчётов по формам 1.x и 2.x."/>
                     <MenuItem Command="{Binding ExcelExportListOfOrgs, Mode=OneWay}"
                               CommandParameter="full"
-                              Header="Список с доп. полями"/>
+                              Header="Список с доп. полями"
+                              ToolTip.Tip="Программа попросит указать период. На выходе — файл .xlsx с организациями, реквизитами из форм 1.0/2.0 и счётчиками форм."/>
                 </MenuItem>
                 <MenuItem Command="{Binding ExcelExportExecutors, Mode=OneWay}"
                           CommandParameter="Executors"
                           Header="Список исполнителей"
+                          ToolTip.Tip="По данным текущей базы сформирует файл в формате электронных таблиц .xlsx со сведениями об исполнителях (формы 1.0 и 2.0)."
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
-                <MenuItem Header="Список форм">
+                <MenuItem Header="Список форм"
+                          ToolTip.Tip="Перечни отчётов по группам форм. Программа попросит период; на выходе — файл .xlsx.">
                     <MenuItem Command="{Binding ExcelExportListOfForms1, Mode=OneWay}"
-                              Header="Список форм 1"/>
+                              Header="Список форм 1"
+                              ToolTip.Tip="Программа попросит указать период. На выходе — файл .xlsx со списком отчётов форм 1.x."/>
                     <MenuItem Command="{Binding ExcelExportListOfForms2, Mode=OneWay}"
-                              Header="Список форм 2"/>
+                              Header="Список форм 2"
+                              ToolTip.Tip="Программа попросит указать период. На выходе — файл .xlsx со списком отчётов форм 2.x."/>
                     <MenuItem Command="{Binding ExcelExportListOfForms4, Mode=OneWay}"
-                              Header="Список форм 4"/>
+                              Header="Список форм 4"
+                              ToolTip.Tip="Программа попросит указать период. На выходе — файл .xlsx со списком отчётов форм 4.x."/>
                     <MenuItem Command="{Binding ExcelExportListOfForms5, Mode=OneWay}"
                               Header="Список форм 5"
+                              ToolTip.Tip="Программа попросит указать период. На выходе — файл .xlsx со списком отчётов форм 5.x."
                               IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
                     <Separator/>
                     <MenuItem Command="{Binding ExcelExportListOfFormsAll, Mode=OneWay}"
-                              Header="Все списки форм"/>
+                              Header="Все списки форм"
+                              ToolTip.Tip="Программа попросит указать период. На выходе — один файл .xlsx с отдельными листами для форм 1, 2, 4 (и 5 в режиме НОРАО)."/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Command="{Binding ExcelExportAll, Mode=OneWay}"
                           CommandParameter="AllReps"
                           Header="Все формы"
+                          ToolTip.Tip="По всей текущей базе сформирует один файл в формате электронных таблиц .xlsx с аналитической выгрузкой всех форм 1.x и 2.x."
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
                 <MenuItem Header="Формы 1"
+                          ToolTip.Tip="Выберите номер формы в подменю. На выходе — файл .xlsx со строками этой формы по всем организациям базы."
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
                     <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="1.1"
@@ -151,6 +172,7 @@
                               Header="Форма 1.9"/>
                 </MenuItem>
                 <MenuItem Header="Формы 2"
+                          ToolTip.Tip="Выберите номер формы в подменю. На выходе — файл .xlsx со строками этой формы по всем организациям базы."
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
                     <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                               CommandParameter="2.1"
@@ -190,12 +212,18 @@
                               Header="Форма 2.12"/>
                 </MenuItem>
                 <MenuItem Header="Выбранная организация"
+                          ToolTip.Tip="Дальнейшие пункты относятся только к организации, которую вы выбрали в списке на вкладке форм."
+                          ToolTip.Placement="Top"
+                          ToolTip.HorizontalOffset="0"
+                          ToolTip.VerticalOffset="-6"
                           IsEnabled="{Binding IsExcelSelectedOrganizationMenuEnabled, Mode=OneWay}">
                     <MenuItem Command="{Binding ExcelExportAll, Mode=OneWay}"
                               CommandParameter="SelectedOrg"
                               Header="Все формы"
+                              ToolTip.Tip="По выбранной организации сформирует файл в формате электронных таблиц .xlsx с аналитической выгрузкой всех форм 1.x и 2.x."
                               IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
-                    <MenuItem Header="Формы 1">
+                    <MenuItem Header="Формы 1"
+                              ToolTip.Tip="Выберите номер формы в подменю. На выходе — файл .xlsx только по выбранной организации.">
                         <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org1.1"
                                   Header="Форма 1.1"/>
@@ -224,7 +252,8 @@
                                   CommandParameter="Org1.9"
                                   Header="Форма 1.9"/>
                     </MenuItem>
-                    <MenuItem Header="Формы 2">
+                    <MenuItem Header="Формы 2"
+                              ToolTip.Tip="Выберите номер формы в подменю. На выходе — файл .xlsx только по выбранной организации.">
                         <MenuItem Command="{Binding ExcelExportForms, Mode=OneWay}"
                                   CommandParameter="Org2.1"
                                   Header="Форма 2.1"/>
@@ -262,7 +291,8 @@
                                   CommandParameter="Org2.12"
                                   Header="Форма 2.12"/>
                     </MenuItem>
-                    <MenuItem Header="СНК на дату">
+                    <MenuItem Header="СНК на дату"
+                              ToolTip.Tip="СНК — список наличного количества на указанную дату. Программа попросит указать дату. Выберите форму 1.1 или 1.3. На выходе — файл .xlsx со списком наличного количества для выбранной организации.">
                         <MenuItem Command="{Binding  ExcelExportSnk, Mode=OneWay}"
                                   CommandParameter="1.1"
                                   Header="Форма 1.1"/>
@@ -270,7 +300,8 @@
                                   CommandParameter="1.3"
                                   Header="Форма 1.3"/>
                     </MenuItem>
-                    <MenuItem Header="Проверка инвентаризации">
+                    <MenuItem Header="Проверка инвентаризации"
+                              ToolTip.Tip="Программа попросит указать дату для расчёта СНК (список наличного количества). Выберите форму 1.1 или 1.3. На выходе — файл .xlsx с результатами проверки инвентаризаций.">
                         <MenuItem Command="{Binding  ExcelExportCheckInventories, Mode=OneWay}"
                                   CommandParameter="1.1"
                                   Header="Форма 1.1"/>
@@ -280,41 +311,54 @@
                     </MenuItem>
                     <MenuItem Header="Непарные операции 41 (формы 1.1–1.6)"
                               Command="{Binding ExcelExportCheckPairingOfCode41, Mode=OneWay}"
-                              CommandParameter="{Binding SelectedReports, Mode=OneWay}"/>
+                              CommandParameter="{Binding SelectedReports, Mode=OneWay}"
+                              ToolTip.Tip="Программа попросит настроить критерии. На выходе — файл .xlsx с операциями кода 41 без пары по выбранной организации."/>
                     <MenuItem Header="Проверка операций приёма-передачи"
                               Command="{Binding ExcelExportCheckTransferReceive, Mode=OneWay}"
                               CommandParameter="{Binding SelectedReports, Mode=OneWay}"
+                              ToolTip.Tip="Программа попросит настроить параметры сверки. На выходе — файл .xlsx с непарными операциями приёма и передачи по выбранной организации."
                               IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
                     <MenuItem Header="Сверка отчётов с БД"
                               Command="{Binding ExcelExportCompareFormPrint, Mode=OneWay}"
                               CommandParameter="{Binding SelectedReports, Mode=OneWay}"
+                              ToolTip.Tip="Перед загрузкой: программа попросит выбрать файлы .RAODB и сравнит их с уже имеющимися в базе отчётами выбранной организации. На выходе — отчёт о различиях в табличном формате .xlsx."
                               IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
                 </MenuItem>
                 <Separator/>
                 <MenuItem Command="{Binding ExcelExportIntersections, Mode=OneWay}"
-                          Header="Разрывы и пересечения"/>
-                <MenuItem Header="Паспорта">
+                          Header="Разрывы и пересечения"
+                          ToolTip.Tip="По текущей базе сформирует файл .xlsx со списком совпадений, пересечений и разрывов периодов отчётов."/>
+                <MenuItem Header="Паспорта"
+                          ToolTip.Tip="Проверка соответствия отчётов базы и файлов паспортов на диске, а также настройка папки паспортов.">
                     <MenuItem Command="{Binding ExcelExportRepWithoutPas, Mode=OneWay}"
-                              Header="Отчеты без паспортов"/>
+                              Header="Отчеты без паспортов"
+                              ToolTip.Tip="Сопоставит текущую базу с папкой паспортов. На выходе — файл .xlsx с отчётами, для которых не найден файл паспорта."/>
                     <MenuItem Command="{Binding ExcelExportPasWithoutRep, Mode=OneWay}"
-                              Header="Паспорта без отчетов"/>
+                              Header="Паспорта без отчетов"
+                              ToolTip.Tip="Программа попросит указать категории. На выходе — файл .xlsx с файлами паспортов, не найденными среди отчётов в базе."/>
                     <MenuItem Command="{Binding ChangePasFolder, Mode=OneWay}"
-                              Header="Изменить расположение паспортов по умолчанию"/>
+                              Header="Изменить расположение паспортов по умолчанию"
+                              ToolTip.Tip="Программа попросит выбрать папку. Она станет каталогом поиска файлов паспортов по умолчанию."/>
                 </MenuItem>
                 <MenuItem Command="{Binding  ExcelExportCheckLastInventoryDate, Mode=OneWay}"
-                          Header="Проверка последней инвентаризации"/>
+                          Header="Проверка последней инвентаризации"
+                          ToolTip.Tip="Программа попросит указать регион и формы. На выходе — файл .xlsx с организациями, у которых просрочена инвентаризация."/>
                 <MenuItem Command="{Binding ExcelExportCheckPairingOfCode41, Mode=OneWay}"
                           CommandParameter="All"
-                          Header="Непарные операции 41 (вся БД)"/>
+                          Header="Непарные операции 41 (вся БД)"
+                          ToolTip.Tip="Программа попросит настроить критерии. На выходе — файл .xlsx с операциями кода 41 без пары по всей базе."/>
                 <MenuItem Command="{Binding ExcelExportCheckTransferReceive, Mode=OneWay}"
                           CommandParameter="All"
                           Header="Проверка операций приёма-передачи (вся БД)"
+                          ToolTip.Tip="Программа попросит настроить параметры сверки. На выходе — файл .xlsx с непарными операциями приёма и передачи по всей базе."
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
                 <MenuItem Command="{Binding ExcelExportCompareFormPrint, Mode=OneWay}"
                           CommandParameter="All"
                           Header="Сверка отчётов с БД"
+                          ToolTip.Tip="Перед загрузкой: программа попросит выбрать файлы .RAODB и сравнит их с уже имеющимися в открытой базе. На выходе — отчёт о различиях в табличном формате .xlsx."
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"/>
                 <MenuItem Header="Проблемные источники по региону"
+                          ToolTip.Tip="Программа попросит указать дату СНК (список наличного количества) и регион. Выберите форму 1.1 или 1.3. На выходе — файл .xlsx с потерянными и лишними источниками."
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
                     <MenuItem Command="{Binding  ExcelExportLostAndExtraUnitsByRegion, Mode=OneWay}"
                               CommandParameter="1.1"
@@ -326,10 +370,12 @@
 				<Separator/>
 				<MenuItem Command="{Binding CalculateVolumesRaoProcessingByPeriod, Mode=OneWay}"
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"
-			              Header="Собрать сведения о переработке РАО"/>
+			              Header="Собрать сведения о переработке РАО"
+                          ToolTip.Tip="Программа попросит файл .xlsx со списком организаций (рег.№ и ОКПО) и период. На выходе — файл .xlsx с объёмами переработки РАО из текущей базы."/>
                 <MenuItem Command="{Binding MaxGraphsLength, Mode=OneWay}"
                           IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"
-                          Header="Макс. длина колонок"/>
+                          Header="Макс. длина колонок"
+                          ToolTip.Tip="Проанализирует текстовые поля текущей базы. На выходе — файл .xlsx с фактической и рекомендуемой длиной колонок."/>
                 <!--
                 <MenuItem Command="{Binding UnaccountedRad, Mode=OneTime}"
                           Header="Радионуклиды отсутствующие в справочнике"/> 
@@ -340,37 +386,48 @@
                       Header="Сервис">
                 <MenuItem Command="{Binding OpenCalculator, Mode=OneWay}"
                           CommandParameter="activity"
-                          Header="Пересчёт активности"/>
-                <MenuItem Command="{Binding OpenCalculator, Mode=OneWay}" 
-                          CommandParameter="category" 
-                          Header="Расчёт категории"/>
+                          Header="Пересчёт активности"
+                          ToolTip.Tip="Откроет окно калькулятора пересчёта активности радионуклидов."/>
+                <MenuItem Command="{Binding OpenCalculator, Mode=OneWay}"
+                          CommandParameter="category"
+                          Header="Расчёт категории"
+                          ToolTip.Tip="Откроет окно калькулятора определения категории радионуклида или источника."/>
                 <Separator/>
                 <MenuItem Command="{Binding OpenFile, Mode=OneWay}"
                           CommandParameter="manual"
-                          Header="Руководство пользователя"/>
+                          Header="Руководство пользователя"
+                          ToolTip.Tip="Откроет файл руководства пользователя."/>
 				<Separator/>
 			    <MenuItem Command="{Binding OpenFolder, Mode=OneWay}"
                           CommandParameter="rao"
-                          Header="Папка RAO"/>
+                          Header="Папка RAO"
+                          ToolTip.Tip="Откроет в проводнике рабочую папку RAO."/>
                 <MenuItem Command="{Binding OpenFolder, Mode=OneWay}"
                           CommandParameter="app"
-                          Header="Папка с программой"/>
-                <MenuItem Command="{Binding OpenFile, Mode=OneWay}" 
-                          CommandParameter="radsDictionary" 
-                          Header="Справочник радионуклидов"/>
+                          Header="Папка с программой"
+                          ToolTip.Tip="Откроет в проводнике каталог установки программы."/>
+                <MenuItem Command="{Binding OpenFile, Mode=OneWay}"
+                          CommandParameter="radsDictionary"
+                          Header="Справочник радионуклидов"
+                          ToolTip.Tip="Откроет файл справочника радионуклидов."/>
                 <MenuItem Command="{Binding OpenFolder, Mode=OneWay}"
                           CommandParameter="excel"
-                          Header="Шаблоны форм"/>
+                          Header="Шаблоны форм"
+                          ToolTip.Tip="Откроет в проводнике папку с шаблонами форм в формате .xlsx."/>
                 <Separator/>
                 <MenuItem Click="OpenContactsButtonClicked"
-                          Header="Контакты"/>
+                          Header="Контакты"
+                          ToolTip.Tip="Откроет окно с контактной информацией."/>
                 <MenuItem Command="{Binding OpenFile, Mode=OneWay}"
                           CommandParameter="changelog"
-                          Header="Список изменений"/>
+                          Header="Список изменений"
+                          ToolTip.Tip="Откроет журнал изменений текущей версии."/>
                 <MenuItem Command="{Binding CheckForUpdates, Mode=OneWay}"
-                          Header="Проверить обновления"/>
+                          Header="Проверить обновления"
+                          ToolTip.Tip="Проверит наличие новой версии программы и предложит обновление."/>
                 <MenuItem Command="{Binding RollbackPreviousRelease, Mode=OneWay}"
                           Header="Откатиться на предыдущую версию"
+                          ToolTip.Tip="Восстановит предыдущую установленную версию программы."
                           IsVisible="{Binding CanRollbackPreviousRelease, Mode=OneWay}"/>
                     
             </MenuItem> 
@@ -378,22 +435,29 @@
             <MenuItem Header="Дополнительно"
                       IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}">
                 <MenuItem Header="Конвертер из Excel в .RAODB"
-                          Command="{Binding ConvertExcelToRaodb, Mode=OneWay}"/>
+                          Command="{Binding ConvertExcelToRaodb, Mode=OneWay}"
+                          ToolTip.Tip="Программа попросит выбрать файл(ы) .xlsx печатного шаблона. На выходе — отдельные файлы .RAODB рядом с исходными. Текущая база не изменяется."/>
+                <MenuItem Header="Конвертер выгрузки всех форм в .RAODB"
+                          Command="{Binding ConvertFormsExcelToRaodb, Mode=OneWay}"
+                          ToolTip.Tip="Программа попросит выбрать файл аналитической выгрузки форм 1.X или 2.X в формате .xlsx и папку для сохранения. На выходе — отдельные .RAODB. Титул 1.0/2.0 берётся из текущей базы; данные исполнителя в файлах не заполняются."/>
                 <MenuItem Header="Групповая выгрузка отчётов"
-                          Command="{Binding GroupBulkExportReports, Mode=OneWay}"/>
+                          Command="{Binding GroupBulkExportReports, Mode=OneWay}"
+                          ToolTip.Tip="Программа попросит файл .xlsx со списком организаций, выбрать формы и период, указать папку. На выходе — отдельные .RAODB по каждой организации."/>
             </MenuItem>
 
 			<MenuItem Name="PackagePassports"
 					  Header="Паспорта">
 				<MenuItem Command="{Binding OpenPassportMenu}"
-						  Header="Открыть меню паспортов"/>
+						  Header="Открыть меню паспортов"
+                          ToolTip.Tip="Откроет окно работы с паспортами упаковок РАО."/>
 			</MenuItem>
 
 			<MenuItem Name="StoragePoints"
 					  IsVisible="{Binding AppLaunchedAtNorao, Mode=OneWay}"
 					  Header="Пункты хранения">
 				<MenuItem Command="{Binding OpenStoragePointMenu}"
-						  Header="Открыть меню пунктов хранения"/>
+						  Header="Открыть меню пунктов хранения"
+                          ToolTip.Tip="Откроет окно учёта пунктов хранения."/>
 			</MenuItem>
 
         </Menu>

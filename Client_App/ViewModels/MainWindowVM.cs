@@ -2,6 +2,7 @@ using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Add;
 using Client_App.Commands.AsyncCommands.Calculator;
 using Client_App.Commands.AsyncCommands.CheckForm;
+using Client_App.Commands.AsyncCommands.ConvertFormsExcelToRaodb;
 using Client_App.Commands.AsyncCommands.Delete;
 using Client_App.Commands.AsyncCommands.ExcelExport;
 using Client_App.Commands.AsyncCommands.ExcelExport.ListOfForms;
@@ -359,6 +360,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
     public ICommand AddReports { get; set; }                        //  Создать и открыть новое окно формы организации (1.0, 2.0, 4.0)
     public ICommand ChangePasFolder { get; set; }                   //  Excel -> Паспорта -> Изменить расположение паспортов по умолчанию
     public ICommand ConvertExcelToRaodb { get; set; }               //  Дополнительно -> Конвертер из Excel в .RAODB
+    public ICommand ConvertFormsExcelToRaodb { get; set; }    //  Дополнительно -> Конвертер выгрузки всех форм в .RAODB
     public ICommand ExcelExportCheckAllForms { get; set; }          //  Проверить все формы у организации
     public ICommand ExcelExportCheckPairingOfCode41 { get; set; }   //  Непарные операции 41 (org / вся БД, формы 1.1–1.6)
     public ICommand ExcelExportCheckTransferReceive { get; set; }   //  Проверка операций приёма-передачи (org / вся БД, формы 1.1–1.5)
@@ -524,6 +526,7 @@ public class MainWindowVM : ObservableObject, INotifyPropertyChanged
         ChangeForm = new ChangeFormAsyncCommand();
         ChangePasFolder = new ChangePasFolderAsyncCommand();
         ConvertExcelToRaodb = new ConvertExcelToRaodbAsyncCommand();
+        ConvertFormsExcelToRaodb = new ConvertFormsExcelToRaodbAsyncCommand();
         DeleteReports = new DeleteReportsAsyncCommand(this);
         ExcelExportCheckAllForms = new ExcelExportCheckAllFormsAsyncCommand(this);
         ExcelExportCheckPairingOfCode41 = new ExcelExportCheckPairingOfCode41AsyncCommand(this);
