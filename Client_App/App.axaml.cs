@@ -9,13 +9,12 @@ using MessageBox.Avalonia.Enums;
 using Client_App.Services;
 using System;
 using System.Threading;
+using System.IO;
 
 namespace Client_App;
 
 public class App : Application
 {
-    private static Mutex? _instanceCheckMutex;
-
     #region Initialize
     
     public override void Initialize()
@@ -86,32 +85,30 @@ public class App : Application
 
     #region InstanceCheck
 
+    private static FileStream? _lockFile;
+
     private static bool InstanceCheck()
     {
+        if (!Settings.Default.OnlyOneAppInstanceAllowed)
+            return true;
+
         try
         {
-            if (!Settings.Default.OnlyOneAppInstanceAllowed)
-            {
-                FirebirdLogger.Log("InstanceCheck: multiple instances allowed by settings");
-                return true;
-            }
+            var lockPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "Client_App",
+                ".lock");
 
-            _instanceCheckMutex = new Mutex(true, "<Client_App>", out var isNew);
-            if (!isNew)
-            {
-                FirebirdLogger.Log("InstanceCheck: another instance already running");
-                _instanceCheckMutex.Dispose();
-            }
-            else
-            {
-                FirebirdLogger.Log("InstanceCheck: this is the first instance");
-            }
+            Directory.CreateDirectory(Path.GetDirectoryName(lockPath)!);
 
-            return isNew;
+            _lockFile = new FileStream(lockPath, FileMode.OpenOrCreate,
+                                       FileAccess.ReadWrite, FileShare.None);
+            _lockFile.Lock(0, 0); // эксклюзивная блокировка
+            return true;
         }
-        catch (Exception ex)
+        catch (IOException)
         {
-            FirebirdLogger.LogError("Error in InstanceCheck", ex);
+            // Файл уже заблокирован другим процессом
             return false;
         }
     }
