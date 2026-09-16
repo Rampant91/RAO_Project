@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Controls.DataGrid;
+using Client_App.Interfaces.Logger;
 using Client_App.Views.ProgressBar;
 using MessageBox.Avalonia.DTO;
 using MessageBox.Avalonia.Models;
@@ -11,6 +12,7 @@ using Models.DBRealization;
 using Models.Passports;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using SkiaSharp;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -112,7 +114,11 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
                     })
                     .ShowDialog(Desktop.MainWindow));
                 #endregion
-                throw ex;
+
+                
+                var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                          $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                ServiceExtension.LoggerManager.Error(msg);
             }
             finally
             {
@@ -125,43 +131,56 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
         {
             if (string.IsNullOrWhiteSpace(text)) return 0;
 
-            using (var bmp = new Bitmap(1, 1))
-            using (var g = Graphics.FromImage(bmp))
+            // В EPPlus ExcelFont.Size возвращается в пунктах. SkiaSharp по умолчанию работает с пикселями,
+            // но при 72 DPI 1 пункт = 1 пикселю, что даёт визуально сопоставимый результат.
+            var typeface = SKTypeface.FromFamilyName(
+                excelFont.Name,
+                excelFont.Bold ? SKFontStyleWeight.Bold : SKFontStyleWeight.Normal,
+                SKFontStyleWidth.Normal,
+                excelFont.Italic ? SKFontStyleSlant.Italic : SKFontStyleSlant.Upright);
+
+            using var paint = new SKPaint
             {
-                var font = new Font(excelFont.Name, excelFont.Size,
-                GetFontStyle(excelFont.Bold, excelFont.Italic));
+                Typeface = typeface,
+                TextSize = (float)excelFont.Size,
+                IsAntialias = true,
+            };
 
-                var format = StringFormat.GenericTypographic;
-                float totalHeight = 0;
-                float lineHeight = g.MeasureString("A", font, 1000, format).Height; // высота одной строки
+            double lineHeight = 1.15 * (paint.FontMetrics.Descent - paint.FontMetrics.Ascent);
 
-                // Разбиваем на слова
-                string[] words = text.Split(' ');
-                List<string> lines = new List<string>();
-                string currentLine = "";
+            text = text.Replace("\r", "");
+            text = text.Replace("\n", " \n ");
+            string[] words = text.Split(' ');
+            var lines = new List<string>();
+            string currentLine = "";
 
-                foreach (var word in words)
+            foreach (var word in words)
+            {
+                if (word is "\n")
                 {
-                    string testLine = string.IsNullOrEmpty(currentLine) ? word : currentLine + " " + word;
-                    float width = g.MeasureString(testLine, font, 1000, format).Width;
-
-                    if (width <= columnWidthPixels)
-                    {
-                        currentLine = testLine;
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(currentLine))
-                            lines.Add(currentLine);
-                        currentLine = word;
-                    }
-                }
-                if (!string.IsNullOrEmpty(currentLine))
                     lines.Add(currentLine);
+                    currentLine = "";
+                    continue;
+                }
+                else if (string.IsNullOrWhiteSpace(word))
+                    continue;
 
-                totalHeight = lines.Count * lineHeight;
-                return totalHeight;
+                string testLine = string.IsNullOrEmpty(currentLine) ? word : currentLine + " " + word;
+                if (paint.MeasureText(testLine) / 0.75 <= columnWidthPixels)
+                {
+                    currentLine = testLine;
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(currentLine))
+                        lines.Add(currentLine);
+                    currentLine = word;
+                }
             }
+            if (!string.IsNullOrEmpty(currentLine))
+                lines.Add(currentLine);
+
+            return lines.Count * lineHeight;
         }
         private static FontStyle GetFontStyle(bool isBold, bool isItalic)
         {
@@ -202,6 +221,9 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
                     }
 
                     var pixels = width * 7 ;
+
+                    if (i == 31 && j == 7)
+                        ;
 
                     double rowHeight = CalculateRowHeight(cell.Text, cell.Style.Font, pixels);
 
