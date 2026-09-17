@@ -261,7 +261,7 @@ public class Form212 : Form2
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null && Spravochniks.OKSM.Contains(value1.ToUpper()))
+        if (value1 != null && Spravochniks.OKSM.Any(pair => pair.Value == value1.ToUpper()))
         {
             value1 = value1.ToUpper();
         }
@@ -276,7 +276,7 @@ public class Form212 : Form2
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (Spravochniks.OKSM.Contains(value.Value.ToUpper()) || value.Value.Equals("Минобороны"))
+        if (Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()) || value.Value.Equals("Минобороны"))
         {
             return true;
         }

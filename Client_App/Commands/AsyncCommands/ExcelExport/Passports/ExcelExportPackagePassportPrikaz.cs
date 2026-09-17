@@ -1,8 +1,9 @@
-﻿using MsBox.Avalonia;
+using MsBox.Avalonia;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Controls.DataGrid;
+using Client_App.Interfaces.Logger;
 using Client_App.Views.ProgressBar;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Models;
@@ -15,7 +16,6 @@ using OfficeOpenXml.Style;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -66,6 +66,7 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
 
             progressBarVM.SetProgressBar(10, "Запрос пути сохранения");
             var (fullPath, openTemp) = await ExcelGetFullPath(fileName, cts, progressBar);
+            fullPath = ResolveUniqueFilePath(fullPath, null);
 
             progressBarVM.SetProgressBar(15, "Создание временной БД", "Выгрузка отчёта для печати", ExportType);
             var tmpDbPath = await CreateTempDataBase(progressBar, cts);
@@ -114,6 +115,11 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
                     }).ShowWindowDialogAsync(Desktop.MainWindow));
 
                 #endregion
+
+                
+                var msg = $"{Environment.NewLine}Message: {ex.Message}" +
+                          $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
+                ServiceExtension.LoggerManager.Error(msg);
             }
             finally
             {
@@ -122,64 +128,35 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
         }
 
 
-        static double CalculateRowHeight(string text, ExcelFont excelFont, double columnWidthPixels)
-        {
-            if (string.IsNullOrWhiteSpace(text)) return 0;
-
-            using (var bmp = new Bitmap(1, 1))
-            using (var g = Graphics.FromImage(bmp))
-            {
-                var font = new Font(excelFont.Name, excelFont.Size,
-                GetFontStyle(excelFont.Bold, excelFont.Italic));
-
-                var format = StringFormat.GenericTypographic;
-                float totalHeight = 0;
-                float lineHeight = g.MeasureString("A", font, 1000, format).Height; // высота одной строки
-
-                // Разбиваем на слова
-                string[] words = text.Split(' ');
-                List<string> lines = new List<string>();
-                string currentLine = "";
-
-                foreach (var word in words)
-                {
-                    string testLine = string.IsNullOrEmpty(currentLine) ? word : currentLine + " " + word;
-                    float width = g.MeasureString(testLine, font, 1000, format).Width;
-
-                    if (width <= columnWidthPixels)
-                    {
-                        currentLine = testLine;
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(currentLine))
-                            lines.Add(currentLine);
-                        currentLine = word;
-                    }
-                }
-                if (!string.IsNullOrEmpty(currentLine))
-                    lines.Add(currentLine);
-
-                totalHeight = lines.Count * lineHeight;
-                return totalHeight;
-            }
-        }
-        private static FontStyle GetFontStyle(bool isBold, bool isItalic)
-        {
-            var style = FontStyle.Regular;
-            if (isBold) style |= FontStyle.Bold;
-            if (isItalic) style |= FontStyle.Italic;
-            return style;
-        }
-
+        /// <summary>
+        /// Подгоняет высоту строк под перенос текста. Дорогой проход — кешируем шрифты и ширины колонок.
+        /// </summary>
         static void SetRowsHeightInWorksheet(ExcelWorksheet worksheet)
         {
             var rows = worksheet.Rows;
             var columns = worksheet.Columns;
-            for (int i = rows.StartRow; i <= rows.EndRow || i<100; i++)
+            // Прежнее условие «i <= EndRow || i < 100» = до max(EndRow, 99)
+            int startRow = rows.StartRow;
+            int endRow = Math.Max(rows.EndRow, 99);
+            int startCol = columns.StartColumn;
+            int endCol = columns.EndColumn;
+            if (endCol < startCol || endRow < startRow)
+            {
+                return;
+            }
+
+            var columnWidths = new double[endCol + 1];
+            for (int c = startCol; c <= endCol; c++)
+            {
+                columnWidths[c] = worksheet.Column(c).Width;
+            }
+
+            using var paints = new ExcelFontPaintCache();
+
+            for (int i = startRow; i <= endRow; i++)
             {
                 double maxRowHeight = 20;
-                for (int j = columns.StartColumn; j <= columns.EndColumn; j++)
+                for (int j = startCol; j <= endCol; j++)
                 {
                     var cell = worksheet.Cells[i, j];
                     var mergedRows = 1;
@@ -192,27 +169,36 @@ namespace Client_App.Commands.AsyncCommands.ExcelExport.Passports
                         mergedRows = cell.End.Row - cell.Start.Row + 1;
                         mergedColumns = cell.End.Column - cell.Start.Column + 1;
                     }
-                    else
-                        ;
+
                     double width = 0;
-                    for( int count = 0; count < mergedColumns; count++)
+                    for (int count = 0; count < mergedColumns; count++)
                     {
                         if (count > 0)
+                        {
                             j++;
-                        width += worksheet.Column(j).Width;
+                        }
+
+                        width += j <= endCol
+                            ? columnWidths[j]
+                            : worksheet.Column(j).Width;
                     }
 
-                    var pixels = width * 7 ;
+                    var text = cell.Text;
+                    if (string.IsNullOrWhiteSpace(text))
+                    {
+                        continue;
+                    }
 
-                    double rowHeight = CalculateRowHeight(cell.Text, cell.Style.Font, pixels);
-
-                    rowHeight = rowHeight / mergedRows;
+                    var pixels = width * 7;
+                    double rowHeight = PassportExcelRowHeight.Calculate(text, paints.Get(cell.Style.Font), pixels);
+                    rowHeight /= mergedRows;
 
                     if (maxRowHeight < rowHeight)
                     {
                         maxRowHeight = rowHeight;
                     }
                 }
+
                 worksheet.Row(i).CustomHeight = true;
                 worksheet.Row(i).Height = maxRowHeight;
             }

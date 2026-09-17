@@ -758,11 +758,37 @@
                                     </Border>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding CreatorOKPO.Value, Mode=TwoWay}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form11">
+									<Grid ColumnDefinitions="*,Auto">
+										<AutoCompleteBox Grid.Column="0"
+                                                         Height="26"
+                                                         ItemsSource="{Binding  VM.OksmItems, ElementName=1.1}"
+                                                         Text="{Binding CreatorOKPO.Value, Mode=TwoWay}"
+                                                         HorizontalAlignment="Stretch"
+                                                         MinimumPrefixLength="0"
+                                                         IsTextCompletionEnabled="False">
+
+											<AutoCompleteBox.ItemTemplate>
+												<DataTemplate >
+													<Grid ColumnDefinitions="Auto,*">
+														<TextBlock Grid.Column="0"
+                                                                   Text="{Binding Code}"
+                                                                   Margin="0,0,10,0"
+                                                                   FontWeight="Bold"/>
+														<TextBlock Grid.Column="1"
+                                                                   Text="{Binding Country}"
+                                                                   Foreground="Gray"
+                                                                   TextWrapping="Wrap"
+                                                                   MaxWidth="500"/>
+													</Grid>
+												</DataTemplate>
+											</AutoCompleteBox.ItemTemplate>
+										</AutoCompleteBox>
+										<appControls:DropDownButton Grid.Column="1" />
+									</Grid>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
                         <DataGridTemplateColumn Width="91">
@@ -904,24 +930,50 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+						
+						<DataGridTemplateColumn Width="100">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="15" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form11">
+									<Grid ColumnDefinitions="*,Auto">
+										<AutoCompleteBox Grid.Column="0"
+                                                         Height="26"
+                                                         ItemsSource="{Binding  VM.OksmItems, ElementName=1.1}"
+                                                         Text="{Binding Owner.Value, Mode=TwoWay}"
+                                                         HorizontalAlignment="Stretch"
+                                                         MinimumPrefixLength="0"
+                                                         IsTextCompletionEnabled="False">
 
-                        <DataGridTemplateColumn Width="100">
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="15" />
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding Owner.Value, Mode=TwoWay}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-
+											<AutoCompleteBox.ItemTemplate>
+												<DataTemplate >
+													<Grid ColumnDefinitions="Auto,*">
+														<TextBlock Grid.Column="0"
+                                                                   Text="{Binding Code}"
+                                                                   Margin="0,0,10,0"
+                                                                   FontWeight="Bold"/>
+														<TextBlock Grid.Column="1"
+                                                                   Text="{Binding Country}"
+                                                                   Foreground="Gray"
+                                                                   TextWrapping="Wrap"
+                                                                   MaxWidth="500"/>
+													</Grid>
+												</DataTemplate>
+											</AutoCompleteBox.ItemTemplate>
+										</AutoCompleteBox>
+										<appControls:DropDownButton Grid.Column="1" />
+									</Grid>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						
                         <DataGridTemplateColumn Width="45">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
@@ -1011,24 +1063,50 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
+						
+						<DataGridTemplateColumn Width="77">
+							<DataGridTemplateColumn.HeaderTemplate>
+								<DataTemplate>
+									<Border Classes="headerTemplate">
+										<Grid ColumnDefinitions="*,Auto">
+											<TextBlock Grid.Column="0" Text="19" />
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</DataGridTemplateColumn.HeaderTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form11">
+									<Grid ColumnDefinitions="*,Auto">
+										<AutoCompleteBox Grid.Column="0"
+                                                         Height="26"
+                                                         ItemsSource="{Binding  VM.OksmItems, ElementName=1.1}"
+                                                         Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"
+                                                         HorizontalAlignment="Stretch"
+                                                         MinimumPrefixLength="0"
+                                                         IsTextCompletionEnabled="False">
 
-                        <DataGridTemplateColumn Width="77">
-                            <DataGridTemplateColumn.HeaderTemplate>
-                                <DataTemplate>
-                                    <Border Classes="headerTemplate">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Grid.Column="0" Text="19" />
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-
+											<AutoCompleteBox.ItemTemplate>
+												<DataTemplate >
+													<Grid ColumnDefinitions="Auto,*">
+														<TextBlock Grid.Column="0"
+                                                                   Text="{Binding Code}"
+                                                                   Margin="0,0,10,0"
+                                                                   FontWeight="Bold"/>
+														<TextBlock Grid.Column="1"
+                                                                   Text="{Binding Country}"
+                                                                   Foreground="Gray"
+                                                                   TextWrapping="Wrap"
+                                                                   MaxWidth="500"/>
+													</Grid>
+												</DataTemplate>
+											</AutoCompleteBox.ItemTemplate>
+										</AutoCompleteBox>
+										<appControls:DropDownButton Grid.Column="1" />
+									</Grid>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
+						</DataGridTemplateColumn>
+						
                         <DataGridTemplateColumn Width="77">
                             <DataGridTemplateColumn.HeaderTemplate>
                                 <DataTemplate>
@@ -1039,11 +1117,37 @@
                                     </Border>
                                 </DataTemplate>
                             </DataGridTemplateColumn.HeaderTemplate>
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate x:DataType="forms1:Form11">
-                                    <TextBox Text="{Binding TransporterOKPO.Value, Mode=TwoWay}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
+							<DataGridTemplateColumn.CellTemplate>
+								<DataTemplate x:DataType="forms1:Form11">
+									<Grid ColumnDefinitions="*,Auto">
+										<AutoCompleteBox Grid.Column="0"
+                                                         Height="26"
+                                                         ItemsSource="{Binding  VM.OksmItems, ElementName=1.1}"
+                                                         Text="{Binding TransporterOKPO.Value, Mode=TwoWay}"
+                                                         HorizontalAlignment="Stretch"
+                                                         MinimumPrefixLength="0"
+                                                         IsTextCompletionEnabled="False">
+
+											<AutoCompleteBox.ItemTemplate>
+												<DataTemplate >
+													<Grid ColumnDefinitions="Auto,*">
+														<TextBlock Grid.Column="0"
+                                                                   Text="{Binding Code}"
+                                                                   Margin="0,0,10,0"
+                                                                   FontWeight="Bold"/>
+														<TextBlock Grid.Column="1"
+                                                                   Text="{Binding Country}"
+                                                                   Foreground="Gray"
+                                                                   TextWrapping="Wrap"
+                                                                   MaxWidth="500"/>
+													</Grid>
+												</DataTemplate>
+											</AutoCompleteBox.ItemTemplate>
+										</AutoCompleteBox>
+										<appControls:DropDownButton Grid.Column="1" />
+									</Grid>
+								</DataTemplate>
+							</DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
                         <DataGridTemplateColumn Width="88">

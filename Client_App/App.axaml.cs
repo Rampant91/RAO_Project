@@ -9,14 +9,12 @@ using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
 using Client_App.Services;
 using System;
-using System.Threading;
+using System.IO;
 
 namespace Client_App;
 
 public partial class App : Application
 {
-    private static Mutex? _instanceCheckMutex;
-
     #region Initialize
     
     public override void Initialize()
@@ -24,6 +22,9 @@ public partial class App : Application
         // Инициализация логгера Firebird
         FirebirdLogger.Initialize();
         FirebirdLogger.Log("Application Initialize started");
+
+        // Ранняя регистрация обработчиков ToolTip для MenuItem (до разбора MainWindow.axaml).
+        _ = typeof(Behaviors.MenuItemToolTipHelper);
 
         AvaloniaXamlLoader.Load(this);
 
@@ -87,32 +88,30 @@ public partial class App : Application
 
     #region InstanceCheck
 
+    private static FileStream? _lockFile;
+
     private static bool InstanceCheck()
     {
+        if (!Settings.Default.OnlyOneAppInstanceAllowed)
+            return true;
+
         try
         {
-            if (!Settings.Default.OnlyOneAppInstanceAllowed)
-            {
-                FirebirdLogger.Log("InstanceCheck: multiple instances allowed by settings");
-                return true;
-            }
+            var lockPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "Client_App",
+                ".lock");
 
-            _instanceCheckMutex = new Mutex(true, "<Client_App>", out var isNew);
-            if (!isNew)
-            {
-                FirebirdLogger.Log("InstanceCheck: another instance already running");
-                _instanceCheckMutex.Dispose();
-            }
-            else
-            {
-                FirebirdLogger.Log("InstanceCheck: this is the first instance");
-            }
+            Directory.CreateDirectory(Path.GetDirectoryName(lockPath)!);
 
-            return isNew;
+            _lockFile = new FileStream(lockPath, FileMode.OpenOrCreate,
+                                       FileAccess.ReadWrite, FileShare.None);
+            _lockFile.Lock(0, 0); // эксклюзивная блокировка
+            return true;
         }
-        catch (Exception ex)
+        catch (IOException)
         {
-            FirebirdLogger.LogError("Error in InstanceCheck", ex);
+            // Файл уже заблокирован другим процессом
             return false;
         }
     }

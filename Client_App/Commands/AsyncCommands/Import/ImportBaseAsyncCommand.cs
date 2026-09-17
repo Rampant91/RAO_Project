@@ -208,8 +208,12 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 }
                 ReportExportSnapshotService.ApplyFromImport(newReport!);
                 baseReps.Report_Collection.Replace(oldReport, newReport);
-                StaticConfiguration.DBModel.Remove(oldReport!);
-                await ReportDeletionLogger.LogDeletionAsync(oldReport!);
+
+                if (oldReport.Id != 0)
+                {
+                    StaticConfiguration.DBModel.Remove(oldReport!);
+                    await ReportDeletionLogger.LogDeletionAsync(oldReport!);
+                }
                 AtLeastOneImportDone = true;
                 RecordImportedReport(baseReps);
                 Act = "Замена (пересечение)\t";
@@ -275,8 +279,19 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
 
             #endregion
 
+            #region OnlyTitleList
+            case "Только титульный лист":
+                if (!RepsWhereTitleFormCheckIsCancel.Contains((BaseRepsRegNum, BaseRepsOkpo)))
+                {
+                    await CheckTitleFormAsync(baseReps, impReps, RepsWhereTitleFormCheckIsCancel);
+                }
+                AtLeastOneImportDone = true;
+                RecordImportedReport(baseReps);
+                break;
+            #endregion
+
             #region CancelForAll
-            
+
             case "Отменить для всех пересечений":
                 SkipInter = true;
                 break; 
@@ -483,6 +498,26 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
                 .Include(x => x.Master_DB)
                 .ThenInclude(x => x.Rows20)
                 .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "2.0")
+                .ToListAsync(),
+
+            "4.0" => await db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(x => x.Master_DB)
+                .ThenInclude(x => x.Rows40)
+                .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "4.0")
+                .ToListAsync(),
+
+            "5.0" => await db.ReportsCollectionDbSet
+                .AsNoTracking()
+                .AsSplitQuery()
+                .AsQueryable()
+                .Include(x => x.DBObservable)
+                .Include(x => x.Master_DB)
+                .ThenInclude(x => x.Rows50)
+                .Where(x => x.DBObservable != null && x.Master_DB.FormNum_DB == "5.0")
                 .ToListAsync(),
 
             _ => []
@@ -1048,6 +1083,8 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         foreach (var impRep in impRepList) //Для каждой импортируемой формы
         {
             ImpRepFormNum = impRep.FormNum_DB;
+            if (impRep.FormNum_DB == "2.1")
+                ;
             ImpRepCorNum = impRep.CorrectionNumber_DB;
             ImpRepFormCount = impRep.Rows.Count;
             ImpRepExpDate = impRep.ExportDate_DB;

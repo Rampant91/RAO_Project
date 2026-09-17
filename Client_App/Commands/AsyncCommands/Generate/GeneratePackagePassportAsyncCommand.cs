@@ -1,10 +1,12 @@
-﻿using MsBox.Avalonia;
+using MsBox.Avalonia;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
+using Client_App.ViewModels.Controls;
 using Client_App.ViewModels.Forms;
 using Client_App.Services.DataAccess;
+using Client_App.ViewModels.Forms.Forms1;
 using Client_App.Views;
 using Client_App.Views.Forms;
 using DynamicData;
@@ -37,10 +39,12 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
         private Form10 reportingOrganizationInfo;
 
-
         //На вход поступает строки формы 1.7
         public override async Task AsyncExecute(object? parameter)
         {
+            List<(int rowNum, string num, string type)> generatedPassports = new();
+            List<(int rowNum, string num, string type)> alreadyExistedPassports = new();
+
             if (parameter is not IEnumerable<Form> forms17Collection
                 || forms17Collection.Count()<=0
                 || forms17Collection.Any(f => f is not Form17)) return;
@@ -107,7 +111,8 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 if (codeOperationRegex.IsMatch(form17.OperationCode_DB ?? ""))
                     parsedForm17.Add(new List<Form17>());
 
-                parsedForm17.Last().Add(form17);
+                if( parsedForm17.Count >0) 
+                    parsedForm17.Last().Add(form17);
 
             }
 
@@ -119,7 +124,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 if (!(operation.Count > 0
                     && operation[0].OperationCode_DB
                     is "01" or "11" or "12" or "14"
-                    or "16" or "18" or "55"))
+                    or "16" or "18" or "35" or "55"))
                 {
                     skipedOperations.Add(operation[0].NumberInOrder_DB, operation[0].OperationCode_DB);
                     continue;
@@ -139,7 +144,15 @@ namespace Client_App.Commands.AsyncCommands.Generate
                 else if (passportMatch == null && operation[0].OperationCode_DB != "18")
                     passport.CorrectionNumber = 0;
                 else if (passportMatch != null && operation[0].OperationCode_DB != "18")
+                {
+                    alreadyExistedPassports.Add(new()
+                    {
+                        rowNum = operation[0].NumberInOrder_DB,
+                        num = operation[0].PassportNumber_DB,
+                        type = operation[0].PackType_DB
+                    });
                     continue;
+                }
 
                 passport.PackageType = operation[0].PackType_DB;
 
@@ -232,10 +245,10 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
                 foreach (var form17 in operation)
                 {
-                    var radName = form17.Radionuclids_DB;
+                    var radName = form17.Radionuclids_DB.ToLower();
                     //Ищем в справочнике латинское наименование радионуклида
-                    if (Spravochniks.SprRadionuclids.Any(rad => rad.rusName == form17.Radionuclids_DB))
-                        radName = Spravochniks.SprRadionuclids.FirstOrDefault(rad => rad.rusName == form17.Radionuclids_DB).latinName;
+                    if (Spravochniks.SprRadionuclids.Any(rad => rad.rusName.ToLower() == radName))
+                        radName = Spravochniks.SprRadionuclids.FirstOrDefault(rad => rad.rusName.ToLower() == radName).latinName;
 
                     characteristic.RadionuclidsList.Add(new Radionuclid()
                     {
@@ -298,6 +311,7 @@ namespace Client_App.Commands.AsyncCommands.Generate
 
 
                 StaticConfiguration.DBModel.package_passport.Add(passport);
+                generatedPassports.Add((operation[0].NumberInOrder_DB,passport.PassportNum, passport.PackageType));
 
 
             }
@@ -324,14 +338,13 @@ namespace Client_App.Commands.AsyncCommands.Generate
                     MinWidth = 300,
                     MinHeight = 125,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
-                })
-                .ShowWindowDialogAsync(owner));
+                }).ShowWindowDialogAsync(owner));
             }
 
             #region DBModel.SaveChanges
             try
             {
-                StaticConfiguration.DBModel.SaveChangesAsync();
+                await StaticConfiguration.DBModel.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -356,22 +369,81 @@ namespace Client_App.Commands.AsyncCommands.Generate
             }
             #endregion
 
-            #region CommandCompletedMessage
-            Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
-            .GetMessageBoxCustom(new MessageBoxCustomParams
+            if (alreadyExistedPassports.Count >0)
             {
-                ButtonDefinitions =
-                [
-                    new ButtonDefinition { Name = "Ок" },
-                ],
-                CanResize = true,
-                ContentTitle = "Формирование паспорта на упаковку",
-                ContentMessage = "Формирование завершено\n",
-                MinWidth = 300,
-                MinHeight = 125,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner
-            }).ShowWindowDialogAsync(owner));
-            #endregion
+                var msg = "УЖЕ СУЩЕСТВУЮЩИЕ ПАСПОРТА\n" +
+                    "Данные паспорта не были добавлены, т.к. они уже существуют:\n";
+                foreach (var passport in alreadyExistedPassports)
+                {
+
+                    msg += new string('-', 60) + "\n";
+                    msg += $"№ строки - {passport.rowNum}\n" +
+                        $"Номер - {passport.num}\n" +
+                        $"Тип - {passport.type}\n";
+
+                }
+
+                #region CommandCompletedMessage
+                Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Ок" },
+                    ],
+                    CanResize = true,
+                    ContentTitle = "Формирование паспорта на упаковку",
+                    ContentMessage = msg,
+                    MinWidth = 300,
+                    MinHeight = 125,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                }).ShowWindowDialogAsync(owner));
+                #endregion
+
+                //
+                if (formVM is Form_17VM form17VM)
+                {
+                    form17VM.UpdatePassportSelection();
+                }
+            }
+
+            if (generatedPassports.Count>0)
+            {
+                var msg = "Формирование завершено\n" +
+                    "Были сформированы следующие паспорта:\n" ;
+                foreach (var passport in generatedPassports)
+                {
+
+                    msg += new string('-', 60) + "\n";
+                    msg += $"№ строки - {passport.rowNum}\n" +
+                        $"Номер - {passport.num}\n" +
+                        $"Тип - {passport.type}\n";
+
+                }
+
+                #region CommandCompletedMessage
+                Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+                .GetMessageBoxCustom(new MessageBoxCustomParams
+                {
+                    ButtonDefinitions =
+                    [
+                        new ButtonDefinition { Name = "Ок" },
+                    ],
+                    CanResize = true,
+                    ContentTitle = "Формирование паспорта на упаковку",
+                    ContentMessage = msg,
+                    MinWidth = 300,
+                    MinHeight = 125,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                }).ShowWindowDialogAsync(owner));
+                #endregion
+
+                //
+                if (formVM is Form_17VM form17VM)
+                {
+                    form17VM.UpdatePassportSelection();
+                }
+            }
         }
         private static Form17 ResolveForm17(Form17 selected, List<Form17> all)
         {

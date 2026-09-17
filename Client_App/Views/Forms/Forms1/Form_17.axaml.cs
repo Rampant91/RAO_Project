@@ -56,6 +56,10 @@ public partial class Form_17 : BaseWindow<Form_17VM>
         AvaloniaXamlLoader.Load(this);
         FormWindowNames.SetWindowKey(this, nameof(Form_17));
         WindowState = WindowState.Maximized;
+
+#if DEBUG
+        this.AttachDevTools();
+#endif
     }
 
     #endregion

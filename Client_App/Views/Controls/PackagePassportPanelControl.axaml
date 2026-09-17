@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:vm="clr-namespace:Client_App.ViewModels.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 x:DataType="vm:PackagePassportPanelControlVM"
+             x:Class="Client_App.Views.Controls.PackagePassportPanelControl">
+	
+	<Design.DataContext>
+		<vm:PackagePassportPanelControlVM/>
+	</Design.DataContext>
+	
+	<Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto"
+		  ColumnDefinitions="*, 2*" >
+		
+		<TextBlock Grid.Row="0" Grid.Column="0"
+				   Margin="5"
+				   Text="№ паспорта:"/>
+		<TextBlock Grid.Row="0" Grid.Column="1"
+				   Margin="5"
+				   Text="{Binding SelectedPassport.PassportNum}"/>
+
+		<TextBlock Grid.Row="1" Grid.Column="0"
+				   Margin="5"
+				   Text="Наименование:"/>
+		<TextBlock Grid.Row="1" Grid.Column="1"
+				   Margin="5"
+				   Text="{Binding SelectedPassport.PackageType}"/>
+
+		<TextBlock Grid.Row="2" Grid.Column="0"
+				   Margin="5"
+				   Text="Дата выдачи:"/>
+		<TextBlock Grid.Row="2" Grid.Column="1"
+				   Margin="5"
+				   Text="{Binding SelectedPassport.PassportDate}"/>
+
+		<TextBlock Grid.Row="3" Grid.Column="0"
+				   Margin="5"
+				   Text="Номер корректировки:"/>
+		<TextBlock Grid.Row="3" Grid.Column="1"
+				   Margin="5"
+				   Text="{Binding SelectedPassport.CorrectionNumber}"/>
+
+
+		<Button Grid.Row="4" Grid.Column="0"
+				Margin="5"
+				IsEnabled="{Binding PassportIsExist}"
+				Content="Открыть выбранный паспорт"
+				Command="{Binding ChangePackagePassport}"
+				CommandParameter="{Binding SelectedPassport.Id}"/>
+		<Button Grid.Row="4" Grid.Column="1"
+				Margin="5"
+				Content="Открыть меню паспортов"
+				Command="{Binding OpenPassportMenu}"/>
+	</Grid>
+</UserControl>

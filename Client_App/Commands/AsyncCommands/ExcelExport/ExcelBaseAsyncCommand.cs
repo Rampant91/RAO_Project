@@ -1,4 +1,4 @@
-﻿using MsBox.Avalonia;
+using MsBox.Avalonia;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -212,14 +212,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             {
                 case "Открыть временную копию":
                 {
-                    DirectoryInfo tmpFolder = new(Path.Combine(BaseVM.SystemDirectory, "RAO", "temp"));
-                    var count = 0;
-
-                    fullPath = Path.Combine(tmpFolder.FullName, fileName + ".xlsx");
-                    while (File.Exists(fullPath))
-                    {
-                        fullPath = Path.Combine(tmpFolder.FullName, fileName + $"_{++count}.xlsx");
-                    }
+                    var tmpFolderPath = Path.Combine(BaseVM.SystemDirectory, "RAO", "temp");
+                    Directory.CreateDirectory(tmpFolderPath);
+                    fullPath = ResolveUniqueFilePath(Path.Combine(tmpFolderPath, fileName + ".xlsx"), tmpFolderPath);
 
                     break;
                 }
@@ -255,36 +250,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
                         fullPath += ".xlsx";
                     }
 
-                    if (File.Exists(fullPath))
-                    {
-                        try
-                        {
-                            File.Delete(fullPath);
-                        }
-                        catch
-                        {
-                            #region MessageFailedToSaveFile
-
-                            await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
-                                .GetMessageBoxStandard(new MessageBoxStandardParams
-                                {
-                                    ButtonDefinitions = ButtonEnum.Ok,
-                                    ContentTitle = "Выгрузка в .xlsx",
-                                    ContentHeader = "Ошибка",
-                                    ContentMessage =
-                                        $"Не удалось сохранить файл по пути: {fullPath}" +
-                                        $"{Environment.NewLine}Файл с таким именем уже существует в этом расположении" +
-                                        $"{Environment.NewLine}и используется другим процессом.",
-                                    MinWidth = 400,
-                                    MinHeight = 150,
-                                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                                }).ShowWindowDialogAsync(Desktop.MainWindow));
-
-                            #endregion
-
-                            await CancelCommandAndCloseProgressBarWindow(cts, progressBar);
-                        }
-                    }
+                    fullPath = ResolveUniqueFilePath(fullPath, Path.GetDirectoryName(fullPath));
 
                     break;
                 }
@@ -1103,7 +1069,7 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// </summary>
     /// <param name="fullPath">Исходный путь к файлу.</param>
     /// <param name="fallbackDirectory">Каталог по умолчанию, если в пути не указан.</param>
-    private protected static string ResolveUniqueFilePath(string fullPath, string? fallbackDirectory)
+    internal static string ResolveUniqueFilePath(string fullPath, string? fallbackDirectory)
     {
         if (!File.Exists(fullPath))
             return fullPath;

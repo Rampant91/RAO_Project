@@ -619,7 +619,7 @@ public class Form14 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
         }
@@ -634,7 +634,7 @@ public class Form14 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (Spravochniks.OKSM.Contains(value.Value.ToUpper()))
+        if (Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()))
         {
             return true;
         }
@@ -684,7 +684,7 @@ public class Form14 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = (((RamAccess<string>)value).Value ?? string.Empty);
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
         }
@@ -699,7 +699,7 @@ public class Form14 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (Spravochniks.OKSM.Contains(value.Value.ToUpper()) || value.Value.Equals("Минобороны"))
+        if (Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()) || value.Value.Equals("Минобороны"))
         {
             return true;
         }
@@ -770,7 +770,7 @@ public class Form14 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        if (Spravochniks.OKSM.Contains(tmp.ToUpper()))
+        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
         {
             tmp = tmp.ToUpper();
         }
@@ -785,7 +785,7 @@ public class Form14 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("-") || value.Value.Equals("Минобороны") || Spravochniks.OKSM.Contains(value.Value.ToUpper()))
+        if (value.Value.Equals("-") || value.Value.Equals("Минобороны") || Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()))
         {
             return true;
         }
