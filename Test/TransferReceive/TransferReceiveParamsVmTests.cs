@@ -234,6 +234,70 @@ public class TransferReceiveParamsVmTests
     }
 
     [Fact]
+    public void CheckAll_SetNull_UnchecksAllFields_LikeUiThreeStateClick()
+    {
+        var vm = new GetTransferReceiveParamsVM();
+        Assert.True(vm.CheckAll);
+
+        // Avalonia three-state: клик с true часто пишет null, а не false.
+        vm.CheckAll = null;
+        Assert.False(vm.CheckOperationCode);
+        Assert.False(vm.CheckPassportNumber);
+        Assert.False(vm.CheckAll);
+
+        vm.CheckAll12 = null;
+        Assert.False(vm.CheckOperationCode12);
+        Assert.False(vm.CheckMass12);
+        Assert.False(vm.CheckAll12);
+
+        vm.CheckAll16 = null;
+        Assert.False(vm.CheckOperationCode16);
+        Assert.False(vm.CheckCodeRao16);
+        Assert.False(vm.CheckAll16);
+    }
+
+    [Fact]
+    public void MapParamsFromDialogVm_OnlyForm11Enabled_WhenOthersCheckAllFalse()
+    {
+        var vm = new GetTransferReceiveParamsVM();
+        vm.CheckAll12 = false;
+        vm.CheckAll13 = false;
+        vm.CheckAll14 = false;
+        vm.CheckAll15 = false;
+        vm.CheckAll16 = false;
+
+        var set = TransferReceiveTestAccess.MapParamsFromDialogVmForTests(vm);
+
+        Assert.True(set.IsEnabled(TransferReceiveFormId.Form11));
+        Assert.False(set.IsEnabled(TransferReceiveFormId.Form12));
+        Assert.False(set.IsEnabled(TransferReceiveFormId.Form13));
+        Assert.False(set.IsEnabled(TransferReceiveFormId.Form14));
+        Assert.False(set.IsEnabled(TransferReceiveFormId.Form15));
+        Assert.False(set.IsEnabled(TransferReceiveFormId.Form16));
+        Assert.Single(set.EnabledForms);
+    }
+
+    [Fact]
+    public void MapParamsFromDialogVm_Form16CheckAllFalse_DisablesForm_AndZerosNonUiDefaults()
+    {
+        var vm = new GetTransferReceiveParamsVM();
+        vm.CheckAll16 = false;
+
+        var set = TransferReceiveTestAccess.MapParamsFromDialogVmForTests(vm);
+        var form16 = set.Form16;
+
+        Assert.False(set.IsEnabled(TransferReceiveFormId.Form16));
+        Assert.False(form16.CheckPassportNumber);
+        Assert.False(form16.CheckType);
+        Assert.False(form16.CheckFactoryNumber);
+        Assert.False(form16.CheckActivity);
+        Assert.False(form16.CheckCreatorOkpo);
+        Assert.False(form16.CheckCreationDate);
+        Assert.False(form16.CheckPackName);
+        Assert.False(form16.AllowEmptySerialQuantityDrain);
+    }
+
+    [Fact]
     public void DefaultForm16Params_IsEnabled_AndDisablesPassportTypeFactory()
     {
         var p = ExcelExportCheckTransferReceiveAsyncCommand.DefaultForm16Params();

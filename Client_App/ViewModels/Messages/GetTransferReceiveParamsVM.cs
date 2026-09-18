@@ -678,7 +678,14 @@ public class GetTransferReceiveParamsVM : INotifyPropertyChanged
         if (target == value) return;
         target = value;
         OnPropertyChanged(prop);
-        if (!syncFlag && value is bool allChecked) applyAll(allChecked);
+        if (syncFlag) return;
+        // Трёхсостояние в UI: клик с true часто даёт null (indeterminate).
+        // Без ApplyAll поля остаются включёнными — форма всё ещё грузится.
+        // null от пользователя = «снять всё»; null из UpdateCheckAll* идёт с syncFlag.
+        if (value is bool allChecked)
+            applyAll(allChecked);
+        else
+            applyAll(false);
     }
 
     private void ApplyAll(bool allChecked)
