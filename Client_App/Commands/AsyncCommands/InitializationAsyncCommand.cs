@@ -1,6 +1,7 @@
 using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Helpers.MasterTitleRows;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Properties;
@@ -97,6 +98,15 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         await dbm.DBObservableDbSet.LoadAsync(onStartProgressBarVm.StartupCts.Token);
 
         onStartProgressBarVm.ThrowIfStartupCancelled();
+
+        // Безопасная очистка пустых дублей form_10/form_20 (только если есть что удалить).
+        if (MasterTitleRowsCleanupRunner.NeedsCleanup(dbm))
+        {
+            onStartProgressBarVm.LoadStatus = "Проверка данных организаций";
+            mainWindowViewModel.OnStartProgressBar = 65;
+            await MasterTitleRowsCleanupRunner.TryRunAsync(dbm, onStartProgressBarVm.StartupCts.Token);
+        }
+
         onStartProgressBarVm.LoadStatus = "Сортировка организаций";
         mainWindowViewModel.OnStartProgressBar = 70;
         await ProcessDataBaseFillEmpty(dbm);
@@ -815,24 +825,14 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     && !masterIdsWithForm10.Contains(it.Master_DB.Id)
                     && it.Master_DB.Rows10.Count == 0)
                 {
-                    var ty1 = (Form10)FormCreator.Create("1.0");
-                    ty1.NumberInOrder_DB = 1;
-                    var ty2 = (Form10)FormCreator.Create("1.0");
-                    ty2.NumberInOrder_DB = 2;
-                    it.Master_DB.Rows10.Add(ty1);
-                    it.Master_DB.Rows10.Add(ty2);
+                    MasterTitleRowsFillEmptyGuard.EnsureForm10Templates(dbm, it.Master_DB);
                 }
 
                 if (it.Master_DB.FormNum_DB == "2.0"
                     && !masterIdsWithForm20.Contains(it.Master_DB.Id)
                     && it.Master_DB.Rows20.Count == 0)
                 {
-                    var ty1 = (Form20)FormCreator.Create("2.0");
-                    ty1.NumberInOrder_DB = 1;
-                    var ty2 = (Form20)FormCreator.Create("2.0");
-                    ty2.NumberInOrder_DB = 2;
-                    it.Master_DB.Rows20.Add(ty1);
-                    it.Master_DB.Rows20.Add(ty2);
+                    MasterTitleRowsFillEmptyGuard.EnsureForm20Templates(dbm, it.Master_DB);
                 }
                 if (it.Master_DB.FormNum_DB == "4.0"
                     && !masterIdsWithForm40.Contains(it.Master_DB.Id)

@@ -1,6 +1,7 @@
 ﻿using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Helpers.MasterTitleRows;
 using Client_App.Interfaces.Logger;
 using Client_App.Resources.CustomComparers;
 using Client_App.Services.DataAccess;
@@ -126,13 +127,26 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                     impReportsList.Add(impReps);
                     await impReps.SortAsync();
                     await RestoreReportsOrders(impReps);
+
+                    // Схлопнуть лишние дубли титула до пары Ord=1/2 до обращения по индексу [0]/[1].
+                    // Normalizer гарантирует [0]=order1, [1]=order2 (см. MasterTitleRowsNormalizer).
                     if (impReps.Master.Rows10.Count != 0)
+                    {
+                        MasterTitleRowsNormalizer.NormalizeForm10InPlace(impReps.Master, out _);
+                    }
+
+                    if (impReps.Master.Rows20.Count != 0)
+                    {
+                        MasterTitleRowsNormalizer.NormalizeForm20InPlace(impReps.Master, out _);
+                    }
+
+                    if (impReps.Master.Rows10.Count >= 2)
                     {
                         impReps.Master_DB.ReportChangedDate = dateTime;
                         impReps.Master.Rows10[1].RegNo_DB = impReps.Master.Rows10[0].RegNo_DB;
                     }
 
-                    if (impReps.Master.Rows20.Count != 0)
+                    if (impReps.Master.Rows20.Count >= 2)
                     {
                         impReps.Master_DB.ReportChangedDate = dateTime;
                         impReps.Master.Rows20[1].RegNo_DB = impReps.Master.Rows20[0].RegNo_DB;

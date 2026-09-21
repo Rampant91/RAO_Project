@@ -269,16 +269,25 @@ public partial class ExcelExportCheckTransferReceiveAsyncCommand : ExcelExportBa
             CheckSubsidy: vm.CheckSubsidy15,
             CheckFcpNumber: vm.CheckFcpNumber15);
 
+        // Поля вне UI 1.6 (паспорт/тип/зав.№/активность/изготовитель) — явно false,
+        // иначе default true у TransferReceiveFormParams оставляет форму «включённой».
         var form16 = new TransferReceiveFormParams(
             CheckOperationCode: vm.CheckOperationCode16,
             CheckOperationDate: vm.CheckOperationDate16,
+            CheckPassportNumber: false,
+            CheckType: false,
             CheckRadionuclids: vm.CheckRadionuclids16,
+            CheckFactoryNumber: false,
             CheckQuantity: vm.CheckQuantity16,
+            CheckActivity: false,
             CheckMass: vm.CheckMass16,
+            CheckCreatorOkpo: false,
+            CheckCreationDate: false,
             CheckVolume: vm.CheckVolume16,
             CheckActivityMeasurementDate: vm.CheckActivityMeasurementDate16,
             CheckStatusRao: vm.CheckStatusRao16,
             CheckProviderOrRecieverOkpo: vm.CheckProviderOrRecieverOkpo16,
+            CheckPackName: false,
             CheckPackType: vm.CheckPackType16,
             CheckPackNumber: vm.CheckPackNumber16,
             CheckSubsidy: vm.CheckSubsidy16,
