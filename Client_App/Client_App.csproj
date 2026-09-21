@@ -100,26 +100,48 @@
     <Warning Text="CopyAstraLegacyDebToPublish: не найден $(_AstraLegacyDeb)" Condition="'$(_DataPublishDir)' != '' and !Exists('$(_AstraLegacyDeb)')" />
     <Copy SourceFiles="$(_AstraLegacyDeb)" DestinationFolder="$(_DataPublishDir)" SkipUnchangedFiles="true" Condition="'$(_DataPublishDir)' != '' and Exists('$(_AstraLegacyDeb)')" />
   </Target>
-  <Target Name="_CollectMpzfUpdaterFiles">
+  <!--
+    MpzfUpdater: self-contained single-file (без shared .NET на ПК пользователя).
+    RID = RuntimeIdentifier профиля Publish; для обычного Build — win-x64 / linux-x64 по ОС.
+  -->
+  <Target Name="PublishMpzfUpdaterSelfContained">
     <PropertyGroup>
-      <_MpzfUpdaterOutDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\MpzfUpdater\bin\$(Configuration)\net9.0\'))</_MpzfUpdaterOutDir>
+      <_MpzfUpdaterRid Condition="'$(RuntimeIdentifier)' != ''">$(RuntimeIdentifier)</_MpzfUpdaterRid>
+      <_MpzfUpdaterRid Condition="'$(_MpzfUpdaterRid)' == '' and $([MSBuild]::IsOSUnixLike())">linux-x64</_MpzfUpdaterRid>
+      <_MpzfUpdaterRid Condition="'$(_MpzfUpdaterRid)' == ''">win-x64</_MpzfUpdaterRid>
+      <_MpzfUpdaterProject>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\MpzfUpdater\MpzfUpdater.csproj'))</_MpzfUpdaterProject>
+      <_MpzfUpdaterPublishDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\MpzfUpdater\artifacts\$(_MpzfUpdaterRid)\'))</_MpzfUpdaterPublishDir>
     </PropertyGroup>
-    <ItemGroup Condition="Exists('$(_MpzfUpdaterOutDir)')">
-      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterOutDir)MpzfUpdater.exe" />
-      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterOutDir)MpzfUpdater.dll" />
-      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterOutDir)MpzfUpdater.deps.json" />
-      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterOutDir)MpzfUpdater.runtimeconfig.json" />
-      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterOutDir)MpzfUpdater.pdb" Condition="Exists('$(_MpzfUpdaterOutDir)MpzfUpdater.pdb')" />
+    <Message Importance="high" Text="Publishing MpzfUpdater self-contained ($(_MpzfUpdaterRid)) → $(_MpzfUpdaterPublishDir)" />
+    <Exec Command="dotnet publish &quot;$(_MpzfUpdaterProject)&quot; -c $(Configuration) -r $(_MpzfUpdaterRid) --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true -o &quot;$(_MpzfUpdaterPublishDir)&quot;" />
+  </Target>
+  <Target Name="_CollectMpzfUpdaterFiles" DependsOnTargets="PublishMpzfUpdaterSelfContained">
+    <PropertyGroup>
+      <_MpzfUpdaterPublishDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\MpzfUpdater\artifacts\$(_MpzfUpdaterRid)\'))</_MpzfUpdaterPublishDir>
+    </PropertyGroup>
+    <ItemGroup Condition="Exists('$(_MpzfUpdaterPublishDir)')">
+      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterPublishDir)MpzfUpdater.exe" Condition="Exists('$(_MpzfUpdaterPublishDir)MpzfUpdater.exe')" />
+      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterPublishDir)MpzfUpdater" Condition="Exists('$(_MpzfUpdaterPublishDir)MpzfUpdater')" />
+      <_MpzfUpdaterFiles Include="$(_MpzfUpdaterPublishDir)MpzfUpdater.pdb" Condition="Exists('$(_MpzfUpdaterPublishDir)MpzfUpdater.pdb')" />
     </ItemGroup>
+    <Warning Text="MpzfUpdater self-contained publish did not produce MpzfUpdater.exe / MpzfUpdater in $(_MpzfUpdaterPublishDir)" Condition="'@(_MpzfUpdaterFiles)' == ''" />
   </Target>
   <Target Name="CopyMpzfUpdaterToOutput" AfterTargets="Build" DependsOnTargets="_CollectMpzfUpdaterFiles">
     <MakeDir Directories="$(TargetDir)data\Updater" />
-    <Copy SourceFiles="@(_MpzfUpdaterFiles)" DestinationFolder="$(TargetDir)data\Updater" SkipUnchangedFiles="true" Condition="'@(_MpzfUpdaterFiles)' != ''" />
+    <ItemGroup>
+      <_StaleUpdaterInOutput Include="$(TargetDir)data\Updater\MpzfUpdater*" />
+    </ItemGroup>
+    <Delete Files="@(_StaleUpdaterInOutput)" TreatErrorsAsWarnings="true" />
+    <Copy SourceFiles="@(_MpzfUpdaterFiles)" DestinationFolder="$(TargetDir)data\Updater" SkipUnchangedFiles="false" Condition="'@(_MpzfUpdaterFiles)' != ''" />
   </Target>
   <!-- После CopyRepoDataToPublish, чтобы data\Updater не затирался и всегда был свежий updater -->
   <Target Name="CopyMpzfUpdaterToPublish" AfterTargets="CopyRepoDataToPublish" DependsOnTargets="_CollectMpzfUpdaterFiles;_ResolveDataPublishDir">
     <MakeDir Directories="$(_DataPublishDir)data\Updater" Condition="'$(_DataPublishDir)' != ''" />
-    <Copy SourceFiles="@(_MpzfUpdaterFiles)" DestinationFolder="$(_DataPublishDir)data\Updater" SkipUnchangedFiles="true" Condition="'$(_DataPublishDir)' != '' and '@(_MpzfUpdaterFiles)' != ''" />
+    <ItemGroup Condition="'$(_DataPublishDir)' != ''">
+      <_StaleUpdaterInPublish Include="$(_DataPublishDir)data\Updater\MpzfUpdater*" />
+    </ItemGroup>
+    <Delete Files="@(_StaleUpdaterInPublish)" TreatErrorsAsWarnings="true" Condition="'$(_DataPublishDir)' != ''" />
+    <Copy SourceFiles="@(_MpzfUpdaterFiles)" DestinationFolder="$(_DataPublishDir)data\Updater" SkipUnchangedFiles="false" Condition="'$(_DataPublishDir)' != '' and '@(_MpzfUpdaterFiles)' != ''" />
   </Target>
   <ItemGroup>
     <Resource Include="Assets\Radiation_sign.ico" />

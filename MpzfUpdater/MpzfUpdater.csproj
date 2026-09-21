@@ -6,5 +6,13 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <AssemblyName>MpzfUpdater</AssemblyName>
     <RootNamespace>MpzfUpdater</RootNamespace>
+    <!--
+      Пользователям не ставят shared .NET — Client_App self-contained.
+      Updater в data\Updater публикуется так же (см. PublishMpzfUpdaterSelfContained в Client_App.csproj).
+    -->
+    <PublishSelfContained>true</PublishSelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
   </PropertyGroup>
 </Project>
