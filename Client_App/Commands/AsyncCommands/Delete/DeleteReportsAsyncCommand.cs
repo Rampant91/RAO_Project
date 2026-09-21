@@ -1,5 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Threading;
+using Client_App.Helpers.MasterTitleRows;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Services;
@@ -130,25 +131,8 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
                 var it = (Reports)key;
                 if (it.Master_DB is null) continue;
                 if (it.Master_DB.FormNum_DB == "") continue;
-                if (it.Master_DB.Rows10.Count == 0)
-                {
-                    var ty1 = (Form10)FormCreator.Create("1.0");
-                    ty1.NumberInOrder_DB = 1;
-                    var ty2 = (Form10)FormCreator.Create("1.0");
-                    ty2.NumberInOrder_DB = 2;
-                    it.Master_DB.Rows10.Add(ty1);
-                    it.Master_DB.Rows10.Add(ty2);
-                }
-
-                if (it.Master_DB.Rows20.Count == 0)
-                {
-                    var ty1 = (Form20)FormCreator.Create("2.0");
-                    ty1.NumberInOrder_DB = 1;
-                    var ty2 = (Form20)FormCreator.Create("2.0");
-                    ty2.NumberInOrder_DB = 2;
-                    it.Master_DB.Rows20.Add(ty1);
-                    it.Master_DB.Rows20.Add(ty2);
-                }
+                MasterTitleRowsFillEmptyGuard.EnsureForm10TemplatesIfCollectionEmpty(dbm, it.Master_DB);
+                MasterTitleRowsFillEmptyGuard.EnsureForm20TemplatesIfCollectionEmpty(dbm, it.Master_DB);
 
                 it.Master_DB.Rows10.Sorted = false;
                 it.Master_DB.Rows20.Sorted = false;
