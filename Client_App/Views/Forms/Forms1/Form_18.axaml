@@ -787,7 +787,8 @@
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="forms1:Form18">
 									<Grid ColumnDefinitions="*,Auto">
-										<AutoCompleteBox Grid.Column="0"
+										<AutoCompleteBox Classes="OksmGuide"
+											             Grid.Column="0"
                                                          Height="26"
                                                          Items="{Binding  VM.OksmItems, ElementName=1.8}"
                                                          Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"

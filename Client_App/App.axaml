@@ -7,6 +7,7 @@
              xmlns:local="using:Client_App"
              xmlns:resources="clr-namespace:Client_App.Resources"
              xmlns:converters="clr-namespace:Client_App.Converters"
+			 xmlns:controls="clr-namespace:Client_App.Views.Controls"
              xmlns:visualConverters="clr-namespace:Client_App.VisualRealization.Converters"
 			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
              x:Class="Client_App.App">
@@ -29,6 +30,7 @@
             </DataTemplate>
         </ResourceDictionary>
         -->
+		
         <!--Палитра-->
         <SolidColorBrush x:Key="PrimaryColor" Color="#99d3f0"/>
 
@@ -112,7 +114,46 @@
         </Style>
 		
 	    <!--Общие стили-->
-		
+
+		<Style Selector="AutoCompleteBox.OksmGuide">
+			<Setter Property="FilterMode" Value="Contains"/>
+			<Setter Property="Template">
+            <ControlTemplate>
+                <Grid>
+                    <TextBox Name="PART_TextBox"
+                             Text="{TemplateBinding Text, Mode=TwoWay}"
+                             Watermark="{TemplateBinding Watermark}"/>
+                    
+                    <Popup Name="PART_Popup"
+                           IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
+                           PlacementTarget="{Binding #PART_TextBox}"
+                           PlacementMode="Bottom"
+                           StaysOpen="False"
+						   
+                           MaxHeight="300">
+                        <Border Background="White" BorderBrush="Gray" BorderThickness="1" CornerRadius="4">
+                            <Grid RowDefinitions="Auto,*">
+                                <!-- Заголовок -->
+                                <TextBlock Grid.Row="0"
+                                           Text="Справочник ОКСМ"
+                                           FontWeight="Bold"
+                                           Padding="8,6"
+                                           Background="#f0f0f0"/>
+
+								<ListBox Grid.Row="1"
+									 Name="PART_SelectingItemsControl"
+									 Items="{TemplateBinding Items}"
+									 ItemTemplate="{TemplateBinding ItemTemplate}"
+									 SelectedItem="{TemplateBinding SelectedItem, Mode=TwoWay}"
+									 Background="Transparent"
+									 BorderThickness="0"/>
+                            </Grid>
+                        </Border>
+                    </Popup>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+		</Style>
 			<!--Из-за особенностей предметной области допускается, что пользователи могут ввести вместо даты строку
 			    Поэтому buttonOnly предназначен для использвания в связки с другим текстбоксом -->
         <Style Selector="CalendarDatePicker.buttonOnly TextBox">
