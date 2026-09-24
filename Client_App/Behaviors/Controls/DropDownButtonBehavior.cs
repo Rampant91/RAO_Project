@@ -2,7 +2,6 @@ using System;
 using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
 using Avalonia.Xaml.Interactivity;
 
 namespace Client_App.Behaviors.Controls;
@@ -12,11 +11,6 @@ public class DropDownButtonBehavior : Behavior<Button>
     private static readonly MethodInfo? PopulateDropDownMethod =
         typeof(AutoCompleteBox).GetMethod(
             "PopulateDropDown",
-            BindingFlags.NonPublic | BindingFlags.Instance);
-
-    private static readonly MethodInfo? OpeningDropDownMethod =
-        typeof(AutoCompleteBox).GetMethod(
-            "OpeningDropDown",
             BindingFlags.NonPublic | BindingFlags.Instance);
 
     private static readonly FieldInfo? IgnorePropertyChangeField =
@@ -49,55 +43,68 @@ public class DropDownButtonBehavior : Behavior<Button>
         var parent = AssociatedObject.Parent;
         if (parent?.Parent is Grid grid && grid.Children[0] is AutoCompleteBox autoCompleteBox)
         {
+            autoCompleteBox.Focus();
             ShowDropdown(autoCompleteBox);
         }
         // Fallback: direct parent is Grid (original behavior for non-UserControl usage)
         else if (AssociatedObject.Parent is Grid directGrid && directGrid.Children[0] is AutoCompleteBox directAutoCompleteBox)
         {
+            directAutoCompleteBox.Focus();
             ShowDropdown(directAutoCompleteBox);
         }
     }
 
     /// <summary>
-    /// Открывает список после завершения Click: иначе popup, открытый в обработчике кнопки,
-    /// сразу закрывается, а очищенный Text не восстанавливается.
+    /// Показать весь список: очистить фильтр, наполнить _view через PopulateDropDown,
+    /// затем всегда открыть через force-open (_ignorePropertyChange).
+    /// OpeningDropDown через reflection не вызываем — он ставит IsDropDownOpen=true
+    /// в «битом» состоянии (флаг true, popup не виден), после чего ранний return
+    /// пропускал force-open и оставлял очищенный Text без DropDownClosed.
     /// </summary>
     private static void ShowDropdown(AutoCompleteBox autoCompleteBox)
     {
-        if (autoCompleteBox.IsDropDownOpen) return;
-
         var originalText = autoCompleteBox.Text;
 
-        // Откладываем открытие до конца Click — иначе Avalonia закрывает popup вместе с кликом.
-        Dispatcher.UIThread.Post(() =>
+        // Пока готовим открытие, DropDownClosed от промежуточного close не должен
+        // восстанавливать текст (иначе снова включится фильтр по старому значению).
+        var restoreOnClose = false;
+        EventHandler? closedHandler = null;
+        closedHandler = (_, _) =>
         {
-            if (autoCompleteBox.IsDropDownOpen) return;
-
-            autoCompleteBox.Focus();
-
-            // Временно очищаем текст, чтобы показать все значения (MinimumPrefixLength=0)
-            autoCompleteBox.Text = string.Empty;
-
-            // Restore должен быть подписан до любого открытия — иначе при раннем закрытии
-            // (или при IsDropDownOpen=true после Populate) значение останется пустым.
-            EventHandler? closedHandler = null;
-            closedHandler = (_, _) =>
+            if (!restoreOnClose) return;
+            autoCompleteBox.DropDownClosed -= closedHandler;
+            if (string.IsNullOrEmpty(autoCompleteBox.Text) && !string.IsNullOrEmpty(originalText))
             {
-                autoCompleteBox.DropDownClosed -= closedHandler;
-                if (string.IsNullOrEmpty(autoCompleteBox.Text) && !string.IsNullOrEmpty(originalText))
-                {
-                    autoCompleteBox.Text = originalText;
-                }
-            };
-            autoCompleteBox.DropDownClosed += closedHandler;
+                autoCompleteBox.Text = originalText;
+            }
+        };
+        autoCompleteBox.DropDownClosed += closedHandler;
 
-            PopulateDropDownMethod?.Invoke(autoCompleteBox, [autoCompleteBox, EventArgs.Empty]);
-            OpeningDropDownMethod?.Invoke(autoCompleteBox, [false]);
+        // Временно очищаем, чтобы при MinimumPrefixLength=0 в список попали все значения
+        autoCompleteBox.Text = string.Empty;
 
-            if (autoCompleteBox.IsDropDownOpen) return;
+        // Наполняет внутренний _view; может сам выставить IsDropDownOpen=true
+        PopulateDropDownMethod?.Invoke(autoCompleteBox, [autoCompleteBox, EventArgs.Empty]);
 
-            ForceOpenDropDown(autoCompleteBox);
-        });
+        // Если populate уже «открыл» — сбрасываем и открываем заново рабочим путём.
+        // Без ignore: нужно реально закрыть popup, не только свойство.
+        if (autoCompleteBox.IsDropDownOpen)
+        {
+            autoCompleteBox.SetValue(AutoCompleteBox.IsDropDownOpenProperty, false);
+        }
+
+        ForceOpenDropDown(autoCompleteBox);
+        restoreOnClose = true;
+
+        // Страховка: список так и не открылся — сразу вернуть текст, не ждать Closed
+        if (!autoCompleteBox.IsDropDownOpen)
+        {
+            autoCompleteBox.DropDownClosed -= closedHandler;
+            if (!string.IsNullOrEmpty(originalText))
+            {
+                autoCompleteBox.Text = originalText;
+            }
+        }
     }
 
     /// <summary>
