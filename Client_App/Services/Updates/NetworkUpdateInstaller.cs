@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -133,8 +134,35 @@ public class NetworkUpdateInstaller
             var localDir = NetworkUpdatePaths.UpdaterDirectory;
             Directory.CreateDirectory(localDir);
 
+            var remoteFiles = Directory.GetFiles(remoteUpdaterDir, "MpzfUpdater*");
+            var remoteNames = new HashSet<string>(
+                remoteFiles.Select(Path.GetFileName),
+                StringComparer.OrdinalIgnoreCase);
+
             var changed = false;
-            foreach (var remoteFile in Directory.GetFiles(remoteUpdaterDir, "MpzfUpdater*"))
+            // Убрать локальные FDD-остатки (dll/deps/runtimeconfig), иначе single-file host
+            // рядом с runtimeconfig снова требует установленный .NET.
+            foreach (var localFile in Directory.GetFiles(localDir, "MpzfUpdater*"))
+            {
+                var name = Path.GetFileName(localFile);
+                if (remoteNames.Contains(name))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    File.SetAttributes(localFile, FileAttributes.Normal);
+                    File.Delete(localFile);
+                    changed = true;
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Failed to remove stale updater file {name}: {ex.Message}");
+                }
+            }
+
+            foreach (var remoteFile in remoteFiles)
             {
                 var name = Path.GetFileName(remoteFile);
                 var localFile = Path.Combine(localDir, name);
@@ -263,13 +291,10 @@ public class NetworkUpdateInstaller
         var tempDir = Path.Combine(Path.GetTempPath(), "MpzfUpdater_" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(tempDir);
 
-        var updaterDir = NetworkUpdatePaths.UpdaterDirectory;
-        foreach (var file in Directory.GetFiles(updaterDir, "MpzfUpdater*"))
-        {
-            File.Copy(file, Path.Combine(tempDir, Path.GetFileName(file)), overwrite: true);
-        }
-
+        // Только exe: рядом лежащие FDD dll/runtimeconfig заставляют host требовать shared .NET.
         var updaterTemp = Path.Combine(tempDir, NetworkUpdatePaths.UpdaterExeName);
+        File.Copy(updaterInApp, updaterTemp, overwrite: true);
+
         var startInfo = new ProcessStartInfo
         {
             FileName = updaterTemp,

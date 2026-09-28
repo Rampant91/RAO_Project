@@ -794,7 +794,8 @@
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="forms1:Form14">
 									<Grid ColumnDefinitions="*,Auto">
-										<AutoCompleteBox Grid.Column="0"
+										<AutoCompleteBox Classes="OksmGuide"
+											             Grid.Column="0"
                                                          Height="26"
                                                          ItemsSource="{Binding  VM.OksmItems, ElementName=1.4}"
                                                          Text="{Binding Owner.Value, Mode=TwoWay}"
@@ -927,7 +928,8 @@
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="forms1:Form14">
 									<Grid ColumnDefinitions="*,Auto">
-										<AutoCompleteBox Grid.Column="0"
+										<AutoCompleteBox Classes="OksmGuide"
+											             Grid.Column="0"
                                                          Height="26"
                                                          ItemsSource="{Binding  VM.OksmItems, ElementName=1.4}"
                                                          Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"
@@ -970,7 +972,8 @@
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="forms1:Form14">
 									<Grid ColumnDefinitions="*,Auto">
-										<AutoCompleteBox Grid.Column="0"
+										<AutoCompleteBox Classes="OksmGuide"
+											             Grid.Column="0"
                                                          Height="26"
                                                          ItemsSource="{Binding  VM.OksmItems, ElementName=1.4}"
                                                          Text="{Binding TransporterOKPO.Value, Mode=TwoWay}"

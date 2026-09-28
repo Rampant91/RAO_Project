@@ -612,7 +612,8 @@
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="forms1:Form12">
 									<Grid ColumnDefinitions="*,Auto">
-										<AutoCompleteBox Grid.Column="0"
+										<AutoCompleteBox Classes="OksmGuide"
+											             Grid.Column="0"
                                                          Height="26"
                                                          ItemsSource="{Binding  VM.OksmItems, ElementName=1.2}"
                                                          Text="{Binding CreatorOKPO.Value, Mode=TwoWay}"
@@ -744,7 +745,8 @@
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="forms1:Form12">
 									<Grid ColumnDefinitions="*,Auto">
-										<AutoCompleteBox Grid.Column="0"
+										<AutoCompleteBox Classes="OksmGuide"
+											             Grid.Column="0"
                                                          Height="26"
                                                          ItemsSource="{Binding  VM.OksmItems, ElementName=1.2}"
                                                          Text="{Binding Owner.Value, Mode=TwoWay}"
@@ -878,7 +880,8 @@
 							<DataGridTemplateColumn.CellTemplate>
 								<DataTemplate x:DataType="forms1:Form12">
 									<Grid ColumnDefinitions="*,Auto">
-										<AutoCompleteBox Grid.Column="0"
+										<AutoCompleteBox Classes="OksmGuide"
+											             Grid.Column="0"
                                                          Height="26"
                                                          ItemsSource="{Binding  VM.OksmItems, ElementName=1.2}"
                                                          Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"
@@ -922,7 +925,8 @@
 								<DataTemplate x:DataType="forms1:Form12">
 									<Grid ColumnDefinitions="*,Auto">
 
-										<AutoCompleteBox Grid.Column="0"
+										<AutoCompleteBox Classes="OksmGuide"
+											             Grid.Column="0"
                                                          Height="26"
                                                          ItemsSource="{Binding  VM.OksmItems, ElementName=1.2}"
                                                          Text="{Binding TransporterOKPO.Value, Mode=TwoWay}"

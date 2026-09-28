@@ -57,7 +57,7 @@ Y:\АЧ 2021\Программа\Исходные\1.3.0\11_test5\win-x64\Client_A
 - существующий `Client_App.dll.config` / `Client_App.exe.config` (при обновлении оставляется локальный; при откате возвращается из `previous`)
 - данные в `\RAO\` (логи, БД и т.д.)
 
-`data\Updater` (MpzfUpdater) **обновляется**: копируется в staging и дополнительно синхронизируется с шары при проверке обновлений / перед запуском updater (файл не занят, пока работает только Client_App). Это чинит уже выложенные установки, где updater раньше не обновлялся.
+`data\Updater` (MpzfUpdater) **обновляется**: копируется в staging и дополнительно синхронизируется с шары при проверке обновлений / перед запуском updater (файл не занят, пока работает только Client_App). Это чинит уже выложенные установки, где updater раньше не обновлялся. Локальные FDD-остатки (`dll` / `runtimeconfig`) при sync удаляются, чтобы single-file updater не требовал shared .NET.
 
 ## Локально у пользователя
 
@@ -91,7 +91,7 @@ MpzfUpdater применяет релиз **чистой заменой** (не 
    - репозиторная `data\` (Spravochniki, Excel, …) без чужих платформ REDDB, без `Updater` и без `AstraLegacy`;
    - `data\REDDB\{win-x64|win-x32|linux-x64}` под RID профиля  
      (для `Astra_Linux_1.6` источник — `linux-x64_astra_1.6`, в дистрибутиве всё равно `linux-x64`);
-   - `data\Updater\` с актуальным `MpzfUpdater.*`;
+   - `data\Updater\` с актуальным self-contained `MpzfUpdater` (single-file, без shared .NET на ПК пользователя);
    - для профиля `Astra_Linux_1.6` (`AstraLegacy=true`): `data\AstraLegacy\libtommath0.deb` → корень дистрибутива (рядом с исполняемым).
 
 Ручное копирование `data` после publish больше не нужно.
