@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Client_App.Services.DataAccess;
 using Xunit;
@@ -53,6 +54,45 @@ public class Forms1WarmCacheLogicTests
     }
 
     [Fact]
+    public void WarmCache_StaleEpoch_DoesNotReseedEmptyStubsAfterInvalidate()
+    {
+        var cache = Forms1WarmCache.Instance;
+        cache.InvalidateAll();
+        var epochBefore = cache.DataEpoch;
+
+        var empty = new List<ReportListStub>();
+        Assert.True(cache.TryCommitStubsForTests(7, empty, epochBefore));
+        Assert.True(cache.TryGetCachedStubCount(7, out var emptyCount));
+        Assert.Equal(0, emptyCount);
+
+        cache.InvalidateOrg(7);
+        var epochAfter = cache.DataEpoch;
+        Assert.True(epochAfter > epochBefore);
+        Assert.False(cache.TryGetCachedStubCount(7, out _));
+
+        // In-flight load after delete (epochBefore) must not poison cache after invalidate.
+        Assert.False(cache.TryCommitStubsForTests(7, empty, epochBefore));
+        Assert.False(cache.TryGetCachedStubCount(7, out _));
+
+        var fresh = new List<ReportListStub>
+        {
+            new()
+            {
+                Id = 100,
+                FormNum = "1.1",
+                StartPeriod = "01.01.2024",
+                EndPeriod = "31.12.2024",
+                CorrectionNumber = 0
+            }
+        };
+        Assert.True(cache.TryCommitStubsForTests(7, fresh, epochAfter));
+        Assert.True(cache.TryGetCachedStubCount(7, out var freshCount));
+        Assert.Equal(1, freshCount);
+
+        cache.InvalidateAll();
+    }
+
+    [Fact]
     public void SelectReportPopup_LoadsShellsFromDbNotOnlyLocalCollection()
     {
         var path = System.IO.Path.Combine(
@@ -63,6 +103,30 @@ public class Forms1WarmCacheLogicTests
         Assert.Contains("LoadReportStubsForForm", src);
         Assert.Contains("CreateReportShellsFromStubs", src);
         Assert.DoesNotContain("LoadReportsByIds", src);
+    }
+
+    [Fact]
+    public void ImportCommands_RefreshMainWindowAfterImport_OnSuccessAndSortEarlyReturn()
+    {
+        var baseSrc = System.IO.File.ReadAllText(System.IO.Path.Combine(
+            FindRepoRoot(), "Client_App", "Commands", "AsyncCommands", "Import", "ImportBaseAsyncCommand.cs"));
+        Assert.Contains("RefreshMainWindowAfterImport", baseSrc);
+        Assert.Contains("InvalidateMainWindowCachesAfterImport", baseSrc);
+
+        foreach (var relative in new[]
+                 {
+                     System.IO.Path.Combine("ImportRaodbAsyncCommand.cs"),
+                     System.IO.Path.Combine("ImportExcelAsyncCommand.cs"),
+                     System.IO.Path.Combine("ImportJson", "ImportJsonAsyncCommand.cs")
+                 })
+        {
+            var path = System.IO.Path.Combine(
+                FindRepoRoot(), "Client_App", "Commands", "AsyncCommands", "Import", relative);
+            var src = System.IO.File.ReadAllText(path);
+            Assert.Contains("RefreshMainWindowAfterImport()", src);
+            Assert.DoesNotContain("InvalidateMainWindowCachesAfterImport();\r\n            var mainWindowVM", src);
+            Assert.DoesNotContain("InvalidateMainWindowCachesAfterImport();\n            var mainWindowVM", src);
+        }
     }
 
     private static string FindRepoRoot()

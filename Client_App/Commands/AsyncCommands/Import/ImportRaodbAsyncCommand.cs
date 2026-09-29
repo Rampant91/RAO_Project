@@ -411,6 +411,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
                 var msg = $"{Environment.NewLine}Message: {ex.Message}" +
                           $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
                 ServiceExtension.LoggerManager.Warning(msg);
+                RefreshMainWindowAfterImport();
                 return;
             }
 
@@ -457,11 +458,7 @@ public class ImportRaodbAsyncCommand : ImportBaseAsyncCommand
 
         if (AtLeastOneImportDone)
         {
-            InvalidateMainWindowCachesAfterImport();
-            var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
-            mainWindowVM.UpdateReportsCollection();
-            mainWindowVM.UpdateOrgsPageInfo();
-            mainWindowVM.UpdateTotalReportCount();
+            RefreshMainWindowAfterImport();
         }
         else if (!importSummaryShown)
         {

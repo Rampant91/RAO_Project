@@ -555,6 +555,8 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
                 var msg = $"{Environment.NewLine}Message: {ex.Message}" +
                           $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
                 ServiceExtension.LoggerManager.Warning(msg);
+                if (readAnyExcel)
+                    RefreshMainWindowAfterImport();
                 return;
             }
 
@@ -597,11 +599,7 @@ public class ImportExcelAsyncCommand : ImportBaseAsyncCommand
 
         if (AtLeastOneImportDone && readAnyExcel)
         {
-            InvalidateMainWindowCachesAfterImport();
-            var mainWindowVM = Desktop.MainWindow.DataContext as MainWindowVM;
-            mainWindowVM.UpdateReportsCollection();
-            mainWindowVM.UpdateOrgsPageInfo();
-            mainWindowVM.UpdateTotalReportCount();
+            RefreshMainWindowAfterImport();
         }
         else if (!importSummaryShown && readAnyExcel)
         {

@@ -37,6 +37,7 @@ public class LazyLoadHardeningGuardTests
         Assert.Contains("GetBaseOrgReportShellsAsync", src);
         Assert.Contains("LoadOrgWithReportShellsAsync", src);
         Assert.Contains("InvalidateMainWindowCachesAfterImport", src);
+        Assert.Contains("RefreshMainWindowAfterImport", src);
     }
 
     [Fact]
@@ -209,6 +210,7 @@ public class LazyLoadHardeningGuardTests
     {
         var src = ReadClient("Commands", "AsyncCommands", "Import", "ImportBaseAsyncCommand.cs");
         Assert.Contains("InvalidateMainWindowCachesAfterImport", src);
+        Assert.Contains("RefreshMainWindowAfterImport", src);
         Assert.DoesNotContain("InvalidateAllOrgKeysCaches()", src);
         Assert.DoesNotContain("InvalidateOrgKeysCachesForm12()", src);
     }

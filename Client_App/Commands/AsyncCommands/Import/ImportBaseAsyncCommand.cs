@@ -1666,6 +1666,25 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
     }
 
     /// <summary>
+    /// Общий refresh главного окна после успешного импорта (raodb / excel / json).
+    /// Вызывать и при раннем return после частичного SaveChanges — иначе пустые stubs после delete остаются в кэше.
+    /// </summary>
+    private protected void RefreshMainWindowAfterImport()
+    {
+        if (!AtLeastOneImportDone)
+            return;
+
+        InvalidateMainWindowCachesAfterImport();
+        var mainWindowVM = Desktop.MainWindow?.DataContext as MainWindowVM;
+        if (mainWindowVM is null)
+            return;
+
+        mainWindowVM.UpdateReportsCollection();
+        mainWindowVM.UpdateOrgsPageInfo();
+        mainWindowVM.UpdateTotalReportCount();
+    }
+
+    /// <summary>
     /// Гарантирует отчёт со загруженными строками форм для сравнения при импорте.
     /// Важно: в EF Local и в <see cref="Reports.Report_Collection"/> могут быть разные
     /// экземпляры с одним Id — возвращаем экземпляр, у которого строки реально загружены.

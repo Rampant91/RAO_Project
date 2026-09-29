@@ -33,6 +33,15 @@ public sealed class Forms1WarmCache
     private CancellationTokenSource? _orgPrefetchCts;
     private int? _activeOrgId;
 
+    /// <summary>
+    /// Поколение данных: растёт на Invalidate*. In-flight LoadReportStubs/GetReportPage
+    /// с прошлым epoch не пишут в кэш (иначе пустые stubs после delete переживают InvalidateAll).
+    /// </summary>
+    private int _dataEpoch;
+
+    /// <summary>Текущий epoch (для unit-тестов гонки invalidate vs in-flight put).</summary>
+    internal int DataEpoch => Volatile.Read(ref _dataEpoch);
+
     private sealed class OrgWarmState
     {
         public required List<ReportListStub> Stubs { get; init; }
@@ -48,6 +57,7 @@ public sealed class Forms1WarmCache
     {
         lock (_gate)
         {
+            unchecked { _dataEpoch++; }
             _orgStubs.Clear();
             _orgLru.Clear();
             _reportPages.Clear();
@@ -64,12 +74,19 @@ public sealed class Forms1WarmCache
 
     public void InvalidateOrg(int orgId)
     {
+        var cancelPrefetch = false;
         lock (_gate)
         {
+            unchecked { _dataEpoch++; }
             _orgStubs.Remove(orgId);
             _orgLru.Remove(orgId);
             RemoveReportPagesForOrg_NoLock(orgId);
+            cancelPrefetch = _activeOrgId == orgId;
         }
+
+        // Иначе in-flight prefetch после delete снова засеет пустые stubs.
+        if (cancelPrefetch)
+            CancelPrefetch();
     }
 
     /// <summary>
@@ -200,6 +217,7 @@ public sealed class Forms1WarmCache
         int page,
         int pageSize)
     {
+        var epoch = Volatile.Read(ref _dataEpoch);
         var (safePage, safePageSize, _) = PagingHelper.Normalize(page, pageSize);
         var key = ReportPageKey(orgId, formNumWhiteList, safePage, safePageSize);
 
@@ -219,13 +237,14 @@ public sealed class Forms1WarmCache
             .Take(safePageSize)
             .ToList();
         var items = MainWindowListQuery.LoadReportsByIds(db, pageIds);
-        PutReportPage(key, items);
+        PutReportPage(key, items, epoch);
         return items;
     }
 
     public PagedResult<Reports> GetOrgPage(
         DBModel db, string? searchText, int page, int pageSize, string masterFormNum = "1.0")
     {
+        var epoch = Volatile.Read(ref _dataEpoch);
         var (safePage, safePageSize, _) = PagingHelper.Normalize(page, pageSize);
         var key = OrgPageKey(masterFormNum, searchText, safePage, safePageSize);
 
@@ -250,7 +269,7 @@ public sealed class Forms1WarmCache
             "5.0" => MainWindowListQuery.GetOrgPageForm50(db, searchText, safePage, safePageSize),
             _ => MainWindowListQuery.GetOrgPageForm12(db, masterFormNum, searchText, safePage, safePageSize)
         };
-        PutOrgPage(key, result.Items.ToList(), result.TotalCount);
+        PutOrgPage(key, result.Items.ToList(), result.TotalCount, epoch);
         return result;
     }
 
@@ -436,6 +455,7 @@ public sealed class Forms1WarmCache
 
     private List<ReportListStub> GetOrLoadStubs(DBModel db, int orgId)
     {
+        var epoch = Volatile.Read(ref _dataEpoch);
         lock (_gate)
         {
             if (_orgStubs.TryGetValue(orgId, out var existing))
@@ -448,6 +468,10 @@ public sealed class Forms1WarmCache
         var stubs = MainWindowListQuery.LoadReportStubs(db, orgId);
         lock (_gate)
         {
+            // Invalidate* уже сбросил кэш — не засеиваем устаревший снимок.
+            if (epoch != _dataEpoch)
+                return stubs;
+
             if (_orgStubs.TryGetValue(orgId, out var raced))
             {
                 TouchLru(_orgLru, orgId);
@@ -461,20 +485,56 @@ public sealed class Forms1WarmCache
         }
     }
 
-    private void PutReportPage(string key, List<Report> items)
+    /// <summary>Тест: commit stubs только если epoch ещё актуален.</summary>
+    internal bool TryCommitStubsForTests(int orgId, List<ReportListStub> stubs, int epoch)
     {
         lock (_gate)
         {
+            if (epoch != _dataEpoch)
+                return false;
+            if (_orgStubs.ContainsKey(orgId))
+                return false;
+
+            _orgStubs[orgId] = new OrgWarmState { Stubs = stubs };
+            TouchLru(_orgLru, orgId);
+            EvictOrgs_NoLock();
+            return true;
+        }
+    }
+
+    internal bool TryGetCachedStubCount(int orgId, out int count)
+    {
+        lock (_gate)
+        {
+            if (!_orgStubs.TryGetValue(orgId, out var state))
+            {
+                count = 0;
+                return false;
+            }
+
+            count = state.Stubs.Count;
+            return true;
+        }
+    }
+
+    private void PutReportPage(string key, List<Report> items, int epoch)
+    {
+        lock (_gate)
+        {
+            if (epoch != _dataEpoch)
+                return;
             _reportPages[key] = items;
             TouchLru(_reportPageLru, key);
             EvictReportPages_NoLock();
         }
     }
 
-    private void PutOrgPage(string key, List<Reports> items, int totalCount)
+    private void PutOrgPage(string key, List<Reports> items, int totalCount, int epoch)
     {
         lock (_gate)
         {
+            if (epoch != _dataEpoch)
+                return;
             _orgPages[key] = new CachedOrgPage { Items = items, TotalCount = totalCount };
             TouchLru(_orgPageLru, key);
             EvictOrgPages_NoLock();

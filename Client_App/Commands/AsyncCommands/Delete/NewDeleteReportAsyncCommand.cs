@@ -1,4 +1,4 @@
-﻿﻿using MsBox.Avalonia;
+﻿using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
@@ -167,6 +167,26 @@ public class NewDeleteFormAsyncCommand : BaseAsyncCommand
     }
 
     private static void RemoveFromInMemoryCollections(Reports? org, int reportId)
+    {
+        RemoveReportById(org, reportId);
+
+        var orgId = org?.Id ?? 0;
+        var local = ReportsStorage.LocalReports?.Reports_Collection;
+        if (local is null)
+            return;
+
+        if (orgId != 0)
+        {
+            var localOrg = local.OfType<Reports>().FirstOrDefault(r => r.Id == orgId);
+            RemoveReportById(localOrg, reportId);
+            return;
+        }
+
+        foreach (var localOrg in local.OfType<Reports>())
+            RemoveReportById(localOrg, reportId);
+    }
+
+    private static void RemoveReportById(Reports? org, int reportId)
     {
         if (org?.Report_Collection is null)
             return;
