@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Models.DTO;
@@ -14,43 +15,47 @@ public interface ILogFactory
     public bool IncludeOriginalDetails { get; set; }
     public void AddLogger(ILogger innerLogger);
     public void RemoveLogger(ILogger innerLogger);
-    public void Import(LoggerImportDTO dto, 
-        ErrorCodeLogger code = ErrorCodeLogger.Application, 
-        [CallerMemberName] string origin = "", 
-        [CallerFilePath] string filePath = "", 
-        [CallerLineNumber] int lineNumber = 0, 
-        bool isIncludeOriginDetails = true);
-    public void Info(string msg, 
-        ErrorCodeLogger code = ErrorCodeLogger.Application, 
-        [CallerMemberName] string origin = "", 
-        [CallerFilePath] string filePath = "", 
-        [CallerLineNumber] int lineNumber = 0, 
-        bool isIncludeOriginDetails = true);
-    public void Debug(string msg, 
-        ErrorCodeLogger code = ErrorCodeLogger.Application, 
-        [CallerMemberName] string origin = "", 
-        [CallerFilePath] string filePath = "", 
+    public void Import(LoggerImportDTO dto,
+        ErrorCodeLogger code = ErrorCodeLogger.Application,
+        [CallerMemberName] string origin = "",
+        [CallerFilePath] string filePath = "",
         [CallerLineNumber] int lineNumber = 0,
         bool isIncludeOriginDetails = true);
-    public void Warning(string msg, 
-        ErrorCodeLogger code = ErrorCodeLogger.Application, 
-        [CallerMemberName] string origin = "", 
-        [CallerFilePath] string filePath = "", 
-        [CallerLineNumber] int lineNumber = 0, 
+    public void Info(string msg,
+        ErrorCodeLogger code = ErrorCodeLogger.Application,
+        [CallerMemberName] string origin = "",
+        [CallerFilePath] string filePath = "",
+        [CallerLineNumber] int lineNumber = 0,
         bool isIncludeOriginDetails = true);
-    public void Error(string msg, 
-        ErrorCodeLogger code = ErrorCodeLogger.Application, 
-        [CallerMemberName] string origin = "", 
-        [CallerFilePath] string filePath = "", 
-        [CallerLineNumber] int lineNumber = 0, 
+    public void Debug(string msg,
+        ErrorCodeLogger code = ErrorCodeLogger.Application,
+        [CallerMemberName] string origin = "",
+        [CallerFilePath] string filePath = "",
+        [CallerLineNumber] int lineNumber = 0,
+        bool isIncludeOriginDetails = true);
+    public void Warning(string msg,
+        ErrorCodeLogger code = ErrorCodeLogger.Application,
+        [CallerMemberName] string origin = "",
+        [CallerFilePath] string filePath = "",
+        [CallerLineNumber] int lineNumber = 0,
+        bool isIncludeOriginDetails = true);
+    public void Error(string msg,
+        ErrorCodeLogger code = ErrorCodeLogger.Application,
+        [CallerMemberName] string origin = "",
+        [CallerFilePath] string filePath = "",
+        [CallerLineNumber] int lineNumber = 0,
         bool isIncludeOriginDetails = true);
 }
 
 public class BaseLoggerFactory : ILogFactory
 {
+    private const string CrashLogFileName = "Crash.log";
+    private const string ImportLogFileName = "Import.log";
+
     private static readonly List<ILogger> Loggers = [];
     private readonly object _lock = new();
     public bool IncludeOriginalDetails { get; set; }
+
     public BaseLoggerFactory(ILogger[]? loggers = null)
     {
         if (loggers == null) return;
@@ -60,104 +65,115 @@ public class BaseLoggerFactory : ILogFactory
         }
     }
 
-    public event Action<(string msg, ErrorCodeLogger code)> NewLog = (details) => { };
+    public event Action<(string msg, ErrorCodeLogger code)> NewLog = _ => { };
 
     public void AddLogger(ILogger logger)
     {
         lock (_lock)
         {
-            if (!Loggers.Contains(logger))
+            if (logger is BaseFileLogger fileLogger)
             {
-                Loggers.Add(logger);
+                // Один логгер на имя файла — повторный CreateFile не плодит дубликаты.
+                var existing = Loggers.OfType<BaseFileLogger>()
+                    .FirstOrDefault(l =>
+                        string.Equals(l.LogFileName, fileLogger.LogFileName, StringComparison.OrdinalIgnoreCase));
+                if (existing is not null)
+                    return;
             }
+
+            if (!Loggers.Contains(logger))
+                Loggers.Add(logger);
         }
     }
+
     public void RemoveLogger(ILogger logger)
     {
         lock (_lock)
         {
             if (Loggers.Contains(logger))
-            {
                 Loggers.Remove(logger);
-            }
         }
     }
 
     public void CreateFile(string path)
     {
-        _ = new BaseLoggerFactory([new BaseFileLogger(path)]);
+        AddLogger(new BaseFileLogger(path));
     }
 
-    public void Debug(string msg, 
-        ErrorCodeLogger code = ErrorCodeLogger.Application, 
-        [CallerMemberName] string origin = "", 
-        [CallerFilePath] string filePath = "", 
-        [CallerLineNumber] int lineNumber = 0, 
+    public void Debug(string msg,
+        ErrorCodeLogger code = ErrorCodeLogger.Application,
+        [CallerMemberName] string origin = "",
+        [CallerFilePath] string filePath = "",
+        [CallerLineNumber] int lineNumber = 0,
         bool isIncludeOriginDetails = true)
+    {
+        if (isIncludeOriginDetails)
+            msg = FormatOrigin(msg, origin, filePath, lineNumber);
+        ForEachLogger(log => log.Debug(msg, code));
+        NewLog.Invoke((msg, code));
+    }
+
+    public void Error(string msg,
+        ErrorCodeLogger code = ErrorCodeLogger.Application,
+        [CallerMemberName] string origin = "",
+        [CallerFilePath] string filePath = "",
+        [CallerLineNumber] int lineNumber = 0,
+        bool isIncludeOriginDetails = true)
+    {
+        if (isIncludeOriginDetails)
+            msg = FormatOrigin(msg, origin, filePath, lineNumber);
+
+        var crashLogger = FindFileLogger(CrashLogFileName);
+        if (crashLogger is null)
         {
-            if (isIncludeOriginDetails)
-                msg = $"[{Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName)}" +
-                      $".{Path.GetFileNameWithoutExtension(filePath)}.{origin} - " +
-                    $"Line {lineNumber}] -" +
-                    $"Message: {msg}";
-            Loggers.ForEach(log => log.Debug(msg, code));
-            NewLog.Invoke((msg, code));
+            // Гарантия записи даже если CreateFile ещё не вызывали.
+            crashLogger = new BaseFileLogger(CrashLogFileName);
+            AddLogger(crashLogger);
         }
 
-    public void Error(string msg, 
-        ErrorCodeLogger code = ErrorCodeLogger.Application, 
-        [CallerMemberName] string origin = "", 
-        [CallerFilePath] string filePath = "", 
-        [CallerLineNumber] int lineNumber = 0, 
-        bool isIncludeOriginDetails = true)
-    {
-        if (isIncludeOriginDetails)
-            msg = $"[{Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName)}" +
-                  $".{Path.GetFileNameWithoutExtension(filePath)}.{origin} - " +
-                $"Line {lineNumber}] -" +
-                $"Message: {msg}";
-        Loggers[1].Error(msg, code);
-        //Loggers.ForEach(log => log.Error(msg, code));
+        try
+        {
+            crashLogger.Error(msg, code);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Logger Error failed: {ex.Message}");
+        }
+
         NewLog.Invoke((msg, code));
     }
 
-    public void Info(string msg, 
-        ErrorCodeLogger code = ErrorCodeLogger.Application, 
-        [CallerMemberName] string origin = "", 
-        [CallerFilePath] string filePath = "", 
-        [CallerLineNumber] int lineNumber = 0, 
+    public void Info(string msg,
+        ErrorCodeLogger code = ErrorCodeLogger.Application,
+        [CallerMemberName] string origin = "",
+        [CallerFilePath] string filePath = "",
+        [CallerLineNumber] int lineNumber = 0,
         bool isIncludeOriginDetails = true)
     {
         if (isIncludeOriginDetails)
-            msg = $"[{Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName)}" +
-                  $".{Path.GetFileNameWithoutExtension(filePath)}.{origin} - " +
-                $"Line {lineNumber}] -" +
-                $"Message: {msg}";
-        Loggers.ForEach(log => log.Info(msg, code));
+            msg = FormatOrigin(msg, origin, filePath, lineNumber);
+        ForEachLogger(log => log.Info(msg, code));
         NewLog.Invoke((msg, code));
     }
 
-    public void Warning(string msg, 
-        ErrorCodeLogger code = ErrorCodeLogger.Application, 
-        [CallerMemberName] string origin = "", 
-        [CallerFilePath] string filePath = "", 
-        [CallerLineNumber] int lineNumber = 0, 
+    public void Warning(string msg,
+        ErrorCodeLogger code = ErrorCodeLogger.Application,
+        [CallerMemberName] string origin = "",
+        [CallerFilePath] string filePath = "",
+        [CallerLineNumber] int lineNumber = 0,
         bool isIncludeOriginDetails = true)
     {
         if (isIncludeOriginDetails)
-            msg = $"[{Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName)}" +
-                  $".{Path.GetFileNameWithoutExtension(filePath)}.{origin} - " +
-                $"Line {lineNumber}] -" +
-                $"Message: {msg}";
-        Loggers.ForEach(log => log.Warning(msg, code));
+            msg = FormatOrigin(msg, origin, filePath, lineNumber);
+        ForEachLogger(log => log.Warning(msg, code));
         NewLog.Invoke((msg, code));
     }
 
-    public void Import(LoggerImportDTO dto, 
-        ErrorCodeLogger code = ErrorCodeLogger.Application, 
-        [CallerMemberName] string origin = "", 
-        [CallerFilePath] string filePath = "", 
-        [CallerLineNumber] int lineNumber = 0, 
+    public void Import(LoggerImportDTO dto,
+        ErrorCodeLogger code = ErrorCodeLogger.Application,
+        [CallerMemberName] string origin = "",
+        [CallerFilePath] string filePath = "",
+        [CallerLineNumber] int lineNumber = 0,
         bool isIncludeOriginDetails = true)
     {
         var msg = dto.OperationDate +
@@ -171,8 +187,43 @@ public class BaseLoggerFactory : ILogFactory
                   $"\t{dto.PeriodOrYear}" +
                   $"\t{dto.ShortName}" +
                   $"\t{dto.SourceFileFullPath}";
-        Loggers[0].Import($"{Environment.NewLine}{msg}", code);
-        //Loggers.ForEach(log => log.Import(msg, code));
+
+        var importLogger = FindFileLogger(ImportLogFileName);
+        if (importLogger is null)
+        {
+            importLogger = new BaseFileLogger(ImportLogFileName);
+            AddLogger(importLogger);
+        }
+
+        importLogger.Import($"{Environment.NewLine}{msg}", code);
         NewLog.Invoke((msg, code));
+    }
+
+    private static string FormatOrigin(string msg, string origin, string filePath, int lineNumber) =>
+        $"[{Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName)}" +
+        $".{Path.GetFileNameWithoutExtension(filePath)}.{origin} - " +
+        $"Line {lineNumber}] -" +
+        $"Message: {msg}";
+
+    private ILogger? FindFileLogger(string logFileName)
+    {
+        lock (_lock)
+        {
+            return Loggers.OfType<BaseFileLogger>()
+                .FirstOrDefault(l =>
+                    string.Equals(l.LogFileName, logFileName, StringComparison.OrdinalIgnoreCase));
+        }
+    }
+
+    private void ForEachLogger(Action<ILogger> action)
+    {
+        ILogger[] snapshot;
+        lock (_lock)
+        {
+            snapshot = Loggers.ToArray();
+        }
+
+        foreach (var log in snapshot)
+            action(log);
     }
 }

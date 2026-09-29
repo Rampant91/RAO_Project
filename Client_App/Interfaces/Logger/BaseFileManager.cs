@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Threading.Tasks;
 using Client_App.ViewModels;
@@ -19,6 +20,8 @@ public interface IFileManager
 
 public class BaseFileManager : IFileManager
 {
+    private static readonly ConcurrentDictionary<string, object> PathLocks = new(StringComparer.OrdinalIgnoreCase);
+
     public string NormalizePath(string path)
     {
         return OperatingSystem.IsWindows()
@@ -37,7 +40,7 @@ public class BaseFileManager : IFileManager
         var logsDir = BaseVM.LogsDirectory;
         if (string.IsNullOrWhiteSpace(logsDir))
         {
-            // Fallback до ProcessRaoDirectory — хотя бы не теряем запись в CWD без имени.
+            // Fallback до ProcessRaoDirectory — хотя бы не теряем запись.
             logsDir = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
                 "RAO",
@@ -60,19 +63,19 @@ public class BaseFileManager : IFileManager
     public void WriteToFileSync(string msg, string path, bool append = true)
     {
         path = ResolveLogFilePath(path);
-        // Тот же ключ, что у async — не перемешиваем запись в один файл.
-        Awaiter.Async(path, () =>
-        {
-            WriteToFileCore(msg, path, append);
-            return Task.CompletedTask;
-        }).GetAwaiter().GetResult();
+        // Без Awaiter.GetResult — иначе возможен deadlock / обрыв при Environment.Exit.
+        WriteToFileCore(msg, path, append);
     }
 
     private static void WriteToFileCore(string msg, string path, bool append)
     {
-        using var writer = new StreamWriter(File.Open(path, append ? FileMode.Append : FileMode.Create));
-        writer.Write(msg);
-        writer.Flush();
+        var gate = PathLocks.GetOrAdd(path, _ => new object());
+        lock (gate)
+        {
+            using var writer = new StreamWriter(File.Open(path, append ? FileMode.Append : FileMode.Create));
+            writer.Write(msg);
+            writer.Flush();
+        }
     }
 
     public async Task WriteToConsole(string msg)

@@ -197,6 +197,16 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             Directory.CreateDirectory(ReserveDirectory);
             Directory.CreateDirectory(TmpDirectory);
             Directory.CreateDirectory(ConfigDirectory);
+            // После установки LogsDirectory — пустые файлы, чтобы папка не была «пустой» до первой ошибки.
+            try
+            {
+                ServiceExtension.FileManager.WriteToFileSync(string.Empty, "Crash.log");
+                ServiceExtension.FileManager.WriteToFileSync(string.Empty, "Import.log");
+            }
+            catch
+            {
+                // не блокируем старт
+            }
         }
         catch (Exception ex)
         {
@@ -577,14 +587,14 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                           $"{Environment.NewLine}StackTrace: {fbEx.StackTrace}" +
                           $"{Environment.NewLine}ErrorCode: {fbEx.ErrorCode}" +
                           $"{Environment.NewLine}SQLSTATE: {fbEx.SQLSTATE}";
-                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
+                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
             }
             catch (Exception ex)
             {
                 loadDbFileError = true;
                 var msg =  $"{Environment.NewLine}Message: {ex.Message}" + 
                            $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
+                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
             }
         }
         DbFileName = $"Local_{i}";
@@ -640,57 +650,11 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             }
             catch (FirebirdSql.Data.FirebirdClient.FbException fbEx)
             {
-                #region MessageFailedToCreateFile
-
-                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Ошибка",
-                        ContentHeader = "Ошибка при создании файла .RAODB",
-                        ContentMessage = $"Не удалось создать файл базы данных." +
-                                         $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
-                        MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                        Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
-
-                #endregion
-
-                var msg = $"{Environment.NewLine}Message: {fbEx.Message}" +
-                          $"{Environment.NewLine}StackTrace: {fbEx.StackTrace}" +
-                          $"{Environment.NewLine}ErrorCode: {fbEx.ErrorCode}" +
-                          $"{Environment.NewLine}SQLSTATE: {fbEx.SQLSTATE}";
-                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
-                Console.WriteLine(fbEx.Message);
-                Environment.Exit(0);
+                LogDbCreateFailureShowMessageAndExit(fbEx);
             }
             catch (Exception ex)
             {
-                #region MessageFailedToCreateFile
-
-                Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                    .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                    {
-                        ButtonDefinitions = ButtonEnum.Ok,
-                        ContentTitle = "Ошибка",
-                        ContentHeader = "Ошибка при создании файла .RAODB",
-                        ContentMessage = $"Не удалось создать файл базы данных." +
-                                         $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
-                        MinWidth = 400,
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                        Topmost = true,
-                    })
-                    .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
-
-                #endregion
-
-                var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                          $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-                ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
-                Console.WriteLine(ex.Message);
-                Environment.Exit(0);
+                LogDbCreateFailureShowMessageAndExit(ex);
             }
         }
 
@@ -700,37 +664,41 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         }
         catch (FirebirdSql.Data.FirebirdClient.FbException fbEx)
         {
-            #region MessageFailedToCreateFile
-
-            Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
-                .GetMessageBoxStandardWindow(new MessageBoxStandardParams
-                {
-                    ButtonDefinitions = ButtonEnum.Ok,
-                    ContentTitle = "Ошибка",
-                    ContentHeader = "Ошибка при создании файла .RAODB",
-                    ContentMessage = $"Не удалось создать файл базы данных." +
-                                     $"{Environment.NewLine}При установке(настройке) программы возникла ошибка.",
-                    MinWidth = 400,
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                    Topmost = true,
-                })
-                .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
-
-            #endregion
-
-            var msg = $"{Environment.NewLine}Message: {fbEx.Message}" +
-                      $"{Environment.NewLine}StackTrace: {fbEx.StackTrace}" +
-                      $"{Environment.NewLine}ErrorCode: {fbEx.ErrorCode}" +
-                      $"{Environment.NewLine}SQLSTATE: {fbEx.SQLSTATE}";
-            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
-            Console.WriteLine(fbEx.Message);
-            Environment.Exit(0);
+            LogDbCreateFailureShowMessageAndExit(fbEx);
         }
         catch (Exception ex)
         {
+            LogDbCreateFailureShowMessageAndExit(ex);
+        }
+    }
 
-            #region MessageFailedToCreateFile
+    /// <summary>
+    /// Пишет Crash.log, показывает сообщение и завершает процесс.
+    /// Лог — до MessageBox/Exit: иначе при закрытии диалога или Exit файл не появляется.
+    /// </summary>
+    private static void LogDbCreateFailureShowMessageAndExit(Exception ex)
+    {
+        var msg = ex is FirebirdSql.Data.FirebirdClient.FbException fbEx
+            ? $"{Environment.NewLine}Message: {fbEx.Message}" +
+              $"{Environment.NewLine}StackTrace: {fbEx.StackTrace}" +
+              $"{Environment.NewLine}ErrorCode: {fbEx.ErrorCode}" +
+              $"{Environment.NewLine}SQLSTATE: {fbEx.SQLSTATE}"
+            : $"{Environment.NewLine}Message: {ex.Message}" +
+              $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
 
+        try
+        {
+            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
+        }
+        catch (Exception logEx)
+        {
+            Console.WriteLine(logEx.Message);
+        }
+
+        Console.WriteLine(ex.Message);
+
+        try
+        {
             Dispatcher.UIThread.InvokeAsync(() => MessageBox.Avalonia.MessageBoxManager
                 .GetMessageBoxStandardWindow(new MessageBoxStandardParams
                 {
@@ -744,15 +712,13 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
                     Topmost = true,
                 })
                 .ShowDialog(Desktop.MainWindow)).GetAwaiter().GetResult();
-
-            #endregion
-            
-            var msg = $"{Environment.NewLine}Message: {ex.Message}" +
-                      $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
-            ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase, filePath: dbFileInfo.FullName);
-            Console.WriteLine(ex.Message);
-            Environment.Exit(0);
         }
+        catch
+        {
+            // UI может быть недоступен — лог уже записан
+        }
+
+        Environment.Exit(0);
     }
 
     #endregion
