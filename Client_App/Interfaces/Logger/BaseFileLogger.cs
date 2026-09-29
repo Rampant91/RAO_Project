@@ -16,7 +16,10 @@ public class BaseFileLogger(string filePath) : ILogger
     public void Error(string msg, ErrorCodeLogger code)
     {
         var currentTime = DateTime.Now.ToString("dd-MM-yyyy HH-mm-ss");
-        ServiceExtension.FileManager.WriteToFile($"{Environment.NewLine}[{currentTime}][ERROR][{(int)code}]{msg}{Environment.NewLine}", FilePath);
+        // Sync: после Error часто Environment.Exit — async запись не успевает.
+        ServiceExtension.FileManager.WriteToFileSync(
+            $"{Environment.NewLine}[{currentTime}][ERROR][{(int)code}]{msg}{Environment.NewLine}",
+            FilePath);
     }
     
     public void Info(string msg, ErrorCodeLogger code)
