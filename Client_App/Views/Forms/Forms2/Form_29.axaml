@@ -155,6 +155,7 @@
                             IsVisible="{Binding AnyRowSelected}" />
                         <MenuItem
                             Command="{Binding PasteRows}"
+                            CommandParameter="{Binding SelectedForms}"
                             Header="Вставить"
                             InputGesture="Ctrl+V"
                             IsVisible="{Binding AnyRowSelected}" />
