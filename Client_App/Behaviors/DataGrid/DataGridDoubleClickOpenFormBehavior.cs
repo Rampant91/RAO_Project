@@ -5,11 +5,9 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
 using Avalonia.Xaml.Interactivity;
 using Client_App.Commands.AsyncCommands;
+using Client_App.Commands.AsyncCommands.Change;
 using Client_App.ViewModels;
-using Client_App.ViewModels.Passports;
-using Client_App.ViewModels.StoragePoints;
 using Client_App.Views;
-using Client_App.Views.Passports;
 using Models.Collections;
 using Models.Passports;
 using Models.StoragePoints;
@@ -24,8 +22,7 @@ public class DataGridDoubleClickOpenFormBehavior : Behavior<AvaloniaDataGrid>
 
         if (AssociatedObject != null)
         {
-            // Подписываемся на события
-            AssociatedObject.DoubleTapped += DataGrid_DoubleTapped; ;
+            AssociatedObject.DoubleTapped += DataGrid_DoubleTapped;
         }
     }
 
@@ -41,59 +38,51 @@ public class DataGridDoubleClickOpenFormBehavior : Behavior<AvaloniaDataGrid>
 
     private void DataGrid_DoubleTapped(object? sender, RoutedEventArgs e)
     {
-        if (AssociatedObject?.SelectedItem != null)
+        if (AssociatedObject?.SelectedItem is null) return;
+
+        var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
+        var mainWindow = (desktop.MainWindow as MainWindow)!;
+        var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
+
+        if (AssociatedObject.SelectedItem is Reports reports)
         {
-            var desktop = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
-            var mainWindow = (desktop.MainWindow as MainWindow)!;
-            var mainWindowVM = (mainWindow.DataContext as MainWindowVM)!;
+            BaseAsyncCommand command;
+            if (reports.Master_DB.FormNum_DB.Split('.')[0] is "1")
+                command = new NewChangeReportsAsyncCommand(mainWindowVM.Forms1TabControlVM);
+            else if (reports.Master_DB.FormNum_DB.Split('.')[0] is "2")
+                command = new NewChangeReportsAsyncCommand(mainWindowVM.Forms2TabControlVM);
+            else if (reports.Master_DB.FormNum_DB.Split('.')[0] is "4")
+                command = new NewChangeReportsAsyncCommand(mainWindowVM.Forms4TabControlVM);
+            else if (reports.Master_DB.FormNum_DB.Split('.')[0] is "5")
+                command = new NewChangeReportsAsyncCommand(mainWindowVM.Forms5TabControlVM);
+            else return;
 
-            if (AssociatedObject?.SelectedItem is Reports reports)
-            {
-                BaseAsyncCommand command;
-                if (reports.Master_DB.FormNum_DB.Split('.')[0] is "1")
-                    command = new NewChangeReportsAsyncCommand(mainWindowVM.Forms1TabControlVM);
-                else if (reports.Master_DB.FormNum_DB.Split('.')[0] is "2")
-                    command = new NewChangeReportsAsyncCommand(mainWindowVM.Forms2TabControlVM);
-                else if (reports.Master_DB.FormNum_DB.Split('.')[0] is "4")
-                    command = new NewChangeReportsAsyncCommand(mainWindowVM.Forms4TabControlVM);
-                else if (reports.Master_DB.FormNum_DB.Split('.')[0] is "5")
-                    command = new NewChangeReportsAsyncCommand(mainWindowVM.Forms5TabControlVM);
-                else return;
-
-                command.AsyncExecute(reports);
-            }
-            else if (AssociatedObject?.SelectedItem is Report report)
-            {
-                BaseAsyncCommand command;
-                if (report.FormNum_DB.Split('.')[0] is "1")
-                    command = new NewChangeReportAsyncCommand(mainWindowVM.Forms1TabControlVM);
-                else if (report.FormNum_DB.Split('.')[0] is "2")
-                    command = new ChangeFormAsyncCommand();
-                else if (report.FormNum_DB.Split('.')[0] is "4")
-                    command = new NewChangeReportAsyncCommand(mainWindowVM.Forms4TabControlVM);
-                else if (report.FormNum_DB.Split('.')[0] is "5")
-                    command = new NewChangeReportAsyncCommand(mainWindowVM.Forms5TabControlVM);
-                else return;
-
-                command.Execute(report);
-            }
-            else if (AssociatedObject?.SelectedItem is PackagePassport passport)
-            {
-                var packagePassportWindowVM = new PackagePassportWindowVM(passport.Id);
-
-                var packagePassportWindow = new PackagePassportWindow(packagePassportWindowVM);
-                packagePassportWindow.ShowDialog(mainWindow);
-
-            }
-            else if (AssociatedObject?.SelectedItem is StoragePoint storage)
-            {
-                var storagePointWindowVM = new StoragePointWindowVM(storage.Id);
-
-                var storagePointWindow = new StoragePointWindow(storagePointWindowVM);
-                storagePointWindow.ShowDialog(mainWindow);
-
-            }
+            command.AsyncExecute(reports);
         }
+        else if (AssociatedObject.SelectedItem is Report report)
+        {
+            BaseAsyncCommand command;
+            if (report.FormNum_DB.Split('.')[0] is "1")
+                command = new NewChangeReportAsyncCommand(mainWindowVM.Forms1TabControlVM);
+            else if (report.FormNum_DB.Split('.')[0] is "2")
+                command = new ChangeFormAsyncCommand();
+            else if (report.FormNum_DB.Split('.')[0] is "4")
+                command = new NewChangeReportAsyncCommand(mainWindowVM.Forms4TabControlVM);
+            else if (report.FormNum_DB.Split('.')[0] is "5")
+                command = new NewChangeReportAsyncCommand(mainWindowVM.Forms5TabControlVM);
+            else return;
 
+            command.Execute(report);
+        }
+        else if (AssociatedObject.SelectedItem is PackagePassport passport)
+        {
+            // Как в контекстном меню: владелец — окно списка паспортов, не MainWindow
+            // (меню уже открыто как ShowDialog поверх MainWindow).
+            _ = new ChangePackagePassportAsyncCommand().AsyncExecute(passport.Id);
+        }
+        else if (AssociatedObject.SelectedItem is StoragePoint storage)
+        {
+            _ = new ChangeStoragePointAsyncCommand().AsyncExecute(storage.Id);
+        }
     }
 }

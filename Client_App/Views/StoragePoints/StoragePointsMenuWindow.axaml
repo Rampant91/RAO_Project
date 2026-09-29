@@ -45,13 +45,13 @@
 
 
 		<DataGrid
-			Grid.Row="1" 
+			Grid.Row="1"
+			Classes="main-list-grid"
 			ItemsSource="{Binding StoragePoints}"
 			SelectionMode="Single"
 			MaxWidth="900"
 			SelectedItem="{Binding SelectedStoragePoint}"
 			RowHeight="25"
-			GridLinesVisibility="All"
 			RowBackground="White"
 			CanUserSortColumns="False">
 			

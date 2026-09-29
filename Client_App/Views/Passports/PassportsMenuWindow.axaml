@@ -45,13 +45,13 @@
 			</MenuItem>
 		</Menu>
 		<DataGrid
-			Grid.Row="1" 
+			Grid.Row="1"
+			Classes="main-list-grid"
 			ItemsSource="{Binding Passports}"
 			SelectionMode="Single"
 			MaxWidth="900"
 			SelectedItem="{Binding SelectedPassport}"
 			RowHeight="25"
-			GridLinesVisibility="All"
 			RowBackground="White"
 			CanUserSortColumns="False">
 			

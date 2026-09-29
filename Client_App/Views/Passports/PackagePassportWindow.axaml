@@ -6,6 +6,7 @@
         xmlns:interactivity="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
 		xmlns:converter="clr-namespace:Client_App.VisualRealization.Converters"
         xmlns:local="using:Client_App.Behaviors"
+        xmlns:headerBehaviors="using:Client_App.Behaviors.TableHeader"
 		xmlns:vm="using:Client_App.ViewModels.Passports"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         MinWidth="690" MinHeight="300"
@@ -427,6 +428,7 @@
 
 								<interactivity:Interaction.Behaviors>
 									<local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid1}" />
+									<headerBehaviors:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid1}" />
 								</interactivity:Interaction.Behaviors>
 
 								<!--Первый уровень заголовков-->
@@ -528,7 +530,7 @@
 									  Margin="5,-5,5,5"
 									  x:CompileBindings="True"
 									  CanUserReorderColumns="False"
-									  CanUserSortColumns="True"
+									  CanUserSortColumns="False"
 									  Classes="table"
 									  ColumnWidth="150"
 									  MaxColumnWidth="500">
@@ -1029,6 +1031,7 @@
 
 							<interactivity:Interaction.Behaviors>
 								<local:ColumnWidthSyncBehavior SourceDataGrid="{Binding ElementName=dataGrid2}" />
+								<headerBehaviors:TableHeaderColumnResizeBehavior SourceDataGrid="{Binding ElementName=dataGrid2}" />
 							</interactivity:Interaction.Behaviors>
 
 							<!--Первый уровень заголовков-->
@@ -1348,14 +1351,21 @@
 													SelectionMode="Single">
 													<ListBox.ItemTemplate >
 														<DataTemplate x:DataType="passports:Radionuclid">
-															<Grid ColumnDefinitions="*,Auto">
+															<Grid ColumnDefinitions="*,Auto"
+																  Height="26"
+																  VerticalAlignment="Center">
 																<AutoCompleteBox
 																	Classes="hitable"
 																	Grid.Column="0"
 																	Background="White"
+																	MinHeight="26"
 																	Height="26"
-																	Margin="-1"
-																	BorderThickness="2"
+																	MaxHeight="26"
+																	Margin="0"
+																	Padding="4,0"
+																	BorderThickness="1"
+																	VerticalAlignment="Center"
+																	InnerRightContent="{x:Null}"
 																	FilterMode="Custom"
 																	ItemFilter="{Binding VM.RadionuclidFilter, ElementName=Root}"
 																	ItemsSource="{Binding VM.RaoNamesCollection, ElementName=Root}"
@@ -1365,10 +1375,8 @@
 																	</interactivity:Interaction.Behaviors>
 																</AutoCompleteBox>
 																<Button Grid.Column="1"
+																		Classes="delete-cell"
 																		IsHitTestVisible="True"
-																		Content="X"
-																		Width="26"
-																		Height="26"
 																		Command="{Binding VM.DeleteRadionuclid, ElementName=Root}"
 																		CommandParameter="{Binding}"/>
 															</Grid>
@@ -1376,6 +1384,8 @@
 													</ListBox.ItemTemplate>
 												</ListBox>
 												<Button
+													HorizontalAlignment="Stretch"
+													HorizontalContentAlignment="Center"
 													Content="Добавить"
 													Command="{Binding VM.AddRadionuclid, ElementName=Root}"
 													CommandParameter="{Binding}"/>
@@ -1404,10 +1414,19 @@
 													SelectionMode="Single">
 													<ListBox.ItemTemplate>
 														<DataTemplate x:DataType="passports:Radionuclid">
-															<Grid ColumnDefinitions="*,Auto">
+															<Grid ColumnDefinitions="*,Auto"
+																  Height="26"
+																  VerticalAlignment="Center">
 																<TextBox Grid.Column="0"
+																		 MinHeight="26"
 																		 Height="26"
+																		 MaxHeight="26"
+																		 Margin="0"
+																		 Padding="4,0"
+																		 BorderThickness="1"
 																		 Background="White"
+																		 VerticalAlignment="Center"
+																		 VerticalContentAlignment="Center"
 																		 IsHitTestVisible="True"
 																		 Text="{Binding Activity, Converter={StaticResource ExpontionalFormatConverter}}">
 																	<interactivity:Interaction.Behaviors>
@@ -1416,10 +1435,8 @@
 																	</interactivity:Interaction.Behaviors>
 																</TextBox>
 																<Button Grid.Column="1"
+																		Classes="delete-cell"
 																		IsHitTestVisible="True"
-																		Content="X"
-																		Width="26"
-																		Height="26"
 																		Command="{Binding VM.DeleteRadionuclid, ElementName=Root}"
 																		CommandParameter="{Binding}"/>
 															</Grid>
@@ -1427,6 +1444,8 @@
 													</ListBox.ItemTemplate>
 												</ListBox>
 												<Button
+													HorizontalAlignment="Stretch"
+													HorizontalContentAlignment="Center"
 													Content="Добавить"
 														Command="{Binding VM.AddRadionuclid, ElementName=Root}"
 														CommandParameter="{Binding}"/>
