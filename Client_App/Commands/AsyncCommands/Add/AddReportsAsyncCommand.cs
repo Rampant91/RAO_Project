@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Resources.CustomComparers;
+using Client_App.Services.DataAccess;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
 using Client_App.Views;
@@ -128,15 +129,20 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
 
         var comparator = new CustomReportsComparer();
         var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-        ReportsStorage.LocalReports.Reports_Collection.Clear();
         ReportsStorage.LocalReports.Reports_Collection
-            .AddRange(tmpReportsList
+            .ReorderTo(tmpReportsList
                 .OrderBy(x => x.Master_DB.RegNoRep?.Value, comparator)
-                .ThenBy(x => x.Master_DB.OkpoRep?.Value, comparator));
+                .ThenBy(x => x.Master_DB.OkpoRep?.Value, comparator)
+                .ToList());
 
+        // Full invalidate: bump epoch, drop OrgKeys, cancel prefetch — otherwise stale in-flight
+        // LoadOrgKeys/GetOrgPage can repopulate caches without the new org.
+        Forms1WarmCache.Instance.InvalidateAll();
 
         mainWindowVM.UpdateReportsCollection();
         mainWindowVM.UpdateOrgsPageInfo();
+        mainWindowVM.UpdateTotalReportCount();
+        mainWindowVM.UpdateTotalReportsCount();
 
 
         //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync(); не нужно

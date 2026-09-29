@@ -97,6 +97,8 @@ public sealed class Forms1WarmCache
     {
         lock (_gate)
         {
+            // Bump epoch so in-flight GetOrgPage cannot Put a pre-invalidate (stale) page back.
+            unchecked { _dataEpoch++; }
             _orgPages.Clear();
             _orgPageLru.Clear();
         }

@@ -1,4 +1,4 @@
-﻿﻿using MsBox.Avalonia;
+﻿using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
@@ -222,6 +222,7 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
             SyncTitleOrganUpravRegNo(tmp.Master);
             VM.DBO.Reports_Collection.Add(tmp);
             VM.DBO = null;
+            VM.Storages = tmp;
         }
         else if (Storages != null
                  && _formType is not ("1.0" or "2.0" or "4.0" or "5.0")

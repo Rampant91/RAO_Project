@@ -85,6 +85,34 @@ public class MainWindowListQueryLogicTests
         Assert.DoesNotContain("InvalidateOrgKeysCacheForm20()", src);
     }
 
+    [Fact]
+    public void AddReports_InvalidatesOrgCachesBeforeUiRefresh()
+    {
+        // Without invalidate, SyncOrgsCollection serves the warm page from before the new org existed.
+        var path = Path.Combine(
+            FindRepoRoot(), "Client_App", "Commands", "AsyncCommands", "Add", "AddReportsAsyncCommand.cs");
+        Assert.True(File.Exists(path), path);
+        var src = File.ReadAllText(path);
+        Assert.Contains("InvalidateAll()", src);
+        Assert.Contains("UpdateOrgsPageInfo()", src);
+        var invalidateAt = src.IndexOf("InvalidateAll()");
+        var updateOrgsAt = src.IndexOf("UpdateOrgsPageInfo()");
+        Assert.True(invalidateAt >= 0 && updateOrgsAt > invalidateAt);
+    }
+
+    [Fact]
+    public void OrgKeysLoad_DoesNotPoisonCacheAfterInvalidate()
+    {
+        var path = Path.Combine(FindRepoRoot(), "Client_App", "Services", "DataAccess", "MainWindowListQuery.cs");
+        Assert.True(File.Exists(path), path);
+        var src = File.ReadAllText(path);
+        Assert.Contains("_orgKeysForm10Epoch", src);
+        Assert.Contains("if (epoch == _orgKeysForm10Epoch)", src);
+        Assert.Contains("if (epoch == _orgKeysForm20Epoch)", src);
+        Assert.Contains("if (epoch == _orgKeysForm40Epoch)", src);
+        Assert.Contains("if (epoch == _orgKeysForm50Epoch)", src);
+    }
+
     private static string FindRepoRoot()
     {
         var dir = new DirectoryInfo(Directory.GetCurrentDirectory());

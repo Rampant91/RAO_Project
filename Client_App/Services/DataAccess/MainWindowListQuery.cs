@@ -32,15 +32,19 @@ public static class MainWindowListQuery
 {
     private static readonly object OrgKeysForm10Lock = new();
     private static List<OrgKey>? _cachedOrgKeysForm10;
+    private static int _orgKeysForm10Epoch;
 
     private static readonly object OrgKeysForm20Lock = new();
     private static List<OrgKey>? _cachedOrgKeysForm20;
+    private static int _orgKeysForm20Epoch;
 
     private static readonly object OrgKeysForm40Lock = new();
     private static List<OrgKey>? _cachedOrgKeysForm40;
+    private static int _orgKeysForm40Epoch;
 
     private static readonly object OrgKeysForm50Lock = new();
     private static List<OrgKey>? _cachedOrgKeysForm50;
+    private static int _orgKeysForm50Epoch;
 
     internal sealed class OrgKey
     {
@@ -59,7 +63,10 @@ public static class MainWindowListQuery
     public static void InvalidateOrgKeysCacheForm10()
     {
         lock (OrgKeysForm10Lock)
+        {
             _cachedOrgKeysForm10 = null;
+            unchecked { _orgKeysForm10Epoch++; }
+        }
     }
 
     /// <summary>
@@ -68,7 +75,10 @@ public static class MainWindowListQuery
     public static void InvalidateOrgKeysCacheForm20()
     {
         lock (OrgKeysForm20Lock)
+        {
             _cachedOrgKeysForm20 = null;
+            unchecked { _orgKeysForm20Epoch++; }
+        }
     }
 
     /// <summary>
@@ -94,7 +104,10 @@ public static class MainWindowListQuery
     public static void InvalidateOrgKeysCacheForm40()
     {
         lock (OrgKeysForm40Lock)
+        {
             _cachedOrgKeysForm40 = null;
+            unchecked { _orgKeysForm40Epoch++; }
+        }
     }
 
     /// <summary>
@@ -103,7 +116,10 @@ public static class MainWindowListQuery
     public static void InvalidateOrgKeysCacheForm50()
     {
         lock (OrgKeysForm50Lock)
+        {
             _cachedOrgKeysForm50 = null;
+            unchecked { _orgKeysForm50Epoch++; }
+        }
     }
 
     /// <summary>
@@ -500,10 +516,12 @@ public static class MainWindowListQuery
 
     private static List<OrgKey> LoadOrgKeysForm40(DBModel db)
     {
+        int epoch;
         lock (OrgKeysForm40Lock)
         {
             if (_cachedOrgKeysForm40 != null)
                 return _cachedOrgKeysForm40;
+            epoch = _orgKeysForm40Epoch;
         }
 
         var loaded = db.ReportsCollectionDbSet
@@ -528,17 +546,22 @@ public static class MainWindowListQuery
             .ToList();
 
         lock (OrgKeysForm40Lock)
-            _cachedOrgKeysForm40 = loaded;
+        {
+            if (epoch == _orgKeysForm40Epoch)
+                _cachedOrgKeysForm40 = loaded;
+        }
 
         return loaded;
     }
 
     private static List<OrgKey> LoadOrgKeysForm50(DBModel db)
     {
+        int epoch;
         lock (OrgKeysForm50Lock)
         {
             if (_cachedOrgKeysForm50 != null)
                 return _cachedOrgKeysForm50;
+            epoch = _orgKeysForm50Epoch;
         }
 
         var loaded = db.ReportsCollectionDbSet
@@ -559,7 +582,10 @@ public static class MainWindowListQuery
             .ToList();
 
         lock (OrgKeysForm50Lock)
-            _cachedOrgKeysForm50 = loaded;
+        {
+            if (epoch == _orgKeysForm50Epoch)
+                _cachedOrgKeysForm50 = loaded;
+        }
 
         return loaded;
     }
@@ -619,10 +645,12 @@ public static class MainWindowListQuery
     {
         if (masterFormNum == "1.0")
         {
+            int epoch;
             lock (OrgKeysForm10Lock)
             {
                 if (_cachedOrgKeysForm10 != null)
                     return _cachedOrgKeysForm10;
+                epoch = _orgKeysForm10Epoch;
             }
 
             var loaded = db.ReportsCollectionDbSet
@@ -641,17 +669,23 @@ public static class MainWindowListQuery
                 .ToList();
 
             lock (OrgKeysForm10Lock)
-                _cachedOrgKeysForm10 = loaded;
+            {
+                // Stale in-flight load after Invalidate must not poison the cache.
+                if (epoch == _orgKeysForm10Epoch)
+                    _cachedOrgKeysForm10 = loaded;
+            }
 
             return loaded;
         }
 
         if (masterFormNum == "2.0")
         {
+            int epoch;
             lock (OrgKeysForm20Lock)
             {
                 if (_cachedOrgKeysForm20 != null)
                     return _cachedOrgKeysForm20;
+                epoch = _orgKeysForm20Epoch;
             }
 
             var loaded20 = db.ReportsCollectionDbSet
@@ -670,7 +704,10 @@ public static class MainWindowListQuery
                 .ToList();
 
             lock (OrgKeysForm20Lock)
-                _cachedOrgKeysForm20 = loaded20;
+            {
+                if (epoch == _orgKeysForm20Epoch)
+                    _cachedOrgKeysForm20 = loaded20;
+            }
 
             return loaded20;
         }

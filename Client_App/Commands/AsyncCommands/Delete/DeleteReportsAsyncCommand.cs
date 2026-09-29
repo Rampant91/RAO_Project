@@ -1,24 +1,23 @@
-﻿﻿using MsBox.Avalonia;
+﻿using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
-using Client_App.Helpers.MasterTitleRows;
 using Client_App.Interfaces.Logger;
 using Client_App.Interfaces.Logger.EnumLogger;
 using Client_App.Services;
 using Client_App.Services.DataAccess;
 using Client_App.ViewModels;
+using Client_App.ViewModels.ProgressBar;
 using Client_App.Views;
+using Client_App.Views.ProgressBar;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Models;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
-using Models.Forms;
-using Models.Forms.Form1;
-using Models.Forms.Form2;
 using System;
 using System.Collections;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Client_App.Commands.AsyncCommands.Delete;
@@ -73,13 +72,13 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
         #region MessageDeleteReports
 
-        var answer = await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
+        var answer = await MessageBoxManager
             .GetMessageBoxCustom(new MessageBoxCustomParams
             {
                 ButtonDefinitions =
                 [
-                    new ButtonDefinition { Name = "Да" },
-                    new ButtonDefinition { Name = "Нет" }
+                    new ButtonDefinition { Name = "Да", IsDefault = true },
+                    new ButtonDefinition { Name = "Нет", IsCancel = true }
                 ],
                 ContentTitle = "Уведомление",
                 ContentHeader = "Уведомление",
@@ -87,7 +86,8 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
                 MinWidth = 400,
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
-            }).ShowWindowDialogAsync(Desktop.MainWindow));
+            })
+            .ShowWindowDialogAsync(Desktop.MainWindow);
 
         #endregion
 
@@ -95,9 +95,27 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
             return;
 
         var orgId = orgShell.Id;
+        var cts = new CancellationTokenSource();
+        AnyTaskProgressBar? progressBar = null;
+
         try
         {
-            await DeleteOrganizationByIdAsync(orgId).ConfigureAwait(true);
+            progressBar = await Dispatcher.UIThread.InvokeAsync(() => new AnyTaskProgressBar(cts));
+            var progressVm = progressBar.AnyTaskProgressBarVM;
+            progressVm.SetProgressBar(5, "Подготовка к удалению...", "Удаление организации", "Удаление");
+
+            await DeleteOrganizationByIdAsync(orgId, progressVm, cts.Token).ConfigureAwait(false);
+
+            progressVm.SetProgressBar(100, "Готово");
+            await progressBar.CloseCompletedAsync().ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            ServiceExtension.LoggerManager.Warning(
+                $"Удаление организации Id={orgId}: отменено пользователем.",
+                ErrorCodeLogger.Application);
+            if (progressBar is not null)
+                await progressBar.CloseAsync().ConfigureAwait(false);
         }
         catch (Exception ex)
         {
@@ -105,45 +123,57 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
                       $"{Environment.NewLine}Message: {ex.Message}" +
                       $"{Environment.NewLine}StackTrace: {ex.StackTrace}";
             ServiceExtension.LoggerManager.Error(msg, ErrorCodeLogger.DataBase);
+            if (progressBar is not null)
+                await progressBar.CloseAsync().ConfigureAwait(false);
         }
     }
 
-    private async Task DeleteOrganizationByIdAsync(int orgId)
+    private async Task DeleteOrganizationByIdAsync(
+        int orgId,
+        AnyTaskProgressBarVM progressVm,
+        CancellationToken cancellationToken)
     {
         var db = StaticConfiguration.DBModel;
 
+        SetProgress(progressVm, 15, "Поиск организации в БД");
         var trackedOrg = await db.ReportsCollectionDbSet
-            .FirstOrDefaultAsync(r => r.Id == orgId)
-            .ConfigureAwait(true);
+            .FirstOrDefaultAsync(r => r.Id == orgId, cancellationToken)
+            .ConfigureAwait(false);
 
         if (trackedOrg is null)
         {
             ServiceExtension.LoggerManager.Warning(
                 $"Удаление организации Id={orgId}: запись не найдена в БД.",
                 ErrorCodeLogger.DataBase);
-            InvalidateAndRefreshUi(orgId);
+            await Dispatcher.UIThread.InvokeAsync(() => InvalidateAndRefreshUi(orgId));
             return;
         }
 
         var masterId = trackedOrg.Master_DBId;
-        var reportIds = await OrgReportsQuery.GetReportIdsAsync(db, orgId).ConfigureAwait(true);
 
+        SetProgress(progressVm, 30, "Сбор списка отчётов");
+        var reportIds = await OrgReportsQuery.GetReportIdsAsync(db, orgId, cancellationToken)
+            .ConfigureAwait(false);
+
+        SetProgress(progressVm, 45, $"Удаление отчётов ({reportIds.Length})");
         foreach (var batch in FirebirdInClause.Chunk(reportIds))
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var toRemove = await db.ReportCollectionDbSet
                 .Where(r => batch.Contains(r.Id))
-                .ToListAsync()
-                .ConfigureAwait(true);
+                .ToListAsync(cancellationToken)
+                .ConfigureAwait(false);
             db.ReportCollectionDbSet.RemoveRange(toRemove);
         }
 
         // Титул (Master) может не входить в Report_Collection org — удаляем отдельно по Id.
         if (masterId is > 0)
         {
+            SetProgress(progressVm, 70, "Удаление титульного листа");
             var master = db.ReportCollectionDbSet.Local.FirstOrDefault(r => r.Id == masterId.Value)
                          ?? await db.ReportCollectionDbSet
-                             .FirstOrDefaultAsync(r => r.Id == masterId.Value)
-                             .ConfigureAwait(true);
+                             .FirstOrDefaultAsync(r => r.Id == masterId.Value, cancellationToken)
+                             .ConfigureAwait(false);
             if (master is not null)
                 db.ReportCollectionDbSet.Remove(master);
 
@@ -151,12 +181,21 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
             trackedOrg.Master_DB = null!;
         }
 
+        SetProgress(progressVm, 85, "Сохранение изменений в БД");
         db.ReportsCollectionDbSet.Remove(trackedOrg);
-        await db.SaveChangesAsync().ConfigureAwait(true);
+        await db.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
-        RemoveOrgFromLocalStorage(orgId);
-        await ProcessDataBaseFillEmpty(db).ConfigureAwait(true);
-        InvalidateAndRefreshUi(orgId);
+        SetProgress(progressVm, 95, "Обновление списка");
+        await Dispatcher.UIThread.InvokeAsync(() =>
+        {
+            RemoveOrgFromLocalStorage(orgId);
+            InvalidateAndRefreshUi(orgId);
+        });
+    }
+
+    private static void SetProgress(AnyTaskProgressBarVM progressVm, int percent, string status)
+    {
+        Dispatcher.UIThread.Post(() => progressVm.SetProgressBar(percent, status));
     }
 
     private void InvalidateAndRefreshUi(int orgId)
@@ -184,28 +223,5 @@ public class DeleteReportsAsyncCommand : BaseAsyncCommand
 
         foreach (var item in local.Reports_Collection.OfType<Reports>().Where(r => r.Id == orgId).ToList())
             local.Reports_Collection.Remove(item);
-    }
-
-    private static async Task ProcessDataBaseFillEmpty(DataContext dbm)
-    {
-        if (!dbm.DBObservableDbSet.Any())
-            dbm.DBObservableDbSet.Add(new DBObservable());
-
-        foreach (var item in dbm.DBObservableDbSet)
-        {
-            foreach (var key in item.Reports_Collection)
-            {
-                var it = (Reports)key;
-                if (it.Master_DB is null) continue;
-                if (it.Master_DB.FormNum_DB == "") continue;
-                MasterTitleRowsFillEmptyGuard.EnsureForm10TemplatesIfCollectionEmpty(dbm, it.Master_DB);
-                MasterTitleRowsFillEmptyGuard.EnsureForm20TemplatesIfCollectionEmpty(dbm, it.Master_DB);
-
-                it.Master_DB.Rows10.Sorted = false;
-                it.Master_DB.Rows20.Sorted = false;
-                await it.Master_DB.Rows10.QuickSortAsync();
-                await it.Master_DB.Rows20.QuickSortAsync();
-            }
-        }
     }
 }

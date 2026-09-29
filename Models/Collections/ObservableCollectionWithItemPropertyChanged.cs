@@ -140,6 +140,56 @@ public class ObservableCollectionWithItemPropertyChanged<T> : ObservableCollecti
         (Items[index1], Items[index2]) = (Items[index2], Items[index1]);
     }
 
+    /// <summary>
+    /// Reorders existing members in place to match <paramref name="desiredOrder"/>.
+    /// Does not Clear/Remove — safe for EF-tracked collection navigations (Clear marks dependents Deleted).
+    /// </summary>
+    /// <returns>False if counts/membership differ; collection left unchanged.</returns>
+    public bool ReorderTo(IReadOnlyList<T> desiredOrder)
+    {
+        if (desiredOrder is null)
+            throw new ArgumentNullException(nameof(desiredOrder));
+
+        if (desiredOrder.Count != Items.Count)
+            return false;
+
+        for (var i = 0; i < desiredOrder.Count; i++)
+        {
+            if (desiredOrder[i] is null || !Items.Contains(desiredOrder[i]))
+                return false;
+        }
+
+        var changed = false;
+        for (var i = 0; i < desiredOrder.Count; i++)
+        {
+            if (ReferenceEquals(Items[i], desiredOrder[i]))
+                continue;
+
+            var j = -1;
+            for (var k = i + 1; k < Items.Count; k++)
+            {
+                if (!ReferenceEquals(Items[k], desiredOrder[i]))
+                    continue;
+                j = k;
+                break;
+            }
+
+            if (j < 0)
+                return false;
+
+            Swap(i, j);
+            changed = true;
+        }
+
+        if (changed)
+        {
+            Sorted = false;
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
+        return true;
+    }
+
     public void QuickSort()
     {
         if (Sorted) return;

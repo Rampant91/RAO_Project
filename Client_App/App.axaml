@@ -279,11 +279,18 @@
             <Setter Property="inputBehaviors:ReportPeriodDateInput.IsEnabled" Value="True"/>
             <Setter Property="inputBehaviors:OrgFormValidationPresentation.IsEnabled" Value="True"/>
         </Style>
+        <!-- Do not set DataValidationErrors.IsVisible=False: Fluent wraps the whole TextBox. -->
         <Style Selector="TextBox.report-period-date /template/ DataValidationErrors">
+            <Setter Property="Theme" Value="{StaticResource TooltipDataValidationErrors}"/>
+        </Style>
+        <Style Selector="MaskedTextBox.report-period-date /template/ DataValidationErrors">
+            <Setter Property="Theme" Value="{StaticResource TooltipDataValidationErrors}"/>
+        </Style>
+        <Style Selector="TextBox.report-period-date /template/ DataValidationErrors /template/ ContentControl">
             <Setter Property="IsVisible" Value="False"/>
             <Setter Property="IsHitTestVisible" Value="False"/>
         </Style>
-        <Style Selector="MaskedTextBox.report-period-date /template/ DataValidationErrors">
+        <Style Selector="MaskedTextBox.report-period-date /template/ DataValidationErrors /template/ ContentControl">
             <Setter Property="IsVisible" Value="False"/>
             <Setter Property="IsHitTestVisible" Value="False"/>
         </Style>
@@ -324,9 +331,9 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="inputBehaviors:OrgFormValidationPresentation.IsEnabled" Value="True"/>
         </Style>
+        <!-- Do not set DataValidationErrors.IsVisible=False: Fluent wraps the whole TextBox. -->
         <Style Selector="Window.orgForm TextBox.org-field /template/ DataValidationErrors">
-            <Setter Property="IsVisible" Value="False"/>
-            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="Theme" Value="{StaticResource TooltipDataValidationErrors}"/>
         </Style>
         <Style Selector="Window.orgForm TextBox.org-field /template/ DataValidationErrors /template/ ContentControl">
             <Setter Property="IsVisible" Value="False"/>
@@ -348,8 +355,7 @@
             <Setter Property="inputBehaviors:OrgFormValidationPresentation.IsEnabled" Value="True"/>
         </Style>
         <Style Selector="Window.orgForm TextBox.org-multiline /template/ DataValidationErrors">
-            <Setter Property="IsVisible" Value="False"/>
-            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="Theme" Value="{StaticResource TooltipDataValidationErrors}"/>
         </Style>
         <Style Selector="Window.orgForm TextBox.org-multiline /template/ DataValidationErrors /template/ ContentControl">
             <Setter Property="IsVisible" Value="False"/>
@@ -365,8 +371,7 @@
             <Setter Property="inputBehaviors:OrgFormValidationPresentation.IsEnabled" Value="True"/>
         </Style>
         <Style Selector="Window.orgForm AutoCompleteBox.org-field /template/ DataValidationErrors">
-            <Setter Property="IsVisible" Value="False"/>
-            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="Theme" Value="{StaticResource TooltipDataValidationErrors}"/>
         </Style>
         <Style Selector="Window.orgForm AutoCompleteBox.org-field /template/ DataValidationErrors /template/ ContentControl">
             <Setter Property="IsVisible" Value="False"/>
@@ -409,8 +414,7 @@
             <Setter Property="TextAlignment" Value="Center"/>
         </Style>
         <Style Selector="Window.orgForm AutoCompleteBox.org-subject-rf-code /template/ DataValidationErrors">
-            <Setter Property="IsVisible" Value="False"/>
-            <Setter Property="IsHitTestVisible" Value="False"/>
+            <Setter Property="Theme" Value="{StaticResource TooltipDataValidationErrors}"/>
         </Style>
         <Style Selector="Window.orgForm AutoCompleteBox.org-subject-rf-code /template/ DataValidationErrors /template/ ContentControl">
             <Setter Property="IsVisible" Value="False"/>
@@ -580,6 +584,8 @@
               при ресайзе/пересчёте (Avalonia.Controls.DataGrid#71, #160).
             -->
             <Setter Property="UseLayoutRounding" Value="False"/>
+            <!-- Null Background skips hit-test on empty area → ContextMenu only on headers. -->
+            <Setter Property="Background" Value="White"/>
             <!-- Lines via GridLines only: cell BorderThickness + PART_RightGridLine otherwise double. -->
             <Setter Property="GridLinesVisibility" Value="All"/>
             <Setter Property="HorizontalGridLinesBrush" Value="#FFB0B0B0"/>
@@ -589,6 +595,10 @@
             <!-- Visible reserves scrollbar gutter; AllowAutoHide=False keeps it always shown. -->
             <Setter Property="VerticalScrollBarVisibility" Value="Visible"/>
             <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
+        </Style>
+        <!-- RowsPresenter: empty space below last row must hit-test for ContextMenu. -->
+        <Style Selector="DataGrid.main-list-grid DataGridRowsPresenter">
+            <Setter Property="Background" Value="White"/>
         </Style>
         <Style Selector="DataGrid.main-list-grid ScrollBar">
             <Setter Property="AllowAutoHide" Value="False"/>
@@ -632,6 +642,40 @@
             <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
             <Setter Property="Margin" Value="2,2,8,2"/>
         </Style>
+        <!-- Import summary window: plain string headers, centered + slightly larger. -->
+        <Style Selector="DataGrid.import-summary-grid">
+            <Setter Property="ColumnHeaderHeight" Value="32"/>
+            <Setter Property="FontSize" Value="13"/>
+        </Style>
+        <Style Selector="DataGrid.import-summary-grid DataGridColumnHeader">
+            <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="Height" Value="32"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="4,2,4,2"/>
+            <Setter Property="Background" Value="#f5f5f5"/>
+            <Setter Property="Foreground" Value="Black"/>
+        </Style>
+        <Style Selector="DataGrid.import-summary-grid DataGridColumnHeader:pointerover">
+            <Setter Property="Background" Value="#f5f5f5"/>
+        </Style>
+        <Style Selector="DataGrid.import-summary-grid DataGridColumnHeader:pressed">
+            <Setter Property="Background" Value="#f5f5f5"/>
+        </Style>
+        <Style Selector="DataGrid.import-summary-grid DataGridColumnHeader TextBlock">
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+        <Style Selector="DataGrid.import-summary-grid DataGridCell TextBlock">
+            <Setter Property="TextAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>
         <Style Selector="DataGrid.main-list-grid DataGridCell">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="MinHeight" Value="0"/>
@@ -640,6 +684,9 @@
         </Style>
         <Style Selector="DataGrid.main-list-grid DataGridCell TextBlock">
             <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <!-- Transparent (not null): full cell hit-test for ContextMenu, not only glyph bounds. -->
+            <Setter Property="Background" Value="Transparent"/>
             <!-- Tabular figures: same digit count => same width, without monospace body text. -->
             <Setter Property="FontFeatures" Value="+tnum"/>
         </Style>
