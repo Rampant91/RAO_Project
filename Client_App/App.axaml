@@ -10,6 +10,7 @@
              xmlns:visualConverters="clr-namespace:Client_App.VisualRealization.Converters"
 			 xmlns:appControls="using:Client_App.Controls"
 			 xmlns:i="clr-namespace:Avalonia.Xaml.Interactivity;assembly=Avalonia.Xaml.Interactivity"
+             RequestedThemeVariant="Light"
              x:Class="Client_App.App">
 
     <Application.DataTemplates>
