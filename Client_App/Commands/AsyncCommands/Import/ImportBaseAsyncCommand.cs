@@ -1334,8 +1334,6 @@ public abstract class ImportBaseAsyncCommand : BaseAsyncCommand
         foreach (var impRep in impRepList) //Для каждой импортируемой формы
         {
             ImpRepFormNum = impRep.FormNum_DB;
-            if (impRep.FormNum_DB == "2.1")
-                ;
             ImpRepCorNum = impRep.CorrectionNumber_DB;
             ImpRepFormCount = impRep.Rows.Count;
             ImpRepExpDate = impRep.ExportDate_DB;
