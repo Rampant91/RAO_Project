@@ -8,6 +8,7 @@ using DynamicData;
 using Microsoft.EntityFrameworkCore;
 using Models.Collections;
 using Models.DBRealization;
+using Models.DBRealization.Migrations.DataModel;
 using Models.Forms;
 using Models.Forms.Form2;
 using System;
@@ -30,7 +31,7 @@ public class Form_21VM : BaseFormVM
 
     public Form_21VM(Report report) : base(report) 
     {
-        SumMode = report.Rows21.Any(row21 => row21.IsSumRow);
+        _sumMode = report.Rows21.Any(row21 => row21.IsSumRow);
     }
 
     public Form_21VM(in Reports reps)
@@ -80,13 +81,53 @@ public class Form_21VM : BaseFormVM
     #endregion
 
     #region Functions
+    public void IdentifySumRows()
+    {
+        var rows21 = Report.Rows21.OrderBy(row => row.NumberInOrder_DB).ToList();
+        Form21? lastSumRow = null;
+
+        for (int i = 0; i < rows21.Count; i++)
+        {
+            if (!(rows21[i].RefineMachineName_DB.Trim() is null or "" or "-")
+                && !(rows21[i].MachineCode_DB is null)
+                //&& !(rows21[i].MachinePower_DB.Trim() is null or "" or "-")
+                //&& !(rows21[i].NumberOfHoursPerYear_DB.Trim() is null or "" or "-")
+                && ((rows21[i].CodeRAOIn_DB.Trim() is "" or "-")
+                    || (rows21[i].StatusRAOIn_DB.Trim() is "" or "-"))
+                && ((rows21[i].CodeRAOout_DB.Trim() is "" or "-")
+                    || (rows21[i].StatusRAOout_DB.Trim() is "" or "-")))
+            {
+                lastSumRow = rows21[i];
+                lastSumRow.IsSumRow = true;
+                continue;
+            }
+
+            if (lastSumRow is null) continue;
 
 
+            if ((rows21[i].RefineMachineName_DB.Trim() is null or "" or "-" 
+                    || rows21[i].RefineMachineName_DB.Trim() == lastSumRow.RefineMachineName_DB.Trim())
+                && (rows21[i].MachineCode_DB is null 
+                    || rows21[i].MachineCode_DB == lastSumRow.MachineCode_DB)
+                && ((!(rows21[i].CodeRAOIn_DB.Trim() is "" or "-")
+                        && !(rows21[i].StatusRAOIn_DB.Trim() is "" or "-"))
+                    || (!(rows21[i].CodeRAOout_DB.Trim() is "" or "-")
+                        && !(rows21[i].StatusRAOout_DB.Trim() is "" or "-"))))
+            {
+                rows21[i].RefineMachineName_DB = lastSumRow.RefineMachineName_DB.Trim();
+                rows21[i].MachineCode_DB = lastSumRow.MachineCode_DB;
+                rows21[i].MachinePower_DB = lastSumRow.MachinePower_DB.Trim();
+                rows21[i].NumberOfHoursPerYear_DB = lastSumRow.NumberOfHoursPerYear_DB.Trim();
+            }
+        }
+    }
     #region SumUpFormList
     public void SumUpFormList()
     {
+        IdentifySumRows();
+
         var rows21 = Report.Rows21.ToList()
-            .Where(row22 => row22.IsSumRow == false)
+            .Where(row21 => row21.IsSumRow == false)
             .AsEnumerable()
             .OrderBy(row21 => row21.RefineMachineName_DB)
             .ThenBy(row21 => row21.MachineCode_DB)
@@ -96,6 +137,7 @@ public class Form_21VM : BaseFormVM
             .ThenBy(row21 => row21.StatusRAOIn_DB)
             .ThenBy(row21 => row21.CodeRAOout_DB)
             .ThenBy(row21 => row21.StatusRAOout_DB)
+            .ThenBy(row21 => row21.NumberInOrder_DB)
             .ToList();
 
         var resultRows21 = new List<Form21>();
@@ -105,7 +147,8 @@ public class Form_21VM : BaseFormVM
             (row21.RefineMachineName_DB,
             row21.MachineCode_DB,
             row21.MachinePower_DB,
-            row21.NumberOfHoursPerYear_DB));
+            row21.NumberOfHoursPerYear_DB
+            ));
 
         foreach (var refineMachineGroup in refineMachineGroups)
         {
@@ -135,6 +178,7 @@ public class Form_21VM : BaseFormVM
                     MachineCode_DB = firstElement.MachineCode_DB, //3
                     MachinePower_DB = firstElement.MachinePower_DB, //4
                     NumberOfHoursPerYear_DB = firstElement.NumberOfHoursPerYear_DB, //5
+
                     //SumUp LeftGroup
                     VolumeIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.VolumeIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
                     MassIn_DB = refineMachineGroup.Sum(row21 => double.TryParse(row21.MassIn_DB?.Replace('.', ','), out var value) ? value : 0).ToString("e3"),
