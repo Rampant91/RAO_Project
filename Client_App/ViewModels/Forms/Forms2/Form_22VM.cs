@@ -202,7 +202,8 @@ public class Form_22VM : BaseFormVM
             rows22[i].NumberInOrder_DB = i + 1;
         }
 
-        this.Report.Rows22 = new(rows22);
+        this.Report.Rows22.Clear();
+        this.Report.Rows22.AddRange(rows22);
     }
     #endregion
 
@@ -261,9 +262,6 @@ public class Form_22VM : BaseFormVM
     }
 
     #endregion
-
-
-
 
     #region Commands
 

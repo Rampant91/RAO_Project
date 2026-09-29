@@ -284,7 +284,9 @@ public class Form_21VM : BaseFormVM
             resultRows21[i].NumberInOrder_DB = i + 1;
         }
 
-        this.Report.Rows21 = new(resultRows21);
+        this.Report.Rows21.Clear();
+        this.Report.Rows21.AddRange(resultRows21);
+
     }
     #endregion
 
