@@ -13,7 +13,8 @@ using Client_App.ViewModels.MainWindowTabs;
 namespace Client_App.Behaviors.DataGrid;
 
 /// <summary>
-/// Сбрасывает выделение DataGrid при клике внутри грида, но мимо строки данных.
+/// Сбрасывает выделение DataGrid при клике (ЛКМ/ПКМ) внутри грида, но мимо строки данных.
+/// ПКМ сбрасывает на press — до открытия ContextMenu.
 /// </summary>
 public class DataGridClearSelectionOnEmptyAreaClickBehavior : Behavior<AvaloniaDataGrid>
 {
@@ -70,7 +71,11 @@ public class DataGridClearSelectionOnEmptyAreaClickBehavior : Behavior<AvaloniaD
         _clearOnRelease = false;
 
         if (AssociatedObject is null) return;
-        if (!e.GetCurrentPoint(AssociatedObject).Properties.IsLeftButtonPressed) return;
+
+        var props = e.GetCurrentPoint(AssociatedObject).Properties;
+        var isLeft = props.IsLeftButtonPressed;
+        var isRight = props.IsRightButtonPressed;
+        if (!isLeft && !isRight) return;
 
         var source = e.Source as Visual;
         if (IsClickOnInteractiveChrome(source))
@@ -79,7 +84,9 @@ public class DataGridClearSelectionOnEmptyAreaClickBehavior : Behavior<AvaloniaD
         if (IsClickOnDataRow(source, e))
             return;
 
-        _clearOnRelease = true;
+        // RMB: clear before ContextMenu opens (EnsureContextMenu on release).
+        // LMB: also re-clear on release — DataGrid may re-apply selection after press.
+        _clearOnRelease = isLeft;
         ClearSelection();
     }
 

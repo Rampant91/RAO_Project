@@ -60,6 +60,7 @@
 					<interactivity:Interaction.Behaviors>
 						<dgBehaviors:DataGridDoubleClickOpenFormBehavior />
                         <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
+                        <dgBehaviors:DataGridEnsureContextMenuBehavior />
 						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="MainWindow.Orgs.2.v7" />
 					</interactivity:Interaction.Behaviors>
 
@@ -680,7 +681,7 @@
                           Classes="main-list-grid report-list-grid"
                           ItemsSource="{Binding ReportCollection}"
                           SelectionMode="Single"
-                          SelectedItem="{Binding SelectedReport}"
+                          SelectedItem="{Binding SelectedReport, Mode=OneWayToSource}"
                           RowHeight="24"
                           GridLinesVisibility="All"
                           RowBackground="White"
@@ -690,6 +691,7 @@
 					<interactivity:Interaction.Behaviors>
 						<dgBehaviors:DataGridDoubleClickOpenFormBehavior />
                         <dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
+                        <dgBehaviors:DataGridEnsureContextMenuBehavior />
 						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="MainWindow.Reports.2.v4" />
 					</interactivity:Interaction.Behaviors>
 					
