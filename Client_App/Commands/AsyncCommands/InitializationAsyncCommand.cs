@@ -88,41 +88,53 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             dbm.DBObservableDbSet.Local.First().Reports_Collection.AddRange(dbm.ReportsCollectionDbSet);
         }
 
-        var removedReports = dbm.ReportsCollectionDbSet.Where(reps => reps.DBObservable == null);
-
-        foreach (var reports in removedReports)
+        IDisposable? orphanBulkDeleteGuard = null;
+        try
         {
-            dbm.ReportsCollectionDbSet.Remove(reports);
+            var removedOrphans = dbm.ReportsCollectionDbSet
+                .Where(reps => reps.DBObservableId == null)
+                .ToList();
+
+            if (removedOrphans.Count > 0)
+            {
+                orphanBulkDeleteGuard = EfReportsDeleteGuard.AllowBulkDeletes();
+                foreach (var reports in removedOrphans)
+                    dbm.ReportsCollectionDbSet.Remove(reports);
+            }
+
+            await dbm.DBObservableDbSet.LoadAsync(onStartProgressBarVm.StartupCts.Token);
+
+            onStartProgressBarVm.ThrowIfStartupCancelled();
+
+            // Безопасная очистка пустых дублей form_10/form_20 (только если есть что удалить).
+            if (MasterTitleRowsCleanupRunner.NeedsCleanup(dbm))
+            {
+                onStartProgressBarVm.LoadStatus = "Проверка данных организаций";
+                mainWindowViewModel.OnStartProgressBar = 65;
+                await MasterTitleRowsCleanupRunner.TryRunAsync(dbm, onStartProgressBarVm.StartupCts.Token);
+            }
+
+            onStartProgressBarVm.LoadStatus = "Сортировка организаций";
+            mainWindowViewModel.OnStartProgressBar = 70;
+            await ProcessDataBaseFillEmpty(dbm);
+
+            onStartProgressBarVm.ThrowIfStartupCancelled();
+            onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
+            mainWindowViewModel.OnStartProgressBar = 80;
+            ReportsStorage.LocalReports = dbm.DBObservableDbSet.Local.First();
+
+            await ProcessDataBaseFillNullOrder();
+
+            onStartProgressBarVm.ThrowIfStartupCancelled();
+            onStartProgressBarVm.LoadStatus = "Сохранение";
+            mainWindowViewModel.OnStartProgressBar = 90;
+            if (dbm.ChangeTracker.HasChanges())
+                await dbm.SaveChangesAsync(onStartProgressBarVm.StartupCts.Token);
         }
-
-        await dbm.DBObservableDbSet.LoadAsync(onStartProgressBarVm.StartupCts.Token);
-
-        onStartProgressBarVm.ThrowIfStartupCancelled();
-
-        // Безопасная очистка пустых дублей form_10/form_20 (только если есть что удалить).
-        if (MasterTitleRowsCleanupRunner.NeedsCleanup(dbm))
+        finally
         {
-            onStartProgressBarVm.LoadStatus = "Проверка данных организаций";
-            mainWindowViewModel.OnStartProgressBar = 65;
-            await MasterTitleRowsCleanupRunner.TryRunAsync(dbm, onStartProgressBarVm.StartupCts.Token);
+            orphanBulkDeleteGuard?.Dispose();
         }
-
-        onStartProgressBarVm.LoadStatus = "Сортировка организаций";
-        mainWindowViewModel.OnStartProgressBar = 70;
-        await ProcessDataBaseFillEmpty(dbm);
-
-        onStartProgressBarVm.ThrowIfStartupCancelled();
-        onStartProgressBarVm.LoadStatus = "Сортировка примечаний";
-        mainWindowViewModel.OnStartProgressBar = 80;
-        ReportsStorage.LocalReports = dbm.DBObservableDbSet.Local.First();
-
-        await ProcessDataBaseFillNullOrder();
-
-        onStartProgressBarVm.ThrowIfStartupCancelled();
-        onStartProgressBarVm.LoadStatus = "Сохранение";
-        mainWindowViewModel.OnStartProgressBar = 90;
-        if (dbm.ChangeTracker.HasChanges())
-            await dbm.SaveChangesAsync(onStartProgressBarVm.StartupCts.Token);
         ReportsStorage.LocalReports.PropertyChanged += Local_ReportsChanged;
 
         onStartProgressBarVm.ThrowIfStartupCancelled();
@@ -435,11 +447,11 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         var form20Keys = MainWindowListQuery.GetForm20DisplayKeys(db);
 
         var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-        ReportsStorage.LocalReports.Reports_Collection.Clear();
         ReportsStorage.LocalReports.Reports_Collection
-            .AddRange(tmpReportsList
+            .ReorderTo(tmpReportsList
                 .OrderBy(x => GetSortRegNo(x, form10Keys, form20Keys), comparator)
-                .ThenBy(x => GetSortOkpo(x, form10Keys, form20Keys), comparator));
+                .ThenBy(x => GetSortOkpo(x, form10Keys, form20Keys), comparator)
+                .ToList());
     }
 
     private static string GetSortRegNo(

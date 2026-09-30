@@ -7,8 +7,8 @@ using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
 using Client_App.Resources;
+using Client_App.Services;
 using Client_App.ViewModels.Forms.Forms2;
-using Client_App.Views;
 using Client_App.Views.Forms;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Models;
@@ -19,11 +19,14 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using MsBox.Avalonia.Enums;
+
 namespace Client_App.Views.Forms.Forms2;
 
-public partial class Form_20 : BaseWindow<Form_20VM>{
+public partial class Form_20 : BaseWindow<Form_20VM>
+{
     private protected static readonly IClassicDesktopStyleApplicationLifetime Desktop =
         (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!;
 
@@ -47,6 +50,21 @@ public partial class Form_20 : BaseWindow<Form_20VM>{
         if (DataContext is not Form_20VM vm) return;
 
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
+
+        if (vm.DBO is not null)
+        {
+            if (!OrganizationListRefresh.Form20HasAnyFilledTitleFields(vm.Storage))
+            {
+                vm.DBO = null;
+                desktop.MainWindow.WindowState = WindowState.Normal;
+                return;
+            }
+
+            args.Cancel = true;
+            await HandleNewOrganizationDraftClosingAsync(vm, desktop).ConfigureAwait(true);
+            return;
+        }
+
         try
         {
             if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
@@ -79,7 +97,7 @@ public partial class Form_20 : BaseWindow<Form_20VM>{
         bool reportsAlreadyExist;
 
         if (string.IsNullOrWhiteSpace(_vm.Storage.RegNoRep.Value)
-            && string.IsNullOrWhiteSpace(_vm.Storage.OkpoRep.Value) 
+            && string.IsNullOrWhiteSpace(_vm.Storage.OkpoRep.Value)
             || !await query
                 .AnyAsync(reps => reps.Master_DB.Rows20
                     .Any(form20 => form20.RegNo_DB == regNum
@@ -121,8 +139,6 @@ public partial class Form_20 : BaseWindow<Form_20VM>{
 
         var flag = false;
 
-        #region MessageRemoveEmptyForms
-
         var res = Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
             .GetMessageBoxCustom(new MessageBoxCustomParams
             {
@@ -138,8 +154,6 @@ public partial class Form_20 : BaseWindow<Form_20VM>{
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
             }).ShowWindowDialogAsync(desktop.MainWindow));
-
-        #endregion
 
         await res.WaitAsync(new CancellationToken());
         var dbm = StaticConfiguration.DBModel;
@@ -194,6 +208,43 @@ public partial class Form_20 : BaseWindow<Form_20VM>{
             Close();
         }
         args.Cancel = true;
+    }
+
+    private async Task HandleNewOrganizationDraftClosingAsync(
+        Form_20VM vm,
+        IClassicDesktopStyleApplicationLifetime desktop)
+    {
+        var answer = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
+            {
+                ButtonDefinitions =
+                [
+                    FormDialogTexts.YesButton,
+                    FormDialogTexts.NoButton
+                ],
+                ContentTitle = FormDialogTexts.CreateOrganizationTitle,
+                ContentHeader = FormDialogTexts.NotificationHeader,
+                ContentMessage = FormDialogTexts.SaveNewOrganizationCardMessage,
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
+            }).ShowWindowDialogAsync(desktop.MainWindow));
+
+        if (answer is FormDialogTexts.Yes)
+        {
+            try
+            {
+                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+            }
+            catch { }
+        }
+        else
+        {
+            vm.DBO = null;
+        }
+
+        desktop.MainWindow.WindowState = WindowState.Normal;
+        Close();
     }
 
     #endregion

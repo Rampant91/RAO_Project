@@ -8,7 +8,6 @@ using Client_App.ViewModels.Forms.Forms1;
 using Client_App.ViewModels.Forms.Forms2;
 using Client_App.ViewModels.Forms.Forms4;
 using Client_App.ViewModels.Forms.Forms5;
-using Client_App.ViewModels.MainWindowTabs;
 using Client_App.Views;
 using Client_App.Views.Forms.Forms1;
 using Client_App.Views.Forms.Forms2;
@@ -54,8 +53,8 @@ public static class OrganizationFormOpener
                 .GetMessageBoxStandard(new MessageBoxStandardParams
                 {
                     ButtonDefinitions = ButtonEnum.Ok,
-                    ContentTitle = "\u041e\u0442\u043a\u0440\u044b\u0442\u0438\u0435 \u043e\u0440\u0433\u0430\u043d\u0438\u0437\u0430\u0446\u0438\u0438",
-                    ContentHeader = "\u041e\u0448\u0438\u0431\u043a\u0430",
+                    ContentTitle = "Открытие организации",
+                    ContentHeader = "Ошибка",
                     ContentMessage = ex.Message,
                     MinWidth = 420,
                     MinHeight = 140,
@@ -73,18 +72,18 @@ public static class OrganizationFormOpener
         if (selectedReports is null)
             throw new InvalidOperationException("Organization is not selected.");
 
-        var master = selectedReports.Master_DB ?? selectedReports.Master;
-        if (master is null)
+        var stubMaster = selectedReports.Master_DB ?? selectedReports.Master;
+        if (stubMaster is null)
             throw new InvalidOperationException("Organization master report is missing.");
 
-        var formNum = ResolveFormNum(master);
+        var formNum = ResolveFormNum(stubMaster);
         var refreshOrgListAfterTitle = false;
 
         switch (formNum)
         {
             case "1.0":
             {
-                await EnsureForm10RowsLoadedAsync(master);
+                var master = await EnsureTrackedMasterWithForm10Async(stubMaster).ConfigureAwait(true);
                 var titleBefore = SnapshotForm10Title(master);
                 var form10VM = new Form_10VM(formNum, master)
                 {
@@ -106,7 +105,7 @@ public static class OrganizationFormOpener
             }
             case "2.0":
             {
-                await EnsureForm20RowsLoadedAsync(master);
+                var master = await EnsureTrackedMasterWithForm20Async(stubMaster).ConfigureAwait(true);
                 var titleBefore = SnapshotForm20Title(master);
                 var form20VM = new Form_20VM(formNum, master)
                 {
@@ -128,7 +127,7 @@ public static class OrganizationFormOpener
             }
             case "4.0":
             {
-                var form40VM = new Form_40VM(formNum, master);
+                var form40VM = new Form_40VM(formNum, stubMaster);
                 var window = new Form_40(form40VM);
                 window.PrepareBeforeShow(mainWindow);
                 await window.ShowDialog(mainWindow);
@@ -136,7 +135,7 @@ public static class OrganizationFormOpener
             }
             case "5.0":
             {
-                var form50VM = new Form_50VM(formNum, master);
+                var form50VM = new Form_50VM(formNum, stubMaster);
                 var window = new Form_50(form50VM);
                 window.PrepareBeforeShow(mainWindow);
                 await window.ShowDialog(mainWindow);
@@ -200,50 +199,103 @@ public static class OrganizationFormOpener
             r1?.RegNo_DB, r1?.Okpo_DB, r1?.ShortJurLico_DB);
     }
 
-    private static async Task EnsureForm10RowsLoadedAsync(Report master)
+    /// <summary>
+    /// Master + Rows10 из основного DBModel (tracked), иначе Save/HasChanges не видят правки титула.
+    /// </summary>
+    private static async Task<Report> EnsureTrackedMasterWithForm10Async(Report stubOrTracked)
     {
-        if (master.Rows10.Count >= 2)
-            return;
+        var db = StaticConfiguration.DBModel;
+        if (stubOrTracked.Id <= 0)
+            throw new InvalidOperationException("Organization master Id is missing.");
 
-        await using var db = new DBModel(StaticConfiguration.DBPath);
-        var rows = await db.form_10
-            .AsNoTracking()
-            .Where(f => f.ReportId == master.Id)
-            .OrderBy(f => f.NumberInOrder_DB)
-            .ToListAsync();
+        var master = db.ReportCollectionDbSet.Local.FirstOrDefault(r => r.Id == stubOrTracked.Id);
+        if (master is null)
+        {
+            master = await db.ReportCollectionDbSet
+                .Include(r => r.Rows10)
+                .FirstOrDefaultAsync(r => r.Id == stubOrTracked.Id)
+                .ConfigureAwait(true);
+        }
+        else if (master.Rows10.Count < 2)
+        {
+            await db.Entry(master).Collection(r => r.Rows10).LoadAsync().ConfigureAwait(true);
+        }
 
-        master.Rows10.Clear();
-        foreach (var row in rows)
-            master.Rows10.Add(row);
+        if (master is null)
+            throw new InvalidOperationException($"Organization master Id={stubOrTracked.Id} not found in DB.");
 
+        EnsureForm10RowsTracked(db, master);
+        EnsureTwoForm10Rows(master);
+        return master;
+    }
+
+    private static async Task<Report> EnsureTrackedMasterWithForm20Async(Report stubOrTracked)
+    {
+        var db = StaticConfiguration.DBModel;
+        if (stubOrTracked.Id <= 0)
+            throw new InvalidOperationException("Organization master Id is missing.");
+
+        var master = db.ReportCollectionDbSet.Local.FirstOrDefault(r => r.Id == stubOrTracked.Id);
+        if (master is null)
+        {
+            master = await db.ReportCollectionDbSet
+                .Include(r => r.Rows20)
+                .FirstOrDefaultAsync(r => r.Id == stubOrTracked.Id)
+                .ConfigureAwait(true);
+        }
+        else if (master.Rows20.Count < 2)
+        {
+            await db.Entry(master).Collection(r => r.Rows20).LoadAsync().ConfigureAwait(true);
+        }
+
+        if (master is null)
+            throw new InvalidOperationException($"Organization master Id={stubOrTracked.Id} not found in DB.");
+
+        EnsureForm20RowsTracked(db, master);
+        EnsureTwoForm20Rows(master);
+        return master;
+    }
+
+    private static void EnsureForm10RowsTracked(DBModel db, Report master)
+    {
+        foreach (var row in master.Rows10.OfType<Form10>())
+        {
+            if (row.Id == 0)
+                continue;
+            if (db.Entry(row).State == EntityState.Detached)
+                db.form_10.Attach(row);
+        }
+    }
+
+    private static void EnsureForm20RowsTracked(DBModel db, Report master)
+    {
+        foreach (var row in master.Rows20.OfType<Form20>())
+        {
+            if (row.Id == 0)
+                continue;
+            if (db.Entry(row).State == EntityState.Detached)
+                db.form_20.Attach(row);
+        }
+    }
+
+    private static void EnsureTwoForm10Rows(Report master)
+    {
         while (master.Rows10.Count < 2)
         {
             var empty = (Form10)FormCreator.Create("1.0");
             empty.NumberInOrder_DB = (short)(master.Rows10.Count + 1);
+            empty.ReportId = master.Id;
             master.Rows10.Add(empty);
         }
     }
 
-    private static async Task EnsureForm20RowsLoadedAsync(Report master)
+    private static void EnsureTwoForm20Rows(Report master)
     {
-        if (master.Rows20.Count >= 2)
-            return;
-
-        await using var db = new DBModel(StaticConfiguration.DBPath);
-        var rows = await db.form_20
-            .AsNoTracking()
-            .Where(f => f.ReportId == master.Id)
-            .OrderBy(f => f.NumberInOrder_DB)
-            .ToListAsync();
-
-        master.Rows20.Clear();
-        foreach (var row in rows)
-            master.Rows20.Add(row);
-
         while (master.Rows20.Count < 2)
         {
             var empty = (Form20)FormCreator.Create("2.0");
             empty.NumberInOrder_DB = (short)(master.Rows20.Count + 1);
+            empty.ReportId = master.Id;
             master.Rows20.Add(empty);
         }
     }

@@ -1,17 +1,15 @@
 ﻿using Client_App.Commands.AsyncCommands.Save;
-using Client_App.Interfaces.Logger;
-using Client_App.Interfaces.Logger.EnumLogger;
+using Client_App.Commands.AsyncCommands;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form2;
-using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using Client_App.Commands.AsyncCommands;
 
 namespace Client_App.ViewModels.Forms.Forms2;
+
 public class Form_20VM : BaseVM, INotifyPropertyChanged
 {
     #region Storages
@@ -34,7 +32,7 @@ public class Form_20VM : BaseVM, INotifyPropertyChanged
 
     #region Storage
 
-    private Report _storage;
+    private Report _storage = null!;
     public Report Storage
     {
         get => _storage;
@@ -52,8 +50,8 @@ public class Form_20VM : BaseVM, INotifyPropertyChanged
 
     #region DBO
 
-    private DBObservable _DBO;
-    public DBObservable DBO
+    private DBObservable? _DBO;
+    public DBObservable? DBO
     {
         get => _DBO;
         set
@@ -116,9 +114,9 @@ public class Form_20VM : BaseVM, INotifyPropertyChanged
 
     #region Commands
 
-    public ICommand SaveReport => new SaveReportAsyncCommand(this);             //  Сохранить отчет
-    public ICommand ChangeReportOrder => new ChangeReportOrderAsyncCommand(this);       //  Поменять местами юр. лицо и обособленное подразделение
-    public ICommand Reorganize => new ReorganizeReportAsyncCommand(this);        // Реорганизовать компанию (Добавить или убрать поля для обособленного подразделения)
+    public ICommand SaveReport => new SaveReportAsyncCommand(this);
+    public ICommand ChangeReportOrder => new ChangeReportOrderAsyncCommand(this);
+    public ICommand Reorganize => new ReorganizeReportAsyncCommand(this);
 
     #endregion
 
@@ -142,28 +140,16 @@ public class Form_20VM : BaseVM, INotifyPropertyChanged
     public Form_20VM(string formNum, in Report rep)
     {
         if (formNum is "1.0" or "2.0")
-        {
             Storage = rep;
-        }
 
         FormType = formNum;
-        try
-        {
-            StaticConfiguration.DBModel.SaveChanges();
-        }
-        catch (Exception ex)
-        {
-            ServiceExtension.LoggerManager.Error(
-                $"Form_20VM.SaveChanges: {ex.Message}{Environment.NewLine}{ex.StackTrace}",
-                ErrorCodeLogger.Application);
-        }
     }
 
     #endregion
 
     #region OnPropertyChanged
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
     public void OnPropertyChanged([CallerMemberName] string propertyName = "")
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

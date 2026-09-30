@@ -7,6 +7,7 @@ using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
 using Client_App.Resources;
+using Client_App.Services;
 using Client_App.ViewModels.Forms.Forms1;
 using Client_App.Views.Forms;
 using MsBox.Avalonia.Dto;
@@ -18,8 +19,10 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 using MsBox.Avalonia.Enums;
+
 namespace Client_App.Views.Forms.Forms1;
 
 public partial class Form_10 : BaseWindow<Form_10VM>
@@ -47,6 +50,22 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         if (DataContext is not Form_10VM vm) return;
 
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
+
+        // Новая карточка: ещё не в БД (DBO != null до первого SaveReport).
+        if (vm.DBO is not null)
+        {
+            if (!OrganizationListRefresh.Form10HasAnyFilledTitleFields(vm.Storage))
+            {
+                vm.DBO = null;
+                desktop.MainWindow.WindowState = WindowState.Normal;
+                return;
+            }
+
+            args.Cancel = true;
+            await HandleNewOrganizationDraftClosingAsync(vm, desktop).ConfigureAwait(true);
+            return;
+        }
+
         try
         {
             if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
@@ -79,10 +98,10 @@ public partial class Form_10 : BaseWindow<Form_10VM>
         bool reportsAlreadyExist;
 
         if (string.IsNullOrWhiteSpace(regNum)
-            && string.IsNullOrWhiteSpace(okpo) 
+            && string.IsNullOrWhiteSpace(okpo)
             || !await query
                 .AnyAsync(reps => reps.Master_DB.Rows10
-                    .Any(form10 => form10.RegNo_DB == regNum 
+                    .Any(form10 => form10.RegNo_DB == regNum
                                    && form10.Okpo_DB == okpo)))
         {
             reportsAlreadyExist = false;
@@ -97,34 +116,7 @@ public partial class Form_10 : BaseWindow<Form_10VM>
                           && x.Master_DB.Id != _vm.Storage.Id);
         }
 
-        //if (reportsAlreadyExist)
-        //{
-        //    args.Cancel = true;
-
-        //    await Dispatcher.UIThread.InvokeAsync(() => MessageBoxManager
-        //        .GetMessageBoxStandard(new MessageBoxStandardParams
-        //        {
-        //            ButtonDefinitions = ButtonEnum.Ok,
-        //            ContentTitle = FormDialogTexts.SaveChangesTitle,
-        //            ContentHeader = FormDialogTexts.NotificationHeader,
-        //            ContentMessage =
-        //                $"�� ������� ��������� ��������� � ��������� ����� �����������, " +
-        //                $"��������� ����������� � ������� ���� � ���.� ��� ���������� � ���� ������. " +
-        //                $"��������� � ������������ ���������� ���� � ���.�.",
-        //            MinWidth = 400,
-        //            MaxWidth = 600,
-        //            MinHeight = 150,
-        //            MaxHeight = 400,
-        //            WindowStartupLocation = WindowStartupLocation.CenterOwner,
-        //            Topmost = true,
-        //        })
-        //        .ShowWindowDialogAsync(window ?? Desktop.MainWindow));
-
-        //    return;
-        //}
-
         var jurForm10 = vm.Storage.Rows10[0];
-        var obForm10 = vm.Storage.Rows10[1];
 
         if ((!string.IsNullOrWhiteSpace(jurForm10.SubjectRF_DB)
             || !string.IsNullOrWhiteSpace(jurForm10.JurLico_DB)
@@ -159,10 +151,10 @@ public partial class Form_10 : BaseWindow<Form_10VM>
                 .GetMessageBoxCustom(new MessageBoxCustomParams
                 {
                     ButtonDefinitions =
-                [
-                    FormDialogTexts.YesButton,
-                    FormDialogTexts.NoButton
-                ],
+                    [
+                        FormDialogTexts.YesButton,
+                        FormDialogTexts.NoButton
+                    ],
                     ContentTitle = FormDialogTexts.SaveChangesTitle,
                     ContentHeader = FormDialogTexts.NotificationHeader,
                     ContentMessage = FormDialogTexts.IncompleteJuridicalPersonFieldsCloseMessage,
@@ -180,8 +172,6 @@ public partial class Form_10 : BaseWindow<Form_10VM>
 
         var flag = false;
 
-        #region MessageRemoveEmptyForms
-
         var res = Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
             .GetMessageBoxCustom(new MessageBoxCustomParams
             {
@@ -197,8 +187,6 @@ public partial class Form_10 : BaseWindow<Form_10VM>
                 WindowStartupLocation = WindowStartupLocation.CenterOwner,
                 Topmost = true,
             }).ShowWindowDialogAsync(desktop.MainWindow));
-
-        #endregion
 
         await res.WaitAsync(new CancellationToken());
         var dbm = StaticConfiguration.DBModel;
@@ -253,6 +241,43 @@ public partial class Form_10 : BaseWindow<Form_10VM>
             Close();
         }
         args.Cancel = true;
+    }
+
+    private async Task HandleNewOrganizationDraftClosingAsync(
+        Form_10VM vm,
+        IClassicDesktopStyleApplicationLifetime desktop)
+    {
+        var answer = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
+            {
+                ButtonDefinitions =
+                [
+                    FormDialogTexts.YesButton,
+                    FormDialogTexts.NoButton
+                ],
+                ContentTitle = FormDialogTexts.CreateOrganizationTitle,
+                ContentHeader = FormDialogTexts.NotificationHeader,
+                ContentMessage = FormDialogTexts.SaveNewOrganizationCardMessage,
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
+            }).ShowWindowDialogAsync(desktop.MainWindow));
+
+        if (answer is FormDialogTexts.Yes)
+        {
+            try
+            {
+                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+            }
+            catch { }
+        }
+        else
+        {
+            vm.DBO = null;
+        }
+
+        desktop.MainWindow.WindowState = WindowState.Normal;
+        Close();
     }
 
     #endregion

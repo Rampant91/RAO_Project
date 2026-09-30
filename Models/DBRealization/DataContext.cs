@@ -294,6 +294,55 @@ public class DataContext : DbContext
 
     #endregion
 
+    #region SaveChanges guards
+
+    /// <summary>
+    /// Blocks accidental mass delete of orgs (e.g. Clear on tracked Reports_Collection).
+    /// Single-org UI delete is allowed; bulk needs <see cref="EfReportsDeleteGuard.AllowBulkDeletes"/>.
+    /// </summary>
+    private void ThrowIfUnsafeReportsMassDelete()
+    {
+        var deletedOrgs = ChangeTracker.Entries<Reports>()
+            .Count(e => e.State == EntityState.Deleted);
+
+        if (deletedOrgs <= 1)
+            return;
+
+        if (EfReportsDeleteGuard.AllowBulkReportsDelete)
+            return;
+
+        throw new InvalidOperationException(
+            $"Refusing SaveChanges: {deletedOrgs} Reports marked Deleted. " +
+            "Tracked LocalReports.Reports_Collection.Clear() can schedule mass org wipe. " +
+            "Use ReorderTo for sort; wrap intentional bulk deletes in EfReportsDeleteGuard.AllowBulkDeletes().");
+    }
+
+    public override int SaveChanges()
+    {
+        ThrowIfUnsafeReportsMassDelete();
+        return base.SaveChanges();
+    }
+
+    public override int SaveChanges(bool acceptAllChangesOnSuccess)
+    {
+        ThrowIfUnsafeReportsMassDelete();
+        return base.SaveChanges(acceptAllChangesOnSuccess);
+    }
+
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        ThrowIfUnsafeReportsMassDelete();
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
+    public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+    {
+        ThrowIfUnsafeReportsMassDelete();
+        return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+    }
+
+    #endregion
+
     #region Restore
     
     public void Restore()

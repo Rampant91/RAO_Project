@@ -14,7 +14,7 @@ using Models.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Client_App.Commands.AsyncCommands.Save;
+using Client_App.Services;
 using Client_App.ViewModels;
 using Client_App.ViewModels.Forms.Forms4;
 using Client_App.ViewModels.Forms.Forms5;
@@ -25,6 +25,7 @@ namespace Client_App.Commands.AsyncCommands.Add;
 
 /// <summary>
 /// Создать и открыть новое окно формы организации (1.0, 2.0, 4.0, 5.0).
+/// Черновик до явного Save / подтверждения при закрытии — в БД не пишется.
 /// </summary>
 public class AddReportsAsyncCommand : BaseAsyncCommand
 {
@@ -32,9 +33,6 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
     {
         var mainWindow = (Desktop.MainWindow as MainWindow)!;
         var mainWindowVM = (mainWindow.DataContext as MainWindowVM);
-
-        var selectedReports = mainWindow.SelectedReports;
-
 
         bool isSeparateDivision = true;
 
@@ -88,9 +86,7 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                     var form10VM = new Form_10VM(ReportsStorage.LocalReports);
                     form10VM.IsSeparateDivision = isSeparateDivision;
                     var window = new Form_10(form10VM) { DataContext = form10VM };
-                    await new SaveReportAsyncCommand(form10VM).AsyncExecute(null);
                     await window.ShowDialog(mainWindow);
-
                     break;
                 }
             case "2.0":
@@ -98,7 +94,6 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                     var form20VM = new Form_20VM(ReportsStorage.LocalReports);
                     form20VM.IsSeparateDivision = isSeparateDivision;
                     var window = new Form_20(form20VM) { DataContext = form20VM };
-                    await new SaveReportAsyncCommand(form20VM).AsyncExecute(null);
                     await window.ShowDialog(mainWindow);
                     break;
                 }
@@ -106,39 +101,30 @@ public class AddReportsAsyncCommand : BaseAsyncCommand
                 {
                     var form40VM = new Form_40VM(ReportsStorage.LocalReports);
                     var window = new Form_40(form40VM) { DataContext = form40VM };
-                    await new SaveReportAsyncCommand(form40VM).AsyncExecute(null);
                     await window.ShowDialog(mainWindow);
-
                     break;
                 }
             case "5.0":
                 {
                     var form50VM = new Form_50VM(ReportsStorage.LocalReports);
                     var window = new Form_50(form50VM) { DataContext = form50VM };
-                    await new SaveReportAsyncCommand(form50VM).AsyncExecute(null);
                     await window.ShowDialog(mainWindow);
-
                     break;
                 }
         }
+
         mainWindow.SelectedReports = mainWindow.SelectedReports is null
             ? []
             : new ObservableCollectionWithItemPropertyChanged<IKey>(mainWindow.SelectedReports);
 
-
         var comparator = new CustomReportsComparer();
         var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
-        ReportsStorage.LocalReports.Reports_Collection.Clear();
         ReportsStorage.LocalReports.Reports_Collection
-            .AddRange(tmpReportsList
+            .ReorderTo(tmpReportsList
                 .OrderBy(x => x.Master_DB.RegNoRep?.Value, comparator)
-                .ThenBy(x => x.Master_DB.OkpoRep?.Value, comparator));
+                .ThenBy(x => x.Master_DB.OkpoRep?.Value, comparator)
+                .ToList());
 
-
-        mainWindowVM.UpdateReportsCollection();
-        mainWindowVM.UpdateOrgsPageInfo();
-
-
-        //await ReportsStorage.LocalReports.Reports_Collection.QuickSortAsync(); не нужно
+        OrganizationListRefresh.AfterOrgStructureChanged(mainWindowVM);
     }
 }

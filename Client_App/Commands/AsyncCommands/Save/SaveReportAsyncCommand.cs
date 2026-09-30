@@ -1,4 +1,4 @@
-﻿﻿using MsBox.Avalonia;
+﻿using MsBox.Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Client_App.Interfaces.Logger;
@@ -13,6 +13,7 @@ using Client_App.Views.Forms;
 using MsBox.Avalonia.Dto;
 using Microsoft.EntityFrameworkCore;
 using Client_App.Services.DataAccess;
+using Client_App.Services;
 using Client_App.ViewModels.Forms.Forms5;
 using System.Threading.Tasks;
 using Models.Collections;
@@ -271,8 +272,16 @@ public class SaveReportAsyncCommand : BaseAsyncCommand
         {
             var mainWindow = Desktop.MainWindow as MainWindow;
             var mainWindowVM = await Dispatcher.UIThread.InvokeAsync(() => mainWindow?.DataContext as MainWindowVM);
-            // Не InvalidateAll/org-grid: менялись строки отчёта — обновить счётчик и страницу отчётов.
-            mainWindowVM?.RefreshAfterFormReportSaved(_formType, Storages?.Id, Storage.Id);
+            if (_formType is "1.0" or "2.0" or "4.0" or "5.0")
+            {
+                // Титул org: сбросить OrgKeys/страницы — иначе новая org не видна до рестарта.
+                OrganizationListRefresh.AfterOrgStructureChanged(mainWindowVM);
+            }
+            else
+            {
+                // Не InvalidateAll/org-grid: менялись строки отчёта — обновить счётчик и страницу отчётов.
+                mainWindowVM?.RefreshAfterFormReportSaved(_formType, Storages?.Id, Storage.Id);
+            }
         }
         catch (Exception ex)
         {
