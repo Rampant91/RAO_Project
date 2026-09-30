@@ -41,7 +41,6 @@ public class DBObservable : INotifyPropertyChanged
 
     private ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection_DB;
 
-    // Still an EF navigation: Fluent HasMany maps this despite [NotMapped]. Do NOT Clear() to sort — use ReorderTo.
     [NotMapped]
     public virtual ObservableCollectionWithItemPropertyChanged<Reports> Reports_Collection
     {

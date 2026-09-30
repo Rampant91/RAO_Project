@@ -10,7 +10,7 @@ namespace Client_App.Behaviors.Input;
 
 /// <summary>
 /// Поля org-форм: текст ошибки в tooltip при наведении на всё поле.
-/// Сам DataValidationErrors скрывать нельзя — в Fluent он оборачивает весь TextBox.
+/// Иконка остаётся в XAML (ContentControl у DataValidationErrors), поле растягивается и редактируется.
 /// </summary>
 public static class OrgFormValidationPresentation
 {

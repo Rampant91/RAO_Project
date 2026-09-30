@@ -502,12 +502,12 @@ public class ImportJsonAsyncCommand : ImportBaseAsyncCommand
             var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
             if (tmpReportsList.All(x => x.Master_DB.RegNoRep != null && x.Master_DB.OkpoRep != null))
             {
-                var tmpReportsOrdered = tmpReportsList
+                var tmpReportsOrderedEnum = tmpReportsList
                     .OrderBy(x => x.Master_DB.RegNoRep.Value, comparator)
-                    .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator)
-                    .ToList();
+                    .ThenBy(x => x.Master_DB.OkpoRep.Value, comparator);
 
-                ReportsStorage.LocalReports.Reports_Collection.ReorderTo(tmpReportsOrdered);
+                ReportsStorage.LocalReports.Reports_Collection.Clear();
+                ReportsStorage.LocalReports.Reports_Collection.AddRange(tmpReportsOrderedEnum);
             }
         }
         catch (Exception ex)

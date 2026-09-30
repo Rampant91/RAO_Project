@@ -88,26 +88,11 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
             dbm.DBObservableDbSet.Local.First().Reports_Collection.AddRange(dbm.ReportsCollectionDbSet);
         }
 
-        var removedOrphans = dbm.ReportsCollectionDbSet
-            .Where(reps => reps.DBObservableId == null)
-            .ToList();
+        var removedReports = dbm.ReportsCollectionDbSet.Where(reps => reps.DBObservable == null);
 
-        const int maxStartupOrphanDeletes = 5;
-        if (removedOrphans.Count > maxStartupOrphanDeletes)
+        foreach (var reports in removedReports)
         {
-            ServiceExtension.LoggerManager.Error(
-                $"Startup orphan org cleanup skipped: {removedOrphans.Count} Reports with null DBObservableId " +
-                $"(Ids: {string.Join(",", removedOrphans.Select(r => r.Id))}). " +
-                "Refusing mass delete; inspect DB before removing.",
-                ErrorCodeLogger.DataBase);
-        }
-        else if (removedOrphans.Count > 0)
-        {
-            using (EfReportsDeleteGuard.AllowBulkDeletes())
-            {
-                foreach (var reports in removedOrphans)
-                    dbm.ReportsCollectionDbSet.Remove(reports);
-            }
+            dbm.ReportsCollectionDbSet.Remove(reports);
         }
 
         await dbm.DBObservableDbSet.LoadAsync(onStartProgressBarVm.StartupCts.Token);
@@ -450,11 +435,11 @@ public partial class InitializationAsyncCommand(MainWindowVM mainWindowViewModel
         var form20Keys = MainWindowListQuery.GetForm20DisplayKeys(db);
 
         var tmpReportsList = new List<Reports>(ReportsStorage.LocalReports.Reports_Collection);
+        ReportsStorage.LocalReports.Reports_Collection.Clear();
         ReportsStorage.LocalReports.Reports_Collection
-            .ReorderTo(tmpReportsList
+            .AddRange(tmpReportsList
                 .OrderBy(x => GetSortRegNo(x, form10Keys, form20Keys), comparator)
-                .ThenBy(x => GetSortOkpo(x, form10Keys, form20Keys), comparator)
-                .ToList());
+                .ThenBy(x => GetSortOkpo(x, form10Keys, form20Keys), comparator));
     }
 
     private static string GetSortRegNo(

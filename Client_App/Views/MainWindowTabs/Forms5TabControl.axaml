@@ -53,7 +53,6 @@
 					<interactivity:Interaction.Behaviors>
 						<dgBehaviors:DataGridDoubleClickOpenFormBehavior />
 						<dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
-						<dgBehaviors:DataGridEnsureContextMenuBehavior />
 						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="MainWindow.Orgs.5.v2" />
 					</interactivity:Interaction.Behaviors>
 
@@ -351,7 +350,6 @@
 					<interactivity:Interaction.Behaviors>
 						<dgBehaviors:DataGridDoubleClickOpenFormBehavior />
 						<dgBehaviors:DataGridClearSelectionOnEmptyAreaClickBehavior />
-						<dgBehaviors:DataGridEnsureContextMenuBehavior />
 						<dgBehaviors:DataGridColumnWidthLoadBehavior FormNum="MainWindow.Reports.5.v4" />
 					</interactivity:Interaction.Behaviors>
 					
