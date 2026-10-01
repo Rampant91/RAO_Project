@@ -10,6 +10,7 @@ using Models.Forms;
 using Models.Forms.Form1;
 using Models.Helpers;
 using OfficeOpenXml;
+using Spravochniki;
 
 namespace Client_App.Commands.AsyncCommands.CheckForm;
 
@@ -18,8 +19,6 @@ public abstract class CheckBase : BaseAsyncCommand
     #region Properties
     
     protected static bool checkNumPrint = false;
-
-    private protected static List<Dictionary<string, string>> OKSM = new();
 
     private protected static List<Dictionary<string, string>> R = new();
 
@@ -377,16 +376,15 @@ public abstract class CheckBase : BaseAsyncCommand
 
     #region LoadDictionaries
 
+    /// <summary>
+    /// Краткое наименование из единого ОКСМ (актуальное или историческое).
+    /// </summary>
+    private protected static bool IsOksmShortName(string value) =>
+        Spravochniks.IsAcceptedOksmShortName(value);
+
     private protected static void LoadDictionaries()
     {
-        if (OKSM.Count == 0)
-        {
-#if DEBUG
-            OKSM_Populate_From_File(Path.Combine(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"..\..\..\..\")), "data", "Spravochniki", "oksm.xlsx"));
-#else
-            OKSM_Populate_From_File(Path.Combine(Path.GetFullPath(AppContext.BaseDirectory), "data", "Spravochniki", $"oksm.xlsx"));
-#endif
-        }
+        // ОКСМ загружается лениво через Spravochniks (единый data/Spravochniki/oksm.xlsx).
 
         if (R.Count == 0)
         {
@@ -485,33 +483,6 @@ public abstract class CheckBase : BaseAsyncCommand
             {
                 WorkDaysSpecific.Add(fixDate);
             }
-            i++;
-        }
-    }
-
-    #endregion
-
-    #region OKSMFromFile
-
-    private static void OKSM_Populate_From_File(string fileAddress)
-    {
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-        if (!File.Exists(fileAddress)) return;
-        FileInfo excel_import_file = new(fileAddress);
-        var xls = new ExcelPackage(excel_import_file);
-        var worksheet1 = xls.Workbook.Worksheets["Лист1"];
-        var i = 8;
-        OKSM.Clear();
-        while (worksheet1.Cells[i, 1].Text != string.Empty)
-        {
-            OKSM.Add(new Dictionary<string, string>
-            {
-                {"kod", worksheet1.Cells[i, 2].Text},
-                {"shortname", worksheet1.Cells[i, 3].Text},
-                {"longname", worksheet1.Cells[i, 4].Text},
-                {"alpha2", worksheet1.Cells[i, 5].Text},
-                {"alpha3", worksheet1.Cells[i, 6].Text}
-            });
             i++;
         }
     }

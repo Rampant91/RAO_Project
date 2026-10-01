@@ -134,6 +134,14 @@
     <Delete Files="@(_StaleUpdaterInOutput)" TreatErrorsAsWarnings="true" />
     <Copy SourceFiles="@(_MpzfUpdaterFiles)" DestinationFolder="$(TargetDir)data\Updater" SkipUnchangedFiles="false" Condition="'@(_MpzfUpdaterFiles)' != ''" />
   </Target>
+  <!-- Справочники в output: иначе Debug берёт устаревший data\Spravochniki из bin -->
+  <Target Name="CopySpravochnikiToOutput" AfterTargets="Build">
+    <ItemGroup Condition="Exists('$(_RepoDataDir)\Spravochniki')">
+      <_SpravochnikiOutputFiles Include="$(_RepoDataDir)\Spravochniki\*.*" />
+    </ItemGroup>
+    <MakeDir Directories="$(TargetDir)data\Spravochniki" Condition="'@(_SpravochnikiOutputFiles)' != ''" />
+    <Copy SourceFiles="@(_SpravochnikiOutputFiles)" DestinationFolder="$(TargetDir)data\Spravochniki" SkipUnchangedFiles="false" Condition="'@(_SpravochnikiOutputFiles)' != ''" />
+  </Target>
   <!-- После CopyRepoDataToPublish, чтобы data\Updater не затирался и всегда был свежий updater -->
   <Target Name="CopyMpzfUpdaterToPublish" AfterTargets="CopyRepoDataToPublish" DependsOnTargets="_CollectMpzfUpdaterFiles;_ResolveDataPublishDir">
     <MakeDir Directories="$(_DataPublishDir)data\Updater" Condition="'$(_DataPublishDir)' != ''" />

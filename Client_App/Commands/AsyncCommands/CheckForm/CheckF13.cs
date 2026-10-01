@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Models.CheckForm;
@@ -622,7 +622,7 @@ public abstract class CheckF13 : CheckBase
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         string[] applicableOperationCodes = { "83", "84", "85", "86" };
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = OKSM.Any(oksmEntry => oksmEntry["shortname"] == creatorOkpo) 
+        var valid = IsOksmShortName(creatorOkpo) 
                     && creatorOkpo.ToLower() is not "россия";
         if (!valid)
         {
@@ -1250,7 +1250,7 @@ public abstract class CheckF13 : CheckBase
         var creatorOkpo = ReplaceNullAndTrim(forms[line].CreatorOKPO_DB);
         var valid = OkpoRegex.IsMatch(creatorOkpo)
                         || creatorOkpo is "прим."
-                        || OKSM.Any(oksmEntry => oksmEntry["shortname"] == creatorOkpo);
+                        || IsOksmShortName(creatorOkpo);
         if (!valid)
         {
             result.Add(new CheckError
@@ -1276,7 +1276,7 @@ public abstract class CheckF13 : CheckBase
         List<CheckError> result = new();
         string[] creatorOkpoValid = { "прим.", "прим", "примечание", "примечания" };
         var creatorOkpo = ReplaceNullAndTrim(forms[line].CreatorOKPO_DB);
-        if (OKSM.All(oksmEntry => oksmEntry["shortname"] != creatorOkpo.ToLower()) 
+        if (!IsOksmShortName(creatorOkpo) 
             && !creatorOkpoValid.Contains(creatorOkpo.ToLower())) return result;
         const byte graphNumber = 9;
         var valid = CheckNotePresence(notes, line, graphNumber);
@@ -1534,7 +1534,7 @@ public abstract class CheckF13 : CheckBase
         var propertyCode = forms[line].PropertyCode_DB ?? 0;
         var owner = ReplaceNullAndTrim(forms[line].Owner_DB);
         if (propertyCode is not 5) return result;
-        var valid = OKSM.Any(oksmEntry => oksmEntry["shortname"] == owner)
+        var valid = IsOksmShortName(owner)
                     && !owner.Equals("россия", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {
@@ -1565,7 +1565,7 @@ public abstract class CheckF13 : CheckBase
         var propertyCode = forms[line].PropertyCode_DB ?? 0;
         var owner = ReplaceNullAndTrim(forms[line].Owner_DB);
         if (propertyCode is not 6) return result;
-        if (OKSM.All(oksmEntry => oksmEntry["shortname"] != owner)
+        if (!IsOksmShortName(owner)
             || owner.Equals("россия", StringComparison.CurrentCultureIgnoreCase))
         {
             result.Add(new CheckError
@@ -1915,7 +1915,7 @@ public abstract class CheckF13 : CheckBase
         var opCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var providerOrRecieverOkpo = ReplaceNullAndTrim(forms[line].ProviderOrRecieverOKPO_DB);
         if (!applicableOperationCodes.Contains(opCode)) return result;
-        var valid = OKSM.Any(oksmEntry => oksmEntry["shortname"] == providerOrRecieverOkpo)
+        var valid = IsOksmShortName(providerOrRecieverOkpo)
                     && !providerOrRecieverOkpo.Equals("россия", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {

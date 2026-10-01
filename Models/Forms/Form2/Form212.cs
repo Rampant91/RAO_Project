@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -261,7 +261,7 @@ public class Form212 : Form2
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value;
-        if (value1 != null && Spravochniks.OKSM.Any(pair => pair.Value == value1.ToUpper()))
+        if (value1 != null && Spravochniks.IsAcceptedOksmShortName(value1))
         {
             value1 = value1.ToUpper();
         }
@@ -276,7 +276,7 @@ public class Form212 : Form2
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()) || value.Value.Equals("Минобороны"))
+        if (Spravochniks.IsAcceptedOksmShortName(value.Value) || value.Value.Equals("Минобороны"))
         {
             return true;
         }

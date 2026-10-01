@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Models.CheckForm;
@@ -1442,7 +1442,7 @@ public abstract class CheckF15 : CheckBase
         if (!applicableOpCodes.Contains(opCode)) return result;
         var providerOrRecieverOkpo = ReplaceNullAndTrim(forms[line].ProviderOrRecieverOKPO_DB);
         
-        var valid = OKSM.Any(oksmEntry => oksmEntry["shortname"] == providerOrRecieverOkpo)
+        var valid = IsOksmShortName(providerOrRecieverOkpo)
                     && !providerOrRecieverOkpo.Equals("россия", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {

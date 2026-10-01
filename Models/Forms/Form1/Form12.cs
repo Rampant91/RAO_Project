@@ -1,4 +1,4 @@
-using Models.Attributes;
+﻿using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
@@ -359,7 +359,7 @@ public class Form12 : Form1
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp;
-        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(tmp))
         {
             tmp = tmp.ToUpper();
         }
@@ -374,7 +374,7 @@ public class Form12 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (!Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()) 
+        if (!Spravochniks.IsAcceptedOksmShortName(value.Value) 
             && OperationCode_DB is "84" or "85")
         {
             value.AddError($"При коде {OperationCode_DB} допускается только ОКСМ");
@@ -393,7 +393,7 @@ public class Form12 : Form1
             //    value.AddError( "Заполните примечание");
             return true;
         }
-        if (!Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper())
+        if (!Spravochniks.IsAcceptedOksmShortName(value.Value)
             && (value.Value.Length != 8 && value.Value.Length != 14
             || !OkpoRegex().IsMatch(value.Value)))
         {
@@ -588,7 +588,7 @@ public class Form12 : Form1
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp;
-        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(tmp))
         {
             tmp = tmp.ToUpper();
         }
@@ -605,7 +605,7 @@ public class Form12 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(tmp))
         {
             return true;
         }
@@ -658,7 +658,7 @@ public class Form12 : Form1
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp;
-        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(tmp))
         {
             tmp = tmp.ToUpper();
         }
@@ -675,7 +675,7 @@ public class Form12 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (tmp.Equals("Минобороны") || tmp.Equals("прим.") || Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
+        if (tmp.Equals("Минобороны") || tmp.Equals("прим.") || Spravochniks.IsAcceptedOksmShortName(tmp))
         {
             return true;
         }
@@ -722,7 +722,7 @@ public class Form12 : Form1
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
         tmp = tmp;
-        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(tmp))
         {
             tmp = tmp.ToUpper();
         }
@@ -739,7 +739,7 @@ public class Form12 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (tmp.Equals("-") || tmp.Equals("Минобороны") || tmp.Equals("прим.") || Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()))
+        if (tmp.Equals("-") || tmp.Equals("Минобороны") || tmp.Equals("прим.") || Spravochniks.IsAcceptedOksmShortName(value.Value))
         {
             return true;
         }

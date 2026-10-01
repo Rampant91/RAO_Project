@@ -28,6 +28,7 @@
 
     <Window.Resources>
         <converter:DateConverter x:Key="DateConverter" />
+        <converter:OksmItemsByOperationDateConverter x:Key="OksmItemsByDateConverter" />
         <converter:IsOperation41AndSingleSelectionConverter x:Key="Op41AndOneSelectedConverter" />
     </Window.Resources>
 
@@ -802,27 +803,11 @@
 										<AutoCompleteBox Classes="OksmGuide"
 											             Grid.Column="0"
                                                          Height="26"
-                                                         Items="{Binding  VM.OksmItems, ElementName=1.4}"
+                                                         Items="{Binding OperationDate.Value, Converter={StaticResource OksmItemsByDateConverter}}"
                                                          Text="{Binding Owner.Value, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
                                                          IsTextCompletionEnabled="False">
-
-											<AutoCompleteBox.ItemTemplate>
-												<DataTemplate >
-													<Grid ColumnDefinitions="Auto,*">
-														<TextBlock Grid.Column="0"
-                                                                   Text="{Binding Code}"
-                                                                   Margin="0,0,10,0"
-                                                                   FontWeight="Bold"/>
-														<TextBlock Grid.Column="1"
-                                                                   Text="{Binding Country}"
-                                                                   Foreground="Gray"
-                                                                   TextWrapping="Wrap"
-                                                                   MaxWidth="500"/>
-													</Grid>
-												</DataTemplate>
-											</AutoCompleteBox.ItemTemplate>
 										</AutoCompleteBox>
 										<appControls:DropDownButton Grid.Column="1" />
 									</Grid>
@@ -936,27 +921,11 @@
 										<AutoCompleteBox Classes="OksmGuide"
 											             Grid.Column="0"
                                                          Height="26"
-                                                         Items="{Binding  VM.OksmItems, ElementName=1.4}"
+                                                         Items="{Binding OperationDate.Value, Converter={StaticResource OksmItemsByDateConverter}}"
                                                          Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
                                                          IsTextCompletionEnabled="False">
-
-											<AutoCompleteBox.ItemTemplate>
-												<DataTemplate >
-													<Grid ColumnDefinitions="Auto,*">
-														<TextBlock Grid.Column="0"
-                                                                   Text="{Binding Code}"
-                                                                   Margin="0,0,10,0"
-                                                                   FontWeight="Bold"/>
-														<TextBlock Grid.Column="1"
-                                                                   Text="{Binding Country}"
-                                                                   Foreground="Gray"
-                                                                   TextWrapping="Wrap"
-                                                                   MaxWidth="500"/>
-													</Grid>
-												</DataTemplate>
-											</AutoCompleteBox.ItemTemplate>
 										</AutoCompleteBox>
 										<appControls:DropDownButton Grid.Column="1" />
 									</Grid>
@@ -980,27 +949,11 @@
 										<AutoCompleteBox Classes="OksmGuide"
 											             Grid.Column="0"
                                                          Height="26"
-                                                         Items="{Binding  VM.OksmItems, ElementName=1.4}"
+                                                         Items="{Binding OperationDate.Value, Converter={StaticResource OksmItemsByDateConverter}}"
                                                          Text="{Binding TransporterOKPO.Value, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
                                                          IsTextCompletionEnabled="False">
-
-											<AutoCompleteBox.ItemTemplate>
-												<DataTemplate >
-													<Grid ColumnDefinitions="Auto,*">
-														<TextBlock Grid.Column="0"
-                                                                   Text="{Binding Code}"
-                                                                   Margin="0,0,10,0"
-                                                                   FontWeight="Bold"/>
-														<TextBlock Grid.Column="1"
-                                                                   Text="{Binding Country}"
-                                                                   Foreground="Gray"
-                                                                   TextWrapping="Wrap"
-                                                                   MaxWidth="500"/>
-													</Grid>
-												</DataTemplate>
-											</AutoCompleteBox.ItemTemplate>
 										</AutoCompleteBox>
 										<appControls:DropDownButton Grid.Column="1" />
 									</Grid>

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -551,7 +551,7 @@ public partial class Form15 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(tmp))
         {
             tmp = tmp.ToUpper();
         }
@@ -567,7 +567,7 @@ public partial class Form15 : Form1
             return false;
         }
         if (value.Value.Equals("прим.") 
-            || Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()) 
+            || Spravochniks.IsAcceptedOksmShortName(value.Value) 
             || value.Value.Equals("Минобороны"))
         {
             return true;

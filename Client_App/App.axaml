@@ -117,6 +117,23 @@
 
 		<Style Selector="AutoCompleteBox.OksmGuide">
 			<Setter Property="FilterMode" Value="Contains"/>
+			<Setter Property="controlBehaviors:OksmGuideDropdown.IsEnabled" Value="True"/>
+			<Setter Property="ItemTemplate">
+				<DataTemplate>
+					<Grid Margin="6,4"
+					      ColumnDefinitions="Auto,*">
+						<TextBlock Grid.Column="0"
+						           Text="{Binding Code}"
+						           Margin="0,0,10,0"
+						           VerticalAlignment="Top"
+						           FontWeight="Bold"/>
+						<TextBlock Grid.Column="1"
+						           Text="{Binding Country}"
+						           Foreground="Gray"
+						           TextWrapping="Wrap"/>
+					</Grid>
+				</DataTemplate>
+			</Setter>
 			<Setter Property="Template">
             <ControlTemplate>
                 <Grid>
@@ -128,25 +145,43 @@
                            IsOpen="{TemplateBinding IsDropDownOpen, Mode=TwoWay}"
                            PlacementTarget="{Binding #PART_TextBox}"
                            PlacementMode="Bottom"
-                           StaysOpen="False"
-						   
-                           MaxHeight="300">
-                        <Border Background="White" BorderBrush="Gray" BorderThickness="1" CornerRadius="4">
-                            <Grid RowDefinitions="Auto,*">
-                                <!-- Заголовок -->
+                           IsLightDismissEnabled="False"
+                           StaysOpen="True"
+                           OverlayDismissEventPassThrough="False"
+                           MaxHeight="360">
+                        <!-- Фиксированная ширина: при прокрутке попап не «прыгает» -->
+                        <Border Background="White"
+                                BorderBrush="Gray"
+                                BorderThickness="1"
+                                CornerRadius="4"
+                                Width="440"
+                                MinWidth="440"
+                                MaxWidth="440">
+                            <Grid RowDefinitions="Auto,Auto,*">
                                 <TextBlock Grid.Row="0"
                                            Text="Справочник ОКСМ"
                                            FontWeight="Bold"
                                            Padding="8,6"
                                            Background="#f0f0f0"/>
 
-								<ListBox Grid.Row="1"
+                                <TextBox Name="PART_OksmFilterBox"
+                                         Grid.Row="1"
+                                         Margin="6,4,6,6"
+                                         Watermark="Поиск по коду или названию..."
+                                         MinHeight="28"
+                                         Focusable="False"/>
+
+								<ListBox Grid.Row="2"
 									 Name="PART_SelectingItemsControl"
 									 Items="{TemplateBinding Items}"
 									 ItemTemplate="{TemplateBinding ItemTemplate}"
 									 SelectedItem="{TemplateBinding SelectedItem, Mode=TwoWay}"
 									 Background="Transparent"
-									 BorderThickness="0"/>
+									 BorderThickness="0"
+									 MaxHeight="280"
+									 HorizontalAlignment="Stretch"
+									 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+									 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                             </Grid>
                         </Border>
                     </Popup>

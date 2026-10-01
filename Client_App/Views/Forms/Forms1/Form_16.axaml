@@ -30,6 +30,7 @@
         <converter:DataGridLengthToGridLengthConverter x:Key="LengthConverter" />
         <converter:NullToStringConverter x:Key="NullToStringConverter" />
         <converter:DateConverter x:Key="DateConverter" />
+        <converter:OksmItemsByOperationDateConverter x:Key="OksmItemsByDateConverter" />
     </Window.Resources>
 
     <Design.DataContext>
@@ -881,27 +882,11 @@
 										<AutoCompleteBox Classes="OksmGuide"
 											             Grid.Column="0"
                                                          Height="26"
-                                                         Items="{Binding  VM.OksmItems, ElementName=1.6}"
+                                                         Items="{Binding OperationDate.Value, Converter={StaticResource OksmItemsByDateConverter}}"
                                                          Text="{Binding ProviderOrRecieverOKPO.Value, Mode=TwoWay}"
                                                          HorizontalAlignment="Stretch"
                                                          MinimumPrefixLength="0"
                                                          IsTextCompletionEnabled="False">
-
-											<AutoCompleteBox.ItemTemplate>
-												<DataTemplate >
-													<Grid ColumnDefinitions="Auto,*">
-														<TextBlock Grid.Column="0"
-                                                                   Text="{Binding Code}"
-                                                                   Margin="0,0,10,0"
-                                                                   FontWeight="Bold"/>
-														<TextBlock Grid.Column="1"
-                                                                   Text="{Binding Country}"
-                                                                   Foreground="Gray"
-                                                                   TextWrapping="Wrap"
-                                                                   MaxWidth="500"/>
-													</Grid>
-												</DataTemplate>
-											</AutoCompleteBox.ItemTemplate>
 										</AutoCompleteBox>
 										<appControls:DropDownButton Grid.Column="1" />
 									</Grid>

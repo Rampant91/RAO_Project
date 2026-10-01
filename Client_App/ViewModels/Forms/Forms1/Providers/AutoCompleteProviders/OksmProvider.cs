@@ -17,11 +17,12 @@ namespace Client_App.ViewModels.Forms.Forms1.Providers.AutoCompleteProviders
         {
             get
             {
-                return new(Spravochniks.OKSM.Select(oksmPair => new OksmItem()
-                {
-                    Code = oksmPair.Key,
-                    Country = oksmPair.Value,
-                }));
+                return new(Spravochniks.GetOksmForOperationDate(null)
+                    .Select(oksmPair => new OksmItem()
+                    {
+                        Code = oksmPair.Key,
+                        Country = oksmPair.Value,
+                    }));
             }
         }
         public override Form WriteItemInForm(Form form, OksmItem item)

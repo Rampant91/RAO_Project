@@ -1,4 +1,4 @@
-using Models.Attributes;
+﻿using Models.Attributes;
 using Models.Collections;
 using Models.Forms.DataAccess;
 using OfficeOpenXml;
@@ -619,7 +619,7 @@ public class Form14 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(tmp))
         {
             tmp = tmp.ToUpper();
         }
@@ -634,7 +634,7 @@ public class Form14 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(value.Value))
         {
             return true;
         }
@@ -684,7 +684,7 @@ public class Form14 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = (((RamAccess<string>)value).Value ?? string.Empty);
-        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(tmp))
         {
             tmp = tmp.ToUpper();
         }
@@ -699,7 +699,7 @@ public class Form14 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()) || value.Value.Equals("Минобороны"))
+        if (Spravochniks.IsAcceptedOksmShortName(value.Value) || value.Value.Equals("Минобороны"))
         {
             return true;
         }
@@ -770,7 +770,7 @@ public class Form14 : Form1
     {
         if (args.PropertyName != "Value") return;
         var tmp = ((RamAccess<string>)value).Value ?? string.Empty;
-        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(tmp))
         {
             tmp = tmp.ToUpper();
         }
@@ -785,7 +785,7 @@ public class Form14 : Form1
             value.AddError("Поле не заполнено");
             return false;
         }
-        if (value.Value.Equals("-") || value.Value.Equals("Минобороны") || Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()))
+        if (value.Value.Equals("-") || value.Value.Equals("Минобороны") || Spravochniks.IsAcceptedOksmShortName(value.Value))
         {
             return true;
         }

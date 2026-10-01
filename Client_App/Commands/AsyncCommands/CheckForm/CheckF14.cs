@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Models.CheckForm;
@@ -1753,7 +1753,7 @@ public abstract class CheckF14 : CheckBase
         var propertyCode = forms[line].PropertyCode_DB ?? 0;
         var owner = ReplaceNullAndTrim(forms[line].Owner_DB);
         if (propertyCode is not 5) return result;
-        var valid = OKSM.Any(oksmEntry => oksmEntry["shortname"] == owner) 
+        var valid = IsOksmShortName(owner) 
                     && !owner.Equals("россия", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {
@@ -1783,7 +1783,7 @@ public abstract class CheckF14 : CheckBase
         var propertyCode = forms[line].PropertyCode_DB ?? 0;
         var owner = ReplaceNullAndTrim(forms[line].Owner_DB);
         if (propertyCode is not 6) return result;
-        if (OKSM.All(oksmEntry => oksmEntry["shortname"] != owner)
+        if (!IsOksmShortName(owner)
             || owner.Equals("россия", StringComparison.CurrentCultureIgnoreCase))
         {
             result.Add(new CheckError
@@ -2118,7 +2118,7 @@ public abstract class CheckF14 : CheckBase
         var operationCode = ReplaceNullAndTrim(forms[line].OperationCode_DB);
         var providerOrRecieverOkpo = ReplaceNullAndTrim(forms[line].ProviderOrRecieverOKPO_DB);
         if (!applicableOperationCodes.Contains(operationCode)) return result;
-        var valid = OKSM.Any(oksmEntry => oksmEntry["shortname"] == providerOrRecieverOkpo)
+        var valid = IsOksmShortName(providerOrRecieverOkpo)
                     && !providerOrRecieverOkpo.Equals("россия", StringComparison.CurrentCultureIgnoreCase);
         if (!valid)
         {

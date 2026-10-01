@@ -1,4 +1,4 @@
-using Models.Attributes;
+﻿using Models.Attributes;
 using Models.Collections;
 using Models.Comparers.FormContent;
 using Models.Forms.DataAccess;
@@ -480,7 +480,7 @@ public class Form11 : Form1
     {
         if (args.PropertyName != "Value") return;
         var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
-        if (Spravochniks.OKSM.Any(pair => pair.Value == value1.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(value1))
         {
             value1 = value1.ToUpper();
         }
@@ -504,7 +504,7 @@ public class Form11 : Form1
             //    value.AddError("Заполните примечание");
             return false;
         }
-        if (Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(value.Value))
         {
             return true;
         }
@@ -762,7 +762,7 @@ public class Form11 : Form1
         if (args.PropertyName != "Value") return;
 
         var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
-        if (Spravochniks.OKSM.Any(pair => pair.Value == value1.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(value1))
         {
             value1 = value1.ToUpper();
         }
@@ -788,7 +788,7 @@ public class Form11 : Form1
                 //    value.AddError("Заполните примечание");
                 return true;
         }
-        if (Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(value.Value))
         {
             return true;
         }
@@ -835,7 +835,7 @@ public class Form11 : Form1
         if (args.PropertyName != "Value") return;
 
         var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
-        if (Spravochniks.OKSM.Any(pair => pair.Value == value1.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(value1))
         {
             value1 = value1.ToUpper();
         }
@@ -861,7 +861,7 @@ public class Form11 : Form1
             case "прим.":
                 return true;
         }
-        if (Spravochniks.OKSM.Any(pair => pair.Value == value.Value.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(value.Value))
         {
             return true;
         }
@@ -908,7 +908,7 @@ public class Form11 : Form1
         if (args.PropertyName != "Value") return;
 
         var value1 = ((RamAccess<string>)value).Value ?? string.Empty;
-        if (Spravochniks.OKSM.Any(pair => pair.Value == value1.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(value1))
         {
             value1 = value1.ToUpper();
         }
@@ -936,7 +936,7 @@ public class Form11 : Form1
             case "Минобороны":
                 return true;
         }
-        if (Spravochniks.OKSM.Any(pair => pair.Value == tmp.ToUpper()))
+        if (Spravochniks.IsAcceptedOksmShortName(tmp))
         {
             return true;
         }
