@@ -87,14 +87,40 @@ MpzfUpdater применяет релиз **чистой заменой** (не 
 ## Выкладка (Publish)
 
 1. Publish **Client_App** через профиль VS (`win-x64` / `win-x86` / `Astra_Linux_1.7-1.8` / `Astra_Linux_1.6`).
-2. Автоматически копируются:
-   - репозиторная `data\` (Spravochniki, Excel, …) без чужих платформ REDDB, без `Updater` и без `AstraLegacy`;
+2. `PublishDir` профиля указывает на **папку payload** (туда попадают exe и `data\`):
+
+```
+{корень_релиза}\
+  win-x64\                          ← профиль win-x64
+    Client_App.exe
+    data\                           ← Spravochniki, Manual\, Changelog, REDDB\win-x64, Updater\
+  win-x86\                          ← профиль win-x86
+    …
+    data\REDDB\win-x32\             ← важно: папка REDDB — win-x32
+  Astra_Linux_SE_1.7_And_1.8\       ← профиль Astra_Linux_1.7-1.8
+    Инструкция_по_установке_….txt
+    linux-x64\
+      Client_App
+      data\
+  Astra_Linux_CE_2.12_And_SE_1.6\   ← профиль Astra_Linux_1.6 (AstraLegacy=true)
+    Инструкция_по_установке_….txt
+    linux-x64\
+      Client_App
+      libtommath0.deb               ← рядом с исполняемым
+      data\                         ← REDDB из linux-x64_astra_1.6 → data\REDDB\linux-x64
+```
+
+3. Автоматически копируются:
+   - репозиторная `data\` (в т.ч. **`Manual\`** с руководством и инструкциями по установке, Spravochniki, Excel, Changelog) без чужих платформ REDDB, без `Updater` и без `AstraLegacy`;
    - `data\REDDB\{win-x64|win-x32|linux-x64}` под RID профиля  
      (для `Astra_Linux_1.6` источник — `linux-x64_astra_1.6`, в дистрибутиве всё равно `linux-x64`);
    - `data\Updater\` с актуальным self-contained `MpzfUpdater` (single-file, без shared .NET на ПК пользователя);
-   - для профиля `Astra_Linux_1.6` (`AstraLegacy=true`): `data\AstraLegacy\libtommath0.deb` → корень дистрибутива (рядом с исполняемым).
+   - для Astra-профилей (`MpzfInstallGuideFile`): инструкция из `data\Manual\` → **родительская** папка относительно `linux-x64`;
+   - для `Astra_Linux_1.6` (`AstraLegacy=true`): `data\AstraLegacy\libtommath0.deb` → корень payload (`linux-x64`, рядом с исполняемым).
 
 Ручное копирование `data` после publish больше не нужно.
+
+Профили `.pubxml` локальные (`*.pubxml` в `.gitignore`); при клонировании репозитория создайте их по образцу в `Client_App\Properties\PublishProfiles\` или скопируйте с рабочей машины.
 
 ## Откат
 

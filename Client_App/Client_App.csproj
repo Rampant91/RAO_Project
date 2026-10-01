@@ -66,6 +66,11 @@
     </ProjectReference>
   </ItemGroup>
   <!-- Репозиторная data\ → publish\data\ (REDDB только под текущий RID; Astra 1.6 → linux-x64) -->
+  <!--
+    Профили задают PublishDir = …\{payload}\ (win-x64 | win-x86 | …\linux-x64).
+    Для Astra дополнительно: MpzfInstallGuideFile — инструкция в родительскую папку payload.
+    AstraLegacy=true — libtommath0.deb рядом с исполняемым (в payload).
+  -->
   <PropertyGroup>
     <_RepoDataDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\data'))</_RepoDataDir>
     <!-- Имя папки в дистрибутиве (как ожидает RedDataBaseUse) -->
@@ -80,19 +85,31 @@
     <PropertyGroup>
       <_DataPublishDir Condition="'$(PublishDir)' != ''">$(PublishDir)</_DataPublishDir>
       <_DataPublishDir Condition="'$(_DataPublishDir)' == '' and '$(PublishUrl)' != ''">$(PublishUrl)</_DataPublishDir>
+      <!-- Нормализация завершающего слэша для Path.GetFullPath / родителя -->
+      <_DataPublishDir Condition="'$(_DataPublishDir)' != ''">$([System.IO.Path]::GetFullPath('$(_DataPublishDir)'))</_DataPublishDir>
     </PropertyGroup>
   </Target>
   <Target Name="CopyRepoDataToPublish" AfterTargets="Publish" DependsOnTargets="_ResolveDataPublishDir">
     <Warning Text="CopyRepoDataToPublish: RuntimeIdentifier не задан — REDDB не скопирован. Укажите RID в publish-профиле." Condition="'$(_DataPublishDir)' != '' and '$(_ReddbDestFolder)' == ''" />
     <Warning Text="CopyRepoDataToPublish: не найдена папка $(_RepoDataDir)\REDDB\$(_ReddbSourceFolder)" Condition="'$(_DataPublishDir)' != '' and '$(_ReddbSourceFolder)' != '' and !Exists('$(_RepoDataDir)\REDDB\$(_ReddbSourceFolder)')" />
     <ItemGroup Condition="'$(_DataPublishDir)' != '' and Exists('$(_RepoDataDir)')">
-      <_RepoDataFiles Include="$(_RepoDataDir)\**\*.*" Exclude="$(_RepoDataDir)\REDDB\**\*.*;$(_RepoDataDir)\Updater\**\*.*;$(_RepoDataDir)\AstraLegacy\**\*.*;$(_RepoDataDir)\**\firebird.log" />
+      <!-- Manual\, Spravochniki\, Excel\, Changelog и пр.; без REDDB / Updater / AstraLegacy -->
+      <_RepoDataFiles Include="$(_RepoDataDir)\**\*.*" Exclude="$(_RepoDataDir)\REDDB\**\*.*;$(_RepoDataDir)\Updater\**\*.*;$(_RepoDataDir)\AstraLegacy\**\*.*;$(_RepoDataDir)\**\firebird.log;$(_RepoDataDir)\Manual\_names.txt" />
       <_RepoReddbFiles Include="$(_RepoDataDir)\REDDB\$(_ReddbSourceFolder)\**\*.*" Exclude="$(_RepoDataDir)\REDDB\$(_ReddbSourceFolder)\**\firebird.log" Condition="'$(_ReddbSourceFolder)' != '' and Exists('$(_RepoDataDir)\REDDB\$(_ReddbSourceFolder)')" />
     </ItemGroup>
     <Copy SourceFiles="@(_RepoDataFiles)" DestinationFiles="@(_RepoDataFiles->'$(_DataPublishDir)data\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" Condition="'$(_DataPublishDir)' != '' and '@(_RepoDataFiles)' != ''" />
     <Copy SourceFiles="@(_RepoReddbFiles)" DestinationFiles="@(_RepoReddbFiles->'$(_DataPublishDir)data\REDDB\$(_ReddbDestFolder)\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" Condition="'$(_DataPublishDir)' != '' and '@(_RepoReddbFiles)' != ''" />
   </Target>
-  <!-- Astra 1.6: libtommath0.deb рядом с исполняемым (не в data\) -->
+  <!-- Astra: инструкция по установке на уровень выше linux-x64 (папка Astra_Linux_…) -->
+  <Target Name="CopyAstraInstallGuideToPublish" AfterTargets="Publish" DependsOnTargets="_ResolveDataPublishDir" Condition="'$(MpzfInstallGuideFile)' != ''">
+    <PropertyGroup>
+      <_AstraInstallGuideSrc>$(_RepoDataDir)\Manual\$(MpzfInstallGuideFile)</_AstraInstallGuideSrc>
+      <_AstraInstallGuideDestDir>$([System.IO.Path]::GetFullPath('$(_DataPublishDir)\..'))</_AstraInstallGuideDestDir>
+    </PropertyGroup>
+    <Warning Text="CopyAstraInstallGuideToPublish: не найден $(_AstraInstallGuideSrc)" Condition="'$(_DataPublishDir)' != '' and !Exists('$(_AstraInstallGuideSrc)')" />
+    <Copy SourceFiles="$(_AstraInstallGuideSrc)" DestinationFolder="$(_AstraInstallGuideDestDir)" SkipUnchangedFiles="false" Condition="'$(_DataPublishDir)' != '' and Exists('$(_AstraInstallGuideSrc)')" />
+  </Target>
+  <!-- Astra 1.6: libtommath0.deb рядом с исполняемым (в linux-x64, не в data\) -->
   <Target Name="CopyAstraLegacyDebToPublish" AfterTargets="Publish" DependsOnTargets="_ResolveDataPublishDir" Condition="'$(AstraLegacy)' == 'true'">
     <PropertyGroup>
       <_AstraLegacyDeb>$(_RepoDataDir)\AstraLegacy\libtommath0.deb</_AstraLegacyDeb>
