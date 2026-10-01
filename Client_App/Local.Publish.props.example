@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Скопируйте как Local.Publish.props (файл в .gitignore) и укажите корень релизов.
+     Нужен для dotnet publish / первого запуска, пока в .pubxml ещё $(MpzfPublishRoot)…
+     После Browse в UI Visual Studio в рабочем .pubxml будет абсолютный путь — этого файла достаточно не трогать. -->
+<Project>
+  <PropertyGroup>
+    <MpzfPublishRoot>D:\Work\Publish\1.3.0.14\</MpzfPublishRoot>
+  </PropertyGroup>
+</Project>
