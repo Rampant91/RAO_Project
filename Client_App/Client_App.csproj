@@ -65,29 +65,11 @@
       <Private>false</Private>
     </ProjectReference>
   </ItemGroup>
-  <!-- Локальный корень публикации (gitignored). Нужен, пока в .pubxml ещё $(MpzfPublishRoot)… -->
-  <Import Project="Local.Publish.props" Condition="Exists('$(MSBuildThisFileDirectory)Local.Publish.props')" />
-  <PropertyGroup>
-    <MpzfPublishRoot Condition="'$(MpzfPublishRoot)' == ''">$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\artifacts\publish'))\</MpzfPublishRoot>
-  </PropertyGroup>
-  <!--
-    Флаги Astra / имя инструкции — по имени профиля (не из .pubxml),
-    чтобы UI VS при перезаписи PublishDir не сбрасывал их.
-  -->
-  <PropertyGroup>
-    <_MpzfPublishProfile Condition="'$(PublishProfile)' != ''">$([System.IO.Path]::GetFileNameWithoutExtension('$(PublishProfile)'))</_MpzfPublishProfile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(_MpzfPublishProfile)' == 'Astra_Linux_1.6'">
-    <AstraLegacy>true</AstraLegacy>
-    <MpzfInstallGuideFile>Инструкция_по_установке_МПЗФ_на_Astra_Linux_СE_2.12__SE_1.6.txt</MpzfInstallGuideFile>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(_MpzfPublishProfile)' == 'Astra_Linux_1.7-1.8'">
-    <MpzfInstallGuideFile>Инструкция_по_установке_МПЗФ_на_Astra_Linux_SE_1.7_And_1.8.txt</MpzfInstallGuideFile>
-  </PropertyGroup>
   <!-- Репозиторная data\ → publish\data\ (REDDB только под текущий RID; Astra 1.6 → linux-x64) -->
   <!--
-    Профили: PublishDir = payload (win-x64 | win-x86 | …\linux-x64); путь в UI VS — локально
-    (filter mpzf-pubxml). Astra: MpzfInstallGuideFile / AstraLegacy задаются выше по профилю.
+    Профили задают PublishDir = …\{payload}\ (win-x64 | win-x86 | …\linux-x64).
+    Для Astra дополнительно: MpzfInstallGuideFile — инструкция в родительскую папку payload.
+    AstraLegacy=true — libtommath0.deb рядом с исполняемым (в payload).
   -->
   <PropertyGroup>
     <_RepoDataDir>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\data'))</_RepoDataDir>

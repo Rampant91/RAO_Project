@@ -1,4 +1,0 @@
-# Абсолютный PublishDir из UI Visual Studio не попадает в индекс:
-# working tree может содержать D:\…, в git хранится $(MpzfPublishRoot)…
-# Настройка фильтра (один раз на клон): pwsh -File tools/git/setup-mpzf-pubxml-filter.ps1
-Client_App/Properties/PublishProfiles/*.pubxml filter=mpzf-pubxml text eol=crlf

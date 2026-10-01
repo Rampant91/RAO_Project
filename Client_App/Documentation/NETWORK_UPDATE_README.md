@@ -120,16 +120,7 @@ MpzfUpdater применяет релиз **чистой заменой** (не 
 
 Ручное копирование `data` после publish больше не нужно.
 
-### Профили публикации в git
-
-Профили `Client_App/Properties/PublishProfiles/*.pubxml` **в репозитории** (RID, single-file, раскладка суффиксов).
-
-- В git в `PublishDir` хранится вид `$(MpzfPublishRoot)win-x64\` (и аналоги).
-- В UI Visual Studio можно спокойно жать Browse и выбирать абсолютный путь — локально файл перепишется, но **в `git status` это не попадёт** (clean-filter `mpzf-pubxml`).
-- Один раз после клона: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/git/setup-mpzf-pubxml-filter.ps1`
-- Если после Browse `git status` подсвечивает `.pubxml`, а `git diff` пустой — `powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/git/refresh-pubxml-index.ps1` (обновит stat; абсолютный путь в коммит не попадёт).
-- Опционально `Client_App/Local.Publish.props` (gitignore) по образцу `Local.Publish.props.example` — корень для `$(MpzfPublishRoot)` до первого Browse / для CLI.
-- `AstraLegacy` и имена txt-инструкций задаются в `Client_App.csproj` по имени профиля (UI их не затрёт).
+Профили `.pubxml` локальные (`*.pubxml` в `.gitignore`); при клонировании репозитория создайте их по образцу в `Client_App\Properties\PublishProfiles\` или скопируйте с рабочей машины.
 
 ## Откат
 

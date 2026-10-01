@@ -181,14 +181,10 @@ publish/
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml
-# Folder publish-профили Client_App (RID, раскладка) — в репозитории.
-# Абсолютный PublishDir из UI VS не попадает в diff: filter mpzf-pubxml в .gitattributes
-# (один раз: tools/git/setup-mpzf-pubxml-filter.ps1).
-# Azure/web *.pubxml с секретами по-прежнему не коммитим точечно при появлении.
+# Note: Comment the next line if you want to checkin your web deploy settings,
+# but database connection strings (with potential passwords) will be unencrypted
+*.pubxml
 *.publishproj
-
-# Локальный корень публикации для $(MpzfPublishRoot) до первого Browse в VS
-Client_App/Local.Publish.props
 
 # Microsoft Azure Web App publish settings. Comment the next line if you want to
 # checkin your Azure Web App publish settings, but sensitive information contained
