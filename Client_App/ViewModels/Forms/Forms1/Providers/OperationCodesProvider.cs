@@ -166,6 +166,7 @@ public static class OperationCodesProvider
     /// </summary>
     public static ICollection<string> GetValidCodesForForm11() =>
     [
+        "01",
         "10", "11", "12", "15", "17", "18",
         "21", "22", "25", "27", "28", "29",
         "31", "32", "35", "37", "38", "39",
@@ -182,6 +183,7 @@ public static class OperationCodesProvider
     /// </summary>
     public static ICollection<string> GetValidCodesForForm12() =>
     [
+        "01",
         "10", "11", "12", "17", "18", 
         "21", "22", "25", "27", "28", "29", 
         "31", "32", "35", "37", "38", "39", 
@@ -199,6 +201,7 @@ public static class OperationCodesProvider
     /// </summary>
     public static ICollection<string> GetValidCodesForForm13() =>
     [
+        "01",
         "10", "11", "12", "15", "17", "18", 
         "21", "22", "25", "27", "28", "29", 
         "31", "32", "35", "37", "38", 
@@ -215,6 +218,7 @@ public static class OperationCodesProvider
     /// </summary>
     public static ICollection<string> GetValidCodesForForm14() =>
     [
+        "01",
         "10", "11", "12", "15", "17", "18", 
         "21", "22", "25", "27", "28", "29", 
         "31", "32", "35", "37", "38", "39", 
@@ -263,7 +267,8 @@ public static class OperationCodesProvider
     /// </summary>
     public static ICollection<string> GetValidCodesForForm17() =>
     [
-        "-", 
+        "-",
+        "01",
         "10", "11", "12", "13", "14", "16", "18",
         "21", "22", "25", "26", "27", "28", "29",
         "31", "32", "35", "36", "37", "38", "39",

@@ -97,7 +97,7 @@ public class Form13 : Form1
             value.AddError("Недопустимое значение");
             return false;
         }
-        if (value.Value is "01" or "13" or "14" or "16" or "26" or "36" or "44" or "45" or "49" or "51" or "52" or "55"
+        if (value.Value is "13" or "14" or "16" or "26" or "36" or "44" or "45" or "49" or "51" or "52" or "55"
             or "56" or "57" or "59" or "76")
         {
             value.AddError("Код операции не может быть использован для РВ");
