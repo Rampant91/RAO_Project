@@ -25,13 +25,19 @@ public class BaseFileLogger(string filePath) : ILogger
     public void Info(string msg, ErrorCodeLogger code)
     {
         var currentTime = DateTime.Now.ToString("dd-MM-yyyy HH-mm-ss");
-        ServiceExtension.FileManager.WriteToFile($"{Environment.NewLine}[{currentTime}][INFO][{(int)code}]{msg}{Environment.NewLine}", FilePath);
+        // Sync: при зависании UI async Info не успевает попасть в файл.
+        ServiceExtension.FileManager.WriteToFileSync(
+            $"{Environment.NewLine}[{currentTime}][INFO][{(int)code}]{msg}{Environment.NewLine}",
+            FilePath);
     }
 
     public void Warning(string msg, ErrorCodeLogger code)
     {
         var currentTime = DateTime.Now.ToString("dd-MM-yyyy HH-mm-ss");
-        ServiceExtension.FileManager.WriteToFile($"{Environment.NewLine}[{currentTime}][WARNING][{(int)code}]{msg}{Environment.NewLine}", FilePath);
+        // Sync: как у Info/Error — иначе при hang последняя запись теряется.
+        ServiceExtension.FileManager.WriteToFileSync(
+            $"{Environment.NewLine}[{currentTime}][WARNING][{(int)code}]{msg}{Environment.NewLine}",
+            FilePath);
     }
 
     public void Import(string msg, ErrorCodeLogger code)
