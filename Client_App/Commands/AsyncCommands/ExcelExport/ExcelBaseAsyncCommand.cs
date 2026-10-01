@@ -282,9 +282,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
     /// </summary>
     /// <param name="formNum">Номер формы.</param>
     /// <param name="worksheet">Лист Excel.</param>
-    /// <param name="rep">Отчёт.</param>
+    /// <param name="rep">Отчёт (null — выгрузка только титула организации, без года).</param>
     /// <param name="master">Головной отчёт организации.</param>
-    private protected static void ExcelPrintTitleExport(string formNum, ExcelWorksheet worksheet, Report rep, Report master)
+    private protected static void ExcelPrintTitleExport(string formNum, ExcelWorksheet worksheet, Report? rep, Report master)
     {
         if (formNum.Split('.')[0] == "2")
         {
@@ -293,7 +293,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
             var frmYur = master.Rows20[0];
             var frmObosob = master.Rows20[1];
-            worksheet.Cells["G10"].Value = rep.Year_DB;
+            // Год — у отчёта; при выгрузке только титула org (rep == null) не заполняем.
+            if (rep is not null)
+                worksheet.Cells["G10"].Value = rep.Year_DB;
 
             worksheet.Cells["F6"].Value = frmYur.RegNo_DB;
             worksheet.Cells["F15"].Value = frmYur.OrganUprav_DB;
@@ -391,7 +393,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
             worksheet.Cells["B8"].Value = form40.CodeSubjectRF_DB;
             worksheet.Cells["B9"].Value = form40.SubjectRF_DB;
 
-            worksheet.Cells["B15"].Value = rep.Year_DB;
+            // Год — у отчёта; при выгрузке только титула org (rep == null) не заполняем.
+            if (rep is not null)
+                worksheet.Cells["B15"].Value = rep.Year_DB;
 
             worksheet.Cells["B19"].Value = form40.NameOrganUprav_DB;
             worksheet.Cells["B20"].Value = form40.ShortNameOrganUprav_DB;
@@ -419,7 +423,9 @@ public abstract class ExcelBaseAsyncCommand : BaseAsyncCommand
 
             var form50 = master.Rows50[0];
 
-            worksheet.Cells["B16"].Value = rep.Year_DB;
+            // Год — у отчёта; при выгрузке только титула org (rep == null) не заполняем.
+            if (rep is not null)
+                worksheet.Cells["B16"].Value = rep.Year_DB;
 
             worksheet.Cells["A9"].Value = form50.ExecutiveAuthority_DB;
             if(form50.Rosatom_DB)
