@@ -19,6 +19,8 @@ using Models.DBRealization;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using Models.Forms.Form4;
+using Models.Forms.Form5;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Dto;
 using MsBox.Avalonia.Enums;
@@ -127,18 +129,40 @@ public static class OrganizationFormOpener
             }
             case "4.0":
             {
-                var form40VM = new Form_40VM(formNum, stubMaster);
+                var master = await EnsureTrackedMasterWithForm40Async(stubMaster).ConfigureAwait(true);
+                var titleBefore = SnapshotForm40Title(master);
+                var form40VM = new Form_40VM(formNum, master);
                 var window = new Form_40(form40VM);
                 window.PrepareBeforeShow(mainWindow);
                 await window.ShowDialog(mainWindow);
+
+                var titleAfter = SnapshotForm40Title(master);
+                if (titleBefore != titleAfter)
+                {
+                    MainWindowListQuery.UpsertOrgKeyForm40FromMaster(selectedReports.Id, master);
+                    mainWindowVM.Forms4TabControlVM.RefreshOrgListAfterTitleChange();
+                }
+
+                refreshOrgListAfterTitle = true;
                 break;
             }
             case "5.0":
             {
-                var form50VM = new Form_50VM(formNum, stubMaster);
+                var master = await EnsureTrackedMasterWithForm50Async(stubMaster).ConfigureAwait(true);
+                var titleBefore = SnapshotForm50Title(master);
+                var form50VM = new Form_50VM(formNum, master);
                 var window = new Form_50(form50VM);
                 window.PrepareBeforeShow(mainWindow);
                 await window.ShowDialog(mainWindow);
+
+                var titleAfter = SnapshotForm50Title(master);
+                if (titleBefore != titleAfter)
+                {
+                    MainWindowListQuery.UpsertOrgKeyForm50FromMaster(selectedReports.Id, master);
+                    mainWindowVM.Forms5TabControlVM.RefreshOrgListAfterTitleChange();
+                }
+
+                refreshOrgListAfterTitle = true;
                 break;
             }
             default:
@@ -199,6 +223,23 @@ public static class OrganizationFormOpener
             r1?.RegNo_DB, r1?.Okpo_DB, r1?.ShortJurLico_DB);
     }
 
+    private static (string Code, string Subject, string ShortName) SnapshotForm40Title(Report master)
+    {
+        var row = master.Rows40.OrderBy(r => r.NumberInOrder_DB).FirstOrDefault();
+        return (
+            row?.CodeSubjectRF_DB ?? "",
+            row?.SubjectRF_DB ?? "",
+            row?.ShortNameOrganUprav_DB ?? "");
+    }
+
+    private static (string Name, string ShortName) SnapshotForm50Title(Report master)
+    {
+        var row = master.Rows50.OrderBy(r => r.NumberInOrder_DB).FirstOrDefault();
+        return (
+            row?.Name_DB ?? "",
+            row?.ShortName_DB ?? "");
+    }
+
     /// <summary>
     /// Master + Rows10 из основного DBModel (tracked), иначе Save/HasChanges не видят правки титула.
     /// </summary>
@@ -256,6 +297,60 @@ public static class OrganizationFormOpener
         return master;
     }
 
+    private static async Task<Report> EnsureTrackedMasterWithForm40Async(Report stubOrTracked)
+    {
+        var db = StaticConfiguration.DBModel;
+        if (stubOrTracked.Id <= 0)
+            throw new InvalidOperationException("Organization master Id is missing.");
+
+        var master = db.ReportCollectionDbSet.Local.FirstOrDefault(r => r.Id == stubOrTracked.Id);
+        if (master is null)
+        {
+            master = await db.ReportCollectionDbSet
+                .Include(r => r.Rows40)
+                .FirstOrDefaultAsync(r => r.Id == stubOrTracked.Id)
+                .ConfigureAwait(true);
+        }
+        else if (master.Rows40.Count < 1)
+        {
+            await db.Entry(master).Collection(r => r.Rows40).LoadAsync().ConfigureAwait(true);
+        }
+
+        if (master is null)
+            throw new InvalidOperationException($"Organization master Id={stubOrTracked.Id} not found in DB.");
+
+        EnsureForm40RowsTracked(db, master);
+        EnsureOneForm40Row(master);
+        return master;
+    }
+
+    private static async Task<Report> EnsureTrackedMasterWithForm50Async(Report stubOrTracked)
+    {
+        var db = StaticConfiguration.DBModel;
+        if (stubOrTracked.Id <= 0)
+            throw new InvalidOperationException("Organization master Id is missing.");
+
+        var master = db.ReportCollectionDbSet.Local.FirstOrDefault(r => r.Id == stubOrTracked.Id);
+        if (master is null)
+        {
+            master = await db.ReportCollectionDbSet
+                .Include(r => r.Rows50)
+                .FirstOrDefaultAsync(r => r.Id == stubOrTracked.Id)
+                .ConfigureAwait(true);
+        }
+        else if (master.Rows50.Count < 1)
+        {
+            await db.Entry(master).Collection(r => r.Rows50).LoadAsync().ConfigureAwait(true);
+        }
+
+        if (master is null)
+            throw new InvalidOperationException($"Organization master Id={stubOrTracked.Id} not found in DB.");
+
+        EnsureForm50RowsTracked(db, master);
+        EnsureOneForm50Row(master);
+        return master;
+    }
+
     private static void EnsureForm10RowsTracked(DBModel db, Report master)
     {
         foreach (var row in master.Rows10.OfType<Form10>())
@@ -278,6 +373,28 @@ public static class OrganizationFormOpener
         }
     }
 
+    private static void EnsureForm40RowsTracked(DBModel db, Report master)
+    {
+        foreach (var row in master.Rows40.OfType<Form40>())
+        {
+            if (row.Id == 0)
+                continue;
+            if (db.Entry(row).State == EntityState.Detached)
+                db.form_40.Attach(row);
+        }
+    }
+
+    private static void EnsureForm50RowsTracked(DBModel db, Report master)
+    {
+        foreach (var row in master.Rows50.OfType<Form50>())
+        {
+            if (row.Id == 0)
+                continue;
+            if (db.Entry(row).State == EntityState.Detached)
+                db.form_50.Attach(row);
+        }
+    }
+
     private static void EnsureTwoForm10Rows(Report master)
     {
         while (master.Rows10.Count < 2)
@@ -297,6 +414,28 @@ public static class OrganizationFormOpener
             empty.NumberInOrder_DB = (short)(master.Rows20.Count + 1);
             empty.ReportId = master.Id;
             master.Rows20.Add(empty);
+        }
+    }
+
+    private static void EnsureOneForm40Row(Report master)
+    {
+        while (master.Rows40.Count < 1)
+        {
+            var empty = (Form40)FormCreator.Create("4.0");
+            empty.NumberInOrder_DB = 1;
+            empty.ReportId = master.Id;
+            master.Rows40.Add(empty);
+        }
+    }
+
+    private static void EnsureOneForm50Row(Report master)
+    {
+        while (master.Rows50.Count < 1)
+        {
+            var empty = (Form50)FormCreator.Create("5.0");
+            empty.NumberInOrder_DB = 1;
+            empty.ReportId = master.Id;
+            master.Rows50.Add(empty);
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using Client_App.ViewModels.Forms.Forms4.Items;
 using Client_App.Commands.AsyncCommands;
 using Client_App.Commands.AsyncCommands.Save;
-using Client_App.Interfaces.Logger;
-using Client_App.Interfaces.Logger.EnumLogger;
 using Models.Collections;
 using Models.DBRealization;
 using Models.Forms;
@@ -237,21 +235,9 @@ namespace Client_App.ViewModels.Forms.Forms4
         public Form_40VM(string formNum, in Report rep)
         {
             if (formNum is "4.0")
-            {
                 Storage = rep;
-            }
 
             FormType = formNum;
-            try
-            {
-                StaticConfiguration.DBModel.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                ServiceExtension.LoggerManager.Error(
-                    $"Form_40VM.SaveChanges: {ex.Message}{Environment.NewLine}{ex.StackTrace}",
-                    ErrorCodeLogger.Application);
-            }
         }
 
         #endregion

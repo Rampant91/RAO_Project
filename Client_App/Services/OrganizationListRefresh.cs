@@ -3,6 +3,8 @@ using Client_App.ViewModels;
 using Models.Forms;
 using Models.Forms.Form1;
 using Models.Forms.Form2;
+using Models.Forms.Form4;
+using Models.Forms.Form5;
 using Models.Collections;
 
 namespace Client_App.Services;
@@ -59,6 +61,38 @@ public static class OrganizationListRefresh
         return false;
     }
 
+    public static bool Form40HasAnyFilledTitleFields(Report? storage)
+    {
+        if (storage is null)
+            return false;
+
+        foreach (var key in storage.Rows40)
+        {
+            if (key is not Form40 row)
+                continue;
+            if (Row40HasContent(row))
+                return true;
+        }
+
+        return false;
+    }
+
+    public static bool Form50HasAnyFilledTitleFields(Report? storage)
+    {
+        if (storage is null)
+            return false;
+
+        foreach (var key in storage.Rows50)
+        {
+            if (key is not Form50 row)
+                continue;
+            if (Row50HasContent(row))
+                return true;
+        }
+
+        return false;
+    }
+
     private static bool Row10HasContent(Form10 row) =>
         !string.IsNullOrWhiteSpace(row.OrganUprav_DB)
         || !string.IsNullOrWhiteSpace(row.SubjectRF_DB)
@@ -100,4 +134,37 @@ public static class OrganizationListRefresh
         || !string.IsNullOrWhiteSpace(row.Okopf_DB)
         || !string.IsNullOrWhiteSpace(row.Okfs_DB)
         || !string.IsNullOrWhiteSpace(row.RegNo_DB);
+
+    private static bool Row40HasContent(Form40 row) =>
+        !string.IsNullOrWhiteSpace(row.CodeSubjectRF_DB)
+        || !string.IsNullOrWhiteSpace(row.SubjectRF_DB)
+        || !string.IsNullOrWhiteSpace(row.NameOrganUprav_DB)
+        || !string.IsNullOrWhiteSpace(row.ShortNameOrganUprav_DB)
+        || !string.IsNullOrWhiteSpace(row.AddressOrganUprav_DB)
+        || !string.IsNullOrWhiteSpace(row.GradeFioDirectorOrganUprav_DB)
+        || !string.IsNullOrWhiteSpace(row.GradeFioExecutorOrganUprav_DB)
+        || !string.IsNullOrWhiteSpace(row.TelephoneOrganUprav_DB)
+        || !string.IsNullOrWhiteSpace(row.FaxOrganUprav_DB)
+        || !string.IsNullOrWhiteSpace(row.EmailOrganUprav_DB)
+        || !string.IsNullOrWhiteSpace(row.NameRiac_DB)
+        || !string.IsNullOrWhiteSpace(row.ShortNameRiac_DB)
+        || !string.IsNullOrWhiteSpace(row.AddressRiac_DB)
+        || !string.IsNullOrWhiteSpace(row.GradeFioDirectorRiac_DB)
+        || !string.IsNullOrWhiteSpace(row.GradeFioExecutorRiac_DB)
+        || !string.IsNullOrWhiteSpace(row.TelephoneRiac_DB)
+        || !string.IsNullOrWhiteSpace(row.FaxRiac_DB)
+        || !string.IsNullOrWhiteSpace(row.EmailRiac_DB);
+
+    private static bool Row50HasContent(Form50 row) =>
+        !string.IsNullOrWhiteSpace(row.ExecutiveAuthority_DB)
+        || row.Rosatom_DB
+        || row.MinObr_DB
+        || !string.IsNullOrWhiteSpace(row.Name_DB)
+        || !string.IsNullOrWhiteSpace(row.ShortName_DB)
+        || !string.IsNullOrWhiteSpace(row.Address_DB)
+        || !string.IsNullOrWhiteSpace(row.GradeFioDirector_DB)
+        || !string.IsNullOrWhiteSpace(row.GradeFioExecutor_DB)
+        || !string.IsNullOrWhiteSpace(row.Telephone_DB)
+        || !string.IsNullOrWhiteSpace(row.Fax_DB)
+        || !string.IsNullOrWhiteSpace(row.Email_DB);
 }

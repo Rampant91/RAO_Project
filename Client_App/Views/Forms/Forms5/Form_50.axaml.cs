@@ -2,6 +2,7 @@
 using System;
 using System.ComponentModel;
 using System.Threading;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -10,6 +11,7 @@ using Avalonia.Threading;
 using Client_App.Commands.AsyncCommands.Save;
 using Client_App.Interfaces.Logger;
 using Client_App.Resources;
+using Client_App.Services;
 using Client_App.ViewModels.Forms.Forms5;
 using Client_App.Views.Forms;
 using MsBox.Avalonia.Dto;
@@ -40,6 +42,22 @@ public partial class Form_50 : BaseWindow<Form_50VM>
         if (DataContext is not Form_50VM vm) return;
 
         var desktop = (IClassicDesktopStyleApplicationLifetime)Application.Current?.ApplicationLifetime!;
+
+        // New card: not in DB yet (DBO != null until first SaveReport).
+        if (vm.DBO is not null)
+        {
+            if (!OrganizationListRefresh.Form50HasAnyFilledTitleFields(vm.Storage))
+            {
+                vm.DBO = null;
+                desktop.MainWindow.WindowState = WindowState.Normal;
+                return;
+            }
+
+            args.Cancel = true;
+            await HandleNewOrganizationDraftClosingAsync(vm, desktop).ConfigureAwait(true);
+            return;
+        }
+
         try
         {
             if (!StaticConfiguration.DBModel.ChangeTracker.HasChanges())
@@ -130,6 +148,43 @@ public partial class Form_50 : BaseWindow<Form_50VM>
             Close();
         }
         args.Cancel = true;
+    }
+
+    private async Task HandleNewOrganizationDraftClosingAsync(
+        Form_50VM vm,
+        IClassicDesktopStyleApplicationLifetime desktop)
+    {
+        var answer = await Dispatcher.UIThread.InvokeAsync(async () => await MessageBoxManager
+            .GetMessageBoxCustom(new MessageBoxCustomParams
+            {
+                ButtonDefinitions =
+                [
+                    FormDialogTexts.YesButton,
+                    FormDialogTexts.NoButton
+                ],
+                ContentTitle = FormDialogTexts.CreateOrganizationTitle,
+                ContentHeader = FormDialogTexts.NotificationHeader,
+                ContentMessage = FormDialogTexts.SaveNewOrganizationCardMessage,
+                MinWidth = 400,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Topmost = true,
+            }).ShowWindowDialogAsync(desktop.MainWindow));
+
+        if (answer is FormDialogTexts.Yes)
+        {
+            try
+            {
+                await new SaveReportAsyncCommand(vm).AsyncExecute(null);
+            }
+            catch { }
+        }
+        else
+        {
+            vm.DBO = null;
+        }
+
+        desktop.MainWindow.WindowState = WindowState.Normal;
+        Close();
     }
 
     #endregion

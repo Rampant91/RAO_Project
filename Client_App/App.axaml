@@ -608,10 +608,18 @@
             <Setter Property="MinWidth" Value="0"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
             <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="#f5f5f5"/>
+            <Setter Property="Foreground" Value="Black"/>
             <!-- Right edge: header separators without relying only on rounded gridlines. -->
             <Setter Property="BorderThickness" Value="0,0,1,0"/>
             <Setter Property="BorderBrush" Value="#FFB0B0B0"/>
             <Setter Property="Padding" Value="4,0,4,0"/>
+        </Style>
+        <Style Selector="DataGrid.main-list-grid DataGridColumnHeader:pointerover">
+            <Setter Property="Background" Value="#f5f5f5"/>
+        </Style>
+        <Style Selector="DataGrid.main-list-grid DataGridColumnHeader:pressed">
+            <Setter Property="Background" Value="#f5f5f5"/>
         </Style>
         <!-- Report grids: two-line headers; keep compact so default 10 rows still fit. -->
         <Style Selector="DataGrid.report-list-grid">

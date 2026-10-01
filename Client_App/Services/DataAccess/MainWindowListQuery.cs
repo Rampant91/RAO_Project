@@ -165,6 +165,71 @@ public static class MainWindowListQuery
     }
 
     /// <summary>
+    /// Точечно обновляет ключ одной org в кэше (после правки титула 4.0 / РИАЦ).
+    /// </summary>
+    public static void UpsertOrgKeyForm40FromMaster(int reportsId, Report master)
+    {
+        if (master?.FormNum_DB is not "4.0")
+            return;
+
+        var row = master.Rows40
+            .OrderBy(r => r.NumberInOrder_DB)
+            .FirstOrDefault();
+
+        var key = new OrgKey
+        {
+            Id = reportsId,
+            SubjectRf = row?.CodeSubjectRF_DB ?? "",
+            RegNo = row?.SubjectRF_DB ?? "",
+            ShortJurLico = row?.ShortNameOrganUprav_DB ?? ""
+        };
+
+        lock (OrgKeysForm40Lock)
+        {
+            if (_cachedOrgKeysForm40 == null)
+                return;
+
+            var idx = _cachedOrgKeysForm40.FindIndex(k => k.Id == reportsId);
+            if (idx >= 0)
+                _cachedOrgKeysForm40[idx] = key;
+            else
+                _cachedOrgKeysForm40.Add(key);
+        }
+    }
+
+    /// <summary>
+    /// Точечно обновляет ключ одной org в кэше (после правки титула 5.0 / ВИАЦ).
+    /// </summary>
+    public static void UpsertOrgKeyForm50FromMaster(int reportsId, Report master)
+    {
+        if (master?.FormNum_DB is not "5.0")
+            return;
+
+        var row = master.Rows50
+            .OrderBy(r => r.NumberInOrder_DB)
+            .FirstOrDefault();
+
+        var key = new OrgKey
+        {
+            Id = reportsId,
+            ShortJurLico = row?.ShortName_DB ?? "",
+            Name50 = row?.Name_DB ?? ""
+        };
+
+        lock (OrgKeysForm50Lock)
+        {
+            if (_cachedOrgKeysForm50 == null)
+                return;
+
+            var idx = _cachedOrgKeysForm50.FindIndex(k => k.Id == reportsId);
+            if (idx >= 0)
+                _cachedOrgKeysForm50[idx] = key;
+            else
+                _cachedOrgKeysForm50.Add(key);
+        }
+    }
+
+    /// <summary>
     /// Страница организаций форм 1.0 / 2.0 с RegNo/Okpo/ShortJurLico.
     /// </summary>
     public static PagedResult<Reports> GetOrgPageForm12(
